@@ -6,6 +6,8 @@
 #include <cmath>
 #include <string>
 
+#include "platform/memory_info.h"
+
 namespace sar {
 namespace {
 
@@ -32,8 +34,8 @@ int ScaledFontSize(const UiFont& font, const WindowState& window,
 }  // namespace
 
 void DebugOverlay::Draw(std::string_view version, AppScreen screen,
-                        const WindowState& window,
-                        const UiFont& font) const {
+                        const WindowState& window, const UiFont& font,
+                        const ServiceInfoOverlayData& service_info) const {
   const int font_size = ScaledFontSize(font, window, 0.65F);
   const int x = static_cast<int>(16.0F * window.ui_scale);
   int y = static_cast<int>(16.0F * window.ui_scale);
@@ -52,6 +54,17 @@ void DebugOverlay::Draw(std::string_view version, AppScreen screen,
   y += line_step;
   font.DrawTextLine(TextFormat("ui_scale: %.2f", window.ui_scale), x, y,
                     font_size, color);
+
+  if (!service_info.show_memory) {
+    return;
+  }
+
+  y += line_step;
+  const std::string memory_text =
+      service_info.memory_available
+          ? "memory: " + FormatMegabytes(service_info.resident_memory_bytes)
+          : "memory: n/a";
+  font.DrawTextLine(memory_text, x, y, font_size, color);
 }
 
 }  // namespace sar

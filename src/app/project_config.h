@@ -8,11 +8,37 @@
 
 namespace sar {
 
+enum class RaylibLogLevel {
+  kTrace,
+  kDebug,
+  kInfo,
+  kWarning,
+  kError,
+  kFatal,
+  kNone,
+};
+
+/**
+ * @brief Returns the configuration name of a raylib log level.
+ *
+ * @param level Raylib trace log level.
+ * @return Stable lowercase configuration name.
+ */
+const char* RaylibLogLevelName(RaylibLogLevel level);
+
+struct ServiceInfoConfig {
+  bool enabled = true;
+  bool show_memory = true;
+  int update_interval_ms = 1000;
+};
+
 struct ProjectConfig {
   std::filesystem::path map_package_path;
   std::filesystem::path ui_font_path = "data/fonts/PressStart2P-Regular.ttf";
   int ui_font_size = 24;
+  RaylibLogLevel raylib_log_level = RaylibLogLevel::kWarning;
   WindowConfig window_config;
+  ServiceInfoConfig service_info;
 
   /**
    * @brief Returns a readable dump of the project configuration.
@@ -31,9 +57,10 @@ struct ProjectConfigResult {
 /**
  * @brief Loads project configuration from a JSON file.
  *
- * The loader requires the `map_package_path` string field. Font settings are
- * optional and use safe defaults when they are not present. Unknown fields are
- * ignored so the format can be extended later.
+ * The loader requires the `map_package_path` string field. Font, window,
+ * service-info, and raylib log settings are optional and use safe defaults
+ * when they are not present. Unknown fields are ignored so the format can be
+ * extended later.
  *
  * @param config_path Path to the project configuration file.
  * @return Load result with either configuration data or an error message.

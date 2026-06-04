@@ -73,3 +73,11 @@
 - Updated window layout to use a larger default `1600x900` preferred window.
 - Kept `1280x720` as the UI reference size so large windows scale UI up.
 - Updated project config loading, tests, and README for window settings.
+
+## v0.1.8 -> v0.1.9
+
+- Bumped CMake project and runtime application version to `0.1.9`.
+- Added configurable service info overlay controls to `config/app_config.json`.
+- Added process RSS memory display to the service info overlay with throttled updates.
+- Added configurable raylib trace log level and set the default to `warning` to hide normal startup noise.
+- Updated project config dump and tests for service info and raylib log settings.

@@ -73,6 +73,7 @@ void TestProjectConfigLoader() {
                 "  \"map_package_path\": \"data/maps/sample_level\",\n"
                 "  \"ui_font_path\": \"data/fonts/test.ttf\",\n"
                 "  \"ui_font_size\": 22,\n"
+                "  \"raylib_log_level\": \"none\",\n"
                 "  \"window\": {\n"
                 "    \"preferred_width\": 1700,\n"
                 "    \"preferred_height\": 950,\n"
@@ -80,6 +81,11 @@ void TestProjectConfigLoader() {
                 "    \"fallback_height\": 675,\n"
                 "    \"max_monitor_fraction\": 0.85,\n"
                 "    \"resizable\": false\n"
+                "  },\n"
+                "  \"service_info\": {\n"
+                "    \"enabled\": false,\n"
+                "    \"show_memory\": false,\n"
+                "    \"update_interval_ms\": 2000\n"
                 "  }\n"
                 "}\n");
 
@@ -91,6 +97,8 @@ void TestProjectConfigLoader() {
          "font path should be read from project config");
   Expect(result.config.ui_font_size == 22,
          "font size should be read from project config");
+  Expect(result.config.raylib_log_level == sar::RaylibLogLevel::kNone,
+         "raylib log level should be read from project config");
   Expect(result.config.window_config.preferred_width == 1700,
          "preferred window width should be read from project config");
   Expect(result.config.window_config.preferred_height == 950,
@@ -103,6 +111,12 @@ void TestProjectConfigLoader() {
          "window monitor fraction should be read from project config");
   Expect(!result.config.window_config.resizable,
          "window resizable setting should be read from project config");
+  Expect(!result.config.service_info.enabled,
+         "service info enabled flag should be read from project config");
+  Expect(!result.config.service_info.show_memory,
+         "service info memory flag should be read from project config");
+  Expect(result.config.service_info.update_interval_ms == 2000,
+         "service info update interval should be read from project config");
 
   std::filesystem::remove(config_path);
 }

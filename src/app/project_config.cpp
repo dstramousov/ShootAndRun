@@ -267,19 +267,73 @@ ParseBoolResult ExtractOptionalJsonBoolField(std::string_view text,
           "expected boolean value for field: " + std::string(field_name)};
 }
 
+std::optional<RaylibLogLevel> ParseRaylibLogLevel(std::string_view value) {
+  if (value == "trace") {
+    return RaylibLogLevel::kTrace;
+  }
+  if (value == "debug") {
+    return RaylibLogLevel::kDebug;
+  }
+  if (value == "info") {
+    return RaylibLogLevel::kInfo;
+  }
+  if (value == "warning" || value == "warn") {
+    return RaylibLogLevel::kWarning;
+  }
+  if (value == "error") {
+    return RaylibLogLevel::kError;
+  }
+  if (value == "fatal") {
+    return RaylibLogLevel::kFatal;
+  }
+  if (value == "none" || value == "off") {
+    return RaylibLogLevel::kNone;
+  }
+
+  return std::nullopt;
+}
+
 }  // namespace
+
+const char* RaylibLogLevelName(RaylibLogLevel level) {
+  switch (level) {
+    case RaylibLogLevel::kTrace:
+      return "trace";
+    case RaylibLogLevel::kDebug:
+      return "debug";
+    case RaylibLogLevel::kInfo:
+      return "info";
+    case RaylibLogLevel::kWarning:
+      return "warning";
+    case RaylibLogLevel::kError:
+      return "error";
+    case RaylibLogLevel::kFatal:
+      return "fatal";
+    case RaylibLogLevel::kNone:
+      return "none";
+  }
+
+  return "warning";
+}
 
 std::string ProjectConfig::Dump() const {
   return "ProjectConfig { map_package_path: \"" +
          map_package_path.string() + "\", ui_font_path: \"" +
          ui_font_path.string() + "\", ui_font_size: " +
-         std::to_string(ui_font_size) + ", window: " +
+         std::to_string(ui_font_size) + ", raylib_log_level: " +
+         RaylibLogLevelName(raylib_log_level) + ", window: " +
          std::to_string(window_config.preferred_width) + "x" +
          std::to_string(window_config.preferred_height) +
          ", fallback: " + std::to_string(window_config.fallback_width) +
          "x" + std::to_string(window_config.fallback_height) +
          ", max_monitor_fraction: " +
-         std::to_string(window_config.max_monitor_fraction) + " }";
+         std::to_string(window_config.max_monitor_fraction) +
+         ", service_info: { enabled: " +
+         std::string(service_info.enabled ? "true" : "false") +
+         ", show_memory: " +
+         std::string(service_info.show_memory ? "true" : "false") +
+         ", update_interval_ms: " +
+         std::to_string(service_info.update_interval_ms) + " } }";
 }
 
 ProjectConfigResult LoadProjectConfig(
@@ -322,6 +376,21 @@ ProjectConfigResult LoadProjectConfig(
       return {false, {}, "ui_font_size must be positive"};
     }
     config.ui_font_size = font_size.value;
+  }
+
+  ParseStringResult raylib_log_level =
+      ExtractOptionalJsonStringField(content, "raylib_log_level");
+  if (!raylib_log_level.ok) {
+    return {false, {}, raylib_log_level.error};
+  }
+  if (!raylib_log_level.value.empty()) {
+    const std::optional<RaylibLogLevel> parsed =
+        ParseRaylibLogLevel(raylib_log_level.value);
+    if (!parsed.has_value()) {
+      return {false, {},
+              "unsupported raylib_log_level: " + raylib_log_level.value};
+    }
+    config.raylib_log_level = *parsed;
   }
 
   ParseIntResult preferred_width =
@@ -392,6 +461,36 @@ ProjectConfigResult LoadProjectConfig(
   }
   if (resizable.found) {
     config.window_config.resizable = resizable.value;
+  }
+
+  ParseBoolResult service_info_enabled =
+      ExtractOptionalJsonBoolField(content, "enabled");
+  if (!service_info_enabled.ok) {
+    return {false, {}, service_info_enabled.error};
+  }
+  if (service_info_enabled.found) {
+    config.service_info.enabled = service_info_enabled.value;
+  }
+
+  ParseBoolResult show_memory =
+      ExtractOptionalJsonBoolField(content, "show_memory");
+  if (!show_memory.ok) {
+    return {false, {}, show_memory.error};
+  }
+  if (show_memory.found) {
+    config.service_info.show_memory = show_memory.value;
+  }
+
+  ParseIntResult update_interval_ms =
+      ExtractOptionalJsonIntField(content, "update_interval_ms");
+  if (!update_interval_ms.ok) {
+    return {false, {}, update_interval_ms.error};
+  }
+  if (update_interval_ms.found) {
+    if (update_interval_ms.value <= 0) {
+      return {false, {}, "update_interval_ms must be positive"};
+    }
+    config.service_info.update_interval_ms = update_interval_ms.value;
   }
 
   return {true, config, {}};

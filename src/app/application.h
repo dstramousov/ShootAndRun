@@ -43,6 +43,8 @@ class Application {
   void ShutdownWindow();
   void UpdateWindowStateFromRaylib();
   void LogStartup();
+  void ApplyRaylibLogLevel();
+  void UpdateServiceInfo();
   void ApplyFramePacing();
   void HandleInput(const InputState& input);
   void HandleDialogInput(const InputState& input);
@@ -70,6 +72,8 @@ class Application {
   UiFont ui_font_;
   std::optional<ProjectConfig> project_config_;
   std::optional<LevelPackageSummary> loaded_level_summary_;
+  ServiceInfoOverlayData service_info_data_;
+  double last_service_info_update_time_ = -1.0;
   std::optional<ConfirmDialog> confirm_dialog_;
 };
 

@@ -10,6 +10,7 @@
 #include <utility>
 
 #include "logging/thread_context.h"
+#include "platform/memory_info.h"
 #include "platform/terminal.h"
 #include "ui/ui_layout.h"
 #include "window/window_layout.h"
@@ -30,6 +31,27 @@ int ScaledFontSize(const UiFont& font, const WindowState& window,
   const float size = static_cast<float>(font.base_size()) * multiplier *
                      window.ui_scale;
   return std::max(1, static_cast<int>(std::lround(size)));
+}
+
+int ToRaylibTraceLogLevel(RaylibLogLevel level) {
+  switch (level) {
+    case RaylibLogLevel::kTrace:
+      return LOG_TRACE;
+    case RaylibLogLevel::kDebug:
+      return LOG_DEBUG;
+    case RaylibLogLevel::kInfo:
+      return LOG_INFO;
+    case RaylibLogLevel::kWarning:
+      return LOG_WARNING;
+    case RaylibLogLevel::kError:
+      return LOG_ERROR;
+    case RaylibLogLevel::kFatal:
+      return LOG_FATAL;
+    case RaylibLogLevel::kNone:
+      return LOG_NONE;
+  }
+
+  return LOG_WARNING;
 }
 
 std::string WindowStateToString(const WindowState& state) {
@@ -84,6 +106,8 @@ void Application::LoadProjectConfigAtStartup() {
 }
 
 void Application::InitializeWindow() {
+  ApplyRaylibLogLevel();
+
   if (config_.window.resizable) {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
   }
@@ -140,6 +164,47 @@ void Application::LogStartup() {
                           std::string(LogLevelName(config_.log_level)));
   logger_.Info("window", WindowStateToString(window_state_));
   logger_.Debug("menu", main_menu_.Dump());
+}
+
+void Application::ApplyRaylibLogLevel() {
+  const RaylibLogLevel level = project_config_.has_value()
+                                   ? project_config_->raylib_log_level
+                                   : RaylibLogLevel::kWarning;
+  SetTraceLogLevel(ToRaylibTraceLogLevel(level));
+  logger_.Debug("raylib", std::string("trace log level=") +
+                              RaylibLogLevelName(level));
+}
+
+void Application::UpdateServiceInfo() {
+  if (!project_config_.has_value() ||
+      !project_config_->service_info.enabled) {
+    service_info_data_ = {};
+    return;
+  }
+
+  service_info_data_.show_memory = project_config_->service_info.show_memory;
+  if (!project_config_->service_info.show_memory) {
+    service_info_data_.memory_available = false;
+    service_info_data_.resident_memory_bytes = 0;
+    return;
+  }
+
+  const double now = GetTime();
+  const double interval_seconds =
+      static_cast<double>(project_config_->service_info.update_interval_ms) /
+      1000.0;
+  if (last_service_info_update_time_ >= 0.0 &&
+      now - last_service_info_update_time_ < interval_seconds) {
+    return;
+  }
+
+  last_service_info_update_time_ = now;
+  const ProcessMemoryInfo memory = ReadCurrentProcessMemoryInfo();
+  service_info_data_.memory_available = memory.available;
+  service_info_data_.resident_memory_bytes = memory.resident_bytes;
+  if (!memory.available) {
+    logger_.Debug("service_info", memory.error);
+  }
 }
 
 void Application::ApplyFramePacing() {
@@ -365,8 +430,12 @@ void Application::RenderFrame() {
 
   renderer_.DrawFps(window_state_, ui_font_);
 
-  if (config_.debug_overlay_enabled) {
-    debug_overlay_.Draw(config_.version, screen_, window_state_, ui_font_);
+  UpdateServiceInfo();
+  if (config_.debug_overlay_enabled &&
+      project_config_.has_value() &&
+      project_config_->service_info.enabled) {
+    debug_overlay_.Draw(config_.version, screen_, window_state_, ui_font_,
+                        service_info_data_);
   }
 
   renderer_.EndFrame();
