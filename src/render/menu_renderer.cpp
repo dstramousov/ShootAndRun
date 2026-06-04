@@ -2,6 +2,8 @@
 
 #include <raylib.h>
 
+#include <algorithm>
+#include <cmath>
 #include <cstddef>
 
 #include "ui/ui_layout.h"
@@ -13,6 +15,13 @@ Rectangle ToRaylibRect(const Rect& rect) {
   return Rectangle{rect.x, rect.y, rect.width, rect.height};
 }
 
+int ScaledFontSize(const UiFont& font, const WindowState& window,
+                   float multiplier) {
+  const float size = static_cast<float>(font.base_size()) * multiplier *
+                     window.ui_scale;
+  return std::max(1, static_cast<int>(std::lround(size)));
+}
+
 }  // namespace
 
 void MenuRenderer::DrawMainMenu(const MainMenu& menu,
@@ -20,7 +29,7 @@ void MenuRenderer::DrawMainMenu(const MainMenu& menu,
                                 const UiFont& font) const {
   const auto layouts = CalculateMainMenuLayout(
       static_cast<int>(menu.items().size()), window);
-  const int font_size = static_cast<int>(24.0F * window.ui_scale);
+  const int font_size = ScaledFontSize(font, window, 1.0F);
 
   for (const MenuItemLayout& layout : layouts) {
     const MenuItem& item = menu.items()[static_cast<std::size_t>(layout.index)];
@@ -56,8 +65,8 @@ void MenuRenderer::DrawConfirmDialog(const ConfirmDialog& dialog,
   DrawRectangleRoundedLinesEx(ToRaylibRect(layout.dialog_bounds), 0.08F, 12,
                               1.5F, Color{160, 170, 205, 255});
 
-  const int title_size = static_cast<int>(26.0F * window.ui_scale);
-  const int message_size = static_cast<int>(18.0F * window.ui_scale);
+  const int title_size = ScaledFontSize(font, window, 1.2F);
+  const int message_size = ScaledFontSize(font, window, 0.82F);
   font.DrawTextLine(dialog.title(),
                     static_cast<int>(layout.dialog_bounds.x + 32.0F),
                     static_cast<int>(layout.dialog_bounds.y + 32.0F),
@@ -81,7 +90,7 @@ void MenuRenderer::DrawConfirmDialog(const ConfirmDialog& dialog,
   DrawRectangleRoundedLinesEx(ToRaylibRect(layout.no_bounds), 0.12F, 8, 1.2F,
                               Color{170, 170, 195, 255});
 
-  const int button_size = static_cast<int>(20.0F * window.ui_scale);
+  const int button_size = ScaledFontSize(font, window, 0.9F);
   font.DrawTextLine("Yes",
                     static_cast<int>(layout.yes_bounds.x +
                                      40.0F * window.ui_scale),

@@ -46,3 +46,10 @@
 - Updated title, menu, dialog, FPS, debug overlay, and game placeholder text to use the configured UI font.
 - Added basic `LevelLoader` validation for `terrain.json` and `runtime_grids.json`.
 - Updated `New Game` flow to load and validate the configured map package before entering the game screen.
+
+## v0.1.5 -> v0.1.6
+
+- Bumped CMake project and runtime application version to `0.1.6`.
+- Added `SAR_APP_VERSION` compile definition as the runtime version source.
+- Added `--version` CLI argument.
+- Fixed configurable UI font size usage across title, menu, dialog, FPS, debug overlay, and game placeholder text.

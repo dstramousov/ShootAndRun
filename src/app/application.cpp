@@ -2,6 +2,8 @@
 
 #include <raylib.h>
 
+#include <algorithm>
+#include <cmath>
 #include <filesystem>
 #include <sstream>
 #include <string>
@@ -20,6 +22,14 @@ MonitorInfo CurrentMonitorInfo() {
   const Vector2 position = GetMonitorPosition(monitor);
   return MonitorInfo{static_cast<int>(position.x), static_cast<int>(position.y),
                      GetMonitorWidth(monitor), GetMonitorHeight(monitor)};
+}
+
+
+int ScaledFontSize(const UiFont& font, const WindowState& window,
+                   float multiplier) {
+  const float size = static_cast<float>(font.base_size()) * multiplier *
+                     window.ui_scale;
+  return std::max(1, static_cast<int>(std::lround(size)));
 }
 
 std::string WindowStateToString(const WindowState& state) {
@@ -334,13 +344,16 @@ void Application::RenderFrame() {
   if (screen_ == AppScreen::kMainMenu || screen_ == AppScreen::kSettings) {
     menu_renderer_.DrawMainMenu(main_menu_, window_state_, ui_font_);
   } else if (screen_ == AppScreen::kGame) {
-    ui_font_.DrawTextLine("Game screen placeholder", 48, 120, 24,
+    const int title_size = ScaledFontSize(ui_font_, window_state_, 1.0F);
+    const int hint_size = ScaledFontSize(ui_font_, window_state_, 0.8F);
+    const int summary_size = ScaledFontSize(ui_font_, window_state_, 0.65F);
+    ui_font_.DrawTextLine("Game screen placeholder", 48, 120, title_size,
                           Color{230, 230, 240, 255});
-    ui_font_.DrawTextLine("Press Esc to return to main menu.", 48, 156, 18,
-                          Color{170, 175, 195, 255});
+    ui_font_.DrawTextLine("Press Esc to return to main menu.", 48, 156,
+                          hint_size, Color{170, 175, 195, 255});
     if (loaded_level_summary_.has_value()) {
-      ui_font_.DrawTextLine(loaded_level_summary_->Dump(), 48, 196, 14,
-                            Color{145, 150, 170, 255});
+      ui_font_.DrawTextLine(loaded_level_summary_->Dump(), 48, 196,
+                            summary_size, Color{145, 150, 170, 255});
     }
   }
 

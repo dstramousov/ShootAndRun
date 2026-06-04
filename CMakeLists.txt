@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(ShootAndRunCpp
-  VERSION 0.1.5
+project(ShootAndRun
+  VERSION 0.1.6
   DESCRIPTION "ShootAndRun C++ raylib bootstrap"
   LANGUAGES CXX
 )
@@ -45,6 +45,9 @@ set_target_properties(shoot_and_run PROPERTIES
 )
 
 target_include_directories(shoot_and_run PRIVATE src)
+target_compile_definitions(shoot_and_run PRIVATE
+  SAR_APP_VERSION="${PROJECT_VERSION}"
+)
 target_link_libraries(shoot_and_run PRIVATE raylib)
 
 target_compile_options(shoot_and_run PRIVATE
