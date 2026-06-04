@@ -11,6 +11,7 @@ sar::AppConfig ParseArguments(int argc, char** argv) {
   for (int i = 1; i < argc; ++i) {
     const std::string_view argument(argv[i]);
     constexpr std::string_view kLogLevelPrefix = "--log-level=";
+    constexpr std::string_view kConfigPrefix = "--config=";
 
     if (argument == "--no-color") {
       config.color_log = false;
@@ -19,6 +20,8 @@ sar::AppConfig ParseArguments(int argc, char** argv) {
       if (const auto parsed = sar::ParseLogLevel(value); parsed.has_value()) {
         config.log_level = *parsed;
       }
+    } else if (argument.starts_with(kConfigPrefix)) {
+      config.project_config_path = argument.substr(kConfigPrefix.size());
     }
   }
 

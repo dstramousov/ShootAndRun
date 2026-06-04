@@ -29,3 +29,11 @@
 - Reworked `Esc` detection to use a tracked key-down edge instead of relying only on raylib pressed events.
 - Added game-screen `Esc` down-state handling so the placeholder game screen returns to the main menu reliably.
 
+## v0.1.3 -> v0.1.4
+
+- Bumped project and runtime application version to `0.1.4`.
+- Added `config/app_config.json` with `map_package_path`.
+- Added project configuration loader for the map package path.
+- Added `--config=` CLI argument to override the project config path.
+- Updated `New Game` flow to read and validate the map package path from configuration before entering the game screen.
+- Updated README with project config usage.

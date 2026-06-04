@@ -5,6 +5,7 @@
 
 #include "app/app_config.h"
 #include "app/app_state.h"
+#include "app/project_config.h"
 #include "game/game_session.h"
 #include "input/input_system.h"
 #include "logging/logger.h"
@@ -44,6 +45,8 @@ class Application {
   void HandleMenuInput(const InputState& input);
   void HandleGameInput(const InputState& input);
   void ActivateMenuItem(const MenuItem& item);
+  bool StartNewGameFromConfig();
+  bool ValidateMapPackagePath(const ProjectConfig& project_config);
   void OpenExitDialog();
   void RenderFrame();
 

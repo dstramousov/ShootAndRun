@@ -1,7 +1,10 @@
 #include <cstdlib>
+#include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <string_view>
 
+#include "app/project_config.h"
 #include "level/terrain_type.h"
 #include "ui/main_menu.h"
 #include "window/window_layout.h"
@@ -53,6 +56,26 @@ void TestMenuNavigationSkipsDisabledItems() {
   Expect(menu.selected_index() == 0, "selection should wrap to New Game");
 }
 
+
+void TestProjectConfigLoader() {
+  const std::filesystem::path config_path =
+      std::filesystem::temp_directory_path() / "shoot_and_run_test_config.json";
+
+  {
+    std::ofstream output(config_path);
+    output << "{\n"
+           << "  \"map_package_path\": \"data/maps/sample_level\"\n"
+           << "}\n";
+  }
+
+  const sar::ProjectConfigResult result = sar::LoadProjectConfig(config_path);
+  Expect(result.ok, "project config should load successfully");
+  Expect(result.config.map_package_path == "data/maps/sample_level",
+         "map package path should be read from project config");
+
+  std::filesystem::remove(config_path);
+}
+
 void TestTerrainMapping() {
   Expect(sar::TerrainTypeFromString("forest") == sar::TerrainType::kForest,
          "forest should map to TerrainType::kForest");
@@ -69,6 +92,7 @@ int main() {
   TestSmallWindowLayout();
   TestMenuNavigationSkipsDisabledItems();
   TestTerrainMapping();
+  TestProjectConfigLoader();
   std::cout << "All tests passed.\n";
   return 0;
 }

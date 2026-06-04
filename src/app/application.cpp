@@ -2,6 +2,7 @@
 
 #include <raylib.h>
 
+#include <filesystem>
 #include <sstream>
 #include <string>
 #include <utility>
@@ -202,10 +203,9 @@ void Application::ActivateMenuItem(const MenuItem& item) {
 
   switch (item.action) {
     case MenuAction::kNewGame:
-      game_session_.StartNewGame();
-      screen_ = AppScreen::kGame;
-      ApplyFramePacing();
-      logger_.Info("game", "new game session started");
+      if (!StartNewGameFromConfig()) {
+        return;
+      }
       break;
     case MenuAction::kLoadGame:
       logger_.Warn("saves", "load game is not implemented");
@@ -222,6 +222,64 @@ void Application::ActivateMenuItem(const MenuItem& item) {
       OpenExitDialog();
       break;
   }
+}
+
+bool Application::StartNewGameFromConfig() {
+  const ProjectConfigResult result =
+      LoadProjectConfig(config_.project_config_path);
+  if (!result.ok) {
+    logger_.Error("config", result.error);
+    return false;
+  }
+
+  logger_.Info("config", result.config.Dump());
+  if (!ValidateMapPackagePath(result.config)) {
+    return false;
+  }
+
+  game_session_.StartNewGame();
+  screen_ = AppScreen::kGame;
+  ApplyFramePacing();
+  logger_.Info("game", "new game session started");
+  return true;
+}
+
+bool Application::ValidateMapPackagePath(
+    const ProjectConfig& project_config) {
+  std::error_code error_code;
+  const bool exists = std::filesystem::exists(
+      project_config.map_package_path, error_code);
+  if (error_code) {
+    logger_.Error("config", "failed to inspect map package path=" +
+                                project_config.map_package_path.string() +
+                                " reason=" + error_code.message());
+    return false;
+  }
+
+  if (!exists) {
+    logger_.Error("config", "map package path does not exist: " +
+                                project_config.map_package_path.string());
+    return false;
+  }
+
+  const bool is_directory = std::filesystem::is_directory(
+      project_config.map_package_path, error_code);
+  if (error_code) {
+    logger_.Error("config", "failed to check map package directory=" +
+                                project_config.map_package_path.string() +
+                                " reason=" + error_code.message());
+    return false;
+  }
+
+  if (!is_directory) {
+    logger_.Error("config", "map package path is not a directory: " +
+                                project_config.map_package_path.string());
+    return false;
+  }
+
+  logger_.Info("game", "map package selected path=" +
+                           project_config.map_package_path.string());
+  return true;
 }
 
 void Application::OpenExitDialog() {
