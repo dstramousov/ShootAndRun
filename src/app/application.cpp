@@ -71,7 +71,7 @@ void Application::InitializeWindow() {
   window_state_ = CalculateWindowState(CurrentMonitorInfo(), config_.window);
   SetWindowSize(window_state_.width, window_state_.height);
   SetWindowPosition(window_state_.x, window_state_.y);
-  SetTargetFPS(60);
+  ApplyFramePacing();
 }
 
 void Application::ShutdownWindow() {
@@ -95,6 +95,10 @@ void Application::LogStartup() {
                           std::string(LogLevelName(config_.log_level)));
   logger_.Info("window", WindowStateToString(window_state_));
   logger_.Debug("menu", main_menu_.Dump());
+}
+
+void Application::ApplyFramePacing() {
+  SetTargetFPS(config_.target_fps);
 }
 
 void Application::HandleInput(const InputState& input) {
@@ -187,7 +191,7 @@ void Application::HandleMenuInput(const InputState& input) {
 }
 
 void Application::HandleGameInput(const InputState& input) {
-  if (input.cancel_pressed) {
+  if (input.cancel_pressed || input.cancel_down) {
     screen_ = AppScreen::kMainMenu;
     logger_.Info("game", "returned to main menu");
   }
@@ -200,7 +204,7 @@ void Application::ActivateMenuItem(const MenuItem& item) {
     case MenuAction::kNewGame:
       game_session_.StartNewGame();
       screen_ = AppScreen::kGame;
-      SetTargetFPS(60);
+      ApplyFramePacing();
       logger_.Info("game", "new game session started");
       break;
     case MenuAction::kLoadGame:

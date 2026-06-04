@@ -12,6 +12,7 @@ struct InputState {
   bool right_pressed = false;
   bool confirm_pressed = false;
   bool cancel_pressed = false;
+  bool cancel_down = false;
   bool left_mouse_pressed = false;
   Vec2 mouse_position;
 };

@@ -12,7 +12,10 @@ class InputSystem {
    *
    * @return Normalized input state for the current frame.
    */
-  InputState Poll() const;
+  InputState Poll();
+
+ private:
+  bool escape_was_down_ = false;
 };
 
 }  // namespace sar

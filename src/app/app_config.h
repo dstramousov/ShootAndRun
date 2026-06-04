@@ -10,7 +10,8 @@ namespace sar {
 
 struct AppConfig {
   std::string app_name = "ShootAndRun";
-  std::string version = "0.1.2";
+  std::string version = "0.1.3";
+  int target_fps = 60;
   WindowConfig window;
   LogLevel log_level = LogLevel::kInfo;
   bool color_log = true;

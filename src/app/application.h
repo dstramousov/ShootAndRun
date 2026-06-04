@@ -38,6 +38,7 @@ class Application {
   void ShutdownWindow();
   void UpdateWindowStateFromRaylib();
   void LogStartup();
+  void ApplyFramePacing();
   void HandleInput(const InputState& input);
   void HandleDialogInput(const InputState& input);
   void HandleMenuInput(const InputState& input);

@@ -20,3 +20,12 @@
 - Fixed input routing so `Esc` is handled by the active screen instead of always using menu input.
 - Added game-screen `Esc` handling: the game placeholder returns to the main menu.
 - Re-applied target FPS after starting a new game to keep frame pacing stable.
+
+## v0.1.2 -> v0.1.3
+
+- Bumped project and runtime application version to `0.1.3`.
+- Added explicit application `target_fps` configuration.
+- Centralized raylib frame pacing through `Application::ApplyFramePacing()`.
+- Reworked `Esc` detection to use a tracked key-down edge instead of relying only on raylib pressed events.
+- Added game-screen `Esc` down-state handling so the placeholder game screen returns to the main menu reliably.
+
