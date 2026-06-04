@@ -1,4 +1,4 @@
-# ShootAndRunCpp v0.1.5
+# ShootAndRunCpp v0.1.8
 
 Первый каркас C++20 + raylib проекта.
 
@@ -52,16 +52,25 @@ ctest --test-dir build --output-on-failure
 
 ```json
 {
-  "map_package_path": "../TopDownMapGen/output/",
+  "map_package_path": "../TopDownMapGen/output/map_package",
   "ui_font_path": "data/fonts/PressStart2P-Regular.ttf",
-  "ui_font_size": 24
+  "ui_font_size": 16,
+  "window": {
+    "preferred_width": 1600,
+    "preferred_height": 900,
+    "fallback_width": 1280,
+    "fallback_height": 720,
+    "max_monitor_fraction": 0.9,
+    "resizable": true
+  }
 }
 ```
 
-При старте приложение читает конфиг и пытается загрузить UI-шрифт. Если шрифт
-не найден или не загрузился, приложение пишет предупреждение в лог и использует
-fallback на стандартный raylib font.
+При старте приложение читает конфиг, применяет настройки окна и пытается
+загрузить UI-шрифт. Если шрифт не найден или не загрузился, приложение пишет
+предупреждение в лог и использует fallback на стандартный raylib font.
 
 При нажатии `New Game` приложение берёт `map_package_path` из конфига,
-проверяет каталог, читает `terrain.json` и `runtime_grids.json`, валидирует
-размеры базовых grid-слоёв и только после этого переходит в game screen.
+проверяет каталог, читает `map.json` manifest, `terrain.json` и
+`runtime_grids.json`, валидирует размеры базовых grid-слоёв и только после этого
+переходит в game screen.

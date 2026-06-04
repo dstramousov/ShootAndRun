@@ -4,12 +4,15 @@
 #include <filesystem>
 #include <string>
 
+#include "window/window_config.h"
+
 namespace sar {
 
 struct ProjectConfig {
   std::filesystem::path map_package_path;
   std::filesystem::path ui_font_path = "data/fonts/PressStart2P-Regular.ttf";
   int ui_font_size = 24;
+  WindowConfig window_config;
 
   /**
    * @brief Returns a readable dump of the project configuration.

@@ -30,11 +30,12 @@ void TestWindowLayout() {
   const sar::WindowConfig config;
   const sar::WindowState state = sar::CalculateWindowState(monitor, config);
 
-  Expect(state.width == 1280, "window width should use base width");
-  Expect(state.height == 720, "window height should use base height");
-  Expect(state.x == 320, "window x should be centered");
-  Expect(state.y == 180, "window y should be centered");
-  Expect(state.ui_scale == 1.0F, "ui scale should be one for base size");
+  Expect(state.width == 1600, "window width should use preferred width");
+  Expect(state.height == 900, "window height should use preferred height");
+  Expect(state.x == 160, "window x should be centered");
+  Expect(state.y == 90, "window y should be centered");
+  Expect(state.ui_scale == 1.25F,
+         "ui scale should grow from the reference size");
 }
 
 void TestSmallWindowLayout() {
@@ -71,7 +72,15 @@ void TestProjectConfigLoader() {
                 "{\n"
                 "  \"map_package_path\": \"data/maps/sample_level\",\n"
                 "  \"ui_font_path\": \"data/fonts/test.ttf\",\n"
-                "  \"ui_font_size\": 22\n"
+                "  \"ui_font_size\": 22,\n"
+                "  \"window\": {\n"
+                "    \"preferred_width\": 1700,\n"
+                "    \"preferred_height\": 950,\n"
+                "    \"fallback_width\": 1200,\n"
+                "    \"fallback_height\": 675,\n"
+                "    \"max_monitor_fraction\": 0.85,\n"
+                "    \"resizable\": false\n"
+                "  }\n"
                 "}\n");
 
   const sar::ProjectConfigResult result = sar::LoadProjectConfig(config_path);
@@ -82,6 +91,18 @@ void TestProjectConfigLoader() {
          "font path should be read from project config");
   Expect(result.config.ui_font_size == 22,
          "font size should be read from project config");
+  Expect(result.config.window_config.preferred_width == 1700,
+         "preferred window width should be read from project config");
+  Expect(result.config.window_config.preferred_height == 950,
+         "preferred window height should be read from project config");
+  Expect(result.config.window_config.fallback_width == 1200,
+         "fallback window width should be read from project config");
+  Expect(result.config.window_config.fallback_height == 675,
+         "fallback window height should be read from project config");
+  Expect(result.config.window_config.max_monitor_fraction == 0.85F,
+         "window monitor fraction should be read from project config");
+  Expect(!result.config.window_config.resizable,
+         "window resizable setting should be read from project config");
 
   std::filesystem::remove(config_path);
 }
@@ -102,6 +123,66 @@ void TestProjectConfigLoaderUsesFontDefaults() {
          "default font size should be available");
 
   std::filesystem::remove(config_path);
+}
+
+
+void TestLevelLoaderManifestPackage() {
+  const std::filesystem::path package_path =
+      std::filesystem::temp_directory_path() /
+      "shoot_and_run_test_manifest_level_package";
+  std::filesystem::create_directories(package_path / "layers");
+
+  WriteTextFile(package_path / "map.json",
+                "{\n"
+                "  \"dimensions\": {\n"
+                "    \"width_tiles\": 2,\n"
+                "    \"height_tiles\": 2,\n"
+                "    \"tile_size_px\": 16\n"
+                "  },\n"
+                "  \"runtime_grids\": \"runtime_grids.json\",\n"
+                "  \"layers\": {\n"
+                "    \"terrain\": \"layers/terrain.json\"\n"
+                "  }\n"
+                "}\n");
+
+  WriteTextFile(package_path / "layers" / "terrain.json",
+                "{\n"
+                "  \"width\": 2,\n"
+                "  \"height\": 2,\n"
+                "  \"rows\": [\n"
+                "    [\"tree_blocker\", \"grass\"],\n"
+                "    [\"grass\", \"water_slow\"]\n"
+                "  ]\n"
+                "}\n");
+
+  WriteTextFile(package_path / "runtime_grids.json",
+                "{\n"
+                "  \"width\": 2,\n"
+                "  \"height\": 2,\n"
+                "  \"grids\": {\n"
+                "    \"movement_grid\": { \"rows\": [[null, 1], [1, 1]] },\n"
+                "    \"collision_grid\": { \"rows\": [\"10\", \"00\"] },\n"
+                "    \"projectile_block_grid\": { \"rows\": [\"10\", \"00\"] },\n"
+                "    \"vision_block_grid\": { \"rows\": [\"10\", \"00\"] },\n"
+                "    \"cover_grid\": { \"rows\": [[0, 0], [0, 0]] },\n"
+                "    \"concealment_grid\": { \"rows\": [[1, 0], [0, 1]] },\n"
+                "    \"height_grid\": { \"rows\": [[0, 0], [0, -1]] }\n"
+                "  }\n"
+                "}\n");
+
+  const sar::LevelLoader loader;
+  const sar::LevelLoadResult result = loader.LoadBasicPackage(package_path);
+  Expect(result.ok, "manifest level package should load successfully");
+  Expect(result.summary.size.width == 2,
+         "manifest level width should be loaded");
+  Expect(result.summary.size.height == 2,
+         "manifest level height should be loaded");
+  Expect(result.summary.size.tile_size == 16,
+         "manifest tile size should be loaded");
+  Expect(result.summary.validated_runtime_grid_count == 7,
+         "manifest runtime grids should be validated");
+
+  std::filesystem::remove_all(package_path);
 }
 
 void TestTerrainMapping() {
@@ -165,6 +246,7 @@ int main() {
   TestProjectConfigLoader();
   TestProjectConfigLoaderUsesFontDefaults();
   TestLevelLoaderBasicPackage();
+  TestLevelLoaderManifestPackage();
   std::cout << "All tests passed.\n";
   return 0;
 }

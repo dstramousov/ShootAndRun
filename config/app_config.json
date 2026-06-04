@@ -1,5 +1,13 @@
 {
-  "map_package_path": "../TopDownMapGen/output/",
+  "map_package_path": "../TopDownMapGen/output/map_package",
   "ui_font_path": "data/fonts/PressStart2P-Regular.ttf",
-  "ui_font_size": 16
+  "ui_font_size": 14,
+  "window": {
+    "preferred_width": 1920,
+    "preferred_height": 1080,
+    "fallback_width": 1280,
+    "fallback_height": 720,
+    "max_monitor_fraction": 0.9,
+    "resizable": true
+  }
 }

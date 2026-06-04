@@ -11,8 +11,8 @@ WindowState CalculateWindowState(const MonitorInfo& monitor,
   const int max_height = static_cast<int>(
       static_cast<float>(monitor.height) * config.max_monitor_fraction);
 
-  int window_width = config.base_width;
-  int window_height = config.base_height;
+  int window_width = config.preferred_width;
+  int window_height = config.preferred_height;
 
   if (window_width > max_width || window_height > max_height) {
     window_width = config.fallback_width;
@@ -36,9 +36,9 @@ WindowState CalculateWindowState(const MonitorInfo& monitor,
 float CalculateUiScale(int window_width, int window_height,
                        const WindowConfig& config) {
   const float scale_x = static_cast<float>(window_width) /
-                        static_cast<float>(config.base_width);
+                        static_cast<float>(config.ui_reference_width);
   const float scale_y = static_cast<float>(window_height) /
-                        static_cast<float>(config.base_height);
+                        static_cast<float>(config.ui_reference_height);
   return std::clamp(std::min(scale_x, scale_y), config.ui_scale_min,
                     config.ui_scale_max);
 }

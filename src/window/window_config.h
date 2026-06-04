@@ -4,10 +4,12 @@
 namespace sar {
 
 struct WindowConfig {
-  int base_width = 1280;
-  int base_height = 720;
-  int fallback_width = 960;
-  int fallback_height = 540;
+  int preferred_width = 1600;
+  int preferred_height = 900;
+  int fallback_width = 1280;
+  int fallback_height = 720;
+  int ui_reference_width = 1280;
+  int ui_reference_height = 720;
   float max_monitor_fraction = 0.90F;
   float ui_scale_min = 0.75F;
   float ui_scale_max = 2.00F;

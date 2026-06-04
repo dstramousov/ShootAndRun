@@ -79,6 +79,7 @@ void Application::LoadProjectConfigAtStartup() {
   }
 
   project_config_ = result.config;
+  config_.window = project_config_->window_config;
   logger_.Info("config", project_config_->Dump());
 }
 
@@ -88,7 +89,7 @@ void Application::InitializeWindow() {
   }
 
   SetExitKey(KEY_NULL);
-  InitWindow(config_.window.base_width, config_.window.base_height,
+  InitWindow(config_.window.preferred_width, config_.window.preferred_height,
              config_.app_name.c_str());
   window_initialized_ = true;
 

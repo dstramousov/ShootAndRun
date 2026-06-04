@@ -24,6 +24,20 @@ struct ParseIntResult {
   std::string error;
 };
 
+struct ParseFloatResult {
+  bool ok = false;
+  bool found = false;
+  float value = 0.0F;
+  std::string error;
+};
+
+struct ParseBoolResult {
+  bool ok = false;
+  bool found = false;
+  bool value = false;
+  std::string error;
+};
+
 std::string ReadTextFile(const std::filesystem::path& path,
                          std::string* error) {
   std::ifstream input(path);
@@ -189,13 +203,83 @@ ParseIntResult ExtractOptionalJsonIntField(std::string_view text,
   return {true, true, value, {}};
 }
 
+ParseFloatResult ExtractOptionalJsonFloatField(std::string_view text,
+                                               std::string_view field_name) {
+  std::string error;
+  const std::optional<std::size_t> value_start =
+      FindFieldValueStart(text, field_name, &error);
+  if (!value_start.has_value()) {
+    if (!error.empty()) {
+      return {false, false, 0.0F, error};
+    }
+    return {true, false, 0.0F, {}};
+  }
+
+  std::size_t end = *value_start;
+  while (end < text.size()) {
+    const char current = text[end];
+    const bool part_of_number =
+        std::isdigit(static_cast<unsigned char>(current)) != 0 ||
+        current == '-' || current == '+' || current == '.' ||
+        current == 'e' || current == 'E';
+    if (!part_of_number) {
+      break;
+    }
+    ++end;
+  }
+
+  if (end == *value_start) {
+    return {false, true, 0.0F,
+            "expected number value for field: " + std::string(field_name)};
+  }
+
+  float value = 0.0F;
+  const auto result = std::from_chars(text.data() + *value_start,
+                                      text.data() + end, value);
+  if (result.ec != std::errc()) {
+    return {false, true, 0.0F,
+            "invalid number value for field: " + std::string(field_name)};
+  }
+
+  return {true, true, value, {}};
+}
+
+ParseBoolResult ExtractOptionalJsonBoolField(std::string_view text,
+                                             std::string_view field_name) {
+  std::string error;
+  const std::optional<std::size_t> value_start =
+      FindFieldValueStart(text, field_name, &error);
+  if (!value_start.has_value()) {
+    if (!error.empty()) {
+      return {false, false, false, error};
+    }
+    return {true, false, false, {}};
+  }
+
+  if (text.substr(*value_start, 4) == "true") {
+    return {true, true, true, {}};
+  }
+  if (text.substr(*value_start, 5) == "false") {
+    return {true, true, false, {}};
+  }
+
+  return {false, true, false,
+          "expected boolean value for field: " + std::string(field_name)};
+}
+
 }  // namespace
 
 std::string ProjectConfig::Dump() const {
   return "ProjectConfig { map_package_path: \"" +
          map_package_path.string() + "\", ui_font_path: \"" +
          ui_font_path.string() + "\", ui_font_size: " +
-         std::to_string(ui_font_size) + " }";
+         std::to_string(ui_font_size) + ", window: " +
+         std::to_string(window_config.preferred_width) + "x" +
+         std::to_string(window_config.preferred_height) +
+         ", fallback: " + std::to_string(window_config.fallback_width) +
+         "x" + std::to_string(window_config.fallback_height) +
+         ", max_monitor_fraction: " +
+         std::to_string(window_config.max_monitor_fraction) + " }";
 }
 
 ProjectConfigResult LoadProjectConfig(
@@ -238,6 +322,76 @@ ProjectConfigResult LoadProjectConfig(
       return {false, {}, "ui_font_size must be positive"};
     }
     config.ui_font_size = font_size.value;
+  }
+
+  ParseIntResult preferred_width =
+      ExtractOptionalJsonIntField(content, "preferred_width");
+  if (!preferred_width.ok) {
+    return {false, {}, preferred_width.error};
+  }
+  if (preferred_width.found) {
+    if (preferred_width.value <= 0) {
+      return {false, {}, "preferred_width must be positive"};
+    }
+    config.window_config.preferred_width = preferred_width.value;
+  }
+
+  ParseIntResult preferred_height =
+      ExtractOptionalJsonIntField(content, "preferred_height");
+  if (!preferred_height.ok) {
+    return {false, {}, preferred_height.error};
+  }
+  if (preferred_height.found) {
+    if (preferred_height.value <= 0) {
+      return {false, {}, "preferred_height must be positive"};
+    }
+    config.window_config.preferred_height = preferred_height.value;
+  }
+
+  ParseIntResult fallback_width =
+      ExtractOptionalJsonIntField(content, "fallback_width");
+  if (!fallback_width.ok) {
+    return {false, {}, fallback_width.error};
+  }
+  if (fallback_width.found) {
+    if (fallback_width.value <= 0) {
+      return {false, {}, "fallback_width must be positive"};
+    }
+    config.window_config.fallback_width = fallback_width.value;
+  }
+
+  ParseIntResult fallback_height =
+      ExtractOptionalJsonIntField(content, "fallback_height");
+  if (!fallback_height.ok) {
+    return {false, {}, fallback_height.error};
+  }
+  if (fallback_height.found) {
+    if (fallback_height.value <= 0) {
+      return {false, {}, "fallback_height must be positive"};
+    }
+    config.window_config.fallback_height = fallback_height.value;
+  }
+
+  ParseFloatResult max_monitor_fraction =
+      ExtractOptionalJsonFloatField(content, "max_monitor_fraction");
+  if (!max_monitor_fraction.ok) {
+    return {false, {}, max_monitor_fraction.error};
+  }
+  if (max_monitor_fraction.found) {
+    if (max_monitor_fraction.value <= 0.0F ||
+        max_monitor_fraction.value > 1.0F) {
+      return {false, {}, "max_monitor_fraction must be in range (0, 1]"};
+    }
+    config.window_config.max_monitor_fraction = max_monitor_fraction.value;
+  }
+
+  ParseBoolResult resizable =
+      ExtractOptionalJsonBoolField(content, "resizable");
+  if (!resizable.ok) {
+    return {false, {}, resizable.error};
+  }
+  if (resizable.found) {
+    config.window_config.resizable = resizable.value;
   }
 
   return {true, config, {}};
