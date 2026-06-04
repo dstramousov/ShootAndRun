@@ -949,24 +949,34 @@ std::optional<std::vector<std::string_view>> ExtractObjectArrayAt(
 
 MarkerLoadResult ParseMarkers(std::string_view text, int width, int height) {
   std::string error;
+  std::string_view array_field_name = "markers";
   std::optional<std::size_t> markers_start = FindFieldValueStart(text,
-                                                                 "markers",
+                                                                 array_field_name,
                                                                  &error);
   if (!markers_start.has_value()) {
     if (!error.empty()) {
       return {false, {}, error};
     }
 
-    std::size_t position = 0;
-    SkipWhitespace(text, &position);
-    if (position >= text.size() || text[position] != '[') {
-      return {false, {}, "missing markers array"};
+    array_field_name = "items";
+    markers_start = FindFieldValueStart(text, array_field_name, &error);
+    if (!markers_start.has_value()) {
+      if (!error.empty()) {
+        return {false, {}, error};
+      }
+
+      std::size_t position = 0;
+      SkipWhitespace(text, &position);
+      if (position >= text.size() || text[position] != '[') {
+        return {true, {}, {}};
+      }
+      markers_start = position;
+      array_field_name = "markers";
     }
-    markers_start = position;
   }
 
   const std::optional<std::vector<std::string_view>> marker_objects =
-      ExtractObjectArrayAt(text, *markers_start, "markers", &error);
+      ExtractObjectArrayAt(text, *markers_start, array_field_name, &error);
   if (!marker_objects.has_value()) {
     return {false, {}, error};
   }

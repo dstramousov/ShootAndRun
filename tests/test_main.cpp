@@ -217,6 +217,29 @@ void TestLevelLoaderManifestPackage() {
          "player spawn marker should be parsed");
   Expect(result.level.markers[0].x == 1 && result.level.markers[0].y == 0,
          "player spawn marker coordinates should be parsed");
+
+  WriteTextFile(package_path / "markers.json",
+                "{\n"
+                "  \"items\": [\n"
+                "    {\n"
+                "      \"id\": \"start\",\n"
+                "      \"type\": \"start\",\n"
+                "      \"position\": { \"x\": 0, \"y\": 1 }\n"
+                "    }\n"
+                "  ]\n"
+                "}\n");
+
+  const sar::LevelLoadResult items_result =
+      loader.LoadBasicPackage(package_path);
+  Expect(items_result.ok, "items markers schema should load successfully");
+  Expect(items_result.level.markers.size() == 1,
+         "items marker list should be available");
+  Expect(items_result.level.markers[0].id == "start",
+         "items marker id should be parsed");
+  Expect(items_result.level.markers[0].x == 0 &&
+             items_result.level.markers[0].y == 1,
+         "nested marker position should be parsed");
+
   Expect(result.level.cells.size() == 4,
          "manifest terrain cells should be loaded");
   Expect(result.level.cells[0].terrain == sar::TerrainType::kForest,
