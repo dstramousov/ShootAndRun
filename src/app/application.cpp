@@ -41,6 +41,7 @@ int Application::Run() {
   SetCurrentThreadName("main");
   logger_.Info("app", "starting application");
 
+  LoadProjectConfigAtStartup();
   InitializeWindow();
   LogStartup();
 
@@ -59,6 +60,18 @@ int Application::Run() {
   return 0;
 }
 
+void Application::LoadProjectConfigAtStartup() {
+  const ProjectConfigResult result =
+      LoadProjectConfig(config_.project_config_path);
+  if (!result.ok) {
+    logger_.Error("config", result.error);
+    return;
+  }
+
+  project_config_ = result.config;
+  logger_.Info("config", project_config_->Dump());
+}
+
 void Application::InitializeWindow() {
   if (config_.window.resizable) {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
@@ -73,10 +86,30 @@ void Application::InitializeWindow() {
   SetWindowSize(window_state_.width, window_state_.height);
   SetWindowPosition(window_state_.x, window_state_.y);
   ApplyFramePacing();
+  LoadUiFont();
+}
+
+void Application::LoadUiFont() {
+  if (!project_config_.has_value()) {
+    logger_.Warn("font", "project config is not loaded; using default font");
+    return;
+  }
+
+  std::string error;
+  if (!ui_font_.Load(project_config_->ui_font_path,
+                     project_config_->ui_font_size, &error)) {
+    logger_.Warn("font", error + "; using default raylib font");
+    return;
+  }
+
+  logger_.Info("font", "loaded path=" + project_config_->ui_font_path.string() +
+                           " size=" +
+                           std::to_string(project_config_->ui_font_size));
 }
 
 void Application::ShutdownWindow() {
   if (window_initialized_) {
+    ui_font_.Reset();
     CloseWindow();
     window_initialized_ = false;
   }
@@ -225,17 +258,24 @@ void Application::ActivateMenuItem(const MenuItem& item) {
 }
 
 bool Application::StartNewGameFromConfig() {
-  const ProjectConfigResult result =
-      LoadProjectConfig(config_.project_config_path);
-  if (!result.ok) {
-    logger_.Error("config", result.error);
+  if (!project_config_.has_value()) {
+    logger_.Error("config", "project config is not loaded");
     return false;
   }
 
-  logger_.Info("config", result.config.Dump());
-  if (!ValidateMapPackagePath(result.config)) {
+  if (!ValidateMapPackagePath(*project_config_)) {
     return false;
   }
+
+  const LevelLoadResult level_result = level_loader_.LoadBasicPackage(
+      project_config_->map_package_path);
+  if (!level_result.ok) {
+    logger_.Error("level", level_result.error);
+    return false;
+  }
+
+  loaded_level_summary_ = level_result.summary;
+  logger_.Info("level", loaded_level_summary_->Dump());
 
   game_session_.StartNewGame();
   screen_ = AppScreen::kGame;
@@ -289,24 +329,30 @@ void Application::OpenExitDialog() {
 
 void Application::RenderFrame() {
   renderer_.BeginFrame();
-  renderer_.DrawTitle(config_.app_name, window_state_);
+  renderer_.DrawTitle(config_.app_name, window_state_, ui_font_);
 
   if (screen_ == AppScreen::kMainMenu || screen_ == AppScreen::kSettings) {
-    menu_renderer_.DrawMainMenu(main_menu_, window_state_);
+    menu_renderer_.DrawMainMenu(main_menu_, window_state_, ui_font_);
   } else if (screen_ == AppScreen::kGame) {
-    DrawText("Game screen placeholder", 48, 120, 24, Color{230, 230, 240, 255});
-    DrawText("Press Esc to return to main menu.", 48, 156, 18,
-             Color{170, 175, 195, 255});
+    ui_font_.DrawTextLine("Game screen placeholder", 48, 120, 24,
+                          Color{230, 230, 240, 255});
+    ui_font_.DrawTextLine("Press Esc to return to main menu.", 48, 156, 18,
+                          Color{170, 175, 195, 255});
+    if (loaded_level_summary_.has_value()) {
+      ui_font_.DrawTextLine(loaded_level_summary_->Dump(), 48, 196, 14,
+                            Color{145, 150, 170, 255});
+    }
   }
 
   if (confirm_dialog_.has_value()) {
-    menu_renderer_.DrawConfirmDialog(*confirm_dialog_, window_state_);
+    menu_renderer_.DrawConfirmDialog(*confirm_dialog_, window_state_,
+                                     ui_font_);
   }
 
-  renderer_.DrawFps(window_state_);
+  renderer_.DrawFps(window_state_, ui_font_);
 
   if (config_.debug_overlay_enabled) {
-    debug_overlay_.Draw(config_.version, screen_, window_state_);
+    debug_overlay_.Draw(config_.version, screen_, window_state_, ui_font_);
   }
 
   renderer_.EndFrame();

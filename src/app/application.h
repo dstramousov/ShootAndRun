@@ -8,10 +8,12 @@
 #include "app/project_config.h"
 #include "game/game_session.h"
 #include "input/input_system.h"
+#include "level/level_loader.h"
 #include "logging/logger.h"
 #include "render/debug_overlay.h"
 #include "render/menu_renderer.h"
 #include "render/renderer.h"
+#include "render/ui_font.h"
 #include "ui/confirm_dialog.h"
 #include "ui/main_menu.h"
 #include "window/window_state.h"
@@ -35,7 +37,9 @@ class Application {
   int Run();
 
  private:
+  void LoadProjectConfigAtStartup();
   void InitializeWindow();
+  void LoadUiFont();
   void ShutdownWindow();
   void UpdateWindowStateFromRaylib();
   void LogStartup();
@@ -62,6 +66,10 @@ class Application {
   DebugOverlay debug_overlay_;
   MainMenu main_menu_;
   GameSession game_session_;
+  LevelLoader level_loader_;
+  UiFont ui_font_;
+  std::optional<ProjectConfig> project_config_;
+  std::optional<LevelPackageSummary> loaded_level_summary_;
   std::optional<ConfirmDialog> confirm_dialog_;
 };
 

@@ -37,3 +37,12 @@
 - Added `--config=` CLI argument to override the project config path.
 - Updated `New Game` flow to read and validate the map package path from configuration before entering the game screen.
 - Updated README with project config usage.
+
+## v0.1.4 -> v0.1.5
+
+- Bumped project and runtime application version to `0.1.5`.
+- Added configurable UI font path and font size to `config/app_config.json`.
+- Added RAII-managed UI font loading with fallback to the raylib default font.
+- Updated title, menu, dialog, FPS, debug overlay, and game placeholder text to use the configured UI font.
+- Added basic `LevelLoader` validation for `terrain.json` and `runtime_grids.json`.
+- Updated `New Game` flow to load and validate the configured map package before entering the game screen.

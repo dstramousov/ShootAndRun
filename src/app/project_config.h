@@ -8,6 +8,8 @@ namespace sar {
 
 struct ProjectConfig {
   std::filesystem::path map_package_path;
+  std::filesystem::path ui_font_path = "data/fonts/PressStart2P-Regular.ttf";
+  int ui_font_size = 24;
 
   /**
    * @brief Returns a readable dump of the project configuration.
@@ -26,8 +28,9 @@ struct ProjectConfigResult {
 /**
  * @brief Loads project configuration from a JSON file.
  *
- * The loader currently requires the `map_package_path` string field.
- * Unknown fields are ignored so the format can be extended later.
+ * The loader requires the `map_package_path` string field. Font settings are
+ * optional and use safe defaults when they are not present. Unknown fields are
+ * ignored so the format can be extended later.
  *
  * @param config_path Path to the project configuration file.
  * @return Load result with either configuration data or an error message.

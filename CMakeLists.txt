@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(ShootAndRunCpp
-  VERSION 0.1.4
+  VERSION 0.1.5
   DESCRIPTION "ShootAndRun C++ raylib bootstrap"
   LANGUAGES CXX
 )
@@ -23,6 +23,7 @@ add_executable(shoot_and_run
   src/app/project_config.cpp
   src/game/game_session.cpp
   src/input/input_system.cpp
+  src/level/level_loader.cpp
   src/level/terrain_type.cpp
   src/logging/logger.cpp
   src/logging/log_level.cpp
@@ -32,6 +33,7 @@ add_executable(shoot_and_run
   src/render/debug_overlay.cpp
   src/render/menu_renderer.cpp
   src/render/renderer.cpp
+  src/render/ui_font.cpp
   src/ui/confirm_dialog.cpp
   src/ui/main_menu.cpp
   src/ui/ui_layout.cpp
@@ -59,6 +61,7 @@ if(SAR_BUILD_TESTS)
   add_executable(shoot_and_run_tests
     tests/test_main.cpp
     src/app/project_config.cpp
+    src/level/level_loader.cpp
     src/level/terrain_type.cpp
     src/ui/main_menu.cpp
     src/window/window_layout.cpp

@@ -11,7 +11,7 @@ namespace sar {
 
 struct AppConfig {
   std::string app_name = "ShootAndRun";
-  std::string version = "0.1.4";
+  std::string version = "0.1.5";
   int target_fps = 60;
   WindowConfig window;
   std::filesystem::path project_config_path = "config/app_config.json";

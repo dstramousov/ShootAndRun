@@ -4,6 +4,7 @@
 #include <string_view>
 
 #include "app/app_state.h"
+#include "render/ui_font.h"
 #include "window/window_state.h"
 
 namespace sar {
@@ -16,9 +17,10 @@ class DebugOverlay {
    * @param version Application version string.
    * @param screen Current application screen.
    * @param window Current window state.
+   * @param font UI font resource.
    */
   void Draw(std::string_view version, AppScreen screen,
-            const WindowState& window) const;
+            const WindowState& window, const UiFont& font) const;
 };
 
 }  // namespace sar

@@ -4,6 +4,7 @@
 #include <string_view>
 
 #include "app/app_config.h"
+#include "render/ui_font.h"
 #include "window/window_state.h"
 
 namespace sar {
@@ -24,16 +25,19 @@ class Renderer {
    * @brief Draws the current FPS counter in the top-right corner.
    *
    * @param window Current window state.
+   * @param font UI font resource.
    */
-  void DrawFps(const WindowState& window) const;
+  void DrawFps(const WindowState& window, const UiFont& font) const;
 
   /**
    * @brief Draws the application title.
    *
    * @param title Title text.
    * @param window Current window state.
+   * @param font UI font resource.
    */
-  void DrawTitle(std::string_view title, const WindowState& window) const;
+  void DrawTitle(std::string_view title, const WindowState& window,
+                 const UiFont& font) const;
 };
 
 }  // namespace sar

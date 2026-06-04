@@ -1,4 +1,4 @@
-# ShootAndRunCpp v0.1.4
+# ShootAndRunCpp v0.1.5
 
 Первый каркас C++20 + raylib проекта.
 
@@ -13,8 +13,10 @@
 - Нормализованный input layer.
 - Logger с уровнями, PID, TID, thread name и цветным выводом.
 - Чистая логика расчёта окна и `ui_scale`.
-- Базовые структуры `level/` под будущий `TopDownMapGen` output package.
-- Конфигурационный файл `config/app_config.json` с путём к map package.
+- Конфигурационный файл `config/app_config.json`.
+- Конфигурируемый UI-шрифт из runtime assets.
+- Базовая валидация `TopDownMapGen` map package.
+- Базовые структуры `level/` под будущий renderer/gameplay.
 - Минимальные unit-тесты без внешнего test framework.
 
 ## Сборка
@@ -22,10 +24,11 @@
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
 cmake --build build -j
-./build/shoot_and_run
+./build/SaR
 ```
 
-Если `raylib` не установлен локально, CMake подтянет его через `FetchContent` в `.deps/`. Это позволяет удалять `build/` без повторного скачивания raylib.
+Если `raylib` не установлен локально, CMake подтянет его через `FetchContent`
+в `.deps/`. Это позволяет удалять `build/` без повторного скачивания raylib.
 
 ## Тесты
 
@@ -38,9 +41,9 @@ ctest --test-dir build --output-on-failure
 Пока поддерживается минимальный набор:
 
 ```bash
-./build/shoot_and_run --log-level=debug
-./build/shoot_and_run --log-level=trace --no-color
-./build/shoot_and_run --config=config/app_config.json
+./build/SaR --log-level=debug
+./build/SaR --log-level=trace --no-color
+./build/SaR --config=config/app_config.json
 ```
 
 ## Конфигурация
@@ -49,9 +52,16 @@ ctest --test-dir build --output-on-failure
 
 ```json
 {
-  "map_package_path": "data/maps/sample_level"
+  "map_package_path": "../TopDownMapGen/output/",
+  "ui_font_path": "data/fonts/PressStart2P-Regular.ttf",
+  "ui_font_size": 24
 }
 ```
 
-При нажатии `New Game` приложение читает этот файл, получает путь к
-map package и проверяет, что такой каталог существует.
+При старте приложение читает конфиг и пытается загрузить UI-шрифт. Если шрифт
+не найден или не загрузился, приложение пишет предупреждение в лог и использует
+fallback на стандартный raylib font.
+
+При нажатии `New Game` приложение берёт `map_package_path` из конфига,
+проверяет каталог, читает `terrain.json` и `runtime_grids.json`, валидирует
+размеры базовых grid-слоёв и только после этого переходит в game screen.

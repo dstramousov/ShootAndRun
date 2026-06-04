@@ -1,3 +1,5 @@
 {
-  "map_package_path": "../TopDownMapGen/output/"
+  "map_package_path": "../TopDownMapGen/output/",
+  "ui_font_path": "data/fonts/PressStart2P-Regular.ttf",
+  "ui_font_size": 10
 }
