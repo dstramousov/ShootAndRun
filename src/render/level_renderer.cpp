@@ -6,6 +6,7 @@
 #include <cmath>
 #include <cstddef>
 #include <string>
+#include <string_view>
 
 #include "level/terrain_type.h"
 
@@ -47,6 +48,73 @@ int ClampTileIndex(int value, int min_value, int max_value) {
   return std::clamp(value, min_value, max_value);
 }
 
+bool TextContains(std::string_view text, std::string_view needle) {
+  return text.find(needle) != std::string_view::npos;
+}
+
+bool IsPreferredSpawnMarker(const Marker& marker) {
+  return marker.type == "player_spawn" || marker.id == "player_spawn" ||
+         TextContains(marker.type, "player_spawn") ||
+         TextContains(marker.id, "player_spawn");
+}
+
+bool IsFallbackSpawnMarker(const Marker& marker) {
+  return marker.type == "start" || marker.id == "start" ||
+         TextContains(marker.type, "spawn") || TextContains(marker.id, "spawn");
+}
+
+const Marker* FindInitialCameraMarker(const LevelData& level) {
+  for (const Marker& marker : level.markers) {
+    if (IsPreferredSpawnMarker(marker)) {
+      return &marker;
+    }
+  }
+
+  for (const Marker& marker : level.markers) {
+    if (IsFallbackSpawnMarker(marker)) {
+      return &marker;
+    }
+  }
+
+  return nullptr;
+}
+
+Color MarkerColor(const Marker& marker) {
+  if (IsPreferredSpawnMarker(marker) || IsFallbackSpawnMarker(marker)) {
+    return Color{90, 230, 120, 230};
+  }
+
+  if (TextContains(marker.type, "goal") || TextContains(marker.type, "exit") ||
+      TextContains(marker.id, "goal") || TextContains(marker.id, "exit")) {
+    return Color{250, 185, 70, 230};
+  }
+
+  return Color{170, 150, 240, 220};
+}
+
+Vector2 MarkerWorldCenter(const Marker& marker, int tile_size) {
+  const float size = static_cast<float>(tile_size);
+  return Vector2{(static_cast<float>(marker.x) + 0.5F) * size,
+                 (static_cast<float>(marker.y) + 0.5F) * size};
+}
+
+void DrawDebugMarkers(const LevelData& level, float zoom) {
+  const float radius = std::max(3.0F, 5.0F / std::max(zoom, 0.1F));
+  const float line_length = radius * 2.0F;
+
+  for (const Marker& marker : level.markers) {
+    const Vector2 center = MarkerWorldCenter(marker, level.size.tile_size);
+    const Color color = MarkerColor(marker);
+    DrawCircleV(center, radius, Color{color.r, color.g, color.b, 70});
+    DrawCircleLines(static_cast<int>(std::lround(center.x)),
+                    static_cast<int>(std::lround(center.y)), radius, color);
+    DrawLineEx(Vector2{center.x - line_length, center.y},
+               Vector2{center.x + line_length, center.y}, 1.5F / zoom, color);
+    DrawLineEx(Vector2{center.x, center.y - line_length},
+               Vector2{center.x, center.y + line_length}, 1.5F / zoom, color);
+  }
+}
+
 }  // namespace
 
 void InitializeLevelView(const LevelData& level, LevelViewState* view) {
@@ -54,8 +122,15 @@ void InitializeLevelView(const LevelData& level, LevelViewState* view) {
     return;
   }
 
-  view->target_x = MapWidthPx(level) * 0.5F;
-  view->target_y = MapHeightPx(level) * 0.5F;
+  const Marker* marker = FindInitialCameraMarker(level);
+  if (marker != nullptr) {
+    const Vector2 center = MarkerWorldCenter(*marker, level.size.tile_size);
+    view->target_x = center.x;
+    view->target_y = center.y;
+  } else {
+    view->target_x = MapWidthPx(level) * 0.5F;
+    view->target_y = MapHeightPx(level) * 0.5F;
+  }
   view->zoom = std::clamp(view->zoom, view->min_zoom, view->max_zoom);
 }
 
@@ -158,6 +233,8 @@ void LevelRenderer::DrawTerrain(const LevelData& level,
   DrawRectangleLinesEx(Rectangle{0.0F, 0.0F, MapWidthPx(level),
                                  MapHeightPx(level)},
                        2.0F / view.zoom, Color{180, 180, 190, 160});
+
+  DrawDebugMarkers(level, view.zoom);
 
   EndMode2D();
 }

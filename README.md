@@ -1,4 +1,4 @@
-# ShootAndRunCpp v0.1.10
+# ShootAndRunCpp v0.1.11
 
 Первый каркас C++20 + raylib проекта.
 
@@ -18,6 +18,7 @@
 - Базовая валидация `TopDownMapGen` map package.
 
 - Debug renderer for loaded terrain maps.
+- Debug marker overlay for `markers.json`, including player spawn markers.
 - Free camera for map inspection with WASD/arrows and mouse-wheel zoom.
 - Базовые структуры `level/` под будущий renderer/gameplay.
 - Минимальные unit-тесты без внешнего test framework.
@@ -74,11 +75,13 @@ ctest --test-dir build --output-on-failure
 предупреждение в лог и использует fallback на стандартный raylib font.
 
 При нажатии `New Game` приложение берёт `map_package_path` из конфига,
-проверяет каталог, читает `map.json` manifest, `terrain.json` и
-`runtime_grids.json`, валидирует размеры базовых grid-слоёв и только после этого
-переходит в game screen.
+проверяет каталог, читает `map.json` manifest, `terrain.json`,
+`runtime_grids.json` и опциональный `markers.json`, валидирует размеры базовых
+grid-слоёв и только после этого переходит в game screen.
 
-В game screen карта отображается в debug-режиме. Управление камерой:
+В game screen карта отображается в debug-режиме. Если в `markers.json` есть
+`player_spawn` или другой spawn-маркер, камера стартует с него; иначе камера
+центрируется по карте. Управление камерой:
 
 ```text
 WASD / Arrows  - двигать камеру

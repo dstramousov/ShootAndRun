@@ -154,6 +154,7 @@ void TestLevelLoaderManifestPackage() {
                 "    \"tile_size_px\": 16\n"
                 "  },\n"
                 "  \"runtime_grids\": \"runtime_grids.json\",\n"
+                "  \"markers\": \"markers.json\",\n"
                 "  \"layers\": {\n"
                 "    \"terrain\": \"layers/terrain.json\"\n"
                 "  }\n"
@@ -184,6 +185,19 @@ void TestLevelLoaderManifestPackage() {
                 "  }\n"
                 "}\n");
 
+  WriteTextFile(package_path / "markers.json",
+                "{\n"
+                "  \"markers\": [\n"
+                "    {\n"
+                "      \"id\": \"marker_player_spawn_001\",\n"
+                "      \"type\": \"player_spawn\",\n"
+                "      \"x\": 1,\n"
+                "      \"y\": 0,\n"
+                "      \"elevation\": 0\n"
+                "    }\n"
+                "  ]\n"
+                "}\n");
+
   const sar::LevelLoader loader;
   const sar::LevelLoadResult result = loader.LoadBasicPackage(package_path);
   Expect(result.ok, "manifest level package should load successfully");
@@ -195,6 +209,14 @@ void TestLevelLoaderManifestPackage() {
          "manifest tile size should be loaded");
   Expect(result.summary.validated_runtime_grid_count == 7,
          "manifest runtime grids should be validated");
+  Expect(result.summary.marker_count == 1,
+         "manifest markers should be loaded");
+  Expect(result.level.markers.size() == 1,
+         "manifest marker list should be available");
+  Expect(result.level.markers[0].type == "player_spawn",
+         "player spawn marker should be parsed");
+  Expect(result.level.markers[0].x == 1 && result.level.markers[0].y == 0,
+         "player spawn marker coordinates should be parsed");
   Expect(result.level.cells.size() == 4,
          "manifest terrain cells should be loaded");
   Expect(result.level.cells[0].terrain == sar::TerrainType::kForest,
@@ -254,6 +276,8 @@ void TestLevelLoaderBasicPackage() {
   Expect(result.summary.size.tile_size == 16, "tile size should be loaded");
   Expect(result.summary.validated_runtime_grid_count == 7,
          "all runtime grids should be validated");
+  Expect(result.summary.marker_count == 0,
+         "basic package without markers should report zero markers");
   Expect(result.level.cells.size() == 4,
          "terrain cells should be loaded for rendering");
   Expect(result.level.cells[0].terrain == sar::TerrainType::kForest,

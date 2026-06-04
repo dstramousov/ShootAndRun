@@ -91,3 +91,12 @@
 - Added camera clamping to map bounds and visible-tile rendering.
 - Updated terrain type aliases for current generator terrain identifiers.
 - Updated README and tests for the debug level renderer step.
+
+## v0.1.10 -> v0.1.11
+
+- Bumped CMake project and runtime application version to `0.1.11`.
+- Added optional `markers.json` loading through the map package manifest or package root fallback.
+- Added marker count to `LevelPackageSummary` diagnostics.
+- Added debug marker rendering on top of the terrain view.
+- Updated initial free-camera centering to prefer `player_spawn`/spawn markers when available.
+- Updated tests for manifest-based marker loading.

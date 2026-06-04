@@ -52,10 +52,17 @@ struct TerrainGridResult {
   std::string error;
 };
 
+struct MarkerLoadResult {
+  bool ok = false;
+  std::vector<Marker> markers;
+  std::string error;
+};
+
 struct PackageLayout {
   std::filesystem::path package_path;
   std::filesystem::path terrain_path;
   std::filesystem::path runtime_grids_path;
+  std::filesystem::path markers_path;
   bool uses_manifest = false;
   bool has_manifest_size = false;
   LevelSize manifest_size;
@@ -886,6 +893,161 @@ bool ValidateGridShape(const GridShapeResult& grid, int expected_width,
   return true;
 }
 
+
+std::optional<std::vector<std::string_view>> ExtractObjectArrayAt(
+    std::string_view text, std::size_t position, std::string_view field_name,
+    std::string* error) {
+  if (position >= text.size() || text[position] != '[') {
+    *error = "expected object array for field: " + std::string(field_name);
+    return std::nullopt;
+  }
+
+  std::vector<std::string_view> objects;
+  ++position;
+  SkipWhitespace(text, &position);
+  if (position < text.size() && text[position] == ']') {
+    return objects;
+  }
+
+  while (position < text.size()) {
+    if (text[position] != '{') {
+      *error = "expected marker object in field: " + std::string(field_name);
+      return std::nullopt;
+    }
+
+    const std::size_t object_start = position;
+    if (!SkipJsonObject(text, &position, error)) {
+      return std::nullopt;
+    }
+    objects.push_back(text.substr(object_start, position - object_start));
+
+    SkipWhitespace(text, &position);
+    if (position >= text.size()) {
+      *error = "unterminated object array for field: " + std::string(field_name);
+      return std::nullopt;
+    }
+
+    if (text[position] == ',') {
+      ++position;
+      SkipWhitespace(text, &position);
+      continue;
+    }
+
+    if (text[position] == ']') {
+      ++position;
+      return objects;
+    }
+
+    *error = "expected comma or object array close bracket for field: " +
+             std::string(field_name);
+    return std::nullopt;
+  }
+
+  *error = "unterminated object array for field: " + std::string(field_name);
+  return std::nullopt;
+}
+
+MarkerLoadResult ParseMarkers(std::string_view text, int width, int height) {
+  std::string error;
+  std::optional<std::size_t> markers_start = FindFieldValueStart(text,
+                                                                 "markers",
+                                                                 &error);
+  if (!markers_start.has_value()) {
+    if (!error.empty()) {
+      return {false, {}, error};
+    }
+
+    std::size_t position = 0;
+    SkipWhitespace(text, &position);
+    if (position >= text.size() || text[position] != '[') {
+      return {false, {}, "missing markers array"};
+    }
+    markers_start = position;
+  }
+
+  const std::optional<std::vector<std::string_view>> marker_objects =
+      ExtractObjectArrayAt(text, *markers_start, "markers", &error);
+  if (!marker_objects.has_value()) {
+    return {false, {}, error};
+  }
+
+  std::vector<Marker> markers;
+  markers.reserve(marker_objects->size());
+
+  for (const std::string_view marker_object : *marker_objects) {
+    const StringFieldResult id = ExtractRequiredStringField(marker_object,
+                                                            "id");
+    if (!id.ok) {
+      return {false, {}, id.error};
+    }
+
+    const StringFieldResult type = ExtractRequiredStringField(marker_object,
+                                                              "type");
+    if (!type.ok) {
+      return {false, {}, type.error};
+    }
+
+    const IntFieldResult x = ExtractRequiredIntField(marker_object, "x");
+    if (!x.ok) {
+      return {false, {}, x.error};
+    }
+
+    const IntFieldResult y = ExtractRequiredIntField(marker_object, "y");
+    if (!y.ok) {
+      return {false, {}, y.error};
+    }
+
+    if (x.value < 0 || x.value >= width || y.value < 0 || y.value >= height) {
+      return {false, {}, "marker is outside map bounds: " + id.value};
+    }
+
+    const IntFieldResult elevation = ExtractOptionalIntField(marker_object,
+                                                             "elevation");
+    if (!elevation.ok) {
+      return {false, {}, elevation.error};
+    }
+
+    Marker marker;
+    marker.id = id.value;
+    marker.type = type.value;
+    marker.x = x.value;
+    marker.y = y.value;
+    marker.elevation = static_cast<std::int8_t>(
+        elevation.found ? elevation.value : 0);
+    markers.push_back(std::move(marker));
+  }
+
+  return {true, std::move(markers), {}};
+}
+
+MarkerLoadResult LoadMarkersIfPresent(const std::filesystem::path& path,
+                                      int width, int height) {
+  std::error_code error_code;
+  if (!std::filesystem::exists(path, error_code)) {
+    if (error_code) {
+      return {false, {}, "failed to inspect markers file: " + path.string() +
+                             " reason=" + error_code.message()};
+    }
+    return {true, {}, {}};
+  }
+
+  if (!std::filesystem::is_regular_file(path, error_code)) {
+    if (error_code) {
+      return {false, {}, "failed to inspect markers file: " + path.string() +
+                             " reason=" + error_code.message()};
+    }
+    return {false, {}, "markers path is not a regular file: " +
+                       path.string()};
+  }
+
+  const ReadFileResult file = ReadTextFile(path);
+  if (!file.ok) {
+    return {false, {}, file.error};
+  }
+
+  return ParseMarkers(file.content, width, height);
+}
+
 std::filesystem::path ResolvePackageFile(
     const std::filesystem::path& package_path,
     const std::string& relative_path) {
@@ -897,6 +1059,7 @@ LevelLoadResult ResolvePackageLayout(const std::filesystem::path& package_path,
   layout->package_path = package_path;
   layout->terrain_path = package_path / "terrain.json";
   layout->runtime_grids_path = package_path / "runtime_grids.json";
+  layout->markers_path = package_path / "markers.json";
 
   const std::filesystem::path manifest_path = package_path / "map.json";
   std::error_code error_code;
@@ -941,6 +1104,15 @@ LevelLoadResult ResolvePackageLayout(const std::filesystem::path& package_path,
   layout->runtime_grids_path = ResolvePackageFile(package_path,
                                                   runtime_grids.value);
 
+  const StringFieldResult markers = ExtractOptionalStringField(
+      manifest.content, "markers");
+  if (!markers.ok) {
+    return {false, {}, markers.error};
+  }
+  if (markers.found && !markers.value.empty()) {
+    layout->markers_path = ResolvePackageFile(package_path, markers.value);
+  }
+
   const IntFieldResult width_tiles = ExtractOptionalIntField(
       manifest.content, "width_tiles");
   const IntFieldResult height_tiles = ExtractOptionalIntField(
@@ -979,7 +1151,8 @@ std::string LevelPackageSummary::Dump() const {
          ", height: " + std::to_string(size.height) +
          ", tile_size: " + std::to_string(size.tile_size) +
          ", runtime_grids: " +
-         std::to_string(validated_runtime_grid_count) + " }";
+         std::to_string(validated_runtime_grid_count) +
+         ", markers: " + std::to_string(marker_count) + " }";
 }
 
 LevelLoadResult LevelLoader::LoadBasicPackage(
@@ -1088,8 +1261,16 @@ LevelLoadResult LevelLoader::LoadBasicPackage(
   summary.size = LevelSize{width.value, height.value, resolved_tile_size};
   summary.validated_runtime_grid_count = validated_runtime_grid_count;
 
+  const MarkerLoadResult markers = LoadMarkersIfPresent(
+      layout.markers_path, width.value, height.value);
+  if (!markers.ok) {
+    return {false, {}, markers.error};
+  }
+  summary.marker_count = static_cast<int>(markers.markers.size());
+
   LevelData level;
   level.size = summary.size;
+  level.markers = std::move(markers.markers);
   level.cells.reserve(terrain_grid.cells.size());
   for (const TerrainType terrain : terrain_grid.cells) {
     RuntimeCell cell;

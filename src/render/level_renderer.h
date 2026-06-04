@@ -18,7 +18,7 @@ struct LevelViewState {
 };
 
 /**
- * @brief Centers a level view on the loaded map.
+ * @brief Centers a level view on a preferred spawn marker or map center.
  *
  * @param level Loaded level data.
  * @param view View state to initialize.
@@ -46,7 +46,7 @@ std::string LevelViewStateToString(const LevelViewState& view);
 class LevelRenderer {
  public:
   /**
-   * @brief Draws the loaded level terrain using a debug semantic palette.
+   * @brief Draws the loaded level terrain and debug markers.
    *
    * @param level Loaded level data.
    * @param view Current level view state.

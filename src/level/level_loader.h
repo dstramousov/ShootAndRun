@@ -13,6 +13,7 @@ struct LevelPackageSummary {
   std::filesystem::path package_path;
   LevelSize size;
   int validated_runtime_grid_count = 0;
+  int marker_count = 0;
 
   /**
    * @brief Returns a readable dump of the loaded level package summary.
@@ -69,8 +70,9 @@ class LevelLoader {
    *
    * This MVP loader validates `terrain.json` and `runtime_grids.json`, checks
    * their dimensions, verifies that required runtime grids match the map
-   * size, and builds a basic `LevelData` terrain cell array for debug
-   * rendering.
+   * size, builds a basic `LevelData` terrain cell array for debug
+   * rendering, and loads optional gameplay markers for debug overlays and
+   * camera centering.
    *
    * @param package_path Path to a TopDownMapGen output package directory.
    * @return Load result with either summary data or an error message.
