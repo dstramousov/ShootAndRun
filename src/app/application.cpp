@@ -79,6 +79,15 @@ std::vector<LogHighlightRule> BuildLoggerHighlightRules(
   return rules;
 }
 
+LoggerConfig BuildInitialLoggerConfig(const AppConfig& config) {
+  LoggerConfig logger_config;
+  logger_config.min_level = config.log_level;
+  logger_config.color_enabled = ShouldUseTerminalColor(config.color_log);
+  logger_config.show_execution_context = true;
+  logger_config.highlight_rules = {};
+  return logger_config;
+}
+
 
 std::string FormatDouble(double value, int precision) {
   std::ostringstream stream;
@@ -105,8 +114,7 @@ std::string WindowStateToString(const WindowState& state) {
 
 Application::Application(AppConfig config)
     : config_(std::move(config)),
-      logger_(LoggerConfig{config_.log_level,
-                           ShouldUseTerminalColor(config_.color_log), true}) {}
+      logger_(BuildInitialLoggerConfig(config_)) {}
 
 int Application::Run() {
   SetCurrentThreadName("main");

@@ -134,3 +134,10 @@
 - Moved developer log controls out of the user-facing application config.
 - Added configurable log color, execution-context visibility, visual-pipeline diagnostics, and regex highlight rules.
 - Added CLI support for `--developer-config=<path>`.
+
+## v0.1.15 -> v0.1.16
+
+- Bumped CMake project and runtime application version to `0.1.16`.
+- Fixed `LoggerConfig` initialization to remove the missing `highlight_rules` initializer warning.
+- Replaced fragile positional aggregate initialization with explicit field initialization.
+
