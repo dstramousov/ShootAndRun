@@ -14,6 +14,16 @@ struct PipelineStepInfo {
   std::string name;
 };
 
+struct PipelineStepReport {
+  int step_index = 0;
+  int total_steps = 0;
+  std::string step_name;
+  double duration_ms = 0.0;
+  bool success = false;
+  std::vector<std::string> summaries;
+  std::vector<std::string> warnings;
+};
+
 class VisualPreparationPipeline {
  public:
   /**
@@ -38,6 +48,15 @@ class VisualPreparationPipeline {
   const PipelineProgress& progress() const { return progress_; }
 
   /**
+   * @brief Returns the last executed pipeline step report.
+   *
+   * @return Report for diagnostics and logging.
+   */
+  const PipelineStepReport& last_step_report() const {
+    return last_step_report_;
+  }
+
+  /**
    * @brief Returns prepared level data built by the pipeline.
    *
    * @return Prepared visual level.
@@ -59,11 +78,13 @@ class VisualPreparationPipeline {
   bool running() const { return progress_.running; }
 
  private:
-  void RunCurrentStep(const LevelData& level, const PipelineStepInfo& step);
+  void RunCurrentStep(const LevelData& level, const PipelineStepInfo& step,
+                      PipelineStepReport* report);
   void Fail(std::string error);
 
   std::vector<PipelineStepInfo> steps_;
   PipelineProgress progress_;
+  PipelineStepReport last_step_report_;
   PreparedLevel prepared_level_;
 };
 

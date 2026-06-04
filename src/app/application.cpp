@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cmath>
 #include <filesystem>
+#include <iomanip>
 #include <sstream>
 #include <string>
 #include <utility>
@@ -54,6 +55,20 @@ int ToRaylibTraceLogLevel(RaylibLogLevel level) {
   return LOG_WARNING;
 }
 
+
+std::string FormatDouble(double value, int precision) {
+  std::ostringstream stream;
+  stream << std::fixed << std::setprecision(precision) << value;
+  return stream.str();
+}
+
+std::string PipelineStepLabel(
+    const visual_pipeline::PipelineStepReport& report) {
+  return "step " + std::to_string(report.step_index) + "/" +
+         std::to_string(report.total_steps) + " name=\"" +
+         report.step_name + "\"";
+}
+
 std::string WindowStateToString(const WindowState& state) {
   std::ostringstream stream;
   stream << "monitor=" << state.monitor_width << 'x' << state.monitor_height
@@ -67,13 +82,12 @@ std::string WindowStateToString(const WindowState& state) {
 Application::Application(AppConfig config)
     : config_(std::move(config)),
       logger_(LoggerConfig{config_.log_level,
-                           ShouldUseTerminalColor(config_.color_log)}) {}
+                           ShouldUseTerminalColor(config_.color_log), true}) {}
 
 int Application::Run() {
   SetCurrentThreadName("main");
-  logger_.Info("app", "starting application");
-
   LoadProjectConfigAtStartup();
+  logger_.Info("app", "starting application");
   InitializeWindow();
   LogStartup();
 
@@ -102,6 +116,8 @@ void Application::LoadProjectConfigAtStartup() {
   }
 
   project_config_ = result.config;
+  logger_.set_show_execution_context(
+      project_config_->log_output.show_execution_context);
   config_.window = project_config_->window_config;
   logger_.Info("config", project_config_->Dump());
 }
@@ -309,7 +325,7 @@ void Application::HandleMapPreparingInput(const InputState& input) {
     visual_pipeline_ = visual_pipeline::VisualPreparationPipeline();
     prepared_level_.reset();
     screen_ = AppScreen::kMainMenu;
-    logger_.Info("pipeline", "map preparation cancelled");
+    logger_.Info("visual_pipeline", "map preparation cancelled");
   }
 }
 
@@ -336,11 +352,32 @@ void Application::UpdateMapPreparation() {
   }
 
   last_preparation_step_time_ = now;
+  const visual_pipeline::PipelineProgress& before =
+      visual_pipeline_.progress();
+  logger_.Info("visual_pipeline",
+               "step " + std::to_string(before.completed_steps + 1) +
+                   "/" + std::to_string(before.total_steps) +
+                   " started name=\"" + before.current_step_name + "\"");
+
   visual_pipeline_.AdvanceOneStep(*loaded_level_);
-  logger_.Info("pipeline", visual_pipeline_.progress().Dump());
+  const visual_pipeline::PipelineStepReport& report =
+      visual_pipeline_.last_step_report();
+
+  if (report.step_index > 0) {
+    const std::string status = report.success ? "done" : "failed";
+    logger_.Info("visual_pipeline",
+                 PipelineStepLabel(report) + " " + status +
+                     " duration_ms=" + FormatDouble(report.duration_ms, 2));
+    for (const std::string& summary : report.summaries) {
+      logger_.Info("map_analysis", summary);
+    }
+    for (const std::string& warning : report.warnings) {
+      logger_.Warn("map_analysis", warning);
+    }
+  }
 
   if (visual_pipeline_.progress().failed) {
-    logger_.Error("pipeline", visual_pipeline_.progress().error);
+    logger_.Error("visual_pipeline", visual_pipeline_.progress().error);
     screen_ = AppScreen::kMainMenu;
     return;
   }
@@ -350,7 +387,7 @@ void Application::UpdateMapPreparation() {
   }
 
   prepared_level_ = visual_pipeline_.prepared_level();
-  logger_.Info("pipeline", prepared_level_->Dump());
+  logger_.Info("visual_pipeline", prepared_level_->Dump());
   InitializeLevelView(*loaded_level_, &level_view_);
   ClampLevelViewToMap(*loaded_level_, window_state_, &level_view_);
   logger_.Info("camera", LevelViewStateToString(level_view_));
@@ -531,8 +568,14 @@ bool Application::StartNewGameFromConfig() {
   last_preparation_step_time_ = -1.0;
   screen_ = AppScreen::kMapPreparing;
   logger_.Info("level", loaded_level_summary_->Dump());
-  logger_.Info("pipeline", "map preparation started");
-  logger_.Info("pipeline", visual_pipeline_.progress().Dump());
+  logger_.Info("visual_pipeline",
+               "started steps=" +
+                   std::to_string(visual_pipeline_.progress().total_steps) +
+                   " map=" + std::to_string(loaded_level_->size.width) +
+                   "x" + std::to_string(loaded_level_->size.height) +
+                   " tile_size=" +
+                   std::to_string(loaded_level_->size.tile_size));
+  logger_.Debug("visual_pipeline", visual_pipeline_.progress().Dump());
   ApplyFramePacing();
   return true;
 }

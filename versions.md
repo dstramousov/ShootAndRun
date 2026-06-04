@@ -117,3 +117,12 @@
 - Added runtime masks for walkable, blocked, vision-blocked, projectile-blocked, cover, concealment, and height data.
 - Added semantic mask summary counters to `PreparedLevel` diagnostics.
 - Added tests for semantic mask generation and pipeline output.
+
+## v0.1.13 -> v0.1.14
+
+- Bumped CMake project and runtime application version to `0.1.14`.
+- Added configurable log execution context output through `log.show_execution_context`.
+- Added visual pipeline step start/done diagnostics with per-step duration.
+- Added map analysis summary logging for terrain and runtime semantic masks.
+- Added warnings for unknown terrain tiles found during semantic mask generation.
+

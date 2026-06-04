@@ -67,9 +67,12 @@ void Logger::Log(LogLevel level, std::string_view module,
     std::cerr << LevelColor(level);
   }
 
-  std::cerr << FormatTimestamp() << " [" << LogLevelName(level) << "] "
-            << "[pid=" << CurrentProcessId() << " tid=" << CurrentThreadId()
-            << ' ' << CurrentThreadName() << "] " << module << ": " << message;
+  std::cerr << FormatTimestamp() << " [" << LogLevelName(level) << "] ";
+  if (config_.show_execution_context) {
+    std::cerr << "[pid=" << CurrentProcessId() << " tid=" << CurrentThreadId()
+              << ' ' << CurrentThreadName() << "] ";
+  }
+  std::cerr << module << ": " << message;
 
   if (config_.color_enabled) {
     std::cerr << "\033[0m";
@@ -104,6 +107,10 @@ void Logger::Fatal(std::string_view module, std::string_view message) {
 
 bool Logger::ShouldLog(LogLevel level) const {
   return static_cast<int>(level) >= static_cast<int>(config_.min_level);
+}
+
+void Logger::set_show_execution_context(bool show_execution_context) {
+  config_.show_execution_context = show_execution_context;
 }
 
 void Logger::set_min_level(LogLevel level) { config_.min_level = level; }

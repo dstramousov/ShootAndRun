@@ -333,7 +333,10 @@ std::string ProjectConfig::Dump() const {
          ", show_memory: " +
          std::string(service_info.show_memory ? "true" : "false") +
          ", update_interval_ms: " +
-         std::to_string(service_info.update_interval_ms) + " } }";
+         std::to_string(service_info.update_interval_ms) + " }, log: { "
+         "show_execution_context: " +
+         std::string(log_output.show_execution_context ? "true" : "false") +
+         " } }";
 }
 
 ProjectConfigResult LoadProjectConfig(
@@ -461,6 +464,16 @@ ProjectConfigResult LoadProjectConfig(
   }
   if (resizable.found) {
     config.window_config.resizable = resizable.value;
+  }
+
+
+  ParseBoolResult show_execution_context =
+      ExtractOptionalJsonBoolField(content, "show_execution_context");
+  if (!show_execution_context.ok) {
+    return {false, {}, show_execution_context.error};
+  }
+  if (show_execution_context.found) {
+    config.log_output.show_execution_context = show_execution_context.value;
   }
 
   ParseBoolResult service_info_enabled =

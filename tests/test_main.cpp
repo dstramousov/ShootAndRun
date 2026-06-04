@@ -75,6 +75,9 @@ void TestProjectConfigLoader() {
                 "  \"ui_font_path\": \"data/fonts/test.ttf\",\n"
                 "  \"ui_font_size\": 22,\n"
                 "  \"raylib_log_level\": \"none\",\n"
+                "  \"log\": {\n"
+                "    \"show_execution_context\": false\n"
+                "  },\n"
                 "  \"window\": {\n"
                 "    \"preferred_width\": 1700,\n"
                 "    \"preferred_height\": 950,\n"
@@ -100,6 +103,8 @@ void TestProjectConfigLoader() {
          "font size should be read from project config");
   Expect(result.config.raylib_log_level == sar::RaylibLogLevel::kNone,
          "raylib log level should be read from project config");
+  Expect(!result.config.log_output.show_execution_context,
+         "log execution context visibility should be read from project config");
   Expect(result.config.window_config.preferred_width == 1700,
          "preferred window width should be read from project config");
   Expect(result.config.window_config.preferred_height == 950,
@@ -169,6 +174,12 @@ void TestVisualPreparationPipelineSkeleton() {
          "semantic mask summary should count all tiles");
   Expect(pipeline.prepared_level().render_cache_entry_count == 16,
          "prepared level should expose placeholder render cache size");
+  Expect(pipeline.last_step_report().step_name == "Build render cache",
+         "pipeline should keep the last executed step report");
+  Expect(pipeline.last_step_report().success,
+         "last pipeline report should mark successful step completion");
+  Expect(!pipeline.last_step_report().summaries.empty(),
+         "last pipeline report should expose diagnostic summaries");
 }
 
 
@@ -223,6 +234,8 @@ void TestVisualPreparationSemanticMasks() {
          "semantic masks should count negative height tiles");
   Expect(prepared.semantic_masks.summary.elevated_tiles == 1,
          "semantic masks should count elevated tiles");
+  Expect(pipeline.last_step_report().success,
+         "semantic mask pipeline run should finish with a successful report");
 }
 
 void TestLevelLoaderManifestPackage() {

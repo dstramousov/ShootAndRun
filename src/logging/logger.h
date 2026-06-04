@@ -11,6 +11,7 @@ namespace sar {
 struct LoggerConfig {
   LogLevel min_level = LogLevel::kInfo;
   bool color_enabled = true;
+  bool show_execution_context = true;
 };
 
 class Logger {
@@ -86,6 +87,13 @@ class Logger {
    * @return true if the message should be emitted.
    */
   bool ShouldLog(LogLevel level) const;
+
+  /**
+   * @brief Updates execution context visibility in log lines.
+   *
+   * @param show_execution_context true to print PID, TID, and thread name.
+   */
+  void set_show_execution_context(bool show_execution_context);
 
   /**
    * @brief Updates the minimum enabled log level.

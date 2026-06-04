@@ -3,6 +3,9 @@
   "ui_font_path": "data/fonts/PressStart2P-Regular.ttf",
   "ui_font_size": 14,
   "raylib_log_level": "warning",
+  "log": {
+    "show_execution_context": false
+  },
   "window": {
     "preferred_width": 1920,
     "preferred_height": 1080,

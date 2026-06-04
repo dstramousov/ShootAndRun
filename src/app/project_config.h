@@ -32,6 +32,10 @@ struct ServiceInfoConfig {
   int update_interval_ms = 1000;
 };
 
+struct LogOutputConfig {
+  bool show_execution_context = true;
+};
+
 struct ProjectConfig {
   std::filesystem::path map_package_path;
   std::filesystem::path ui_font_path = "data/fonts/PressStart2P-Regular.ttf";
@@ -39,6 +43,7 @@ struct ProjectConfig {
   RaylibLogLevel raylib_log_level = RaylibLogLevel::kWarning;
   WindowConfig window_config;
   ServiceInfoConfig service_info;
+  LogOutputConfig log_output;
 
   /**
    * @brief Returns a readable dump of the project configuration.
@@ -58,7 +63,7 @@ struct ProjectConfigResult {
  * @brief Loads project configuration from a JSON file.
  *
  * The loader requires the `map_package_path` string field. Font, window,
- * service-info, and raylib log settings are optional and use safe defaults
+ * service-info, log output, and raylib log settings are optional and use safe defaults
  * when they are not present. Unknown fields are ignored so the format can be
  * extended later.
  *
