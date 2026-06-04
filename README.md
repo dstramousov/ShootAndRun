@@ -2,7 +2,7 @@
 
 Первый каркас C++20 + raylib проекта.
 
-## Что уже есть
+## Что есть
 
 - CMake-проект.
 - raylib window bootstrap.
@@ -40,10 +40,3 @@ ctest --test-dir build --output-on-failure
 ./build/shoot_and_run --log-level=debug
 ./build/shoot_and_run --log-level=trace --no-color
 ```
-
-## Следующий разумный патч
-
-1. Добавить `LevelLoader`.
-2. Подключить JSON-библиотеку.
-3. Загрузить `terrain.json` и `runtime_grids.json`.
-4. Нарисовать простую debug-карту.
