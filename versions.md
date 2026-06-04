@@ -108,3 +108,12 @@
 - Changed `New Game` flow to load raw map data, show a preparation progress screen, run preparation steps, and enter the game screen only after preparation completes.
 - Added progress bar and current preparation step text on the map preparation screen.
 - Kept terrain rendering as a temporary debug view after preparation while the visual pipeline is being filled in.
+
+## v0.1.12 -> v0.1.13
+
+- Bumped CMake project and runtime application version to `0.1.13`.
+- Added real semantic mask generation inside the isolated `visual_pipeline` subsystem.
+- Added terrain masks for open ground, forest, road, swamp, water, ruins, walls, and unknown terrain.
+- Added runtime masks for walkable, blocked, vision-blocked, projectile-blocked, cover, concealment, and height data.
+- Added semantic mask summary counters to `PreparedLevel` diagnostics.
+- Added tests for semantic mask generation and pipeline output.

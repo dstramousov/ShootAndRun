@@ -161,8 +161,68 @@ void TestVisualPreparationPipelineSkeleton() {
   Expect(pipeline.finished(), "visual pipeline should finish successfully");
   Expect(pipeline.prepared_level().ready,
          "prepared level should become ready after pipeline completion");
+  Expect(pipeline.prepared_level().semantic_mask_count == 14,
+         "prepared level should expose semantic mask count");
+  Expect(pipeline.prepared_level().semantic_masks.IsValid(),
+         "prepared level should contain valid semantic masks");
+  Expect(pipeline.prepared_level().semantic_masks.summary.total_tiles == 16,
+         "semantic mask summary should count all tiles");
   Expect(pipeline.prepared_level().render_cache_entry_count == 16,
          "prepared level should expose placeholder render cache size");
+}
+
+
+void TestVisualPreparationSemanticMasks() {
+  sar::LevelData level;
+  level.size.width = 3;
+  level.size.height = 2;
+  level.size.tile_size = 16;
+  level.cells.resize(6);
+  level.cells[0].terrain = sar::TerrainType::kForest;
+  level.cells[0].collision = true;
+  level.cells[0].blocks_vision = true;
+  level.cells[1].terrain = sar::TerrainType::kRoad;
+  level.cells[1].walkable = true;
+  level.cells[2].terrain = sar::TerrainType::kWater;
+  level.cells[2].walkable = true;
+  level.cells[2].height = -1;
+  level.cells[3].terrain = sar::TerrainType::kRuins;
+  level.cells[3].cover = 1;
+  level.cells[4].terrain = sar::TerrainType::kSwamp;
+  level.cells[4].concealment = 1;
+  level.cells[5].terrain = sar::TerrainType::kOpenGround;
+  level.cells[5].height = 2;
+
+  sar::visual_pipeline::VisualPreparationPipeline pipeline;
+  pipeline.Start(level);
+  while (!pipeline.finished() && !pipeline.progress().failed) {
+    pipeline.AdvanceOneStep(level);
+  }
+
+  const sar::visual_pipeline::PreparedLevel& prepared =
+      pipeline.prepared_level();
+  Expect(prepared.semantic_masks.IsValid(),
+         "semantic masks should be valid for a complete level");
+  Expect(prepared.semantic_masks.summary.forest_tiles == 1,
+         "semantic masks should count forest tiles");
+  Expect(prepared.semantic_masks.summary.road_tiles == 1,
+         "semantic masks should count road tiles");
+  Expect(prepared.semantic_masks.summary.water_tiles == 1,
+         "semantic masks should count water tiles");
+  Expect(prepared.semantic_masks.summary.ruins_tiles == 1,
+         "semantic masks should count ruins tiles");
+  Expect(prepared.semantic_masks.summary.swamp_tiles == 1,
+         "semantic masks should count swamp tiles");
+  Expect(prepared.semantic_masks.summary.open_ground_tiles == 1,
+         "semantic masks should count open ground tiles");
+  Expect(prepared.semantic_masks.summary.blocked_tiles == 1,
+         "semantic masks should count blocked tiles");
+  Expect(prepared.semantic_masks.summary.walkable_tiles == 2,
+         "semantic masks should count walkable tiles");
+  Expect(prepared.semantic_masks.summary.low_ground_tiles == 1,
+         "semantic masks should count negative height tiles");
+  Expect(prepared.semantic_masks.summary.elevated_tiles == 1,
+         "semantic masks should count elevated tiles");
 }
 
 void TestLevelLoaderManifestPackage() {
@@ -346,6 +406,7 @@ int main() {
   TestProjectConfigLoader();
   TestProjectConfigLoaderUsesFontDefaults();
   TestVisualPreparationPipelineSkeleton();
+  TestVisualPreparationSemanticMasks();
   TestLevelLoaderBasicPackage();
   TestLevelLoaderManifestPackage();
   std::cout << "All tests passed.\n";

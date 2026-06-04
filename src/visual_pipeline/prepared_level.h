@@ -4,6 +4,7 @@
 #include <string>
 
 #include "level/level_data.h"
+#include "visual_pipeline/semantic_masks.h"
 
 namespace sar::visual_pipeline {
 
@@ -11,6 +12,7 @@ struct PreparedLevel {
   bool ready = false;
   LevelSize size;
   int semantic_mask_count = 0;
+  SemanticMasks semantic_masks;
   int terrain_region_count = 0;
   int visual_layer_count = 0;
   int decoration_count = 0;

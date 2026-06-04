@@ -4,6 +4,8 @@
 #include <string>
 #include <utility>
 
+#include "visual_pipeline/steps/build_semantic_masks_step.h"
+
 namespace sar::visual_pipeline {
 namespace {
 
@@ -86,7 +88,10 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
   }
 
   if (step.name == "Build semantic terrain masks") {
-    prepared_level_.semantic_mask_count = 6;
+    std::string error;
+    if (!RunBuildSemanticMasksStep(level, &prepared_level_, &error)) {
+      Fail(error.empty() ? "semantic mask step failed" : error);
+    }
     return;
   }
 
