@@ -8,7 +8,7 @@
 #include "window/window_config.h"
 
 #ifndef SAR_APP_VERSION
-#define SAR_APP_VERSION "0.1.12-dev"
+#define SAR_APP_VERSION "0.1.15-dev"
 #endif
 
 namespace sar {
@@ -19,6 +19,7 @@ struct AppConfig {
   int target_fps = 60;
   WindowConfig window;
   std::filesystem::path project_config_path = "config/app_config.json";
+  std::filesystem::path developer_config_path = "config/developer_log_config.json";
   LogLevel log_level = LogLevel::kInfo;
   bool color_log = true;
   bool debug_overlay_enabled = true;

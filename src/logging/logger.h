@@ -2,16 +2,32 @@
 #define SHOOT_AND_RUN_CPP_SRC_LOGGING_LOGGER_H_
 
 #include <mutex>
+#include <string>
 #include <string_view>
+#include <vector>
 
 #include "logging/log_level.h"
 
 namespace sar {
 
+enum class LogHighlightScope {
+  kMessage,
+  kFullLine,
+};
+
+struct LogHighlightRule {
+  std::string name;
+  std::string regex_pattern;
+  std::string color;
+  LogHighlightScope scope = LogHighlightScope::kMessage;
+  bool case_sensitive = true;
+};
+
 struct LoggerConfig {
   LogLevel min_level = LogLevel::kInfo;
   bool color_enabled = true;
   bool show_execution_context = true;
+  std::vector<LogHighlightRule> highlight_rules;
 };
 
 class Logger {
@@ -96,11 +112,25 @@ class Logger {
   void set_show_execution_context(bool show_execution_context);
 
   /**
+   * @brief Updates ANSI color output visibility.
+   *
+   * @param color_enabled true to emit ANSI color codes.
+   */
+  void set_color_enabled(bool color_enabled);
+
+  /**
    * @brief Updates the minimum enabled log level.
    *
    * @param level New minimum enabled log level.
    */
   void set_min_level(LogLevel level);
+
+  /**
+   * @brief Replaces log highlighting rules.
+   *
+   * @param highlight_rules Rules applied to emitted log lines.
+   */
+  void set_highlight_rules(std::vector<LogHighlightRule> highlight_rules);
 
   /**
    * @brief Returns the minimum enabled log level.

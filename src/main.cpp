@@ -19,6 +19,7 @@ CliOptions ParseArguments(int argc, char** argv) {
     const std::string_view argument(argv[i]);
     constexpr std::string_view kLogLevelPrefix = "--log-level=";
     constexpr std::string_view kConfigPrefix = "--config=";
+    constexpr std::string_view kDeveloperConfigPrefix = "--developer-config=";
 
     if (argument == "--version") {
       options.print_version = true;
@@ -31,6 +32,9 @@ CliOptions ParseArguments(int argc, char** argv) {
       }
     } else if (argument.starts_with(kConfigPrefix)) {
       options.config.project_config_path = argument.substr(kConfigPrefix.size());
+    } else if (argument.starts_with(kDeveloperConfigPrefix)) {
+      options.config.developer_config_path =
+          argument.substr(kDeveloperConfigPrefix.size());
     }
   }
 

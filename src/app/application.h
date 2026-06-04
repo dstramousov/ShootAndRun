@@ -6,6 +6,7 @@
 #include "app/app_config.h"
 #include "app/app_state.h"
 #include "app/project_config.h"
+#include "developer/developer_config.h"
 #include "game/game_session.h"
 #include "input/input_system.h"
 #include "level/level_loader.h"
@@ -41,6 +42,7 @@ class Application {
 
  private:
   void LoadProjectConfigAtStartup();
+  void LoadDeveloperConfigAtStartup();
   void InitializeWindow();
   void LoadUiFont();
   void ShutdownWindow();
@@ -80,6 +82,7 @@ class Application {
   LevelLoader level_loader_;
   UiFont ui_font_;
   std::optional<ProjectConfig> project_config_;
+  DeveloperConfig developer_config_;
   std::optional<LevelPackageSummary> loaded_level_summary_;
   std::optional<LevelData> loaded_level_;
   std::optional<visual_pipeline::PreparedLevel> prepared_level_;

@@ -5,6 +5,7 @@
 #include <string_view>
 
 #include "app/project_config.h"
+#include "developer/developer_config.h"
 #include "level/level_loader.h"
 #include "level/terrain_type.h"
 #include "ui/main_menu.h"
@@ -75,9 +76,6 @@ void TestProjectConfigLoader() {
                 "  \"ui_font_path\": \"data/fonts/test.ttf\",\n"
                 "  \"ui_font_size\": 22,\n"
                 "  \"raylib_log_level\": \"none\",\n"
-                "  \"log\": {\n"
-                "    \"show_execution_context\": false\n"
-                "  },\n"
                 "  \"window\": {\n"
                 "    \"preferred_width\": 1700,\n"
                 "    \"preferred_height\": 950,\n"
@@ -103,8 +101,6 @@ void TestProjectConfigLoader() {
          "font size should be read from project config");
   Expect(result.config.raylib_log_level == sar::RaylibLogLevel::kNone,
          "raylib log level should be read from project config");
-  Expect(!result.config.log_output.show_execution_context,
-         "log execution context visibility should be read from project config");
   Expect(result.config.window_config.preferred_width == 1700,
          "preferred window width should be read from project config");
   Expect(result.config.window_config.preferred_height == 950,
@@ -126,6 +122,50 @@ void TestProjectConfigLoader() {
 
   std::filesystem::remove(config_path);
 }
+
+
+void TestDeveloperConfigLoader() {
+  const std::filesystem::path config_path =
+      std::filesystem::temp_directory_path() /
+      "shoot_and_run_test_developer_config.json";
+
+  WriteTextFile(config_path,
+                "{\n"
+                "  \"log\": {\n"
+                "    \"enabled\": true,\n"
+                "    \"color_enabled\": false,\n"
+                "    \"show_execution_context\": false,\n"
+                "    \"visual_pipeline_diagnostics\": false,\n"
+                "    \"highlight_rules\": [\n"
+                "      {\n"
+                "        \"name\": \"numbers\",\n"
+                "        \"regex\": \"\\\\b[0-9]+\\\\b\",\n"
+                "        \"color\": \"orange\",\n"
+                "        \"scope\": \"message\",\n"
+                "        \"case_sensitive\": true\n"
+                "      }\n"
+                "    ]\n"
+                "  }\n"
+                "}\n");
+
+  const sar::DeveloperConfigResult result = sar::LoadDeveloperConfig(
+      config_path);
+  Expect(result.ok, "developer config should load successfully");
+  Expect(result.found, "developer config should report existing file");
+  Expect(!result.config.log.color_enabled,
+         "developer config should load color flag");
+  Expect(!result.config.log.show_execution_context,
+         "developer config should load execution context flag");
+  Expect(!result.config.log.visual_pipeline_diagnostics,
+         "developer config should load pipeline diagnostics flag");
+  Expect(result.config.log.highlight_rules.size() == 1,
+         "developer config should load highlight rules");
+  Expect(result.config.log.highlight_rules[0].color == "orange",
+         "developer config should load highlight color");
+
+  std::filesystem::remove(config_path);
+}
+
 
 void TestProjectConfigLoaderUsesFontDefaults() {
   const std::filesystem::path config_path =
@@ -417,6 +457,7 @@ int main() {
   TestMenuNavigationSkipsDisabledItems();
   TestTerrainMapping();
   TestProjectConfigLoader();
+  TestDeveloperConfigLoader();
   TestProjectConfigLoaderUsesFontDefaults();
   TestVisualPreparationPipelineSkeleton();
   TestVisualPreparationSemanticMasks();

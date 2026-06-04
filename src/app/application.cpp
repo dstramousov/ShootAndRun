@@ -56,6 +56,30 @@ int ToRaylibTraceLogLevel(RaylibLogLevel level) {
 }
 
 
+LogHighlightScope ParseHighlightScope(const std::string& value) {
+  if (value == "full_line") {
+    return LogHighlightScope::kFullLine;
+  }
+  return LogHighlightScope::kMessage;
+}
+
+std::vector<LogHighlightRule> BuildLoggerHighlightRules(
+    const DeveloperLogConfig& config) {
+  std::vector<LogHighlightRule> rules;
+  rules.reserve(config.highlight_rules.size());
+  for (const DeveloperHighlightRuleConfig& source : config.highlight_rules) {
+    LogHighlightRule rule;
+    rule.name = source.name;
+    rule.regex_pattern = source.regex_pattern;
+    rule.color = source.color;
+    rule.scope = ParseHighlightScope(source.scope);
+    rule.case_sensitive = source.case_sensitive;
+    rules.push_back(std::move(rule));
+  }
+  return rules;
+}
+
+
 std::string FormatDouble(double value, int precision) {
   std::ostringstream stream;
   stream << std::fixed << std::setprecision(precision) << value;
@@ -86,6 +110,7 @@ Application::Application(AppConfig config)
 
 int Application::Run() {
   SetCurrentThreadName("main");
+  LoadDeveloperConfigAtStartup();
   LoadProjectConfigAtStartup();
   logger_.Info("app", "starting application");
   InitializeWindow();
@@ -116,10 +141,37 @@ void Application::LoadProjectConfigAtStartup() {
   }
 
   project_config_ = result.config;
-  logger_.set_show_execution_context(
-      project_config_->log_output.show_execution_context);
   config_.window = project_config_->window_config;
   logger_.Info("config", project_config_->Dump());
+}
+
+void Application::LoadDeveloperConfigAtStartup() {
+  const DeveloperConfigResult result =
+      LoadDeveloperConfig(config_.developer_config_path);
+  if (!result.ok) {
+    logger_.Warn("developer_config", result.error);
+    return;
+  }
+
+  developer_config_ = result.config;
+  logger_.set_show_execution_context(
+      developer_config_.log.show_execution_context);
+  logger_.set_color_enabled(ShouldUseTerminalColor(config_.color_log) &&
+                            developer_config_.log.color_enabled);
+  logger_.set_highlight_rules(
+      BuildLoggerHighlightRules(developer_config_.log));
+
+  if (!result.found) {
+    logger_.Debug("developer_config",
+                  "developer log config not found path=" +
+                      config_.developer_config_path.string() +
+                      "; using defaults");
+    return;
+  }
+
+  if (developer_config_.log.enabled) {
+    logger_.Info("developer_config", developer_config_.Dump());
+  }
 }
 
 void Application::InitializeWindow() {
@@ -354,16 +406,19 @@ void Application::UpdateMapPreparation() {
   last_preparation_step_time_ = now;
   const visual_pipeline::PipelineProgress& before =
       visual_pipeline_.progress();
-  logger_.Info("visual_pipeline",
-               "step " + std::to_string(before.completed_steps + 1) +
-                   "/" + std::to_string(before.total_steps) +
-                   " started name=\"" + before.current_step_name + "\"");
+  if (developer_config_.log.visual_pipeline_diagnostics) {
+    logger_.Info("visual_pipeline",
+                 "step " + std::to_string(before.completed_steps + 1) +
+                     "/" + std::to_string(before.total_steps) +
+                     " started name=\"" + before.current_step_name + "\"");
+  }
 
   visual_pipeline_.AdvanceOneStep(*loaded_level_);
   const visual_pipeline::PipelineStepReport& report =
       visual_pipeline_.last_step_report();
 
-  if (report.step_index > 0) {
+  if (report.step_index > 0 &&
+      developer_config_.log.visual_pipeline_diagnostics) {
     const std::string status = report.success ? "done" : "failed";
     logger_.Info("visual_pipeline",
                  PipelineStepLabel(report) + " " + status +
@@ -568,14 +623,16 @@ bool Application::StartNewGameFromConfig() {
   last_preparation_step_time_ = -1.0;
   screen_ = AppScreen::kMapPreparing;
   logger_.Info("level", loaded_level_summary_->Dump());
-  logger_.Info("visual_pipeline",
-               "started steps=" +
-                   std::to_string(visual_pipeline_.progress().total_steps) +
-                   " map=" + std::to_string(loaded_level_->size.width) +
-                   "x" + std::to_string(loaded_level_->size.height) +
-                   " tile_size=" +
-                   std::to_string(loaded_level_->size.tile_size));
-  logger_.Debug("visual_pipeline", visual_pipeline_.progress().Dump());
+  if (developer_config_.log.visual_pipeline_diagnostics) {
+    logger_.Info("visual_pipeline",
+                 "started steps=" +
+                     std::to_string(visual_pipeline_.progress().total_steps) +
+                     " map=" + std::to_string(loaded_level_->size.width) +
+                     "x" + std::to_string(loaded_level_->size.height) +
+                     " tile_size=" +
+                     std::to_string(loaded_level_->size.tile_size));
+    logger_.Debug("visual_pipeline", visual_pipeline_.progress().Dump());
+  }
   ApplyFramePacing();
   return true;
 }

@@ -126,3 +126,11 @@
 - Added map analysis summary logging for terrain and runtime semantic masks.
 - Added warnings for unknown terrain tiles found during semantic mask generation.
 
+
+## v0.1.14 -> v0.1.15
+
+- Bumped CMake project and runtime application version to `0.1.15`.
+- Added separate developer-only log configuration in `config/developer_log_config.json`.
+- Moved developer log controls out of the user-facing application config.
+- Added configurable log color, execution-context visibility, visual-pipeline diagnostics, and regex highlight rules.
+- Added CLI support for `--developer-config=<path>`.

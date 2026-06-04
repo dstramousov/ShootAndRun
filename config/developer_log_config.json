@@ -1,0 +1,31 @@
+{
+  "log": {
+    "enabled": true,
+    "color_enabled": true,
+    "show_execution_context": false,
+    "visual_pipeline_diagnostics": true,
+    "highlight_rules": [
+      {
+        "name": "numbers",
+        "regex": "\\b[0-9]+(\\.[0-9]+)?\\b",
+        "color": "orange",
+        "scope": "message",
+        "case_sensitive": true
+      },
+      {
+        "name": "json_paths",
+        "regex": "[A-Za-z0-9_./-]+\\.json",
+        "color": "cyan",
+        "scope": "message",
+        "case_sensitive": true
+      },
+      {
+        "name": "error_words",
+        "regex": "\\b(error|failed|missing|invalid)\\b",
+        "color": "red",
+        "scope": "message",
+        "case_sensitive": false
+      }
+    ]
+  }
+}
