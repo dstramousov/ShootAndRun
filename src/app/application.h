@@ -11,6 +11,7 @@
 #include "level/level_loader.h"
 #include "logging/logger.h"
 #include "render/debug_overlay.h"
+#include "render/level_renderer.h"
 #include "render/menu_renderer.h"
 #include "render/renderer.h"
 #include "render/ui_font.h"
@@ -50,6 +51,8 @@ class Application {
   void HandleDialogInput(const InputState& input);
   void HandleMenuInput(const InputState& input);
   void HandleGameInput(const InputState& input);
+  void UpdateGameCamera(const InputState& input);
+  void DrawGameOverlay() const;
   void ActivateMenuItem(const MenuItem& item);
   bool StartNewGameFromConfig();
   bool ValidateMapPackagePath(const ProjectConfig& project_config);
@@ -64,6 +67,7 @@ class Application {
   bool window_initialized_ = false;
   InputSystem input_system_;
   Renderer renderer_;
+  LevelRenderer level_renderer_;
   MenuRenderer menu_renderer_;
   DebugOverlay debug_overlay_;
   MainMenu main_menu_;
@@ -72,6 +76,8 @@ class Application {
   UiFont ui_font_;
   std::optional<ProjectConfig> project_config_;
   std::optional<LevelPackageSummary> loaded_level_summary_;
+  std::optional<LevelData> loaded_level_;
+  LevelViewState level_view_;
   ServiceInfoOverlayData service_info_data_;
   double last_service_info_update_time_ = -1.0;
   std::optional<ConfirmDialog> confirm_dialog_;

@@ -43,6 +43,15 @@ struct GridShapeResult {
   std::string error;
 };
 
+struct TerrainGridResult {
+  bool ok = false;
+  int rows = 0;
+  int columns = 0;
+  std::vector<TerrainType> cells;
+  std::string field_name;
+  std::string error;
+};
+
 struct PackageLayout {
   std::filesystem::path package_path;
   std::filesystem::path terrain_path;
@@ -588,6 +597,258 @@ GridShapeResult ParseGridShapeFromValue(std::string_view text,
   return ParseGridShapeAt(*object, *rows_start, field_name);
 }
 
+TerrainType TerrainTypeFromSymbol(char value) {
+  switch (value) {
+    case '.':
+    case 'g':
+    case 'G':
+      return TerrainType::kOpenGround;
+    case 'f':
+    case 'F':
+    case 't':
+    case 'T':
+      return TerrainType::kForest;
+    case 'r':
+    case 'R':
+      return TerrainType::kRoad;
+    case 's':
+    case 'S':
+      return TerrainType::kSwamp;
+    case 'w':
+    case 'W':
+      return TerrainType::kWater;
+    case 'u':
+    case 'U':
+      return TerrainType::kRuins;
+    case '#':
+      return TerrainType::kWall;
+    default:
+      return TerrainType::kUnknown;
+  }
+}
+
+TerrainGridResult ParseTerrainGridArrayAt(std::string_view text,
+                                          std::size_t position,
+                                          std::string_view field_name) {
+  if (position >= text.size() || text[position] != '[') {
+    return {false, 0, 0, {}, std::string(field_name),
+            "expected terrain grid array for field: " +
+                std::string(field_name)};
+  }
+
+  int rows = 0;
+  int expected_columns = -1;
+  std::vector<TerrainType> cells;
+  ++position;
+  SkipWhitespace(text, &position);
+
+  if (position < text.size() && text[position] == ']') {
+    return {false, 0, 0, {}, std::string(field_name),
+            "terrain grid must not be empty: " + std::string(field_name)};
+  }
+
+  while (position < text.size()) {
+    int columns = 0;
+    std::vector<TerrainType> row_cells;
+
+    if (text[position] == '"') {
+      const StringFieldResult row = ParseJsonStringAt(text, position,
+                                                      field_name);
+      if (!row.ok) {
+        return {false, 0, 0, {}, std::string(field_name), row.error};
+      }
+
+      row_cells.reserve(row.value.size());
+      for (const char terrain_symbol : row.value) {
+        row_cells.push_back(TerrainTypeFromSymbol(terrain_symbol));
+      }
+      columns = static_cast<int>(row_cells.size());
+
+      std::string error;
+      if (!SkipJsonString(text, &position, &error)) {
+        return {false, 0, 0, {}, std::string(field_name), error};
+      }
+    } else {
+      if (text[position] != '[') {
+        return {false, 0, 0, {}, std::string(field_name),
+                "expected terrain row array or string for field: " +
+                    std::string(field_name)};
+      }
+
+      ++position;
+      SkipWhitespace(text, &position);
+
+      if (position < text.size() && text[position] != ']') {
+        while (position < text.size()) {
+          if (text[position] != '"') {
+            return {false, 0, 0, {}, std::string(field_name),
+                    "terrain row values must be strings: " +
+                        std::string(field_name)};
+          }
+
+          const StringFieldResult terrain = ParseJsonStringAt(text, position,
+                                                              field_name);
+          if (!terrain.ok) {
+            return {false, 0, 0, {}, std::string(field_name), terrain.error};
+          }
+          row_cells.push_back(TerrainTypeFromString(terrain.value));
+
+          std::string error;
+          if (!SkipJsonString(text, &position, &error)) {
+            return {false, 0, 0, {}, std::string(field_name), error};
+          }
+
+          ++columns;
+          SkipWhitespace(text, &position);
+
+          if (position >= text.size()) {
+            return {false, 0, 0, {}, std::string(field_name),
+                    "unterminated terrain row: " + std::string(field_name)};
+          }
+
+          if (text[position] == ',') {
+            ++position;
+            SkipWhitespace(text, &position);
+            continue;
+          }
+
+          if (text[position] == ']') {
+            break;
+          }
+
+          return {false, 0, 0, {}, std::string(field_name),
+                  "expected comma or terrain row close bracket: " +
+                      std::string(field_name)};
+        }
+      }
+
+      if (position >= text.size() || text[position] != ']') {
+        return {false, 0, 0, {}, std::string(field_name),
+                "unterminated terrain row: " + std::string(field_name)};
+      }
+      ++position;
+    }
+
+    if (columns <= 0) {
+      return {false, 0, 0, {}, std::string(field_name),
+              "terrain row must not be empty: " + std::string(field_name)};
+    }
+
+    if (expected_columns < 0) {
+      expected_columns = columns;
+    } else if (columns != expected_columns) {
+      return {false, 0, 0, {}, std::string(field_name),
+              "terrain rows have different widths: " +
+                  std::string(field_name)};
+    }
+
+    cells.insert(cells.end(), row_cells.begin(), row_cells.end());
+    ++rows;
+    SkipWhitespace(text, &position);
+
+    if (position >= text.size()) {
+      return {false, 0, 0, {}, std::string(field_name),
+              "unterminated terrain grid array: " + std::string(field_name)};
+    }
+
+    if (text[position] == ',') {
+      ++position;
+      SkipWhitespace(text, &position);
+      continue;
+    }
+
+    if (text[position] == ']') {
+      ++position;
+      return {true, rows, expected_columns, cells, std::string(field_name), {}};
+    }
+
+    return {false, 0, 0, {}, std::string(field_name),
+            "expected comma or terrain grid close bracket: " +
+                std::string(field_name)};
+  }
+
+  return {false, 0, 0, {}, std::string(field_name),
+          "unterminated terrain grid array: " + std::string(field_name)};
+}
+
+TerrainGridResult ParseTerrainGridFromValue(std::string_view text,
+                                            std::size_t value_start,
+                                            std::string_view field_name) {
+  if (value_start >= text.size()) {
+    return {false, 0, 0, {}, std::string(field_name),
+            "missing terrain grid value for field: " +
+                std::string(field_name)};
+  }
+
+  if (text[value_start] == '[') {
+    return ParseTerrainGridArrayAt(text, value_start, field_name);
+  }
+
+  if (text[value_start] != '{') {
+    return {false, 0, 0, {}, std::string(field_name),
+            "expected terrain grid array or object for field: " +
+                std::string(field_name)};
+  }
+
+  std::string error;
+  const std::optional<std::string_view> object =
+      ExtractJsonObjectSlice(text, value_start, &error);
+  if (!object.has_value()) {
+    return {false, 0, 0, {}, std::string(field_name), error};
+  }
+
+  const std::optional<std::size_t> rows_start =
+      FindFieldValueStart(*object, "rows", &error);
+  if (!rows_start.has_value()) {
+    if (!error.empty()) {
+      return {false, 0, 0, {}, std::string(field_name), error};
+    }
+    return {false, 0, 0, {}, std::string(field_name),
+            "missing rows array for terrain grid: " +
+                std::string(field_name)};
+  }
+
+  return ParseTerrainGridArrayAt(*object, *rows_start, field_name);
+}
+
+TerrainGridResult ExtractTerrainGrid(
+    std::string_view text, const std::vector<std::string_view>& field_names) {
+  std::string field_error;
+  for (const std::string_view field_name : field_names) {
+    const std::optional<std::size_t> value_start =
+        FindFieldValueStart(text, field_name, &field_error);
+    if (!value_start.has_value()) {
+      if (!field_error.empty()) {
+        return {false, 0, 0, {}, std::string(field_name), field_error};
+      }
+      continue;
+    }
+
+    return ParseTerrainGridFromValue(text, *value_start, field_name);
+  }
+
+  return {false, 0, 0, {}, {}, "missing required terrain grid field"};
+}
+
+bool ValidateTerrainGrid(const TerrainGridResult& grid, int expected_width,
+                         int expected_height, std::string* error) {
+  if (!grid.ok) {
+    *error = grid.error;
+    return false;
+  }
+
+  if (grid.columns != expected_width || grid.rows != expected_height) {
+    *error = "terrain grid size mismatch for " + grid.field_name +
+             ": expected=" + std::to_string(expected_width) + "x" +
+             std::to_string(expected_height) + " actual=" +
+             std::to_string(grid.columns) + "x" + std::to_string(grid.rows);
+    return false;
+  }
+
+  return true;
+}
+
+
 GridShapeResult ExtractGridShape(
     std::string_view text, const std::vector<std::string_view>& field_names) {
   std::string field_error;
@@ -787,10 +1048,10 @@ LevelLoadResult LevelLoader::LoadBasicPackage(
     return {false, {}, "manifest and terrain dimensions mismatch"};
   }
 
-  const GridShapeResult terrain_grid = ExtractGridShape(
+  const TerrainGridResult terrain_grid = ExtractTerrainGrid(
       terrain_file.content, {"terrain_grid", "terrain", "grid", "rows"});
   std::string error;
-  if (!ValidateGridShape(terrain_grid, width.value, height.value, &error)) {
+  if (!ValidateTerrainGrid(terrain_grid, width.value, height.value, &error)) {
     return {false, {}, error};
   }
 
@@ -826,7 +1087,17 @@ LevelLoadResult LevelLoader::LoadBasicPackage(
   summary.package_path = package_path;
   summary.size = LevelSize{width.value, height.value, resolved_tile_size};
   summary.validated_runtime_grid_count = validated_runtime_grid_count;
-  return {true, summary, {}};
+
+  LevelData level;
+  level.size = summary.size;
+  level.cells.reserve(terrain_grid.cells.size());
+  for (const TerrainType terrain : terrain_grid.cells) {
+    RuntimeCell cell;
+    cell.terrain = terrain;
+    level.cells.push_back(cell);
+  }
+
+  return {true, summary, {}, level};
 }
 
 }  // namespace sar

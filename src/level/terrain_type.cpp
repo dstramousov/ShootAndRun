@@ -3,13 +3,32 @@
 namespace sar {
 
 TerrainType TerrainTypeFromString(std::string_view value) {
-  if (value == "open_ground") return TerrainType::kOpenGround;
-  if (value == "forest") return TerrainType::kForest;
-  if (value == "road") return TerrainType::kRoad;
-  if (value == "swamp") return TerrainType::kSwamp;
-  if (value == "ruins") return TerrainType::kRuins;
-  if (value == "water") return TerrainType::kWater;
-  if (value == "wall") return TerrainType::kWall;
+  if (value == "open_ground" || value == "grass" || value == "clearing" ||
+      value == "ground" || value == "dirt") {
+    return TerrainType::kOpenGround;
+  }
+  if (value == "forest" || value == "tree" || value == "trees" ||
+      value == "tree_blocker" || value == "dense_forest") {
+    return TerrainType::kForest;
+  }
+  if (value == "road" || value == "path" || value == "trail" ||
+      value == "dirt_path") {
+    return TerrainType::kRoad;
+  }
+  if (value == "swamp" || value == "mud" || value == "bog") {
+    return TerrainType::kSwamp;
+  }
+  if (value == "ruins" || value == "ruin" || value == "ruin_floor" ||
+      value == "stone_floor" || value == "rubble") {
+    return TerrainType::kRuins;
+  }
+  if (value == "water" || value == "water_slow" || value == "pond" ||
+      value == "lake") {
+    return TerrainType::kWater;
+  }
+  if (value == "wall" || value == "stone_wall" || value == "ruin_wall") {
+    return TerrainType::kWall;
+  }
   return TerrainType::kUnknown;
 }
 

@@ -195,6 +195,14 @@ void TestLevelLoaderManifestPackage() {
          "manifest tile size should be loaded");
   Expect(result.summary.validated_runtime_grid_count == 7,
          "manifest runtime grids should be validated");
+  Expect(result.level.cells.size() == 4,
+         "manifest terrain cells should be loaded");
+  Expect(result.level.cells[0].terrain == sar::TerrainType::kForest,
+         "tree_blocker should render as forest terrain");
+  Expect(result.level.cells[1].terrain == sar::TerrainType::kOpenGround,
+         "grass should render as open ground terrain");
+  Expect(result.level.cells[3].terrain == sar::TerrainType::kWater,
+         "water_slow should render as water terrain");
 
   std::filesystem::remove_all(package_path);
 }
@@ -246,6 +254,12 @@ void TestLevelLoaderBasicPackage() {
   Expect(result.summary.size.tile_size == 16, "tile size should be loaded");
   Expect(result.summary.validated_runtime_grid_count == 7,
          "all runtime grids should be validated");
+  Expect(result.level.cells.size() == 4,
+         "terrain cells should be loaded for rendering");
+  Expect(result.level.cells[0].terrain == sar::TerrainType::kForest,
+         "first terrain cell should be forest");
+  Expect(result.level.cells[1].terrain == sar::TerrainType::kRoad,
+         "second terrain cell should be road");
 
   std::filesystem::remove_all(package_path);
 }

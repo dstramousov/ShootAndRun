@@ -1,4 +1,4 @@
-# ShootAndRunCpp v0.1.8
+# ShootAndRunCpp v0.1.10
 
 Первый каркас C++20 + raylib проекта.
 
@@ -16,6 +16,9 @@
 - Конфигурационный файл `config/app_config.json`.
 - Конфигурируемый UI-шрифт из runtime assets.
 - Базовая валидация `TopDownMapGen` map package.
+
+- Debug renderer for loaded terrain maps.
+- Free camera for map inspection with WASD/arrows and mouse-wheel zoom.
 - Базовые структуры `level/` под будущий renderer/gameplay.
 - Минимальные unit-тесты без внешнего test framework.
 
@@ -74,3 +77,11 @@ ctest --test-dir build --output-on-failure
 проверяет каталог, читает `map.json` manifest, `terrain.json` и
 `runtime_grids.json`, валидирует размеры базовых grid-слоёв и только после этого
 переходит в game screen.
+
+В game screen карта отображается в debug-режиме. Управление камерой:
+
+```text
+WASD / Arrows  - двигать камеру
+Mouse wheel    - zoom in/out
+Esc            - вернуться в главное меню
+```

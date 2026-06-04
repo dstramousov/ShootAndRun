@@ -81,3 +81,13 @@
 - Added process RSS memory display to the service info overlay with throttled updates.
 - Added configurable raylib trace log level and set the default to `warning` to hide normal startup noise.
 - Updated project config dump and tests for service info and raylib log settings.
+
+## v0.1.9 -> v0.1.10
+
+- Bumped CMake project and runtime application version to `0.1.10`.
+- Added `LevelData` terrain cells to the basic map package load result.
+- Added debug terrain renderer for the loaded map package.
+- Added free camera panning with WASD/arrow keys and mouse-wheel zoom in the game screen.
+- Added camera clamping to map bounds and visible-tile rendering.
+- Updated terrain type aliases for current generator terrain identifiers.
+- Updated README and tests for the debug level renderer step.

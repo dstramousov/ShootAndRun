@@ -3,6 +3,7 @@
 
 #include <filesystem>
 #include <string>
+#include <utility>
 
 #include "level/level_data.h"
 
@@ -22,9 +23,43 @@ struct LevelPackageSummary {
 };
 
 struct LevelLoadResult {
+  /**
+   * @brief Creates an empty failed load result.
+   */
+  LevelLoadResult() = default;
+
+  /**
+   * @brief Creates a load result without level data.
+   *
+   * @param ok_value Result success flag.
+   * @param summary_value Loaded package summary.
+   * @param error_value Error text for failed loads.
+   */
+  LevelLoadResult(bool ok_value, LevelPackageSummary summary_value,
+                  std::string error_value)
+      : ok(ok_value),
+        summary(std::move(summary_value)),
+        error(std::move(error_value)) {}
+
+  /**
+   * @brief Creates a load result with level data.
+   *
+   * @param ok_value Result success flag.
+   * @param summary_value Loaded package summary.
+   * @param error_value Error text for failed loads.
+   * @param level_value Loaded level data.
+   */
+  LevelLoadResult(bool ok_value, LevelPackageSummary summary_value,
+                  std::string error_value, LevelData level_value)
+      : ok(ok_value),
+        summary(std::move(summary_value)),
+        error(std::move(error_value)),
+        level(std::move(level_value)) {}
+
   bool ok = false;
   LevelPackageSummary summary;
   std::string error;
+  LevelData level;
 };
 
 class LevelLoader {
@@ -33,8 +68,9 @@ class LevelLoader {
    * @brief Loads and validates the basic map package files.
    *
    * This MVP loader validates `terrain.json` and `runtime_grids.json`, checks
-   * their dimensions, and verifies that required runtime grids match the map
-   * size. It does not build renderable tile data yet.
+   * their dimensions, verifies that required runtime grids match the map
+   * size, and builds a basic `LevelData` terrain cell array for debug
+   * rendering.
    *
    * @param package_path Path to a TopDownMapGen output package directory.
    * @return Load result with either summary data or an error message.

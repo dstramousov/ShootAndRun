@@ -10,10 +10,15 @@ struct InputState {
   bool down_pressed = false;
   bool left_pressed = false;
   bool right_pressed = false;
+  bool up_down = false;
+  bool down_down = false;
+  bool left_down = false;
+  bool right_down = false;
   bool confirm_pressed = false;
   bool cancel_pressed = false;
   bool cancel_down = false;
   bool left_mouse_pressed = false;
+  float mouse_wheel_delta = 0.0F;
   Vec2 mouse_position;
 };
 

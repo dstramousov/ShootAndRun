@@ -304,7 +304,71 @@ void Application::HandleGameInput(const InputState& input) {
   if (input.cancel_pressed || input.cancel_down) {
     screen_ = AppScreen::kMainMenu;
     logger_.Info("game", "returned to main menu");
+    return;
   }
+
+  UpdateGameCamera(input);
+}
+
+void Application::UpdateGameCamera(const InputState& input) {
+  if (!loaded_level_.has_value()) {
+    return;
+  }
+
+  float direction_x = 0.0F;
+  float direction_y = 0.0F;
+  if (input.left_down) {
+    direction_x -= 1.0F;
+  }
+  if (input.right_down) {
+    direction_x += 1.0F;
+  }
+  if (input.up_down) {
+    direction_y -= 1.0F;
+  }
+  if (input.down_down) {
+    direction_y += 1.0F;
+  }
+
+  if (direction_x != 0.0F || direction_y != 0.0F) {
+    const float length = std::sqrt(direction_x * direction_x +
+                                   direction_y * direction_y);
+    direction_x /= length;
+    direction_y /= length;
+
+    const float dt = std::min(GetFrameTime(), 0.05F);
+    const float pan_speed = level_view_.pan_speed_px_per_sec /
+                            std::max(level_view_.zoom, 0.1F);
+    level_view_.target_x += direction_x * pan_speed * dt;
+    level_view_.target_y += direction_y * pan_speed * dt;
+  }
+
+  if (input.mouse_wheel_delta != 0.0F) {
+    const float zoom_multiplier = std::pow(1.10F, input.mouse_wheel_delta);
+    level_view_.zoom *= zoom_multiplier;
+  }
+
+  ClampLevelViewToMap(*loaded_level_, window_state_, &level_view_);
+}
+
+void Application::DrawGameOverlay() const {
+  if (!loaded_level_summary_.has_value()) {
+    return;
+  }
+
+  const int font_size = ScaledFontSize(ui_font_, window_state_, 0.65F);
+  const int x = static_cast<int>(24.0F * window_state_.ui_scale);
+  int y = window_state_.height -
+          static_cast<int>(72.0F * window_state_.ui_scale);
+  const int line_step = font_size +
+                        static_cast<int>(6.0F * window_state_.ui_scale);
+  const Color color = Color{185, 190, 205, 255};
+
+  ui_font_.DrawTextLine(loaded_level_summary_->Dump(), x, y, font_size,
+                        color);
+  y += line_step;
+  ui_font_.DrawTextLine(LevelViewStateToString(level_view_), x, y,
+                        font_size, color);
 }
 
 void Application::ActivateMenuItem(const MenuItem& item) {
@@ -351,7 +415,11 @@ bool Application::StartNewGameFromConfig() {
   }
 
   loaded_level_summary_ = level_result.summary;
+  loaded_level_ = level_result.level;
+  InitializeLevelView(*loaded_level_, &level_view_);
+  ClampLevelViewToMap(*loaded_level_, window_state_, &level_view_);
   logger_.Info("level", loaded_level_summary_->Dump());
+  logger_.Info("camera", LevelViewStateToString(level_view_));
 
   game_session_.StartNewGame();
   screen_ = AppScreen::kGame;
@@ -405,21 +473,19 @@ void Application::OpenExitDialog() {
 
 void Application::RenderFrame() {
   renderer_.BeginFrame();
-  renderer_.DrawTitle(config_.app_name, window_state_, ui_font_);
 
   if (screen_ == AppScreen::kMainMenu || screen_ == AppScreen::kSettings) {
+    renderer_.DrawTitle(config_.app_name, window_state_, ui_font_);
     menu_renderer_.DrawMainMenu(main_menu_, window_state_, ui_font_);
   } else if (screen_ == AppScreen::kGame) {
-    const int title_size = ScaledFontSize(ui_font_, window_state_, 1.0F);
-    const int hint_size = ScaledFontSize(ui_font_, window_state_, 0.8F);
-    const int summary_size = ScaledFontSize(ui_font_, window_state_, 0.65F);
-    ui_font_.DrawTextLine("Game screen placeholder", 48, 120, title_size,
-                          Color{230, 230, 240, 255});
-    ui_font_.DrawTextLine("Press Esc to return to main menu.", 48, 156,
-                          hint_size, Color{170, 175, 195, 255});
-    if (loaded_level_summary_.has_value()) {
-      ui_font_.DrawTextLine(loaded_level_summary_->Dump(), 48, 196,
-                            summary_size, Color{145, 150, 170, 255});
+    if (loaded_level_.has_value()) {
+      ClampLevelViewToMap(*loaded_level_, window_state_, &level_view_);
+      level_renderer_.DrawTerrain(*loaded_level_, level_view_, window_state_);
+      DrawGameOverlay();
+    } else {
+      const int title_size = ScaledFontSize(ui_font_, window_state_, 1.0F);
+      ui_font_.DrawTextLine("Game screen: no level loaded", 48, 120,
+                            title_size, Color{230, 230, 240, 255});
     }
   }
 
