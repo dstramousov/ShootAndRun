@@ -100,3 +100,11 @@
 - Added debug marker rendering on top of the terrain view.
 - Updated initial free-camera centering to prefer `player_spawn`/spawn markers when available.
 - Updated tests for manifest-based marker loading.
+
+## v0.1.11 -> v0.1.12
+
+- Added an isolated `src/visual_pipeline` subsystem for map preparation.
+- Added `VisualPreparationPipeline`, `PipelineProgress`, and `PreparedLevel` skeletons.
+- Changed `New Game` flow to load raw map data, show a preparation progress screen, run preparation steps, and enter the game screen only after preparation completes.
+- Added progress bar and current preparation step text on the map preparation screen.
+- Kept terrain rendering as a temporary debug view after preparation while the visual pipeline is being filled in.

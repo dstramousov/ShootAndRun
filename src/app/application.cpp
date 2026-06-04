@@ -84,6 +84,7 @@ int Application::Run() {
 
     UpdateWindowStateFromRaylib();
     HandleInput(input_system_.Poll());
+    UpdateMapPreparation();
     RenderFrame();
   }
 
@@ -222,6 +223,9 @@ void Application::HandleInput(const InputState& input) {
     case AppScreen::kSettings:
       HandleMenuInput(input);
       break;
+    case AppScreen::kMapPreparing:
+      HandleMapPreparingInput(input);
+      break;
     case AppScreen::kGame:
       HandleGameInput(input);
       break;
@@ -300,6 +304,15 @@ void Application::HandleMenuInput(const InputState& input) {
   }
 }
 
+void Application::HandleMapPreparingInput(const InputState& input) {
+  if (input.cancel_pressed) {
+    visual_pipeline_ = visual_pipeline::VisualPreparationPipeline();
+    prepared_level_.reset();
+    screen_ = AppScreen::kMainMenu;
+    logger_.Info("pipeline", "map preparation cancelled");
+  }
+}
+
 void Application::HandleGameInput(const InputState& input) {
   if (input.cancel_pressed || input.cancel_down) {
     screen_ = AppScreen::kMainMenu;
@@ -308,6 +321,44 @@ void Application::HandleGameInput(const InputState& input) {
   }
 
   UpdateGameCamera(input);
+}
+
+void Application::UpdateMapPreparation() {
+  if (screen_ != AppScreen::kMapPreparing || !loaded_level_.has_value()) {
+    return;
+  }
+
+  constexpr double kStepIntervalSeconds = 0.12;
+  const double now = GetTime();
+  if (last_preparation_step_time_ >= 0.0 &&
+      now - last_preparation_step_time_ < kStepIntervalSeconds) {
+    return;
+  }
+
+  last_preparation_step_time_ = now;
+  visual_pipeline_.AdvanceOneStep(*loaded_level_);
+  logger_.Info("pipeline", visual_pipeline_.progress().Dump());
+
+  if (visual_pipeline_.progress().failed) {
+    logger_.Error("pipeline", visual_pipeline_.progress().error);
+    screen_ = AppScreen::kMainMenu;
+    return;
+  }
+
+  if (!visual_pipeline_.finished()) {
+    return;
+  }
+
+  prepared_level_ = visual_pipeline_.prepared_level();
+  logger_.Info("pipeline", prepared_level_->Dump());
+  InitializeLevelView(*loaded_level_, &level_view_);
+  ClampLevelViewToMap(*loaded_level_, window_state_, &level_view_);
+  logger_.Info("camera", LevelViewStateToString(level_view_));
+
+  game_session_.StartNewGame();
+  screen_ = AppScreen::kGame;
+  ApplyFramePacing();
+  logger_.Info("game", "new game session started");
 }
 
 void Application::UpdateGameCamera(const InputState& input) {
@@ -351,6 +402,61 @@ void Application::UpdateGameCamera(const InputState& input) {
   ClampLevelViewToMap(*loaded_level_, window_state_, &level_view_);
 }
 
+void Application::DrawMapPreparingScreen() const {
+  const visual_pipeline::PipelineProgress& progress =
+      visual_pipeline_.progress();
+  const int title_size = ScaledFontSize(ui_font_, window_state_, 1.15F);
+  const int text_size = ScaledFontSize(ui_font_, window_state_, 0.72F);
+  const int bar_width = static_cast<int>(760.0F * window_state_.ui_scale);
+  const int bar_height = static_cast<int>(26.0F * window_state_.ui_scale);
+  const int center_x = window_state_.width / 2;
+  const int start_x = center_x - bar_width / 2;
+  const int start_y = window_state_.height / 2 -
+                      static_cast<int>(78.0F * window_state_.ui_scale);
+
+  const std::string title = "Preparing map";
+  const int title_width = ui_font_.MeasureTextWidth(title, title_size);
+  ui_font_.DrawTextLine(title, center_x - title_width / 2, start_y,
+                        title_size, Color{235, 235, 245, 255});
+
+  const int bar_y = start_y + static_cast<int>(58.0F * window_state_.ui_scale);
+  const float normalized = progress.Normalized();
+  const int filled_width = static_cast<int>(
+      std::round(static_cast<float>(bar_width) * normalized));
+  DrawRectangleRounded(Rectangle{static_cast<float>(start_x),
+                                 static_cast<float>(bar_y),
+                                 static_cast<float>(bar_width),
+                                 static_cast<float>(bar_height)},
+                       0.25F, 10, Color{36, 38, 50, 255});
+  DrawRectangleRounded(Rectangle{static_cast<float>(start_x),
+                                 static_cast<float>(bar_y),
+                                 static_cast<float>(filled_width),
+                                 static_cast<float>(bar_height)},
+                       0.25F, 10, Color{120, 150, 105, 255});
+  DrawRectangleRoundedLinesEx(Rectangle{static_cast<float>(start_x),
+                                        static_cast<float>(bar_y),
+                                        static_cast<float>(bar_width),
+                                        static_cast<float>(bar_height)},
+                              0.25F, 10, 1.5F,
+                              Color{155, 165, 185, 255});
+
+  const std::string step_text =
+      "Step " + std::to_string(progress.completed_steps +
+                               (progress.finished ? 0 : 1)) +
+      " / " + std::to_string(progress.total_steps) + ": " +
+      progress.current_step_name;
+  const int step_width = ui_font_.MeasureTextWidth(step_text, text_size);
+  ui_font_.DrawTextLine(step_text, center_x - step_width / 2,
+                        bar_y + static_cast<int>(48.0F * window_state_.ui_scale),
+                        text_size, Color{190, 198, 215, 255});
+
+  const std::string hint = "Esc: cancel preparation";
+  const int hint_width = ui_font_.MeasureTextWidth(hint, text_size);
+  ui_font_.DrawTextLine(hint, center_x - hint_width / 2,
+                        bar_y + static_cast<int>(86.0F * window_state_.ui_scale),
+                        text_size, Color{130, 138, 155, 255});
+}
+
 void Application::DrawGameOverlay() const {
   if (!loaded_level_summary_.has_value()) {
     return;
@@ -369,6 +475,10 @@ void Application::DrawGameOverlay() const {
   y += line_step;
   ui_font_.DrawTextLine(LevelViewStateToString(level_view_), x, y,
                         font_size, color);
+  if (prepared_level_.has_value()) {
+    y += line_step;
+    ui_font_.DrawTextLine(prepared_level_->Dump(), x, y, font_size, color);
+  }
 }
 
 void Application::ActivateMenuItem(const MenuItem& item) {
@@ -416,15 +526,14 @@ bool Application::StartNewGameFromConfig() {
 
   loaded_level_summary_ = level_result.summary;
   loaded_level_ = level_result.level;
-  InitializeLevelView(*loaded_level_, &level_view_);
-  ClampLevelViewToMap(*loaded_level_, window_state_, &level_view_);
+  prepared_level_.reset();
+  visual_pipeline_.Start(*loaded_level_);
+  last_preparation_step_time_ = -1.0;
+  screen_ = AppScreen::kMapPreparing;
   logger_.Info("level", loaded_level_summary_->Dump());
-  logger_.Info("camera", LevelViewStateToString(level_view_));
-
-  game_session_.StartNewGame();
-  screen_ = AppScreen::kGame;
+  logger_.Info("pipeline", "map preparation started");
+  logger_.Info("pipeline", visual_pipeline_.progress().Dump());
   ApplyFramePacing();
-  logger_.Info("game", "new game session started");
   return true;
 }
 
@@ -477,6 +586,8 @@ void Application::RenderFrame() {
   if (screen_ == AppScreen::kMainMenu || screen_ == AppScreen::kSettings) {
     renderer_.DrawTitle(config_.app_name, window_state_, ui_font_);
     menu_renderer_.DrawMainMenu(main_menu_, window_state_, ui_font_);
+  } else if (screen_ == AppScreen::kMapPreparing) {
+    DrawMapPreparingScreen();
   } else if (screen_ == AppScreen::kGame) {
     if (loaded_level_.has_value()) {
       ClampLevelViewToMap(*loaded_level_, window_state_, &level_view_);

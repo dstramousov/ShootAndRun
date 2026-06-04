@@ -5,6 +5,7 @@ namespace sar {
 
 enum class AppScreen {
   kMainMenu,
+  kMapPreparing,
   kGame,
   kSettings,
 };

@@ -8,6 +8,7 @@
 #include "level/level_loader.h"
 #include "level/terrain_type.h"
 #include "ui/main_menu.h"
+#include "visual_pipeline/visual_preparation_pipeline.h"
 #include "window/window_layout.h"
 
 namespace {
@@ -139,6 +140,30 @@ void TestProjectConfigLoaderUsesFontDefaults() {
   std::filesystem::remove(config_path);
 }
 
+
+void TestVisualPreparationPipelineSkeleton() {
+  sar::LevelData level;
+  level.size.width = 4;
+  level.size.height = 4;
+  level.size.tile_size = 16;
+  level.cells.resize(16);
+
+  sar::visual_pipeline::VisualPreparationPipeline pipeline;
+  pipeline.Start(level);
+  Expect(pipeline.running(), "visual pipeline should start running");
+  Expect(pipeline.progress().total_steps == 10,
+         "visual pipeline should expose default step count");
+
+  while (!pipeline.finished() && !pipeline.progress().failed) {
+    pipeline.AdvanceOneStep(level);
+  }
+
+  Expect(pipeline.finished(), "visual pipeline should finish successfully");
+  Expect(pipeline.prepared_level().ready,
+         "prepared level should become ready after pipeline completion");
+  Expect(pipeline.prepared_level().render_cache_entry_count == 16,
+         "prepared level should expose placeholder render cache size");
+}
 
 void TestLevelLoaderManifestPackage() {
   const std::filesystem::path package_path =
@@ -320,6 +345,7 @@ int main() {
   TestTerrainMapping();
   TestProjectConfigLoader();
   TestProjectConfigLoaderUsesFontDefaults();
+  TestVisualPreparationPipelineSkeleton();
   TestLevelLoaderBasicPackage();
   TestLevelLoaderManifestPackage();
   std::cout << "All tests passed.\n";

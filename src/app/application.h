@@ -17,6 +17,8 @@
 #include "render/ui_font.h"
 #include "ui/confirm_dialog.h"
 #include "ui/main_menu.h"
+#include "visual_pipeline/prepared_level.h"
+#include "visual_pipeline/visual_preparation_pipeline.h"
 #include "window/window_state.h"
 
 namespace sar {
@@ -50,8 +52,11 @@ class Application {
   void HandleInput(const InputState& input);
   void HandleDialogInput(const InputState& input);
   void HandleMenuInput(const InputState& input);
+  void HandleMapPreparingInput(const InputState& input);
   void HandleGameInput(const InputState& input);
+  void UpdateMapPreparation();
   void UpdateGameCamera(const InputState& input);
+  void DrawMapPreparingScreen() const;
   void DrawGameOverlay() const;
   void ActivateMenuItem(const MenuItem& item);
   bool StartNewGameFromConfig();
@@ -77,7 +82,10 @@ class Application {
   std::optional<ProjectConfig> project_config_;
   std::optional<LevelPackageSummary> loaded_level_summary_;
   std::optional<LevelData> loaded_level_;
+  std::optional<visual_pipeline::PreparedLevel> prepared_level_;
+  visual_pipeline::VisualPreparationPipeline visual_pipeline_;
   LevelViewState level_view_;
+  double last_preparation_step_time_ = -1.0;
   ServiceInfoOverlayData service_info_data_;
   double last_service_info_update_time_ = -1.0;
   std::optional<ConfirmDialog> confirm_dialog_;

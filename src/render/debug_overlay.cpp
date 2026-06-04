@@ -15,6 +15,8 @@ const char* ScreenName(AppScreen screen) {
   switch (screen) {
     case AppScreen::kMainMenu:
       return "main_menu";
+    case AppScreen::kMapPreparing:
+      return "map_preparing";
     case AppScreen::kGame:
       return "game";
     case AppScreen::kSettings:
