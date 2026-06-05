@@ -10,8 +10,10 @@
 
 #include "visual_pipeline/semantic_masks.h"
 #include "visual_pipeline/steps/build_semantic_masks_step.h"
+#include "visual_pipeline/steps/classify_region_borders_step.h"
 #include "visual_pipeline/steps/build_terrain_regions_step.h"
 #include "visual_pipeline/terrain_regions.h"
+#include "visual_pipeline/region_borders.h"
 
 namespace sar::visual_pipeline {
 namespace {
@@ -22,7 +24,7 @@ std::vector<PipelineStepInfo> BuildDefaultSteps() {
       {"Validate raw map data"},
       {"Build semantic terrain masks"},
       {"Build terrain regions"},
-      {"Smooth region borders"},
+      {"Classify region borders"},
       {"Build road and path shapes"},
       {"Build forest masses"},
       {"Build water and swamp edges"},
@@ -106,6 +108,42 @@ void AddTerrainRegionDiagnostics(const TerrainRegionSummary& summary,
   if (summary.unknown_regions > 0) {
     report->warnings.push_back("unknown terrain regions=" +
                                std::to_string(summary.unknown_regions));
+  }
+}
+
+std::string BorderSummaryLine(const RegionBorderSummary& summary) {
+  return "region_borders tiles=" + std::to_string(summary.border_tile_count) +
+         " edge=" + std::to_string(summary.edge_tile_count) +
+         " corner=" + std::to_string(summary.corner_tile_count) +
+         " thin=" + std::to_string(summary.thin_tile_count) +
+         " complex=" + std::to_string(summary.complex_tile_count) +
+         " map_edge=" + std::to_string(summary.map_edge_tile_count);
+}
+
+std::string BorderNeighborSummaryLine(const RegionBorderSummary& summary) {
+  return "border_neighbors open=" +
+         std::to_string(summary.neighbor_open_ground) +
+         " forest=" + std::to_string(summary.neighbor_forest) +
+         " road=" + std::to_string(summary.neighbor_road) +
+         " swamp=" + std::to_string(summary.neighbor_swamp) +
+         " water=" + std::to_string(summary.neighbor_water) +
+         " ruins=" + std::to_string(summary.neighbor_ruins) +
+         " wall=" + std::to_string(summary.neighbor_wall) +
+         " unknown=" + std::to_string(summary.neighbor_unknown) +
+         " outside_map=" + std::to_string(summary.neighbor_outside_map);
+}
+
+void AddRegionBorderDiagnostics(const RegionBorderSummary& summary,
+                                PipelineStepReport* report) {
+  if (report == nullptr) {
+    return;
+  }
+
+  report->summaries.push_back(BorderSummaryLine(summary));
+  report->summaries.push_back(BorderNeighborSummaryLine(summary));
+  if (summary.complex_tile_count > 0) {
+    report->warnings.push_back("complex border tiles=" +
+                               std::to_string(summary.complex_tile_count));
   }
 }
 
@@ -226,12 +264,17 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
     return;
   }
 
-  if (step.name == "Smooth region borders") {
+  if (step.name == "Classify region borders") {
+    std::string error;
+    if (!RunClassifyRegionBordersStep(&prepared_level_, &error)) {
+      Fail(error.empty() ? "region border step failed" : error);
+      return;
+    }
+
+    AddRegionBorderDiagnostics(prepared_level_.region_borders.summary,
+                               report);
     prepared_level_.visual_layer_count =
         std::max(prepared_level_.visual_layer_count, 1);
-    report->summaries.push_back("border smoothing placeholder layers=" +
-                                std::to_string(
-                                    prepared_level_.visual_layer_count));
     return;
   }
 

@@ -217,6 +217,10 @@ void TestVisualPreparationPipelineSkeleton() {
          "prepared level should contain valid terrain regions");
   Expect(pipeline.prepared_level().terrain_region_count == 1,
          "prepared level should expose one unknown terrain region");
+  Expect(pipeline.prepared_level().region_borders.IsValid(),
+         "prepared level should contain valid region borders");
+  Expect(pipeline.prepared_level().region_border_count == 1,
+         "prepared level should expose one unknown region border");
   Expect(pipeline.prepared_level().render_cache_entry_count == 16,
          "prepared level should expose placeholder render cache size");
   Expect(pipeline.last_step_report().step_name == "Build render cache",
@@ -329,6 +333,45 @@ void TestVisualPreparationTerrainRegions() {
          "terrain region builder should track largest forest area");
   Expect(regions.regions[0].border_tile_count > 0,
          "terrain regions should store border tile counts");
+}
+
+void TestVisualPreparationRegionBorders() {
+  sar::LevelData level;
+  level.size.width = 3;
+  level.size.height = 3;
+  level.size.tile_size = 16;
+  level.cells.resize(9);
+
+  level.cells[0].terrain = sar::TerrainType::kForest;
+  level.cells[1].terrain = sar::TerrainType::kForest;
+  level.cells[2].terrain = sar::TerrainType::kOpenGround;
+  level.cells[3].terrain = sar::TerrainType::kForest;
+  level.cells[4].terrain = sar::TerrainType::kForest;
+  level.cells[5].terrain = sar::TerrainType::kRoad;
+  level.cells[6].terrain = sar::TerrainType::kWater;
+  level.cells[7].terrain = sar::TerrainType::kRoad;
+  level.cells[8].terrain = sar::TerrainType::kRoad;
+
+  sar::visual_pipeline::VisualPreparationPipeline pipeline;
+  pipeline.Start(level);
+  while (!pipeline.finished() && !pipeline.progress().failed) {
+    pipeline.AdvanceOneStep(level);
+  }
+
+  const sar::visual_pipeline::RegionBorders& borders =
+      pipeline.prepared_level().region_borders;
+  Expect(borders.IsValid(), "region borders should be valid");
+  Expect(borders.summary.region_count ==
+             pipeline.prepared_level().terrain_region_count,
+         "region border count should match terrain region count");
+  Expect(borders.summary.border_tile_count > 0,
+         "region borders should count border tiles");
+  Expect(borders.summary.corner_tile_count > 0,
+         "region borders should classify corner tiles");
+  Expect(borders.summary.neighbor_outside_map > 0,
+         "region borders should count outside-map neighbors");
+  Expect(!borders.regions.empty() && !borders.regions[0].tiles.empty(),
+         "region border info should retain tile classification data");
 }
 
 void TestLevelLoaderManifestPackage() {
@@ -515,6 +558,7 @@ int main() {
   TestVisualPreparationPipelineSkeleton();
   TestVisualPreparationSemanticMasks();
   TestVisualPreparationTerrainRegions();
+  TestVisualPreparationRegionBorders();
   TestLevelLoaderBasicPackage();
   TestLevelLoaderManifestPackage();
   std::cout << "All tests passed.\n";

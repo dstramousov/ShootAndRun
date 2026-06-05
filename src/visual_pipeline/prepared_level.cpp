@@ -11,7 +11,8 @@ std::string PreparedLevel::Dump() const {
       std::to_string(size.height) + ", tile_size: " +
       std::to_string(size.tile_size) + ", semantic_masks: " +
       std::to_string(semantic_mask_count) + ", regions: " +
-      std::to_string(terrain_region_count) + ", visual_layers: " +
+      std::to_string(terrain_region_count) + ", region_borders: " +
+      std::to_string(region_border_count) + ", visual_layers: " +
       std::to_string(visual_layer_count) + ", decorations: " +
       std::to_string(decoration_count) + ", render_cache: " +
       std::to_string(render_cache_entry_count);
@@ -39,6 +40,16 @@ std::string PreparedLevel::Dump() const {
             ", swamp: " + std::to_string(summary.swamp_regions) +
             ", ruins: " + std::to_string(summary.ruins_regions) +
             ", tiny: " + std::to_string(summary.tiny_regions) + " }";
+  }
+
+  if (region_borders.IsValid()) {
+    const RegionBorderSummary& summary = region_borders.summary;
+    dump += ", border_summary: { border_tiles: " +
+            std::to_string(summary.border_tile_count) +
+            ", edge: " + std::to_string(summary.edge_tile_count) +
+            ", corner: " + std::to_string(summary.corner_tile_count) +
+            ", map_edge: " + std::to_string(summary.map_edge_tile_count) +
+            " }";
   }
 
   dump += " }";

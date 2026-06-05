@@ -151,3 +151,13 @@
 - Replaced the terrain-region placeholder pipeline step with `BuildTerrainRegionsStep`.
 - Added terrain-region summary and warning diagnostics to the visual preparation pipeline.
 - Added tests for terrain region generation.
+
+## v0.1.17 -> v0.1.18
+
+- Bumped CMake project and runtime application version to `0.1.18`.
+- Added `RegionBorders` and `RegionBorderInfo` data structures inside the isolated `visual_pipeline` subsystem.
+- Replaced the border-smoothing placeholder with a real `Classify region borders` pipeline step.
+- Added classification for edge, corner, thin, complex, and map-edge border tiles.
+- Added neighboring terrain counters for region borders as input for future smoothing and transition passes.
+- Added region-border diagnostics to the visual preparation pipeline log.
+- Added tests for region border classification.
