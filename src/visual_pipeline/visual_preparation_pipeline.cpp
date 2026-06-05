@@ -10,6 +10,8 @@
 
 #include "visual_pipeline/semantic_masks.h"
 #include "visual_pipeline/steps/build_semantic_masks_step.h"
+#include "visual_pipeline/steps/build_terrain_regions_step.h"
+#include "visual_pipeline/terrain_regions.h"
 
 namespace sar::visual_pipeline {
 namespace {
@@ -66,6 +68,44 @@ void AddSemanticMaskDiagnostics(const SemanticMaskSummary& summary,
   if (summary.unknown_tiles > 0) {
     report->warnings.push_back("unknown terrain tiles=" +
                                std::to_string(summary.unknown_tiles));
+  }
+}
+
+std::string RegionSummaryLine(const TerrainRegionSummary& summary) {
+  return "regions total=" + std::to_string(summary.total_regions) +
+         " open=" + std::to_string(summary.open_ground_regions) +
+         " forest=" + std::to_string(summary.forest_regions) +
+         " road=" + std::to_string(summary.road_regions) +
+         " swamp=" + std::to_string(summary.swamp_regions) +
+         " water=" + std::to_string(summary.water_regions) +
+         " ruins=" + std::to_string(summary.ruins_regions) +
+         " wall=" + std::to_string(summary.wall_regions) +
+         " unknown=" + std::to_string(summary.unknown_regions) +
+         " tiny=" + std::to_string(summary.tiny_regions);
+}
+
+std::string RegionLargestLine(const TerrainRegionSummary& summary) {
+  return "region_stats largest=" + std::to_string(summary.largest_region_area) +
+         " largest_forest=" + std::to_string(summary.largest_forest_area) +
+         " largest_open=" +
+         std::to_string(summary.largest_open_ground_area);
+}
+
+void AddTerrainRegionDiagnostics(const TerrainRegionSummary& summary,
+                                 PipelineStepReport* report) {
+  if (report == nullptr) {
+    return;
+  }
+
+  report->summaries.push_back(RegionSummaryLine(summary));
+  report->summaries.push_back(RegionLargestLine(summary));
+  if (summary.tiny_regions > 0) {
+    report->warnings.push_back("tiny terrain regions=" +
+                               std::to_string(summary.tiny_regions));
+  }
+  if (summary.unknown_regions > 0) {
+    report->warnings.push_back("unknown terrain regions=" +
+                               std::to_string(summary.unknown_regions));
   }
 }
 
@@ -175,11 +215,14 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
   }
 
   if (step.name == "Build terrain regions") {
-    prepared_level_.terrain_region_count =
-        std::max(1, (level.size.width * level.size.height) / 256);
-    report->summaries.push_back(
-        "region builder placeholder regions=" +
-        std::to_string(prepared_level_.terrain_region_count));
+    std::string error;
+    if (!RunBuildTerrainRegionsStep(&prepared_level_, &error)) {
+      Fail(error.empty() ? "terrain region step failed" : error);
+      return;
+    }
+
+    AddTerrainRegionDiagnostics(prepared_level_.terrain_regions.summary,
+                                report);
     return;
   }
 

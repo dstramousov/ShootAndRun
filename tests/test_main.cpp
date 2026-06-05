@@ -9,6 +9,7 @@
 #include "level/level_loader.h"
 #include "level/terrain_type.h"
 #include "ui/main_menu.h"
+#include "visual_pipeline/terrain_regions.h"
 #include "visual_pipeline/visual_preparation_pipeline.h"
 #include "window/window_layout.h"
 
@@ -212,6 +213,10 @@ void TestVisualPreparationPipelineSkeleton() {
          "prepared level should contain valid semantic masks");
   Expect(pipeline.prepared_level().semantic_masks.summary.total_tiles == 16,
          "semantic mask summary should count all tiles");
+  Expect(pipeline.prepared_level().terrain_regions.IsValid(),
+         "prepared level should contain valid terrain regions");
+  Expect(pipeline.prepared_level().terrain_region_count == 1,
+         "prepared level should expose one unknown terrain region");
   Expect(pipeline.prepared_level().render_cache_entry_count == 16,
          "prepared level should expose placeholder render cache size");
   Expect(pipeline.last_step_report().step_name == "Build render cache",
@@ -276,6 +281,54 @@ void TestVisualPreparationSemanticMasks() {
          "semantic masks should count elevated tiles");
   Expect(pipeline.last_step_report().success,
          "semantic mask pipeline run should finish with a successful report");
+}
+
+
+void TestVisualPreparationTerrainRegions() {
+  sar::LevelData level;
+  level.size.width = 4;
+  level.size.height = 3;
+  level.size.tile_size = 16;
+  level.cells.resize(12);
+
+  level.cells[0].terrain = sar::TerrainType::kForest;
+  level.cells[1].terrain = sar::TerrainType::kForest;
+  level.cells[2].terrain = sar::TerrainType::kRoad;
+  level.cells[3].terrain = sar::TerrainType::kOpenGround;
+  level.cells[4].terrain = sar::TerrainType::kForest;
+  level.cells[5].terrain = sar::TerrainType::kOpenGround;
+  level.cells[6].terrain = sar::TerrainType::kRoad;
+  level.cells[7].terrain = sar::TerrainType::kOpenGround;
+  level.cells[8].terrain = sar::TerrainType::kWater;
+  level.cells[9].terrain = sar::TerrainType::kWater;
+  level.cells[10].terrain = sar::TerrainType::kRoad;
+  level.cells[11].terrain = sar::TerrainType::kRuins;
+
+  sar::visual_pipeline::VisualPreparationPipeline pipeline;
+  pipeline.Start(level);
+  while (!pipeline.finished() && !pipeline.progress().failed) {
+    pipeline.AdvanceOneStep(level);
+  }
+
+  const sar::visual_pipeline::TerrainRegions& regions =
+      pipeline.prepared_level().terrain_regions;
+  Expect(regions.IsValid(), "terrain regions should be valid");
+  Expect(regions.summary.total_regions == 6,
+         "terrain region builder should find all connected components");
+  Expect(regions.summary.forest_regions == 1,
+         "terrain region builder should count forest regions");
+  Expect(regions.summary.open_ground_regions == 2,
+         "terrain region builder should count disconnected open regions");
+  Expect(regions.summary.road_regions == 1,
+         "terrain region builder should count road regions");
+  Expect(regions.summary.water_regions == 1,
+         "terrain region builder should count water patches");
+  Expect(regions.summary.ruins_regions == 1,
+         "terrain region builder should count ruins clusters");
+  Expect(regions.summary.largest_forest_area == 3,
+         "terrain region builder should track largest forest area");
+  Expect(regions.regions[0].border_tile_count > 0,
+         "terrain regions should store border tile counts");
 }
 
 void TestLevelLoaderManifestPackage() {
@@ -461,6 +514,7 @@ int main() {
   TestProjectConfigLoaderUsesFontDefaults();
   TestVisualPreparationPipelineSkeleton();
   TestVisualPreparationSemanticMasks();
+  TestVisualPreparationTerrainRegions();
   TestLevelLoaderBasicPackage();
   TestLevelLoaderManifestPackage();
   std::cout << "All tests passed.\n";

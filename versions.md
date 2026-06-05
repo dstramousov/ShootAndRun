@@ -141,3 +141,13 @@
 - Fixed `LoggerConfig` initialization to remove the missing `highlight_rules` initializer warning.
 - Replaced fragile positional aggregate initialization with explicit field initialization.
 
+
+## v0.1.16 -> v0.1.17
+
+- Bumped CMake project and runtime application version to `0.1.17`.
+- Added real connected-component terrain region building to the isolated `visual_pipeline` subsystem.
+- Added `TerrainRegion`, `TerrainRegions`, and region summary diagnostics for forest, open ground, road, swamp, water, ruins, wall, and unknown terrain.
+- Added border and inner tile counters for each terrain region as input for future smoothing passes.
+- Replaced the terrain-region placeholder pipeline step with `BuildTerrainRegionsStep`.
+- Added terrain-region summary and warning diagnostics to the visual preparation pipeline.
+- Added tests for terrain region generation.

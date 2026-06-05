@@ -28,6 +28,19 @@ std::string PreparedLevel::Dump() const {
             ", blocked: " + std::to_string(summary.blocked_tiles) + " }";
   }
 
+  if (terrain_regions.IsValid()) {
+    const TerrainRegionSummary& summary = terrain_regions.summary;
+    dump += ", region_summary: { total: " +
+            std::to_string(summary.total_regions) +
+            ", forest: " + std::to_string(summary.forest_regions) +
+            ", open: " + std::to_string(summary.open_ground_regions) +
+            ", road: " + std::to_string(summary.road_regions) +
+            ", water: " + std::to_string(summary.water_regions) +
+            ", swamp: " + std::to_string(summary.swamp_regions) +
+            ", ruins: " + std::to_string(summary.ruins_regions) +
+            ", tiny: " + std::to_string(summary.tiny_regions) + " }";
+  }
+
   dump += " }";
   return dump;
 }
