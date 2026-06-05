@@ -4,6 +4,7 @@
 #include <string>
 
 #include "level/level_data.h"
+#include "visual_pipeline/prepared_level.h"
 #include "window/window_state.h"
 
 namespace sar {
@@ -16,6 +17,20 @@ struct LevelViewState {
   float max_zoom = 4.0F;
   float pan_speed_px_per_sec = 720.0F;
 };
+
+enum class LevelRenderMode {
+  kRawTerrain,
+  kCppAnalysis,
+  kPreparedVisualMap,
+};
+
+/**
+ * @brief Returns the stable display name of a level render mode.
+ *
+ * @param mode Level render mode.
+ * @return Stable lowercase mode name.
+ */
+const char* LevelRenderModeName(LevelRenderMode mode);
 
 /**
  * @brief Centers a level view on a preferred spawn marker or map center.
@@ -45,6 +60,20 @@ std::string LevelViewStateToString(const LevelViewState& view);
 
 class LevelRenderer {
  public:
+  /**
+   * @brief Draws the loaded level using the selected debug or visual mode.
+   *
+   * @param level Loaded level data.
+   * @param prepared_level Prepared visual data, if available.
+   * @param view Current level view state.
+   * @param window Current window state.
+   * @param mode Selected level render mode.
+   */
+  void Draw(const LevelData& level,
+            const visual_pipeline::PreparedLevel* prepared_level,
+            const LevelViewState& view, const WindowState& window,
+            LevelRenderMode mode) const;
+
   /**
    * @brief Draws the loaded level terrain and debug markers.
    *

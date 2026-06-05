@@ -188,3 +188,11 @@
 - Added developer-log controls for compact visual-pipeline summaries and optional per-step details.
 - Replaced noisy INFO-level visual-pipeline step logs with a single compact map preparation report.
 - Moved detailed visual-pipeline step diagnostics to DEBUG logging when `visual_pipeline_step_details` is enabled.
+
+## v0.1.21 -> v0.1.22
+
+- Bumped CMake project and runtime application version to `0.1.22`.
+- Added parsed prepared visual-map layer grids and visual object data to `VisualMapData`.
+- Added a prepared visual-map render mode that draws Python-prepared visual tiles and placeholder visual objects.
+- Added runtime view switching in the game screen: `F1` raw terrain, `F2` C++ analysis borders, `F3` prepared visual map.
+- Added concise game overlay text showing the active view mode and prepared-level source.

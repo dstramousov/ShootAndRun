@@ -9,6 +9,31 @@
 
 namespace sar::visual_pipeline {
 
+struct VisualLayerGrid {
+  std::string id;
+  std::string role;
+  int width = 0;
+  int height = 0;
+  std::vector<std::string> tile_ids;
+
+  /**
+   * @brief Returns true when the layer has complete grid data.
+   *
+   * @return True when tile ids match width and height.
+   */
+  bool IsRenderable() const;
+};
+
+struct VisualObjectData {
+  std::string id;
+  std::string sprite_id;
+  std::string draw_layer;
+  int x = 0;
+  int y = 0;
+  int width = 1;
+  int height = 1;
+};
+
 struct VisualMapData {
   bool loaded = false;
   std::filesystem::path manifest_path;
@@ -26,6 +51,8 @@ struct VisualMapData {
   bool changes_gameplay = false;
   bool moves_markers = false;
   bool changes_collision = false;
+  std::vector<VisualLayerGrid> layers;
+  std::vector<VisualObjectData> objects;
   std::vector<std::string> warnings;
 
   /**
@@ -37,6 +64,13 @@ struct VisualMapData {
    */
   bool ValidateAgainstRawSize(const LevelSize& raw_size,
                               std::string* error) const;
+
+  /**
+   * @brief Returns true when at least one visual layer can be rendered.
+   *
+   * @return Renderable layer availability flag.
+   */
+  bool HasRenderableLayer() const;
 
   /**
    * @brief Returns a readable dump of the prepared visual-map state.

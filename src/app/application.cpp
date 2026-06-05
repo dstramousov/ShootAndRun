@@ -263,6 +263,23 @@ std::string WindowStateToString(const WindowState& state) {
   return stream.str();
 }
 
+
+std::string PreparedLevelOverlayLine(
+    const visual_pipeline::PreparedLevel& prepared_level) {
+  std::ostringstream stream;
+  stream << "prepared: source="
+         << visual_pipeline::PreparedLevelSourceName(prepared_level.source)
+         << " layers=" << prepared_level.visual_layer_count
+         << " objects=" << prepared_level.decoration_count
+         << " regions=" << prepared_level.terrain_region_count;
+  if (prepared_level.prepared_visual_map.loaded) {
+    stream << " visual_objects="
+           << prepared_level.prepared_visual_map.visual_object_count
+           << " chunks=" << prepared_level.prepared_visual_map.visual_chunk_count;
+  }
+  return stream.str();
+}
+
 }  // namespace
 
 Application::Application(AppConfig config)
@@ -549,6 +566,22 @@ void Application::HandleGameInput(const InputState& input) {
     return;
   }
 
+  if (input.debug_view_raw_pressed) {
+    level_render_mode_ = LevelRenderMode::kRawTerrain;
+    logger_.Info("render", std::string("level view mode=") +
+                               LevelRenderModeName(level_render_mode_));
+  }
+  if (input.debug_view_analysis_pressed) {
+    level_render_mode_ = LevelRenderMode::kCppAnalysis;
+    logger_.Info("render", std::string("level view mode=") +
+                               LevelRenderModeName(level_render_mode_));
+  }
+  if (input.debug_view_visual_pressed) {
+    level_render_mode_ = LevelRenderMode::kPreparedVisualMap;
+    logger_.Info("render", std::string("level view mode=") +
+                               LevelRenderModeName(level_render_mode_));
+  }
+
   UpdateGameCamera(input);
 }
 
@@ -613,6 +646,13 @@ void Application::UpdateMapPreparation() {
                                            project_config_->map_package_path));
   }
   logger_.Debug("visual_pipeline", prepared_level_->Dump());
+  level_render_mode_ =
+      prepared_level_->prepared_visual_map.loaded &&
+              prepared_level_->prepared_visual_map.HasRenderableLayer()
+          ? LevelRenderMode::kPreparedVisualMap
+          : LevelRenderMode::kRawTerrain;
+  logger_.Info("render", std::string("level view mode=") +
+                             LevelRenderModeName(level_render_mode_));
   InitializeLevelView(*loaded_level_, &level_view_);
   ClampLevelViewToMap(*loaded_level_, window_state_, &level_view_);
   logger_.Info("camera", LevelViewStateToString(level_view_));
@@ -737,9 +777,15 @@ void Application::DrawGameOverlay() const {
   y += line_step;
   ui_font_.DrawTextLine(LevelViewStateToString(level_view_), x, y,
                         font_size, color);
+  y += line_step;
+  ui_font_.DrawTextLine(std::string("view: ") +
+                            LevelRenderModeName(level_render_mode_) +
+                            "  F1 raw  F2 analysis  F3 visual",
+                        x, y, font_size, color);
   if (prepared_level_.has_value()) {
     y += line_step;
-    ui_font_.DrawTextLine(prepared_level_->Dump(), x, y, font_size, color);
+    ui_font_.DrawTextLine(PreparedLevelOverlayLine(*prepared_level_), x, y,
+                          font_size, color);
   }
 }
 
@@ -866,7 +912,10 @@ void Application::RenderFrame() {
   } else if (screen_ == AppScreen::kGame) {
     if (loaded_level_.has_value()) {
       ClampLevelViewToMap(*loaded_level_, window_state_, &level_view_);
-      level_renderer_.DrawTerrain(*loaded_level_, level_view_, window_state_);
+      level_renderer_.Draw(*loaded_level_,
+                           prepared_level_.has_value() ? &(*prepared_level_)
+                                                        : nullptr,
+                           level_view_, window_state_, level_render_mode_);
       DrawGameOverlay();
     } else {
       const int title_size = ScaledFontSize(ui_font_, window_state_, 1.0F);

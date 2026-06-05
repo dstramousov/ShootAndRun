@@ -5,13 +5,24 @@
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
+#include <cstdint>
+#include <functional>
 #include <string>
 #include <string_view>
 
 #include "level/terrain_type.h"
+#include "visual_pipeline/region_borders.h"
+#include "visual_pipeline/visual_map_data.h"
 
 namespace sar {
 namespace {
+
+struct VisibleTileRange {
+  int min_x = 0;
+  int max_x = 0;
+  int min_y = 0;
+  int max_y = 0;
+};
 
 Color TerrainColor(TerrainType terrain) {
   switch (terrain) {
@@ -34,6 +45,71 @@ Color TerrainColor(TerrainType terrain) {
   }
 
   return Color{138, 62, 128, 255};
+}
+
+Color AddTileVariation(Color base, std::string_view key) {
+  const std::size_t hash = std::hash<std::string_view>{}(key);
+  const int delta = static_cast<int>(hash % 15U) - 7;
+  const auto apply = [delta](unsigned char value) -> unsigned char {
+    return static_cast<unsigned char>(std::clamp(static_cast<int>(value) + delta,
+                                                0, 255));
+  };
+  return Color{apply(base.r), apply(base.g), apply(base.b), base.a};
+}
+
+bool StartsWith(std::string_view text, std::string_view prefix) {
+  return text.size() >= prefix.size() && text.substr(0, prefix.size()) == prefix;
+}
+
+Color VisualTileColor(std::string_view tile_id) {
+  Color base{138, 62, 128, 255};
+  if (StartsWith(tile_id, "grass")) {
+    base = Color{82, 121, 61, 255};
+  } else if (StartsWith(tile_id, "forest")) {
+    base = Color{24, 70, 42, 255};
+  } else if (StartsWith(tile_id, "road")) {
+    base = Color{151, 119, 71, 255};
+  } else if (StartsWith(tile_id, "swamp")) {
+    base = Color{41, 82, 67, 255};
+  } else if (StartsWith(tile_id, "water")) {
+    base = Color{35, 86, 112, 255};
+  } else if (StartsWith(tile_id, "ruins")) {
+    base = Color{100, 99, 83, 255};
+  } else if (StartsWith(tile_id, "wall")) {
+    base = Color{44, 38, 32, 255};
+  } else if (StartsWith(tile_id, "boundary")) {
+    base = Color{16, 44, 31, 255};
+  }
+
+  return AddTileVariation(base, tile_id);
+}
+
+Color VisualObjectColor(const visual_pipeline::VisualObjectData& object) {
+  if (StartsWith(object.sprite_id, "boundary")) {
+    return Color{18, 38, 28, 220};
+  }
+  if (StartsWith(object.sprite_id, "decor")) {
+    return Color{175, 139, 88, 190};
+  }
+  if (StartsWith(object.sprite_id, "elevation")) {
+    return Color{128, 119, 88, 190};
+  }
+  if (StartsWith(object.sprite_id, "ruin") ||
+      StartsWith(object.sprite_id, "wall")) {
+    return Color{120, 116, 102, 220};
+  }
+  if (StartsWith(object.sprite_id, "forest") ||
+      StartsWith(object.sprite_id, "tree")) {
+    return Color{18, 82, 45, 220};
+  }
+  if (StartsWith(object.sprite_id, "swamp") ||
+      StartsWith(object.sprite_id, "water")) {
+    return Color{49, 104, 92, 190};
+  }
+  if (object.draw_layer == "above_actor") {
+    return Color{25, 58, 39, 210};
+  }
+  return Color{190, 165, 105, 190};
 }
 
 float MapWidthPx(const LevelData& level) {
@@ -115,7 +191,165 @@ void DrawDebugMarkers(const LevelData& level, float zoom) {
   }
 }
 
+Camera2D BuildCamera(const LevelViewState& view, const WindowState& window) {
+  Camera2D camera{};
+  camera.offset = Vector2{static_cast<float>(window.width) * 0.5F,
+                          static_cast<float>(window.height) * 0.5F};
+  camera.target = Vector2{view.target_x, view.target_y};
+  camera.rotation = 0.0F;
+  camera.zoom = view.zoom;
+  return camera;
+}
+
+VisibleTileRange CalculateVisibleTileRange(const Camera2D& camera,
+                                           const WindowState& window,
+                                           int width, int height,
+                                           int tile_size) {
+  const Vector2 world_top_left = GetScreenToWorld2D(Vector2{0.0F, 0.0F},
+                                                    camera);
+  const Vector2 world_bottom_right = GetScreenToWorld2D(
+      Vector2{static_cast<float>(window.width),
+              static_cast<float>(window.height)},
+      camera);
+
+  const float tile_size_float = static_cast<float>(tile_size);
+  const float min_world_x = std::min(world_top_left.x, world_bottom_right.x);
+  const float max_world_x = std::max(world_top_left.x, world_bottom_right.x);
+  const float min_world_y = std::min(world_top_left.y, world_bottom_right.y);
+  const float max_world_y = std::max(world_top_left.y, world_bottom_right.y);
+
+  VisibleTileRange range;
+  range.min_x = ClampTileIndex(
+      static_cast<int>(std::floor(min_world_x / tile_size_float)) - 1, 0,
+      width - 1);
+  range.max_x = ClampTileIndex(
+      static_cast<int>(std::ceil(max_world_x / tile_size_float)) + 1, 0,
+      width - 1);
+  range.min_y = ClampTileIndex(
+      static_cast<int>(std::floor(min_world_y / tile_size_float)) - 1, 0,
+      height - 1);
+  range.max_y = ClampTileIndex(
+      static_cast<int>(std::ceil(max_world_y / tile_size_float)) + 1, 0,
+      height - 1);
+  return range;
+}
+
+bool IsTileVisible(int x, int y, const VisibleTileRange& range) {
+  return x >= range.min_x && x <= range.max_x && y >= range.min_y &&
+         y <= range.max_y;
+}
+
+void DrawRawTerrainTiles(const LevelData& level,
+                         const VisibleTileRange& range) {
+  for (int y = range.min_y; y <= range.max_y; ++y) {
+    for (int x = range.min_x; x <= range.max_x; ++x) {
+      const int index = y * level.size.width + x;
+      if (index < 0 || index >= static_cast<int>(level.cells.size())) {
+        continue;
+      }
+
+      const RuntimeCell& cell = level.cells[static_cast<std::size_t>(index)];
+      DrawRectangle(x * level.size.tile_size, y * level.size.tile_size,
+                    level.size.tile_size, level.size.tile_size,
+                    TerrainColor(cell.terrain));
+    }
+  }
+}
+
+void DrawAnalysisOverlay(const visual_pipeline::PreparedLevel& prepared_level,
+                         int tile_size, float zoom,
+                         const VisibleTileRange& range) {
+  if (!prepared_level.region_borders.IsValid()) {
+    return;
+  }
+
+  const float line_width = std::max(1.0F / std::max(zoom, 0.1F), 0.5F);
+  for (const visual_pipeline::RegionBorderInfo& region :
+       prepared_level.region_borders.regions) {
+    for (const visual_pipeline::BorderTile& tile : region.tiles) {
+      if (!IsTileVisible(tile.x, tile.y, range)) {
+        continue;
+      }
+
+      Color color = Color{245, 190, 70, 120};
+      if (tile.differing_neighbor_count >= 3) {
+        color = Color{235, 85, 95, 150};
+      } else if (tile.IsCorner()) {
+        color = Color{95, 170, 245, 135};
+      } else if (tile.touches_map_edge) {
+        color = Color{220, 220, 235, 120};
+      }
+
+      DrawRectangleLinesEx(
+          Rectangle{static_cast<float>(tile.x * tile_size),
+                    static_cast<float>(tile.y * tile_size),
+                    static_cast<float>(tile_size),
+                    static_cast<float>(tile_size)},
+          line_width, color);
+    }
+  }
+}
+
+const visual_pipeline::VisualLayerGrid* FindRenderableVisualLayer(
+    const visual_pipeline::VisualMapData& visual_map) {
+  for (const visual_pipeline::VisualLayerGrid& layer : visual_map.layers) {
+    if (layer.IsRenderable()) {
+      return &layer;
+    }
+  }
+  return nullptr;
+}
+
+void DrawPreparedVisualTiles(const visual_pipeline::VisualLayerGrid& layer,
+                             int tile_size,
+                             const VisibleTileRange& range) {
+  for (int y = range.min_y; y <= range.max_y; ++y) {
+    for (int x = range.min_x; x <= range.max_x; ++x) {
+      const int index = y * layer.width + x;
+      if (index < 0 || index >= static_cast<int>(layer.tile_ids.size())) {
+        continue;
+      }
+      const std::string& tile_id = layer.tile_ids[static_cast<std::size_t>(index)];
+      DrawRectangle(x * tile_size, y * tile_size, tile_size, tile_size,
+                    VisualTileColor(tile_id));
+    }
+  }
+}
+
+void DrawPreparedVisualObjects(const visual_pipeline::VisualMapData& visual_map,
+                               int tile_size,
+                               const VisibleTileRange& range) {
+  for (const visual_pipeline::VisualObjectData& object : visual_map.objects) {
+    const int max_x = object.x + object.width - 1;
+    const int max_y = object.y + object.height - 1;
+    if (max_x < range.min_x || object.x > range.max_x || max_y < range.min_y ||
+        object.y > range.max_y) {
+      continue;
+    }
+
+    const Color color = VisualObjectColor(object);
+    const Rectangle bounds{static_cast<float>(object.x * tile_size),
+                           static_cast<float>(object.y * tile_size),
+                           static_cast<float>(object.width * tile_size),
+                           static_cast<float>(object.height * tile_size)};
+    DrawRectangleRec(bounds, color);
+    DrawRectangleLinesEx(bounds, 1.0F, Color{10, 12, 10, 110});
+  }
+}
+
 }  // namespace
+
+const char* LevelRenderModeName(LevelRenderMode mode) {
+  switch (mode) {
+    case LevelRenderMode::kRawTerrain:
+      return "raw_terrain";
+    case LevelRenderMode::kCppAnalysis:
+      return "cpp_analysis";
+    case LevelRenderMode::kPreparedVisualMap:
+      return "prepared_visual_map";
+  }
+  return "raw_terrain";
+}
 
 void InitializeLevelView(const LevelData& level, LevelViewState* view) {
   if (view == nullptr) {
@@ -169,64 +403,43 @@ std::string LevelViewStateToString(const LevelViewState& view) {
                     view.target_y, view.zoom);
 }
 
-void LevelRenderer::DrawTerrain(const LevelData& level,
-                                const LevelViewState& view,
-                                const WindowState& window) const {
+void LevelRenderer::Draw(const LevelData& level,
+                         const visual_pipeline::PreparedLevel* prepared_level,
+                         const LevelViewState& view,
+                         const WindowState& window,
+                         LevelRenderMode mode) const {
   if (level.size.width <= 0 || level.size.height <= 0 ||
       level.size.tile_size <= 0 || level.cells.empty()) {
     return;
   }
 
-  Camera2D camera{};
-  camera.offset = Vector2{static_cast<float>(window.width) * 0.5F,
-                          static_cast<float>(window.height) * 0.5F};
-  camera.target = Vector2{view.target_x, view.target_y};
-  camera.rotation = 0.0F;
-  camera.zoom = view.zoom;
-
-  const Vector2 world_top_left = GetScreenToWorld2D(Vector2{0.0F, 0.0F},
-                                                    camera);
-  const Vector2 world_bottom_right = GetScreenToWorld2D(
-      Vector2{static_cast<float>(window.width),
-              static_cast<float>(window.height)},
-      camera);
-
-  const float tile_size = static_cast<float>(level.size.tile_size);
-  const float min_world_x = std::min(world_top_left.x, world_bottom_right.x);
-  const float max_world_x = std::max(world_top_left.x, world_bottom_right.x);
-  const float min_world_y = std::min(world_top_left.y, world_bottom_right.y);
-  const float max_world_y = std::max(world_top_left.y, world_bottom_right.y);
-
-  const int min_x = ClampTileIndex(
-      static_cast<int>(std::floor(min_world_x / tile_size)) - 1, 0,
-      level.size.width - 1);
-  const int max_x = ClampTileIndex(
-      static_cast<int>(std::ceil(max_world_x / tile_size)) + 1, 0,
-      level.size.width - 1);
-  const int min_y = ClampTileIndex(
-      static_cast<int>(std::floor(min_world_y / tile_size)) - 1, 0,
-      level.size.height - 1);
-  const int max_y = ClampTileIndex(
-      static_cast<int>(std::ceil(max_world_y / tile_size)) + 1, 0,
-      level.size.height - 1);
+  const Camera2D camera = BuildCamera(view, window);
+  const VisibleTileRange range = CalculateVisibleTileRange(
+      camera, window, level.size.width, level.size.height,
+      level.size.tile_size);
 
   BeginMode2D(camera);
 
   DrawRectangle(0, 0, static_cast<int>(MapWidthPx(level)),
-                static_cast<int>(MapHeightPx(level)),
-                Color{12, 16, 14, 255});
+                static_cast<int>(MapHeightPx(level)), Color{12, 16, 14, 255});
 
-  for (int y = min_y; y <= max_y; ++y) {
-    for (int x = min_x; x <= max_x; ++x) {
-      const int index = y * level.size.width + x;
-      if (index < 0 || index >= static_cast<int>(level.cells.size())) {
-        continue;
-      }
-
-      const RuntimeCell& cell = level.cells[static_cast<std::size_t>(index)];
-      DrawRectangle(x * level.size.tile_size, y * level.size.tile_size,
-                    level.size.tile_size, level.size.tile_size,
-                    TerrainColor(cell.terrain));
+  const bool can_draw_prepared_visual =
+      prepared_level != nullptr && prepared_level->prepared_visual_map.loaded &&
+      prepared_level->prepared_visual_map.HasRenderableLayer();
+  if (mode == LevelRenderMode::kPreparedVisualMap &&
+      can_draw_prepared_visual) {
+    const visual_pipeline::VisualLayerGrid* layer = FindRenderableVisualLayer(
+        prepared_level->prepared_visual_map);
+    if (layer != nullptr) {
+      DrawPreparedVisualTiles(*layer, level.size.tile_size, range);
+      DrawPreparedVisualObjects(prepared_level->prepared_visual_map,
+                                level.size.tile_size, range);
+    }
+  } else {
+    DrawRawTerrainTiles(level, range);
+    if (mode == LevelRenderMode::kCppAnalysis && prepared_level != nullptr) {
+      DrawAnalysisOverlay(*prepared_level, level.size.tile_size, view.zoom,
+                          range);
     }
   }
 
@@ -237,6 +450,12 @@ void LevelRenderer::DrawTerrain(const LevelData& level,
   DrawDebugMarkers(level, view.zoom);
 
   EndMode2D();
+}
+
+void LevelRenderer::DrawTerrain(const LevelData& level,
+                                const LevelViewState& view,
+                                const WindowState& window) const {
+  Draw(level, nullptr, view, window, LevelRenderMode::kRawTerrain);
 }
 
 }  // namespace sar

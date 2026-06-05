@@ -88,6 +88,7 @@ class Application {
   std::optional<visual_pipeline::PreparedLevel> prepared_level_;
   visual_pipeline::VisualPreparationPipeline visual_pipeline_;
   LevelViewState level_view_;
+  LevelRenderMode level_render_mode_ = LevelRenderMode::kRawTerrain;
   double last_preparation_step_time_ = -1.0;
   ServiceInfoOverlayData service_info_data_;
   double last_service_info_update_time_ = -1.0;

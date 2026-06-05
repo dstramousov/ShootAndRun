@@ -7,6 +7,7 @@
 #include <sstream>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 namespace sar::visual_pipeline {
@@ -301,6 +302,118 @@ int CountTopLevelObjects(std::string_view array_text) {
   return count;
 }
 
+
+std::vector<std::string_view> ExtractTopLevelObjectsFromArray(
+    std::string_view array_text) {
+  std::vector<std::string_view> objects;
+  int depth = 0;
+  bool in_string = false;
+  bool escaped = false;
+  std::size_t object_start = std::string_view::npos;
+
+  for (std::size_t position = 0; position < array_text.size(); ++position) {
+    const char current = array_text[position];
+    if (in_string) {
+      if (escaped) {
+        escaped = false;
+      } else if (current == '\\') {
+        escaped = true;
+      } else if (current == '"') {
+        in_string = false;
+      }
+      continue;
+    }
+
+    if (current == '"') {
+      in_string = true;
+      continue;
+    }
+    if (current == '{') {
+      if (depth == 0) {
+        object_start = position;
+      }
+      ++depth;
+    } else if (current == '}') {
+      --depth;
+      if (depth == 0 && object_start != std::string_view::npos) {
+        objects.push_back(array_text.substr(object_start,
+                                            position - object_start + 1));
+        object_start = std::string_view::npos;
+      }
+    }
+  }
+
+  return objects;
+}
+
+std::vector<std::string> ExtractJsonStringValues(std::string_view text,
+                                                 std::string* error) {
+  std::vector<std::string> values;
+  bool escaped = false;
+  bool in_string = false;
+  std::string current_value;
+
+  for (std::size_t position = 0; position < text.size(); ++position) {
+    const char current = text[position];
+    if (!in_string) {
+      if (current == '"') {
+        in_string = true;
+        escaped = false;
+        current_value.clear();
+      }
+      continue;
+    }
+
+    if (escaped) {
+      switch (current) {
+        case '"':
+        case '\\':
+        case '/':
+          current_value.push_back(current);
+          break;
+        case 'b':
+          current_value.push_back('\b');
+          break;
+        case 'f':
+          current_value.push_back('\f');
+          break;
+        case 'n':
+          current_value.push_back('\n');
+          break;
+        case 'r':
+          current_value.push_back('\r');
+          break;
+        case 't':
+          current_value.push_back('\t');
+          break;
+        default:
+          *error = "unsupported escape sequence in string array";
+          return {};
+      }
+      escaped = false;
+      continue;
+    }
+
+    if (current == '\\') {
+      escaped = true;
+      continue;
+    }
+    if (current == '"') {
+      values.push_back(current_value);
+      in_string = false;
+      continue;
+    }
+    current_value.push_back(current);
+  }
+
+  if (in_string) {
+    *error = "unterminated string in array";
+    return {};
+  }
+
+  return values;
+}
+
 std::filesystem::path ResolveSiblingFile(const std::filesystem::path& base_path,
                                          const std::string& relative_path) {
   const std::filesystem::path path(relative_path);
@@ -373,9 +486,50 @@ VisualMapLoadResult LoadVisualLayers(const std::filesystem::path& path,
   if (!error.empty()) {
     return {false, true, {}, error};
   }
-  if (layers.has_value()) {
-    data->visual_layer_count = CountTopLevelObjects(*layers);
+  if (!layers.has_value()) {
+    data->warnings.push_back("visual_layers.json has no layers array");
+    return {true, true, {}, {}};
   }
+
+  data->layers.clear();
+  const std::vector<std::string_view> layer_objects =
+      ExtractTopLevelObjectsFromArray(*layers);
+  data->layers.reserve(layer_objects.size());
+
+  for (std::string_view layer_object : layer_objects) {
+    VisualLayerGrid layer;
+    if (!ApplyOptionalString(layer_object, "id", &layer.id, &error) ||
+        !ApplyOptionalString(layer_object, "role", &layer.role, &error) ||
+        !ApplyOptionalInt(layer_object, "width", &layer.width, &error) ||
+        !ApplyOptionalInt(layer_object, "height", &layer.height, &error)) {
+      return {false, true, {}, error};
+    }
+
+    const std::optional<std::string_view> rows =
+        ExtractJsonArray(layer_object, "rows", &error);
+    if (!error.empty()) {
+      return {false, true, {}, error};
+    }
+    if (rows.has_value()) {
+      layer.tile_ids = ExtractJsonStringValues(*rows, &error);
+      if (!error.empty()) {
+        return {false, true, {}, error};
+      }
+    }
+
+    const int expected_tiles = layer.width * layer.height;
+    if (expected_tiles > 0 &&
+        static_cast<int>(layer.tile_ids.size()) != expected_tiles) {
+      data->warnings.push_back("visual layer " + layer.id +
+                               " tile count mismatch expected=" +
+                               std::to_string(expected_tiles) + " actual=" +
+                               std::to_string(layer.tile_ids.size()));
+    }
+
+    data->layers.push_back(std::move(layer));
+  }
+
+  data->visual_layer_count = static_cast<int>(data->layers.size());
   return {true, true, {}, {}};
 }
 
@@ -391,15 +545,73 @@ VisualMapLoadResult LoadVisualObjects(const std::filesystem::path& path,
                         &error)) {
     return {false, true, {}, error};
   }
-  if (data->visual_object_count <= 0) {
-    const std::optional<std::string_view> items =
-        ExtractJsonArray(file.text, "items", &error);
+
+  const std::optional<std::string_view> items =
+      ExtractJsonArray(file.text, "items", &error);
+  if (!error.empty()) {
+    return {false, true, {}, error};
+  }
+  if (!items.has_value()) {
+    return {true, true, {}, {}};
+  }
+
+  data->objects.clear();
+  const std::vector<std::string_view> item_objects =
+      ExtractTopLevelObjectsFromArray(*items);
+  data->objects.reserve(item_objects.size());
+
+  for (std::string_view item_object : item_objects) {
+    VisualObjectData object;
+    if (!ApplyOptionalString(item_object, "id", &object.id, &error) ||
+        !ApplyOptionalString(item_object, "sprite_id", &object.sprite_id,
+                             &error) ||
+        !ApplyOptionalString(item_object, "draw_layer", &object.draw_layer,
+                             &error)) {
+      return {false, true, {}, error};
+    }
+
+    const std::optional<std::string_view> position =
+        ExtractJsonObject(item_object, "position", &error);
     if (!error.empty()) {
       return {false, true, {}, error};
     }
-    if (items.has_value()) {
-      data->visual_object_count = CountTopLevelObjects(*items);
+    if (position.has_value()) {
+      if (!ApplyOptionalInt(*position, "x", &object.x, &error) ||
+          !ApplyOptionalInt(*position, "y", &object.y, &error)) {
+        return {false, true, {}, error};
+      }
     }
+
+    const std::optional<std::string_view> bounds =
+        ExtractJsonObject(item_object, "visual_bounds", &error);
+    if (!error.empty()) {
+      return {false, true, {}, error};
+    }
+    if (bounds.has_value()) {
+      if (!ApplyOptionalInt(*bounds, "width", &object.width, &error) ||
+          !ApplyOptionalInt(*bounds, "height", &object.height, &error)) {
+        return {false, true, {}, error};
+      }
+    }
+
+    if (object.width <= 0) {
+      object.width = 1;
+    }
+    if (object.height <= 0) {
+      object.height = 1;
+    }
+    data->objects.push_back(std::move(object));
+  }
+
+  if (data->visual_object_count <= 0) {
+    data->visual_object_count = static_cast<int>(data->objects.size());
+  }
+  if (data->visual_object_count != static_cast<int>(data->objects.size())) {
+    data->warnings.push_back("visual object count mismatch summary=" +
+                             std::to_string(data->visual_object_count) +
+                             " parsed=" +
+                             std::to_string(data->objects.size()));
+    data->visual_object_count = static_cast<int>(data->objects.size());
   }
   return {true, true, {}, {}};
 }
