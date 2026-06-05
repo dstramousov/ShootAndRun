@@ -161,3 +161,12 @@
 - Added neighboring terrain counters for region borders as input for future smoothing and transition passes.
 - Added region-border diagnostics to the visual preparation pipeline log.
 - Added tests for region border classification.
+
+## v0.1.18 -> v0.1.19
+
+- Bumped CMake project and runtime application version to `0.1.19`.
+- Added catalog-aware terrain semantic mapping through `catalogs/tile_types.json` from the map package manifest.
+- Added raw terrain type count diagnostics and unknown terrain type diagnostics to the visual pipeline log.
+- Loaded runtime grid values into `RuntimeCell` instead of only validating grid shapes.
+- Fixed runtime semantic mask summaries for walkable, blocked, vision/projectile blocking, cover, concealment, and height.
+- Added tests for catalog-aware terrain mapping and runtime grid cell data.

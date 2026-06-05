@@ -379,6 +379,7 @@ void TestLevelLoaderManifestPackage() {
       std::filesystem::temp_directory_path() /
       "shoot_and_run_test_manifest_level_package";
   std::filesystem::create_directories(package_path / "layers");
+  std::filesystem::create_directories(package_path / "catalogs");
 
   WriteTextFile(package_path / "map.json",
                 "{\n"
@@ -391,6 +392,9 @@ void TestLevelLoaderManifestPackage() {
                 "  \"markers\": \"markers.json\",\n"
                 "  \"layers\": {\n"
                 "    \"terrain\": \"layers/terrain.json\"\n"
+                "  },\n"
+                "  \"catalogs\": {\n"
+                "    \"tile_types\": \"catalogs/tile_types.json\"\n"
                 "  }\n"
                 "}\n");
 
@@ -399,9 +403,19 @@ void TestLevelLoaderManifestPackage() {
                 "  \"width\": 2,\n"
                 "  \"height\": 2,\n"
                 "  \"rows\": [\n"
-                "    [\"tree_blocker\", \"grass\"],\n"
-                "    [\"grass\", \"water_slow\"]\n"
+                "    [\"tree_blocker\", \"old_overgrown_road\"],\n"
+                "    [\"ruin_wall_blocker\", \"water_slow\"]\n"
                 "  ]\n"
+                "}\n");
+
+  WriteTextFile(package_path / "catalogs" / "tile_types.json",
+                "{\n"
+                "  \"types\": {\n"
+                "    \"tree_blocker\": { \"collision\": \"blocked\", \"tags\": [\"blocker\", \"vegetation\"] },\n"
+                "    \"old_overgrown_road\": { \"collision\": \"passable\", \"tags\": [\"road\"] },\n"
+                "    \"ruin_wall_blocker\": { \"collision\": \"blocked\", \"tags\": [\"blocker\", \"ruin\"] },\n"
+                "    \"water_slow\": { \"collision\": \"passable\", \"tags\": [\"slow\", \"water\"] }\n"
+                "  }\n"
                 "}\n");
 
   WriteTextFile(package_path / "runtime_grids.json",
@@ -478,10 +492,26 @@ void TestLevelLoaderManifestPackage() {
          "manifest terrain cells should be loaded");
   Expect(result.level.cells[0].terrain == sar::TerrainType::kForest,
          "tree_blocker should render as forest terrain");
-  Expect(result.level.cells[1].terrain == sar::TerrainType::kOpenGround,
-         "grass should render as open ground terrain");
+  Expect(result.level.cells[1].terrain == sar::TerrainType::kRoad,
+         "catalog road tag should render as road terrain");
+  Expect(result.level.cells[2].terrain == sar::TerrainType::kWall,
+         "catalog blocked ruin tag should render as wall terrain");
   Expect(result.level.cells[3].terrain == sar::TerrainType::kWater,
-         "water_slow should render as water terrain");
+         "catalog water tag should render as water terrain");
+  Expect(result.level.used_tile_catalog,
+         "manifest package should use tile type catalog");
+  Expect(result.level.tile_catalog_type_count == 4,
+         "tile catalog type count should be stored");
+  Expect(result.level.terrain_type_counts.at("old_overgrown_road") == 1,
+         "raw terrain type counts should be stored");
+  Expect(result.level.unknown_terrain_type_counts.empty(),
+         "catalog-aware terrain mapping should avoid unknown terrain types");
+  Expect(!result.level.cells[0].walkable && result.level.cells[0].collision,
+         "runtime grids should populate blocked tree cell data");
+  Expect(result.level.cells[1].walkable && !result.level.cells[1].collision,
+         "runtime grids should populate walkable road cell data");
+  Expect(result.level.cells[3].height == -1,
+         "runtime height grid should populate negative height");
 
   std::filesystem::remove_all(package_path);
 }
@@ -541,6 +571,12 @@ void TestLevelLoaderBasicPackage() {
          "first terrain cell should be forest");
   Expect(result.level.cells[1].terrain == sar::TerrainType::kRoad,
          "second terrain cell should be road");
+  Expect(result.level.cells[0].walkable,
+         "movement grid should populate walkable cells");
+  Expect(result.level.cells[3].concealment == 1,
+         "concealment grid should populate cell concealment");
+  Expect(result.level.cells[3].height == -1,
+         "height grid should populate negative height");
 
   std::filesystem::remove_all(package_path);
 }

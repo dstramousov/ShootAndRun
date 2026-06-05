@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+#include <map>
 #include <utility>
 #include <vector>
 
@@ -59,12 +60,45 @@ std::string RuntimeSummaryLine(const SemanticMaskSummary& summary) {
          " elevated=" + std::to_string(summary.elevated_tiles);
 }
 
-void AddSemanticMaskDiagnostics(const SemanticMaskSummary& summary,
+std::string CountMapLine(const std::string& prefix,
+                         const std::map<std::string, int>& counts) {
+  std::string line = prefix;
+  if (counts.empty()) {
+    return line + " none";
+  }
+
+  bool first = true;
+  for (const auto& [name, count] : counts) {
+    line += first ? " " : " ";
+    line += name + "=" + std::to_string(count);
+    first = false;
+  }
+  return line;
+}
+
+std::string CatalogSummaryLine(const LevelData& level) {
+  return "terrain_catalog used=" +
+         std::string(level.used_tile_catalog ? "true" : "false") +
+         " catalog_types=" + std::to_string(level.tile_catalog_type_count) +
+         " raw_types=" + std::to_string(level.terrain_type_counts.size()) +
+         " unknown_types=" +
+         std::to_string(level.unknown_terrain_type_counts.size());
+}
+
+void AddSemanticMaskDiagnostics(const LevelData& level,
+                                const SemanticMaskSummary& summary,
                                 PipelineStepReport* report) {
   if (report == nullptr) {
     return;
   }
 
+  report->summaries.push_back(CatalogSummaryLine(level));
+  report->summaries.push_back(CountMapLine("terrain_type_counts:",
+                                           level.terrain_type_counts));
+  if (!level.unknown_terrain_type_counts.empty()) {
+    report->summaries.push_back(CountMapLine("unknown_terrain_types:",
+                                             level.unknown_terrain_type_counts));
+  }
   report->summaries.push_back(TerrainSummaryLine(summary));
   report->summaries.push_back(RuntimeSummaryLine(summary));
   if (summary.unknown_tiles > 0) {
@@ -247,7 +281,7 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
       return;
     }
 
-    AddSemanticMaskDiagnostics(prepared_level_.semantic_masks.summary,
+    AddSemanticMaskDiagnostics(level, prepared_level_.semantic_masks.summary,
                                report);
     return;
   }

@@ -4,10 +4,12 @@
 #include <cctype>
 #include <filesystem>
 #include <fstream>
+#include <map>
 #include <optional>
 #include <sstream>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 namespace sar {
@@ -44,12 +46,48 @@ struct GridShapeResult {
 };
 
 struct TerrainGridResult {
+  TerrainGridResult() = default;
+
+  TerrainGridResult(bool ok_value, int row_count, int column_count,
+                    std::vector<TerrainType> terrain_cells,
+                    std::string parsed_field_name, std::string error_text)
+      : ok(ok_value),
+        rows(row_count),
+        columns(column_count),
+        cells(std::move(terrain_cells)),
+        field_name(std::move(parsed_field_name)),
+        error(std::move(error_text)) {}
+
   bool ok = false;
   int rows = 0;
   int columns = 0;
   std::vector<TerrainType> cells;
   std::string field_name;
   std::string error;
+  std::map<std::string, int> terrain_type_counts;
+  std::map<std::string, int> unknown_terrain_type_counts;
+  int catalog_type_count = 0;
+  bool used_catalog = false;
+};
+
+struct NumericGridResult {
+  bool ok = false;
+  int rows = 0;
+  int columns = 0;
+  std::vector<double> values;
+  std::vector<std::uint8_t> present;
+  std::string field_name;
+  std::string error;
+};
+
+struct TileCatalogEntry {
+  TerrainType terrain = TerrainType::kUnknown;
+};
+
+struct TileCatalog {
+  std::map<std::string, TileCatalogEntry> entries;
+
+  bool empty() const { return entries.empty(); }
 };
 
 struct MarkerLoadResult {
@@ -63,6 +101,8 @@ struct PackageLayout {
   std::filesystem::path terrain_path;
   std::filesystem::path runtime_grids_path;
   std::filesystem::path markers_path;
+  std::filesystem::path tile_types_catalog_path;
+  bool has_tile_types_catalog = false;
   bool uses_manifest = false;
   bool has_manifest_size = false;
   LevelSize manifest_size;
@@ -634,9 +674,189 @@ TerrainType TerrainTypeFromSymbol(char value) {
   }
 }
 
+
+bool JsonObjectStringArrayContains(std::string_view object,
+                                   std::string_view field_name,
+                                   std::string_view expected) {
+  std::string error;
+  const std::optional<std::size_t> array_start =
+      FindFieldValueStart(object, field_name, &error);
+  if (!array_start.has_value() || *array_start >= object.size() ||
+      object[*array_start] != '[') {
+    return false;
+  }
+
+  std::size_t position = *array_start + 1;
+  SkipWhitespace(object, &position);
+  while (position < object.size() && object[position] != ']') {
+    if (object[position] != '"') {
+      return false;
+    }
+
+    const StringFieldResult value = ParseJsonStringAt(object, position,
+                                                      field_name);
+    if (!value.ok) {
+      return false;
+    }
+    if (value.value == expected) {
+      return true;
+    }
+
+    if (!SkipJsonString(object, &position, &error)) {
+      return false;
+    }
+    SkipWhitespace(object, &position);
+    if (position < object.size() && object[position] == ',') {
+      ++position;
+      SkipWhitespace(object, &position);
+    }
+  }
+
+  return false;
+}
+
+TerrainType TerrainTypeFromCatalogObject(std::string_view tile_id,
+                                         std::string_view object) {
+  const bool is_road = JsonObjectStringArrayContains(object, "tags", "road");
+  const bool is_water = JsonObjectStringArrayContains(object, "tags", "water");
+  const bool is_ruin = JsonObjectStringArrayContains(object, "tags", "ruin");
+  const bool is_vegetation = JsonObjectStringArrayContains(object, "tags",
+                                                           "vegetation");
+  const bool is_terrain = JsonObjectStringArrayContains(object, "tags",
+                                                        "terrain");
+  const bool is_decor = JsonObjectStringArrayContains(object, "tags", "decor");
+  const bool is_marker = JsonObjectStringArrayContains(object, "tags",
+                                                       "marker");
+
+  const StringFieldResult collision = ExtractOptionalStringField(object,
+                                                                 "collision");
+  const bool is_blocked = collision.ok && collision.found &&
+                          collision.value == "blocked";
+
+  if (is_road) {
+    return TerrainType::kRoad;
+  }
+  if (is_water) {
+    return TerrainType::kWater;
+  }
+  if (is_ruin && is_blocked) {
+    return TerrainType::kWall;
+  }
+  if (is_ruin) {
+    return TerrainType::kRuins;
+  }
+  if (is_vegetation) {
+    return TerrainType::kForest;
+  }
+  if (is_terrain || is_decor || is_marker) {
+    return TerrainType::kOpenGround;
+  }
+  if (is_blocked) {
+    return TerrainType::kWall;
+  }
+
+  return TerrainTypeFromString(tile_id);
+}
+
+TileCatalog ParseTileCatalog(std::string_view text) {
+  TileCatalog catalog;
+  std::string error;
+  const std::optional<std::size_t> types_start = FindFieldValueStart(text,
+                                                                     "types",
+                                                                     &error);
+  if (!types_start.has_value() || *types_start >= text.size() ||
+      text[*types_start] != '{') {
+    return catalog;
+  }
+
+  std::size_t position = *types_start + 1;
+  SkipWhitespace(text, &position);
+  while (position < text.size() && text[position] != '}') {
+    const StringFieldResult type_id = ParseJsonStringAt(text, position,
+                                                        "types");
+    if (!type_id.ok) {
+      return catalog;
+    }
+    if (!SkipJsonString(text, &position, &error)) {
+      return catalog;
+    }
+
+    SkipWhitespace(text, &position);
+    if (position >= text.size() || text[position] != ':') {
+      return catalog;
+    }
+    ++position;
+    SkipWhitespace(text, &position);
+
+    const std::optional<std::string_view> type_object =
+        ExtractJsonObjectSlice(text, position, &error);
+    if (!type_object.has_value()) {
+      return catalog;
+    }
+
+    TileCatalogEntry entry;
+    entry.terrain = TerrainTypeFromCatalogObject(type_id.value, *type_object);
+    catalog.entries[type_id.value] = entry;
+
+    if (!SkipJsonObject(text, &position, &error)) {
+      return catalog;
+    }
+    SkipWhitespace(text, &position);
+    if (position < text.size() && text[position] == ',') {
+      ++position;
+      SkipWhitespace(text, &position);
+    }
+  }
+
+  return catalog;
+}
+
+TileCatalog LoadTileCatalogIfPresent(const PackageLayout& layout) {
+  if (!layout.has_tile_types_catalog) {
+    return {};
+  }
+
+  std::error_code error_code;
+  if (!std::filesystem::exists(layout.tile_types_catalog_path, error_code) ||
+      error_code) {
+    return {};
+  }
+
+  const ReadFileResult file = ReadTextFile(layout.tile_types_catalog_path);
+  if (!file.ok) {
+    return {};
+  }
+
+  return ParseTileCatalog(file.content);
+}
+
+TerrainType TerrainTypeFromRawValue(std::string_view value,
+                                    const TileCatalog* catalog) {
+  if (catalog != nullptr) {
+    const auto iter = catalog->entries.find(std::string(value));
+    if (iter != catalog->entries.end()) {
+      return iter->second.terrain;
+    }
+  }
+
+  return TerrainTypeFromString(value);
+}
+
+void RecordTerrainValue(std::string_view raw_value, TerrainType terrain,
+                        std::map<std::string, int>* counts,
+                        std::map<std::string, int>* unknown_counts) {
+  if (counts != nullptr) {
+    ++(*counts)[std::string(raw_value)];
+  }
+  if (terrain == TerrainType::kUnknown && unknown_counts != nullptr) {
+    ++(*unknown_counts)[std::string(raw_value)];
+  }
+}
+
 TerrainGridResult ParseTerrainGridArrayAt(std::string_view text,
                                           std::size_t position,
-                                          std::string_view field_name) {
+                                          std::string_view field_name,
+                                          const TileCatalog* catalog) {
   if (position >= text.size() || text[position] != '[') {
     return {false, 0, 0, {}, std::string(field_name),
             "expected terrain grid array for field: " +
@@ -646,6 +866,8 @@ TerrainGridResult ParseTerrainGridArrayAt(std::string_view text,
   int rows = 0;
   int expected_columns = -1;
   std::vector<TerrainType> cells;
+  std::map<std::string, int> terrain_type_counts;
+  std::map<std::string, int> unknown_terrain_type_counts;
   ++position;
   SkipWhitespace(text, &position);
 
@@ -667,7 +889,11 @@ TerrainGridResult ParseTerrainGridArrayAt(std::string_view text,
 
       row_cells.reserve(row.value.size());
       for (const char terrain_symbol : row.value) {
-        row_cells.push_back(TerrainTypeFromSymbol(terrain_symbol));
+        const std::string raw_value(1, terrain_symbol);
+        const TerrainType terrain = TerrainTypeFromSymbol(terrain_symbol);
+        RecordTerrainValue(raw_value, terrain, &terrain_type_counts,
+                           &unknown_terrain_type_counts);
+        row_cells.push_back(terrain);
       }
       columns = static_cast<int>(row_cells.size());
 
@@ -698,7 +924,11 @@ TerrainGridResult ParseTerrainGridArrayAt(std::string_view text,
           if (!terrain.ok) {
             return {false, 0, 0, {}, std::string(field_name), terrain.error};
           }
-          row_cells.push_back(TerrainTypeFromString(terrain.value));
+          const TerrainType terrain_type = TerrainTypeFromRawValue(
+              terrain.value, catalog);
+          RecordTerrainValue(terrain.value, terrain_type, &terrain_type_counts,
+                             &unknown_terrain_type_counts);
+          row_cells.push_back(terrain_type);
 
           std::string error;
           if (!SkipJsonString(text, &position, &error)) {
@@ -766,7 +996,18 @@ TerrainGridResult ParseTerrainGridArrayAt(std::string_view text,
 
     if (text[position] == ']') {
       ++position;
-      return {true, rows, expected_columns, cells, std::string(field_name), {}};
+      TerrainGridResult result;
+      result.ok = true;
+      result.rows = rows;
+      result.columns = expected_columns;
+      result.cells = std::move(cells);
+      result.field_name = std::string(field_name);
+      result.terrain_type_counts = std::move(terrain_type_counts);
+      result.unknown_terrain_type_counts = std::move(unknown_terrain_type_counts);
+      result.catalog_type_count = catalog == nullptr ? 0 :
+          static_cast<int>(catalog->entries.size());
+      result.used_catalog = catalog != nullptr && !catalog->empty();
+      return result;
     }
 
     return {false, 0, 0, {}, std::string(field_name),
@@ -780,7 +1021,8 @@ TerrainGridResult ParseTerrainGridArrayAt(std::string_view text,
 
 TerrainGridResult ParseTerrainGridFromValue(std::string_view text,
                                             std::size_t value_start,
-                                            std::string_view field_name) {
+                                            std::string_view field_name,
+                                            const TileCatalog* catalog) {
   if (value_start >= text.size()) {
     return {false, 0, 0, {}, std::string(field_name),
             "missing terrain grid value for field: " +
@@ -788,7 +1030,7 @@ TerrainGridResult ParseTerrainGridFromValue(std::string_view text,
   }
 
   if (text[value_start] == '[') {
-    return ParseTerrainGridArrayAt(text, value_start, field_name);
+    return ParseTerrainGridArrayAt(text, value_start, field_name, catalog);
   }
 
   if (text[value_start] != '{') {
@@ -815,11 +1057,12 @@ TerrainGridResult ParseTerrainGridFromValue(std::string_view text,
                 std::string(field_name)};
   }
 
-  return ParseTerrainGridArrayAt(*object, *rows_start, field_name);
+  return ParseTerrainGridArrayAt(*object, *rows_start, field_name, catalog);
 }
 
 TerrainGridResult ExtractTerrainGrid(
-    std::string_view text, const std::vector<std::string_view>& field_names) {
+    std::string_view text, const std::vector<std::string_view>& field_names,
+    const TileCatalog* catalog) {
   std::string field_error;
   for (const std::string_view field_name : field_names) {
     const std::optional<std::size_t> value_start =
@@ -831,7 +1074,7 @@ TerrainGridResult ExtractTerrainGrid(
       continue;
     }
 
-    return ParseTerrainGridFromValue(text, *value_start, field_name);
+    return ParseTerrainGridFromValue(text, *value_start, field_name, catalog);
   }
 
   return {false, 0, 0, {}, {}, "missing required terrain grid field"};
@@ -893,6 +1136,302 @@ bool ValidateGridShape(const GridShapeResult& grid, int expected_width,
   return true;
 }
 
+
+bool ParseNumericValueAt(std::string_view text, std::size_t* position,
+                         double* value, bool* present,
+                         std::string* error) {
+  SkipWhitespace(text, position);
+  if (*position >= text.size()) {
+    *error = "expected numeric grid value";
+    return false;
+  }
+
+  if (text.compare(*position, 4, "null") == 0) {
+    *position += 4;
+    *value = 0.0;
+    *present = false;
+    return true;
+  }
+  if (text.compare(*position, 4, "true") == 0) {
+    *position += 4;
+    *value = 1.0;
+    *present = true;
+    return true;
+  }
+  if (text.compare(*position, 5, "false") == 0) {
+    *position += 5;
+    *value = 0.0;
+    *present = true;
+    return true;
+  }
+
+  if (text[*position] == '"') {
+    const StringFieldResult string_value = ParseJsonStringAt(text, *position,
+                                                             "grid_value");
+    if (!string_value.ok) {
+      *error = string_value.error;
+      return false;
+    }
+    if (!SkipJsonString(text, position, error)) {
+      return false;
+    }
+    if (string_value.value.empty()) {
+      *error = "empty numeric grid string value";
+      return false;
+    }
+
+    try {
+      std::size_t parsed = 0;
+      *value = std::stod(string_value.value, &parsed);
+      if (parsed != string_value.value.size()) {
+        *error = "invalid numeric grid string value";
+        return false;
+      }
+      *present = true;
+      return true;
+    } catch (...) {
+      *error = "invalid numeric grid string value";
+      return false;
+    }
+  }
+
+  const std::size_t start = *position;
+  while (*position < text.size()) {
+    const char current = text[*position];
+    if (current == ',' || current == ']' || current == '}' ||
+        std::isspace(static_cast<unsigned char>(current)) != 0) {
+      break;
+    }
+    ++(*position);
+  }
+
+  if (start == *position) {
+    *error = "expected numeric grid primitive";
+    return false;
+  }
+
+  const std::string token(text.substr(start, *position - start));
+  try {
+    std::size_t parsed = 0;
+    *value = std::stod(token, &parsed);
+    if (parsed != token.size()) {
+      *error = "invalid numeric grid primitive";
+      return false;
+    }
+  } catch (...) {
+    *error = "invalid numeric grid primitive";
+    return false;
+  }
+
+  *present = true;
+  return true;
+}
+
+NumericGridResult ParseNumericGridArrayAt(std::string_view text,
+                                          std::size_t position,
+                                          std::string_view field_name) {
+  if (position >= text.size() || text[position] != '[') {
+    return {false, 0, 0, {}, {}, std::string(field_name),
+            "expected numeric grid array for field: " +
+                std::string(field_name)};
+  }
+
+  int rows = 0;
+  int expected_columns = -1;
+  std::vector<double> values;
+  std::vector<std::uint8_t> present;
+  ++position;
+  SkipWhitespace(text, &position);
+
+  if (position < text.size() && text[position] == ']') {
+    return {false, 0, 0, {}, {}, std::string(field_name),
+            "numeric grid must not be empty: " + std::string(field_name)};
+  }
+
+  while (position < text.size()) {
+    int columns = 0;
+    std::vector<double> row_values;
+    std::vector<std::uint8_t> row_present;
+
+    if (text[position] == '"') {
+      const StringFieldResult row = ParseJsonStringAt(text, position,
+                                                      field_name);
+      if (!row.ok) {
+        return {false, 0, 0, {}, {}, std::string(field_name), row.error};
+      }
+      for (const char ch : row.value) {
+        if (ch < '0' || ch > '9') {
+          return {false, 0, 0, {}, {}, std::string(field_name),
+                  "numeric grid string rows may contain digits only: " +
+                      std::string(field_name)};
+        }
+        row_values.push_back(static_cast<double>(ch - '0'));
+        row_present.push_back(1);
+      }
+      columns = static_cast<int>(row_values.size());
+
+      std::string error;
+      if (!SkipJsonString(text, &position, &error)) {
+        return {false, 0, 0, {}, {}, std::string(field_name), error};
+      }
+    } else {
+      if (text[position] != '[') {
+        return {false, 0, 0, {}, {}, std::string(field_name),
+                "expected numeric row array or string for field: " +
+                    std::string(field_name)};
+      }
+
+      ++position;
+      SkipWhitespace(text, &position);
+      while (position < text.size() && text[position] != ']') {
+        double value = 0.0;
+        bool has_value = false;
+        std::string error;
+        if (!ParseNumericValueAt(text, &position, &value, &has_value,
+                                 &error)) {
+          return {false, 0, 0, {}, {}, std::string(field_name), error};
+        }
+        row_values.push_back(value);
+        row_present.push_back(has_value ? 1 : 0);
+        ++columns;
+
+        SkipWhitespace(text, &position);
+        if (position < text.size() && text[position] == ',') {
+          ++position;
+          SkipWhitespace(text, &position);
+          continue;
+        }
+      }
+
+      if (position >= text.size() || text[position] != ']') {
+        return {false, 0, 0, {}, {}, std::string(field_name),
+                "unterminated numeric grid row: " +
+                    std::string(field_name)};
+      }
+      ++position;
+    }
+
+    if (columns <= 0) {
+      return {false, 0, 0, {}, {}, std::string(field_name),
+              "numeric grid row must not be empty: " +
+                  std::string(field_name)};
+    }
+
+    if (expected_columns < 0) {
+      expected_columns = columns;
+    } else if (columns != expected_columns) {
+      return {false, 0, 0, {}, {}, std::string(field_name),
+              "numeric grid rows have different widths: " +
+                  std::string(field_name)};
+    }
+
+    values.insert(values.end(), row_values.begin(), row_values.end());
+    present.insert(present.end(), row_present.begin(), row_present.end());
+    ++rows;
+
+    SkipWhitespace(text, &position);
+    if (position >= text.size()) {
+      return {false, 0, 0, {}, {}, std::string(field_name),
+              "unterminated numeric grid array: " +
+                  std::string(field_name)};
+    }
+    if (text[position] == ',') {
+      ++position;
+      SkipWhitespace(text, &position);
+      continue;
+    }
+    if (text[position] == ']') {
+      NumericGridResult result;
+      result.ok = true;
+      result.rows = rows;
+      result.columns = expected_columns;
+      result.values = std::move(values);
+      result.present = std::move(present);
+      result.field_name = std::string(field_name);
+      return result;
+    }
+
+    return {false, 0, 0, {}, {}, std::string(field_name),
+            "expected comma or numeric grid close bracket: " +
+                std::string(field_name)};
+  }
+
+  return {false, 0, 0, {}, {}, std::string(field_name),
+          "unterminated numeric grid array: " + std::string(field_name)};
+}
+
+NumericGridResult ParseNumericGridFromValue(std::string_view text,
+                                            std::size_t value_start,
+                                            std::string_view field_name) {
+  if (value_start >= text.size()) {
+    return {false, 0, 0, {}, {}, std::string(field_name),
+            "missing numeric grid value for field: " +
+                std::string(field_name)};
+  }
+
+  if (text[value_start] == '[') {
+    return ParseNumericGridArrayAt(text, value_start, field_name);
+  }
+  if (text[value_start] != '{') {
+    return {false, 0, 0, {}, {}, std::string(field_name),
+            "expected numeric grid array or object for field: " +
+                std::string(field_name)};
+  }
+
+  std::string error;
+  const std::optional<std::string_view> object =
+      ExtractJsonObjectSlice(text, value_start, &error);
+  if (!object.has_value()) {
+    return {false, 0, 0, {}, {}, std::string(field_name), error};
+  }
+
+  const std::optional<std::size_t> rows_start =
+      FindFieldValueStart(*object, "rows", &error);
+  if (!rows_start.has_value()) {
+    return {false, 0, 0, {}, {}, std::string(field_name),
+            error.empty() ? "missing rows array for grid: " +
+                                std::string(field_name)
+                          : error};
+  }
+
+  return ParseNumericGridArrayAt(*object, *rows_start, field_name);
+}
+
+NumericGridResult ExtractNumericGrid(
+    std::string_view text, const std::vector<std::string_view>& field_names) {
+  std::string field_error;
+  for (const std::string_view field_name : field_names) {
+    const std::optional<std::size_t> value_start =
+        FindFieldValueStart(text, field_name, &field_error);
+    if (!value_start.has_value()) {
+      if (!field_error.empty()) {
+        return {false, 0, 0, {}, {}, std::string(field_name), field_error};
+      }
+      continue;
+    }
+
+    return ParseNumericGridFromValue(text, *value_start, field_name);
+  }
+
+  return {false, 0, 0, {}, {}, {}, "missing required numeric grid field"};
+}
+
+bool ValidateNumericGrid(const NumericGridResult& grid, int expected_width,
+                         int expected_height, std::string* error) {
+  if (!grid.ok) {
+    *error = grid.error;
+    return false;
+  }
+  if (grid.columns != expected_width || grid.rows != expected_height) {
+    *error = "numeric grid size mismatch for " + grid.field_name +
+             ": expected=" + std::to_string(expected_width) + "x" +
+             std::to_string(expected_height) + " actual=" +
+             std::to_string(grid.columns) + "x" +
+             std::to_string(grid.rows);
+    return false;
+  }
+  return true;
+}
 
 std::optional<std::vector<std::string_view>> ExtractObjectArrayAt(
     std::string_view text, std::size_t position, std::string_view field_name,
@@ -1123,6 +1662,17 @@ LevelLoadResult ResolvePackageLayout(const std::filesystem::path& package_path,
     layout->markers_path = ResolvePackageFile(package_path, markers.value);
   }
 
+  const StringFieldResult tile_types = ExtractOptionalStringField(
+      manifest.content, "tile_types");
+  if (!tile_types.ok) {
+    return {false, {}, tile_types.error};
+  }
+  if (tile_types.found && !tile_types.value.empty()) {
+    layout->tile_types_catalog_path = ResolvePackageFile(package_path,
+                                                         tile_types.value);
+    layout->has_tile_types_catalog = true;
+  }
+
   const IntFieldResult width_tiles = ExtractOptionalIntField(
       manifest.content, "width_tiles");
   const IntFieldResult height_tiles = ExtractOptionalIntField(
@@ -1231,8 +1781,11 @@ LevelLoadResult LevelLoader::LoadBasicPackage(
     return {false, {}, "manifest and terrain dimensions mismatch"};
   }
 
+  const TileCatalog tile_catalog = LoadTileCatalogIfPresent(layout);
+
   const TerrainGridResult terrain_grid = ExtractTerrainGrid(
-      terrain_file.content, {"terrain_grid", "terrain", "grid", "rows"});
+      terrain_file.content, {"terrain_grid", "terrain", "grid", "rows"},
+      tile_catalog.empty() ? nullptr : &tile_catalog);
   std::string error;
   if (!ValidateTerrainGrid(terrain_grid, width.value, height.value, &error)) {
     return {false, {}, error};
@@ -1266,6 +1819,30 @@ LevelLoadResult LevelLoader::LoadBasicPackage(
     ++validated_runtime_grid_count;
   }
 
+  const NumericGridResult movement_grid = ExtractNumericGrid(
+      runtime_grids_file.content, {"movement_grid"});
+  const NumericGridResult collision_grid = ExtractNumericGrid(
+      runtime_grids_file.content, {"collision_grid"});
+  const NumericGridResult projectile_grid = ExtractNumericGrid(
+      runtime_grids_file.content, {"projectile_block_grid"});
+  const NumericGridResult vision_grid = ExtractNumericGrid(
+      runtime_grids_file.content, {"vision_block_grid"});
+  const NumericGridResult cover_grid = ExtractNumericGrid(
+      runtime_grids_file.content, {"cover_grid"});
+  const NumericGridResult concealment_grid = ExtractNumericGrid(
+      runtime_grids_file.content, {"concealment_grid"});
+  const NumericGridResult height_grid = ExtractNumericGrid(
+      runtime_grids_file.content, {"height_grid"});
+
+  const std::vector<const NumericGridResult*> numeric_grids = {
+      &movement_grid, &collision_grid, &projectile_grid, &vision_grid,
+      &cover_grid, &concealment_grid, &height_grid};
+  for (const NumericGridResult* grid : numeric_grids) {
+    if (!ValidateNumericGrid(*grid, width.value, height.value, &error)) {
+      return {false, {}, error};
+    }
+  }
+
   LevelPackageSummary summary;
   summary.package_path = package_path;
   summary.size = LevelSize{width.value, height.value, resolved_tile_size};
@@ -1281,10 +1858,36 @@ LevelLoadResult LevelLoader::LoadBasicPackage(
   LevelData level;
   level.size = summary.size;
   level.markers = std::move(markers.markers);
+  level.terrain_type_counts = terrain_grid.terrain_type_counts;
+  level.unknown_terrain_type_counts = terrain_grid.unknown_terrain_type_counts;
+  level.tile_catalog_type_count = terrain_grid.catalog_type_count;
+  level.used_tile_catalog = terrain_grid.used_catalog;
   level.cells.reserve(terrain_grid.cells.size());
-  for (const TerrainType terrain : terrain_grid.cells) {
+
+  const std::size_t cell_count = terrain_grid.cells.size();
+  for (std::size_t index = 0; index < cell_count; ++index) {
     RuntimeCell cell;
-    cell.terrain = terrain;
+    cell.terrain = terrain_grid.cells[index];
+    cell.walkable = movement_grid.present[index] != 0 &&
+                    movement_grid.values[index] > 0.0;
+    cell.collision = collision_grid.present[index] != 0 &&
+                     collision_grid.values[index] != 0.0;
+    cell.blocks_projectiles = projectile_grid.present[index] != 0 &&
+                              projectile_grid.values[index] != 0.0;
+    cell.blocks_vision = vision_grid.present[index] != 0 &&
+                         vision_grid.values[index] != 0.0;
+    cell.cover = static_cast<std::uint8_t>(
+        cover_grid.present[index] == 0 || cover_grid.values[index] <= 0.0
+            ? 0
+            : 1);
+    cell.concealment = static_cast<std::uint8_t>(
+        concealment_grid.present[index] == 0 ||
+                concealment_grid.values[index] <= 0.0
+            ? 0
+            : 1);
+    cell.height = static_cast<std::int8_t>(height_grid.present[index] == 0
+                                               ? 0
+                                               : height_grid.values[index]);
     level.cells.push_back(cell);
   }
 
