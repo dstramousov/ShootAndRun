@@ -6,11 +6,13 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <map>
 #include <utility>
 #include <vector>
 
 #include "visual_pipeline/semantic_masks.h"
+#include "visual_pipeline/debug_artifact_writer.h"
 #include "visual_pipeline/steps/build_semantic_masks_step.h"
 #include "visual_pipeline/steps/classify_region_borders_step.h"
 #include "visual_pipeline/steps/build_terrain_regions_step.h"
@@ -72,6 +74,36 @@ std::filesystem::path ResolvePreparedVisualMapPath(
     return configured;
   }
   return options.map_package_path / configured;
+}
+
+
+std::filesystem::path ResolveDebugOutputPath(
+    const VisualPreparationOptions& options) {
+  const std::filesystem::path configured =
+      options.visual_pipeline_config.debug_output_path;
+  if (configured.is_absolute()) {
+    return configured;
+  }
+  if (options.map_package_path.empty()) {
+    return configured;
+  }
+  return options.map_package_path / configured;
+}
+
+void AddDebugArtifactResult(std::string_view artifact_name,
+                            bool written,
+                            const std::string& error,
+                            PipelineStepReport* report) {
+  if (report == nullptr) {
+    return;
+  }
+  if (written) {
+    report->summaries.push_back(std::string("debug artifact written: ") +
+                                std::string(artifact_name));
+    return;
+  }
+  report->warnings.push_back(std::string("debug artifact write failed: ") +
+                             std::string(artifact_name) + ": " + error);
 }
 
 bool HasPreparedVisualMap(const PreparedLevel& prepared_level) {
@@ -360,6 +392,14 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
     report->summaries.push_back(
         "validated map cells=" + std::to_string(level.cells.size()) +
         " expected=" + std::to_string(expected_cells));
+    if (options_.visual_pipeline_config.write_debug_artifacts) {
+      std::string artifact_error;
+      const DebugArtifactWriter writer(ResolveDebugOutputPath(options_));
+      const bool written = writer.WriteInputValidationReport(
+          level, &artifact_error);
+      AddDebugArtifactResult("reports/00_input_validation.json", written,
+                             artifact_error, report);
+    }
     return;
   }
 
@@ -415,6 +455,14 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
 
     AddSemanticMaskDiagnostics(level, prepared_level_.semantic_masks.summary,
                                report);
+    if (options_.visual_pipeline_config.write_debug_artifacts) {
+      std::string artifact_error;
+      const DebugArtifactWriter writer(ResolveDebugOutputPath(options_));
+      const bool written = writer.WriteSemanticMaskArtifacts(
+          prepared_level_.semantic_masks, &artifact_error);
+      AddDebugArtifactResult("semantic masks", written, artifact_error,
+                             report);
+    }
     return;
   }
 
@@ -427,6 +475,14 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
 
     AddTerrainRegionDiagnostics(prepared_level_.terrain_regions.summary,
                                 report);
+    if (options_.visual_pipeline_config.write_debug_artifacts) {
+      std::string artifact_error;
+      const DebugArtifactWriter writer(ResolveDebugOutputPath(options_));
+      const bool written = writer.WriteTerrainRegionArtifacts(
+          prepared_level_.terrain_regions, &artifact_error);
+      AddDebugArtifactResult("terrain regions", written, artifact_error,
+                             report);
+    }
     return;
   }
 

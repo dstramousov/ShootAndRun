@@ -37,6 +37,8 @@ struct VisualPipelineConfig {
       "../visual_map/visual_map.json";
   bool fallback_to_cpp_pipeline = true;
   bool run_cpp_analysis = true;
+  bool write_debug_artifacts = true;
+  std::filesystem::path debug_output_path = "../prepared_map/debug";
 };
 
 }  // namespace sar::visual_pipeline

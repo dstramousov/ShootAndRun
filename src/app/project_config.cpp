@@ -346,7 +346,11 @@ std::string ProjectConfig::Dump() const {
          ", run_cpp_analysis: " +
          std::string(visual_pipeline_config.run_cpp_analysis ? "true" :
                                                            "false") +
-         " } }";
+         ", write_debug_artifacts: " +
+         std::string(visual_pipeline_config.write_debug_artifacts ?
+                         "true" : "false") +
+         ", debug_output_path: \"" +
+         visual_pipeline_config.debug_output_path.string() + "\" } }";
 }
 
 ProjectConfigResult LoadProjectConfig(
@@ -558,6 +562,26 @@ ProjectConfigResult LoadProjectConfig(
   if (run_cpp_analysis.found) {
     config.visual_pipeline_config.run_cpp_analysis =
         run_cpp_analysis.value;
+  }
+
+  ParseBoolResult write_debug_artifacts =
+      ExtractOptionalJsonBoolField(content, "write_debug_artifacts");
+  if (!write_debug_artifacts.ok) {
+    return {false, {}, write_debug_artifacts.error};
+  }
+  if (write_debug_artifacts.found) {
+    config.visual_pipeline_config.write_debug_artifacts =
+        write_debug_artifacts.value;
+  }
+
+  ParseStringResult debug_output_path =
+      ExtractOptionalJsonStringField(content, "debug_output_path");
+  if (!debug_output_path.ok) {
+    return {false, {}, debug_output_path.error};
+  }
+  if (!debug_output_path.value.empty()) {
+    config.visual_pipeline_config.debug_output_path =
+        std::filesystem::path(debug_output_path.value);
   }
 
   return {true, config, {}};

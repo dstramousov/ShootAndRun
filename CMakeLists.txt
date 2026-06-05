@@ -44,6 +44,7 @@ add_executable(shoot_and_run
   src/visual_pipeline/semantic_masks.cpp
   src/visual_pipeline/terrain_regions.cpp
   src/visual_pipeline/region_borders.cpp
+  src/visual_pipeline/debug_artifact_writer.cpp
   src/visual_pipeline/visual_map_data.cpp
   src/visual_pipeline/visual_map_loader.cpp
   src/visual_pipeline/visual_pipeline_config.cpp
@@ -87,6 +88,7 @@ if(SAR_BUILD_TESTS)
     src/visual_pipeline/semantic_masks.cpp
     src/visual_pipeline/terrain_regions.cpp
     src/visual_pipeline/region_borders.cpp
+    src/visual_pipeline/debug_artifact_writer.cpp
     src/visual_pipeline/visual_map_data.cpp
     src/visual_pipeline/visual_map_loader.cpp
     src/visual_pipeline/visual_pipeline_config.cpp
