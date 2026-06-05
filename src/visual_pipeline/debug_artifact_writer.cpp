@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <cstdint>
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
@@ -355,6 +356,167 @@ std::vector<RgbaColor> BuildRegionImage(const TerrainRegions& regions,
   return pixels;
 }
 
+
+void SetPixel(int x, int y, const LevelSize& size, RgbaColor color,
+              std::vector<RgbaColor>* pixels) {
+  if (x < 0 || y < 0 || x >= size.width || y >= size.height) {
+    return;
+  }
+  (*pixels)[static_cast<std::size_t>(y * size.width + x)] = color;
+}
+
+void DrawPoint(int x, int y, int radius, const LevelSize& size,
+               RgbaColor color, std::vector<RgbaColor>* pixels) {
+  for (int dy = -radius; dy <= radius; ++dy) {
+    for (int dx = -radius; dx <= radius; ++dx) {
+      if (dx * dx + dy * dy <= radius * radius) {
+        SetPixel(x + dx, y + dy, size, color, pixels);
+      }
+    }
+  }
+}
+
+void DrawLine(int x0, int y0, int x1, int y1, int thickness,
+              const LevelSize& size, RgbaColor color,
+              std::vector<RgbaColor>* pixels) {
+  const int dx = std::abs(x1 - x0);
+  const int sx = x0 < x1 ? 1 : -1;
+  const int dy = -std::abs(y1 - y0);
+  const int sy = y0 < y1 ? 1 : -1;
+  int error_value = dx + dy;
+
+  int x = x0;
+  int y = y0;
+  while (true) {
+    DrawPoint(x, y, thickness, size, color, pixels);
+    if (x == x1 && y == y1) {
+      break;
+    }
+    const int doubled_error = 2 * error_value;
+    if (doubled_error >= dy) {
+      error_value += dy;
+      x += sx;
+    }
+    if (doubled_error <= dx) {
+      error_value += dx;
+      y += sy;
+    }
+  }
+}
+
+bool RouteIsMain(const Route& route) {
+  if (route.type.find("main") != std::string::npos) {
+    return true;
+  }
+  for (const std::string& tag : route.tags) {
+    if (tag == "primary" || tag == "main_road" || tag == "critical") {
+      return true;
+    }
+  }
+  return false;
+}
+
+std::vector<RgbaColor> BuildRouteImage(const LevelData& level,
+                                       bool influence_mode) {
+  std::vector<RgbaColor> pixels(static_cast<std::size_t>(level.size.width) *
+                                static_cast<std::size_t>(level.size.height),
+                                kBlack);
+  for (const Route& route : level.routes) {
+    if (route.waypoints.empty()) {
+      continue;
+    }
+    const bool main_route = RouteIsMain(route);
+    const RgbaColor color = main_route ? RgbaColor{230, 184, 80, 255}
+                                      : RgbaColor{124, 104, 72, 255};
+    const int thickness = influence_mode ? (main_route ? 3 : 2) : 0;
+    for (std::size_t i = 1; i < route.waypoints.size(); ++i) {
+      const RoutePoint& previous = route.waypoints[i - 1];
+      const RoutePoint& current = route.waypoints[i];
+      DrawLine(previous.x, previous.y, current.x, current.y, thickness,
+               level.size, color, &pixels);
+    }
+    for (const RoutePoint& point : route.waypoints) {
+      DrawPoint(point.x, point.y, main_route ? 2 : 1, level.size, kWhite,
+                &pixels);
+    }
+  }
+  return pixels;
+}
+
+std::vector<RgbaColor> BuildPlacesImage(const LevelData& level) {
+  std::vector<RgbaColor> pixels(static_cast<std::size_t>(level.size.width) *
+                                static_cast<std::size_t>(level.size.height),
+                                kBlack);
+  for (const Place& place : level.places) {
+    const int radius = std::max(1, std::min(place.radius, 8));
+    DrawPoint(place.x, place.y, radius, level.size,
+              RgbaColor{88, 120, 210, 255}, &pixels);
+    DrawPoint(place.x, place.y, 1, level.size, kWhite, &pixels);
+  }
+  return pixels;
+}
+
+std::vector<RgbaColor> BuildObjectFootprintImage(const LevelData& level) {
+  std::vector<RgbaColor> pixels(static_cast<std::size_t>(level.size.width) *
+                                static_cast<std::size_t>(level.size.height),
+                                kBlack);
+  for (const RuntimeObject& object : level.objects) {
+    const RgbaColor color = object.blocks_movement ? RgbaColor{210, 80, 52, 255}
+                                                   : RgbaColor{190, 130, 62, 255};
+    for (int y = object.y; y < object.y + object.height; ++y) {
+      for (int x = object.x; x < object.x + object.width; ++x) {
+        SetPixel(x, y, level.size, color, &pixels);
+      }
+    }
+    SetPixel(object.x, object.y, level.size, kWhite, &pixels);
+  }
+  return pixels;
+}
+
+std::map<std::string, int> CountObjectsByType(const LevelData& level) {
+  std::map<std::string, int> counts;
+  for (const RuntimeObject& object : level.objects) {
+    ++counts[object.type];
+  }
+  return counts;
+}
+
+std::map<std::string, int> CountPlacesByType(const LevelData& level) {
+  std::map<std::string, int> counts;
+  for (const Place& place : level.places) {
+    ++counts[place.type];
+  }
+  return counts;
+}
+
+std::map<std::string, int> CountRoutesByType(const LevelData& level) {
+  std::map<std::string, int> counts;
+  for (const Route& route : level.routes) {
+    ++counts[route.type];
+  }
+  return counts;
+}
+
+std::map<std::string, int> CountZonesByType(const LevelData& level) {
+  std::map<std::string, int> counts;
+  for (const GameplayZone& zone : level.zones) {
+    ++counts[zone.type];
+  }
+  return counts;
+}
+
+void AppendJsonIntMap(std::ostringstream* json,
+                      const std::map<std::string, int>& counts,
+                      int indent_spaces) {
+  std::string indent(static_cast<std::size_t>(indent_spaces), ' ');
+  std::size_t emitted = 0;
+  for (const auto& [name, count] : counts) {
+    *json << indent << JsonString(name) << ": " << count;
+    ++emitted;
+    *json << (emitted < counts.size() ? "," : "") << "\n";
+  }
+}
+
 std::string PercentString(int count, int total) {
   const double percent = total > 0 ? static_cast<double>(count) * 100.0 /
                                         static_cast<double>(total)
@@ -451,6 +613,7 @@ bool DebugArtifactWriter::WriteInputValidationReport(
   json << "    \"objects\": " << level.objects.size() << ",\n";
   json << "    \"places\": " << level.places.size() << ",\n";
   json << "    \"markers\": " << level.markers.size() << ",\n";
+  json << "    \"routes\": " << level.routes.size() << ",\n";
   json << "    \"zones\": " << level.zones.size() << ",\n";
   json << "    \"graph_nodes\": " << level.world_graph.nodes.size() << ",\n";
   json << "    \"graph_edges\": " << level.world_graph.edges.size()
@@ -548,6 +711,67 @@ bool DebugArtifactWriter::WriteSemanticMaskArtifacts(
 
   return WriteTextFile(output_root_ / "reports" /
                            "01_semantic_masks.json",
+                       json.str(), error);
+}
+
+
+bool DebugArtifactWriter::WriteSemanticLinkArtifacts(
+    const LevelData& level, std::string* error) const {
+  const std::filesystem::path directory = output_root_ / "semantic_masks";
+  const std::vector<std::pair<std::string, std::vector<RgbaColor>>> images = {
+      {"routes.png", BuildRouteImage(level, false)},
+      {"route_influence.png", BuildRouteImage(level, true)},
+      {"places.png", BuildPlacesImage(level)},
+      {"object_footprints.png", BuildObjectFootprintImage(level)},
+  };
+
+  for (const auto& [filename, pixels] : images) {
+    if (!WritePngRgba(directory / filename, level.size.width,
+                      level.size.height, pixels, error)) {
+      return false;
+    }
+  }
+
+  std::ostringstream json;
+  json << "{\n";
+  json << "  \"schema_version\": \"visual-debug-semantic-links-v1\",\n";
+  json << "  \"status\": \"ok\",\n";
+  json << "  \"counts\": {\n";
+  json << "    \"objects\": " << level.objects.size() << ",\n";
+  json << "    \"places\": " << level.places.size() << ",\n";
+  json << "    \"routes\": " << level.routes.size() << ",\n";
+  json << "    \"markers\": " << level.markers.size() << ",\n";
+  json << "    \"routes\": " << level.routes.size() << ",\n";
+  json << "    \"zones\": " << level.zones.size() << ",\n";
+  json << "    \"graph_nodes\": " << level.world_graph.nodes.size() << ",\n";
+  json << "    \"graph_edges\": " << level.world_graph.edges.size() << "\n";
+  json << "  },\n";
+
+  json << "  \"object_types\": {\n";
+  AppendJsonIntMap(&json, CountObjectsByType(level), 4);
+  json << "  },\n";
+
+  json << "  \"place_types\": {\n";
+  AppendJsonIntMap(&json, CountPlacesByType(level), 4);
+  json << "  },\n";
+
+  json << "  \"route_types\": {\n";
+  AppendJsonIntMap(&json, CountRoutesByType(level), 4);
+  json << "  },\n";
+
+  json << "  \"zone_types\": {\n";
+  AppendJsonIntMap(&json, CountZonesByType(level), 4);
+  json << "  },\n";
+
+  json << "  \"artifacts\": [\n";
+  for (std::size_t i = 0; i < images.size(); ++i) {
+    json << "    " << JsonString("semantic_masks/" + images[i].first);
+    json << (i + 1 < images.size() ? "," : "") << "\n";
+  }
+  json << "  ]\n";
+  json << "}\n";
+
+  return WriteTextFile(output_root_ / "reports" / "03_semantic_links.json",
                        json.str(), error);
 }
 

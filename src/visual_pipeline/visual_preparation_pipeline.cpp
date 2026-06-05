@@ -53,6 +53,7 @@ std::vector<PipelineStepInfo> BuildDefaultSteps(
     steps.push_back({"Build semantic terrain masks"});
     steps.push_back({"Build terrain regions"});
     steps.push_back({"Classify region borders"});
+    steps.push_back({"Build semantic map links"});
   }
 
   steps.push_back({"Build road and path shapes"});
@@ -497,6 +498,37 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
                                report);
     prepared_level_.visual_layer_count =
         std::max(prepared_level_.visual_layer_count, 1);
+    return;
+  }
+
+  if (step.name == "Build semantic map links") {
+    report->summaries.push_back(
+        "semantic links objects=" + std::to_string(level.objects.size()) +
+        " places=" + std::to_string(level.places.size()) +
+        " routes=" + std::to_string(level.routes.size()) +
+        " markers=" + std::to_string(level.markers.size()) +
+        " zones=" + std::to_string(level.zones.size()) +
+        " graph_nodes=" +
+        std::to_string(level.world_graph.nodes.size()) +
+        " graph_edges=" +
+        std::to_string(level.world_graph.edges.size()));
+    if (level.routes.empty()) {
+      report->warnings.push_back("semantic routes are empty");
+    }
+    if (level.places.empty()) {
+      report->warnings.push_back("semantic places are empty");
+    }
+    if (level.objects.empty()) {
+      report->warnings.push_back("runtime objects are empty");
+    }
+    if (options_.visual_pipeline_config.write_debug_artifacts) {
+      std::string artifact_error;
+      const DebugArtifactWriter writer(ResolveDebugOutputPath(options_));
+      const bool written = writer.WriteSemanticLinkArtifacts(
+          level, &artifact_error);
+      AddDebugArtifactResult("semantic links", written, artifact_error,
+                             report);
+    }
     return;
   }
 

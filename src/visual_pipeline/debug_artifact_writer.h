@@ -46,6 +46,16 @@ class DebugArtifactWriter {
                                   std::string* error) const;
 
   /**
+   * @brief Writes semantic link PNGs and a JSON report.
+   *
+   * @param level Loaded level data with optional semantic layers.
+   * @param error Error text populated on failure.
+   * @return True when all artifacts were written successfully.
+   */
+  bool WriteSemanticLinkArtifacts(const LevelData& level,
+                                  std::string* error) const;
+
+  /**
    * @brief Writes terrain region PNGs and a JSON report.
    *
    * @param regions Connected terrain regions built from semantic masks.

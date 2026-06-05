@@ -10,6 +10,7 @@
 #include "level/place.h"
 #include "level/runtime_grid.h"
 #include "level/runtime_object.h"
+#include "level/route.h"
 #include "level/world_graph.h"
 
 namespace sar {
@@ -26,6 +27,7 @@ struct LevelData {
   std::vector<RuntimeObject> objects;
   std::vector<Place> places;
   std::vector<Marker> markers;
+  std::vector<Route> routes;
   std::vector<GameplayZone> zones;
   WorldGraph world_graph;
   std::map<std::string, int> terrain_type_counts;

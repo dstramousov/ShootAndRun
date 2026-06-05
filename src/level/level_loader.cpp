@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <fstream>
 #include <map>
+#include <cstdint>
 #include <optional>
 #include <sstream>
 #include <string>
@@ -96,11 +97,46 @@ struct MarkerLoadResult {
   std::string error;
 };
 
+struct RuntimeObjectLoadResult {
+  bool ok = false;
+  std::vector<RuntimeObject> objects;
+  std::string error;
+};
+
+struct PlaceLoadResult {
+  bool ok = false;
+  std::vector<Place> places;
+  std::string error;
+};
+
+struct RouteLoadResult {
+  bool ok = false;
+  std::vector<Route> routes;
+  std::string error;
+};
+
+struct GameplayZoneLoadResult {
+  bool ok = false;
+  std::vector<GameplayZone> zones;
+  std::string error;
+};
+
+struct WorldGraphLoadResult {
+  bool ok = false;
+  WorldGraph graph;
+  std::string error;
+};
+
 struct PackageLayout {
   std::filesystem::path package_path;
   std::filesystem::path terrain_path;
   std::filesystem::path runtime_grids_path;
   std::filesystem::path markers_path;
+  std::filesystem::path runtime_objects_path;
+  std::filesystem::path places_path;
+  std::filesystem::path routes_path;
+  std::filesystem::path world_graph_path;
+  std::filesystem::path gameplay_zones_path;
   std::filesystem::path tile_types_catalog_path;
   bool has_tile_types_catalog = false;
   bool uses_manifest = false;
@@ -1486,6 +1522,648 @@ std::optional<std::vector<std::string_view>> ExtractObjectArrayAt(
   return std::nullopt;
 }
 
+
+std::optional<std::string_view> ExtractObjectField(
+    std::string_view object, std::string_view field_name,
+    std::string* error) {
+  const std::optional<std::size_t> value_start =
+      FindFieldValueStart(object, field_name, error);
+  if (!value_start.has_value()) {
+    return std::nullopt;
+  }
+  return ExtractJsonObjectSlice(object, *value_start, error);
+}
+
+std::optional<std::vector<std::string_view>> ExtractNamedObjectArray(
+    std::string_view text, const std::vector<std::string_view>& field_names,
+    std::string* error) {
+  for (const std::string_view field_name : field_names) {
+    const std::optional<std::size_t> value_start =
+        FindFieldValueStart(text, field_name, error);
+    if (!value_start.has_value()) {
+      if (!error->empty()) {
+        return std::nullopt;
+      }
+      continue;
+    }
+    return ExtractObjectArrayAt(text, *value_start, field_name, error);
+  }
+
+  std::size_t position = 0;
+  SkipWhitespace(text, &position);
+  if (position < text.size() && text[position] == '[') {
+    return ExtractObjectArrayAt(text, position, "items", error);
+  }
+  return std::vector<std::string_view>{};
+}
+
+std::optional<std::vector<std::string>> ExtractStringArrayField(
+    std::string_view object, std::string_view field_name) {
+  std::string error;
+  const std::optional<std::size_t> array_start =
+      FindFieldValueStart(object, field_name, &error);
+  if (!array_start.has_value() || *array_start >= object.size() ||
+      object[*array_start] != '[') {
+    return std::nullopt;
+  }
+
+  std::vector<std::string> values;
+  std::size_t position = *array_start + 1;
+  SkipWhitespace(object, &position);
+  while (position < object.size() && object[position] != ']') {
+    if (object[position] != '"') {
+      return std::nullopt;
+    }
+    const StringFieldResult value = ParseJsonStringAt(object, position,
+                                                      field_name);
+    if (!value.ok) {
+      return std::nullopt;
+    }
+    values.push_back(value.value);
+    if (!SkipJsonString(object, &position, &error)) {
+      return std::nullopt;
+    }
+    SkipWhitespace(object, &position);
+    if (position < object.size() && object[position] == ',') {
+      ++position;
+      SkipWhitespace(object, &position);
+    }
+  }
+
+  if (position >= object.size() || object[position] != ']') {
+    return std::nullopt;
+  }
+  return values;
+}
+
+struct BoolFieldResult {
+  bool ok = false;
+  bool found = false;
+  bool value = false;
+  std::string error;
+};
+
+BoolFieldResult ExtractOptionalBoolField(std::string_view text,
+                                         std::string_view field_name) {
+  std::string error;
+  const std::optional<std::size_t> value_start =
+      FindFieldValueStart(text, field_name, &error);
+  if (!value_start.has_value()) {
+    if (!error.empty()) {
+      return {false, false, false, error};
+    }
+    return {true, false, false, {}};
+  }
+
+  if (text.compare(*value_start, 4, "true") == 0) {
+    return {true, true, true, {}};
+  }
+  if (text.compare(*value_start, 5, "false") == 0) {
+    return {true, true, false, {}};
+  }
+  return {false, true, false,
+          "expected boolean value for field: " + std::string(field_name)};
+}
+
+bool ExtractCoordinate(std::string_view object, int* x, int* y,
+                       std::string* error) {
+  IntFieldResult x_value = ExtractOptionalIntField(object, "x");
+  IntFieldResult y_value = ExtractOptionalIntField(object, "y");
+  if (!x_value.ok || !y_value.ok) {
+    *error = !x_value.ok ? x_value.error : y_value.error;
+    return false;
+  }
+  if (x_value.found && y_value.found) {
+    *x = x_value.value;
+    *y = y_value.value;
+    return true;
+  }
+
+  const std::vector<std::string_view> coordinate_objects = {
+      "position", "center", "anchor"};
+  for (const std::string_view field_name : coordinate_objects) {
+    const std::optional<std::string_view> nested =
+        ExtractObjectField(object, field_name, error);
+    if (!nested.has_value()) {
+      if (!error->empty()) {
+        return false;
+      }
+      continue;
+    }
+    x_value = ExtractRequiredIntField(*nested, "x");
+    y_value = ExtractRequiredIntField(*nested, "y");
+    if (!x_value.ok || !y_value.ok) {
+      *error = !x_value.ok ? x_value.error : y_value.error;
+      return false;
+    }
+    *x = x_value.value;
+    *y = y_value.value;
+    return true;
+  }
+
+  *error = "missing coordinate fields";
+  return false;
+}
+
+bool IsCoordinateInside(int x, int y, int width, int height) {
+  return x >= 0 && y >= 0 && x < width && y < height;
+}
+
+bool IsFootprintInside(int x, int y, int footprint_width,
+                       int footprint_height, int map_width, int map_height) {
+  return x >= 0 && y >= 0 && footprint_width > 0 && footprint_height > 0 &&
+         x + footprint_width <= map_width && y + footprint_height <= map_height;
+}
+
+bool LoadOptionalFile(const std::filesystem::path& path,
+                      ReadFileResult* file, std::string* error) {
+  std::error_code error_code;
+  if (!std::filesystem::exists(path, error_code)) {
+    if (error_code) {
+      *error = "failed to inspect semantic file: " + path.string() +
+               " reason=" + error_code.message();
+      return false;
+    }
+    file->ok = false;
+    return true;
+  }
+  if (!std::filesystem::is_regular_file(path, error_code)) {
+    if (error_code) {
+      *error = "failed to inspect semantic file: " + path.string() +
+               " reason=" + error_code.message();
+      return false;
+    }
+    *error = "semantic file path is not a regular file: " + path.string();
+    return false;
+  }
+  *file = ReadTextFile(path);
+  if (!file->ok) {
+    *error = file->error;
+    return false;
+  }
+  return true;
+}
+
+RuntimeObjectLoadResult ParseRuntimeObjects(std::string_view text, int width,
+                                            int height) {
+  std::string error;
+  const std::optional<std::vector<std::string_view>> object_values =
+      ExtractNamedObjectArray(text, {"items", "objects"}, &error);
+  if (!object_values.has_value()) {
+    return {false, {}, error};
+  }
+
+  std::vector<RuntimeObject> objects;
+  objects.reserve(object_values->size());
+  for (const std::string_view object_value : *object_values) {
+    const StringFieldResult id = ExtractRequiredStringField(object_value, "id");
+    const StringFieldResult type = ExtractRequiredStringField(object_value,
+                                                             "type");
+    if (!id.ok || !type.ok) {
+      return {false, {}, !id.ok ? id.error : type.error};
+    }
+
+    int x = 0;
+    int y = 0;
+    if (!ExtractCoordinate(object_value, &x, &y, &error)) {
+      return {false, {}, "runtime object " + id.value + ": " + error};
+    }
+
+    int object_width = 1;
+    int object_height = 1;
+    const std::optional<std::string_view> visual_bounds =
+        ExtractObjectField(object_value, "visual_bounds", &error);
+    if (visual_bounds.has_value()) {
+      const IntFieldResult bounds_x = ExtractOptionalIntField(*visual_bounds,
+                                                              "x");
+      const IntFieldResult bounds_y = ExtractOptionalIntField(*visual_bounds,
+                                                              "y");
+      const IntFieldResult bounds_width = ExtractOptionalIntField(
+          *visual_bounds, "width");
+      const IntFieldResult bounds_height = ExtractOptionalIntField(
+          *visual_bounds, "height");
+      if (!bounds_x.ok || !bounds_y.ok || !bounds_width.ok ||
+          !bounds_height.ok) {
+        return {false, {}, "invalid visual_bounds for object: " + id.value};
+      }
+      if (bounds_x.found) {
+        x = bounds_x.value;
+      }
+      if (bounds_y.found) {
+        y = bounds_y.value;
+      }
+      if (bounds_width.found && bounds_width.value > 0) {
+        object_width = bounds_width.value;
+      }
+      if (bounds_height.found && bounds_height.value > 0) {
+        object_height = bounds_height.value;
+      }
+    }
+
+    if (!IsFootprintInside(x, y, object_width, object_height, width, height)) {
+      return {false, {}, "runtime object is outside map bounds: " + id.value};
+    }
+
+    RuntimeObject object;
+    object.id = id.value;
+    object.type = type.value;
+    object.x = x;
+    object.y = y;
+    object.width = object_width;
+    object.height = object_height;
+
+    const StringFieldResult family = ExtractOptionalStringField(object_value,
+                                                                "family");
+    if (!family.ok) {
+      return {false, {}, family.error};
+    }
+    const StringFieldResult role = ExtractOptionalStringField(object_value,
+                                                              "role");
+    if (!role.ok) {
+      return {false, {}, role.error};
+    }
+    object.family = family.found ? family.value :
+                    role.found ? role.value : object.type;
+
+    const IntFieldResult rotation = ExtractOptionalIntField(object_value,
+                                                            "rotation");
+    if (!rotation.ok) {
+      return {false, {}, rotation.error};
+    }
+    object.rotation = rotation.found ? rotation.value : 0;
+
+    const IntFieldResult elevation = ExtractOptionalIntField(object_value,
+                                                             "elevation");
+    if (!elevation.ok) {
+      return {false, {}, elevation.error};
+    }
+    object.elevation = static_cast<std::int8_t>(
+        elevation.found ? elevation.value : 0);
+
+    const BoolFieldResult blocks_movement = ExtractOptionalBoolField(
+        object_value, "blocks_movement");
+    const BoolFieldResult blocks_projectiles = ExtractOptionalBoolField(
+        object_value, "blocks_projectiles");
+    const BoolFieldResult blocks_vision = ExtractOptionalBoolField(
+        object_value, "blocks_vision");
+    if (!blocks_movement.ok || !blocks_projectiles.ok || !blocks_vision.ok) {
+      return {false, {}, "invalid object blocking flags: " + id.value};
+    }
+    object.blocks_movement = blocks_movement.found && blocks_movement.value;
+    object.blocks_projectiles = blocks_projectiles.found &&
+                                blocks_projectiles.value;
+    object.blocks_vision = blocks_vision.found && blocks_vision.value;
+
+    const std::optional<std::vector<std::string>> tags =
+        ExtractStringArrayField(object_value, "tags");
+    if (tags.has_value()) {
+      object.tags = *tags;
+    }
+    objects.push_back(std::move(object));
+  }
+
+  return {true, std::move(objects), {}};
+}
+
+RuntimeObjectLoadResult LoadRuntimeObjectsIfPresent(
+    const std::filesystem::path& path, int width, int height) {
+  ReadFileResult file;
+  std::string error;
+  if (!LoadOptionalFile(path, &file, &error)) {
+    return {false, {}, error};
+  }
+  if (!file.ok) {
+    return {true, {}, {}};
+  }
+  return ParseRuntimeObjects(file.content, width, height);
+}
+
+PlaceLoadResult ParsePlaces(std::string_view text, int width, int height) {
+  std::string error;
+  const std::optional<std::vector<std::string_view>> place_values =
+      ExtractNamedObjectArray(text, {"items", "places"}, &error);
+  if (!place_values.has_value()) {
+    return {false, {}, error};
+  }
+
+  std::vector<Place> places;
+  places.reserve(place_values->size());
+  for (const std::string_view place_value : *place_values) {
+    const StringFieldResult id = ExtractRequiredStringField(place_value, "id");
+    const StringFieldResult type = ExtractRequiredStringField(place_value,
+                                                             "type");
+    if (!id.ok || !type.ok) {
+      return {false, {}, !id.ok ? id.error : type.error};
+    }
+
+    int x = 0;
+    int y = 0;
+    if (!ExtractCoordinate(place_value, &x, &y, &error)) {
+      return {false, {}, "place " + id.value + ": " + error};
+    }
+    if (!IsCoordinateInside(x, y, width, height)) {
+      return {false, {}, "place is outside map bounds: " + id.value};
+    }
+
+    Place place;
+    place.id = id.value;
+    place.type = type.value;
+    place.x = x;
+    place.y = y;
+
+    const StringFieldResult name = ExtractOptionalStringField(place_value,
+                                                              "name");
+    if (!name.ok) {
+      return {false, {}, name.error};
+    }
+    place.name = name.found ? name.value : place.id;
+
+    const IntFieldResult radius = ExtractOptionalIntField(place_value,
+                                                          "radius");
+    if (!radius.ok) {
+      return {false, {}, radius.error};
+    }
+    place.radius = radius.found && radius.value > 0 ? radius.value : 0;
+
+    const std::optional<std::vector<std::string>> tags =
+        ExtractStringArrayField(place_value, "tags");
+    if (tags.has_value()) {
+      place.tags = *tags;
+    }
+    places.push_back(std::move(place));
+  }
+
+  return {true, std::move(places), {}};
+}
+
+PlaceLoadResult LoadPlacesIfPresent(const std::filesystem::path& path,
+                                    int width, int height) {
+  ReadFileResult file;
+  std::string error;
+  if (!LoadOptionalFile(path, &file, &error)) {
+    return {false, {}, error};
+  }
+  if (!file.ok) {
+    return {true, {}, {}};
+  }
+  return ParsePlaces(file.content, width, height);
+}
+
+RouteLoadResult ParseRoutes(std::string_view text, int width, int height) {
+  std::string error;
+  const std::optional<std::vector<std::string_view>> route_values =
+      ExtractNamedObjectArray(text, {"items", "routes"}, &error);
+  if (!route_values.has_value()) {
+    return {false, {}, error};
+  }
+
+  std::vector<Route> routes;
+  routes.reserve(route_values->size());
+  for (const std::string_view route_value : *route_values) {
+    const StringFieldResult id = ExtractRequiredStringField(route_value, "id");
+    const StringFieldResult type = ExtractRequiredStringField(route_value,
+                                                             "type");
+    if (!id.ok || !type.ok) {
+      return {false, {}, !id.ok ? id.error : type.error};
+    }
+
+    const std::optional<std::vector<std::string_view>> waypoint_values =
+        ExtractNamedObjectArray(route_value, {"waypoints", "points"}, &error);
+    if (!waypoint_values.has_value()) {
+      return {false, {}, "route " + id.value + ": " + error};
+    }
+
+    Route route;
+    route.id = id.value;
+    route.type = type.value;
+    route.waypoints.reserve(waypoint_values->size());
+    for (const std::string_view waypoint_value : *waypoint_values) {
+      int x = 0;
+      int y = 0;
+      if (!ExtractCoordinate(waypoint_value, &x, &y, &error)) {
+        return {false, {}, "route waypoint " + id.value + ": " + error};
+      }
+      if (!IsCoordinateInside(x, y, width, height)) {
+        return {false, {}, "route waypoint outside map bounds: " + id.value};
+      }
+      route.waypoints.push_back(RoutePoint{x, y});
+    }
+
+    const std::optional<std::vector<std::string>> tags =
+        ExtractStringArrayField(route_value, "tags");
+    if (tags.has_value()) {
+      route.tags = *tags;
+    }
+    routes.push_back(std::move(route));
+  }
+
+  return {true, std::move(routes), {}};
+}
+
+RouteLoadResult LoadRoutesIfPresent(const std::filesystem::path& path,
+                                    int width, int height) {
+  ReadFileResult file;
+  std::string error;
+  if (!LoadOptionalFile(path, &file, &error)) {
+    return {false, {}, error};
+  }
+  if (!file.ok) {
+    return {true, {}, {}};
+  }
+  return ParseRoutes(file.content, width, height);
+}
+
+WorldGraphLoadResult ParseWorldGraph(std::string_view text, int width,
+                                     int height) {
+  std::string error;
+  WorldGraph graph;
+
+  const std::optional<std::vector<std::string_view>> node_values =
+      ExtractNamedObjectArray(text, {"nodes"}, &error);
+  if (!node_values.has_value()) {
+    return {false, {}, error};
+  }
+  graph.nodes.reserve(node_values->size());
+  for (const std::string_view node_value : *node_values) {
+    const StringFieldResult id = ExtractRequiredStringField(node_value, "id");
+    const StringFieldResult type = ExtractRequiredStringField(node_value,
+                                                             "type");
+    if (!id.ok || !type.ok) {
+      return {false, {}, !id.ok ? id.error : type.error};
+    }
+
+    int x = 0;
+    int y = 0;
+    if (!ExtractCoordinate(node_value, &x, &y, &error)) {
+      return {false, {}, "world graph node " + id.value + ": " + error};
+    }
+    if (!IsCoordinateInside(x, y, width, height)) {
+      return {false, {}, "world graph node outside map bounds: " + id.value};
+    }
+
+    GraphNode node;
+    node.id = id.value;
+    node.type = type.value;
+    node.x = x;
+    node.y = y;
+    graph.nodes.push_back(std::move(node));
+  }
+
+  const std::optional<std::vector<std::string_view>> edge_values =
+      ExtractNamedObjectArray(text, {"edges"}, &error);
+  if (!edge_values.has_value()) {
+    return {false, {}, error};
+  }
+  graph.edges.reserve(edge_values->size());
+  for (const std::string_view edge_value : *edge_values) {
+    StringFieldResult from = ExtractOptionalStringField(edge_value, "from");
+    if (!from.ok) {
+      return {false, {}, from.error};
+    }
+    if (!from.found) {
+      from = ExtractRequiredStringField(edge_value, "source");
+    }
+    StringFieldResult to = ExtractOptionalStringField(edge_value, "to");
+    if (!to.ok) {
+      return {false, {}, to.error};
+    }
+    if (!to.found) {
+      to = ExtractRequiredStringField(edge_value, "target");
+    }
+    const StringFieldResult type = ExtractOptionalStringField(edge_value,
+                                                             "type");
+    if (!from.ok || !to.ok || !type.ok) {
+      return {false, {}, !from.ok ? from.error : !to.ok ? to.error
+                                                        : type.error};
+    }
+
+    GraphEdge edge;
+    edge.from = from.value;
+    edge.to = to.value;
+    edge.type = type.found ? type.value : "connection";
+    const IntFieldResult cost_tiles = ExtractOptionalIntField(edge_value,
+                                                              "cost_tiles");
+    if (!cost_tiles.ok) {
+      return {false, {}, cost_tiles.error};
+    }
+    edge.cost = cost_tiles.found ? static_cast<float>(cost_tiles.value) : 1.0F;
+    graph.edges.push_back(std::move(edge));
+  }
+
+  return {true, std::move(graph), {}};
+}
+
+WorldGraphLoadResult LoadWorldGraphIfPresent(const std::filesystem::path& path,
+                                             int width, int height) {
+  ReadFileResult file;
+  std::string error;
+  if (!LoadOptionalFile(path, &file, &error)) {
+    return {false, {}, error};
+  }
+  if (!file.ok) {
+    return {true, {}, {}};
+  }
+  return ParseWorldGraph(file.content, width, height);
+}
+
+GameplayZoneLoadResult ParseGameplayZones(std::string_view text, int width,
+                                          int height) {
+  std::string error;
+  const std::optional<std::vector<std::string_view>> zone_values =
+      ExtractNamedObjectArray(text, {"items", "zones"}, &error);
+  if (!zone_values.has_value()) {
+    return {false, {}, error};
+  }
+
+  std::vector<GameplayZone> zones;
+  zones.reserve(zone_values->size());
+  for (const std::string_view zone_value : *zone_values) {
+    const StringFieldResult id = ExtractRequiredStringField(zone_value, "id");
+    const StringFieldResult type = ExtractRequiredStringField(zone_value,
+                                                             "type");
+    if (!id.ok || !type.ok) {
+      return {false, {}, !id.ok ? id.error : type.error};
+    }
+
+    GameplayZone zone;
+    zone.id = id.value;
+    zone.type = type.value;
+
+    const StringFieldResult shape = ExtractOptionalStringField(zone_value,
+                                                               "shape");
+    if (!shape.ok) {
+      return {false, {}, shape.error};
+    }
+    zone.shape = shape.found ? shape.value : "rect";
+
+    const std::optional<std::string_view> bounds =
+        ExtractObjectField(zone_value, "bounds", &error);
+    if (bounds.has_value()) {
+      const IntFieldResult min_x = ExtractRequiredIntField(*bounds, "min_x");
+      const IntFieldResult min_y = ExtractRequiredIntField(*bounds, "min_y");
+      const IntFieldResult max_x = ExtractRequiredIntField(*bounds, "max_x");
+      const IntFieldResult max_y = ExtractRequiredIntField(*bounds, "max_y");
+      if (!min_x.ok || !min_y.ok || !max_x.ok || !max_y.ok) {
+        return {false, {}, "invalid zone bounds: " + id.value};
+      }
+      if (min_x.value < 0 || min_y.value < 0 || max_x.value >= width ||
+          max_y.value >= height || max_x.value < min_x.value ||
+          max_y.value < min_y.value) {
+        return {false, {}, "zone bounds outside map: " + id.value};
+      }
+      zone.x = min_x.value;
+      zone.y = min_y.value;
+      zone.width = max_x.value - min_x.value + 1;
+      zone.height = max_y.value - min_y.value + 1;
+    } else {
+      int x = 0;
+      int y = 0;
+      if (!ExtractCoordinate(zone_value, &x, &y, &error)) {
+        return {false, {}, "zone " + id.value + ": " + error};
+      }
+      if (!IsCoordinateInside(x, y, width, height)) {
+        return {false, {}, "zone outside map bounds: " + id.value};
+      }
+      zone.x = x;
+      zone.y = y;
+      const IntFieldResult zone_width = ExtractOptionalIntField(zone_value,
+                                                                "width");
+      const IntFieldResult zone_height = ExtractOptionalIntField(zone_value,
+                                                                 "height");
+      const IntFieldResult zone_radius = ExtractOptionalIntField(zone_value,
+                                                                 "radius");
+      if (!zone_width.ok || !zone_height.ok || !zone_radius.ok) {
+        return {false, {}, "invalid zone dimensions: " + id.value};
+      }
+      zone.width = zone_width.found ? zone_width.value : 0;
+      zone.height = zone_height.found ? zone_height.value : 0;
+      zone.radius = zone_radius.found ? zone_radius.value : 0;
+    }
+
+    const std::optional<std::vector<std::string>> tags =
+        ExtractStringArrayField(zone_value, "tags");
+    if (tags.has_value()) {
+      zone.tags = *tags;
+    }
+    zones.push_back(std::move(zone));
+  }
+
+  return {true, std::move(zones), {}};
+}
+
+GameplayZoneLoadResult LoadGameplayZonesIfPresent(
+    const std::filesystem::path& path, int width, int height) {
+  ReadFileResult file;
+  std::string error;
+  if (!LoadOptionalFile(path, &file, &error)) {
+    return {false, {}, error};
+  }
+  if (!file.ok) {
+    return {true, {}, {}};
+  }
+  return ParseGameplayZones(file.content, width, height);
+}
+
 MarkerLoadResult ParseMarkers(std::string_view text, int width, int height) {
   std::string error;
   std::string_view array_field_name = "markers";
@@ -1609,6 +2287,11 @@ LevelLoadResult ResolvePackageLayout(const std::filesystem::path& package_path,
   layout->terrain_path = package_path / "terrain.json";
   layout->runtime_grids_path = package_path / "runtime_grids.json";
   layout->markers_path = package_path / "markers.json";
+  layout->runtime_objects_path = package_path / "objects" / "runtime_objects.json";
+  layout->places_path = package_path / "objects" / "places.json";
+  layout->routes_path = package_path / "routes.json";
+  layout->world_graph_path = package_path / "world_graph.json";
+  layout->gameplay_zones_path = package_path / "gameplay_zones.json";
 
   const std::filesystem::path manifest_path = package_path / "map.json";
   std::error_code error_code;
@@ -1662,6 +2345,55 @@ LevelLoadResult ResolvePackageLayout(const std::filesystem::path& package_path,
     layout->markers_path = ResolvePackageFile(package_path, markers.value);
   }
 
+
+  const StringFieldResult runtime_objects = ExtractOptionalStringField(
+      manifest.content, "runtime_objects");
+  if (!runtime_objects.ok) {
+    return {false, {}, runtime_objects.error};
+  }
+  if (runtime_objects.found && !runtime_objects.value.empty()) {
+    layout->runtime_objects_path = ResolvePackageFile(package_path,
+                                                       runtime_objects.value);
+  }
+
+  const StringFieldResult places = ExtractOptionalStringField(manifest.content,
+                                                              "places");
+  if (!places.ok) {
+    return {false, {}, places.error};
+  }
+  if (places.found && !places.value.empty()) {
+    layout->places_path = ResolvePackageFile(package_path, places.value);
+  }
+
+  const StringFieldResult routes = ExtractOptionalStringField(manifest.content,
+                                                              "routes");
+  if (!routes.ok) {
+    return {false, {}, routes.error};
+  }
+  if (routes.found && !routes.value.empty()) {
+    layout->routes_path = ResolvePackageFile(package_path, routes.value);
+  }
+
+  const StringFieldResult world_graph = ExtractOptionalStringField(
+      manifest.content, "world_graph");
+  if (!world_graph.ok) {
+    return {false, {}, world_graph.error};
+  }
+  if (world_graph.found && !world_graph.value.empty()) {
+    layout->world_graph_path = ResolvePackageFile(package_path,
+                                                  world_graph.value);
+  }
+
+  const StringFieldResult gameplay_zones = ExtractOptionalStringField(
+      manifest.content, "gameplay_zones");
+  if (!gameplay_zones.ok) {
+    return {false, {}, gameplay_zones.error};
+  }
+  if (gameplay_zones.found && !gameplay_zones.value.empty()) {
+    layout->gameplay_zones_path = ResolvePackageFile(package_path,
+                                                     gameplay_zones.value);
+  }
+
   const StringFieldResult tile_types = ExtractOptionalStringField(
       manifest.content, "tile_types");
   if (!tile_types.ok) {
@@ -1712,7 +2444,13 @@ std::string LevelPackageSummary::Dump() const {
          ", tile_size: " + std::to_string(size.tile_size) +
          ", runtime_grids: " +
          std::to_string(validated_runtime_grid_count) +
-         ", markers: " + std::to_string(marker_count) + " }";
+         ", markers: " + std::to_string(marker_count) +
+         ", objects: " + std::to_string(object_count) +
+         ", places: " + std::to_string(place_count) +
+         ", routes: " + std::to_string(route_count) +
+         ", zones: " + std::to_string(gameplay_zone_count) +
+         ", graph_nodes: " + std::to_string(graph_node_count) +
+         ", graph_edges: " + std::to_string(graph_edge_count) + " }";
 }
 
 LevelLoadResult LevelLoader::LoadBasicPackage(
@@ -1855,9 +2593,51 @@ LevelLoadResult LevelLoader::LoadBasicPackage(
   }
   summary.marker_count = static_cast<int>(markers.markers.size());
 
+  const RuntimeObjectLoadResult runtime_objects = LoadRuntimeObjectsIfPresent(
+      layout.runtime_objects_path, width.value, height.value);
+  if (!runtime_objects.ok) {
+    return {false, {}, runtime_objects.error};
+  }
+  summary.object_count = static_cast<int>(runtime_objects.objects.size());
+
+  const PlaceLoadResult places = LoadPlacesIfPresent(
+      layout.places_path, width.value, height.value);
+  if (!places.ok) {
+    return {false, {}, places.error};
+  }
+  summary.place_count = static_cast<int>(places.places.size());
+
+  const RouteLoadResult routes = LoadRoutesIfPresent(
+      layout.routes_path, width.value, height.value);
+  if (!routes.ok) {
+    return {false, {}, routes.error};
+  }
+  summary.route_count = static_cast<int>(routes.routes.size());
+
+  const WorldGraphLoadResult world_graph = LoadWorldGraphIfPresent(
+      layout.world_graph_path, width.value, height.value);
+  if (!world_graph.ok) {
+    return {false, {}, world_graph.error};
+  }
+  summary.graph_node_count = static_cast<int>(world_graph.graph.nodes.size());
+  summary.graph_edge_count = static_cast<int>(world_graph.graph.edges.size());
+
+  const GameplayZoneLoadResult gameplay_zones = LoadGameplayZonesIfPresent(
+      layout.gameplay_zones_path, width.value, height.value);
+  if (!gameplay_zones.ok) {
+    return {false, {}, gameplay_zones.error};
+  }
+  summary.gameplay_zone_count =
+      static_cast<int>(gameplay_zones.zones.size());
+
   LevelData level;
   level.size = summary.size;
   level.markers = std::move(markers.markers);
+  level.objects = std::move(runtime_objects.objects);
+  level.places = std::move(places.places);
+  level.routes = std::move(routes.routes);
+  level.world_graph = std::move(world_graph.graph);
+  level.zones = std::move(gameplay_zones.zones);
   level.terrain_type_counts = terrain_grid.terrain_type_counts;
   level.unknown_terrain_type_counts = terrain_grid.unknown_terrain_type_counts;
   level.tile_catalog_type_count = terrain_grid.catalog_type_count;

@@ -348,7 +348,7 @@ void TestVisualPreparationPipelineUsesPreparedVisualMap() {
 
   sar::visual_pipeline::VisualPreparationPipeline pipeline;
   pipeline.Start(level, options);
-  Expect(pipeline.progress().total_steps == 11,
+  Expect(pipeline.progress().total_steps == 12,
          "prepared visual-map pipeline should add one loading step");
 
   while (!pipeline.finished() && !pipeline.progress().failed) {
@@ -386,7 +386,7 @@ void TestVisualPreparationPipelineSkeleton() {
   sar::visual_pipeline::VisualPreparationPipeline pipeline;
   pipeline.Start(level);
   Expect(pipeline.running(), "visual pipeline should start running");
-  Expect(pipeline.progress().total_steps == 10,
+  Expect(pipeline.progress().total_steps == 11,
          "visual pipeline should expose default step count");
 
   while (!pipeline.finished() && !pipeline.progress().failed) {
@@ -579,6 +579,13 @@ void TestLevelLoaderManifestPackage() {
                 "  },\n"
                 "  \"runtime_grids\": \"runtime_grids.json\",\n"
                 "  \"markers\": \"markers.json\",\n"
+                "  \"routes\": \"routes.json\",\n"
+                "  \"world_graph\": \"world_graph.json\",\n"
+                "  \"gameplay_zones\": \"gameplay_zones.json\",\n"
+                "  \"objects\": {\n"
+                "    \"runtime_objects\": \"objects/runtime_objects.json\",\n"
+                "    \"places\": \"objects/places.json\"\n"
+                "  },\n"
                 "  \"layers\": {\n"
                 "    \"terrain\": \"layers/terrain.json\"\n"
                 "  },\n"
@@ -635,6 +642,74 @@ void TestLevelLoaderManifestPackage() {
                 "  ]\n"
                 "}\n");
 
+
+  std::filesystem::create_directories(package_path / "objects");
+  WriteTextFile(package_path / "objects" / "runtime_objects.json",
+                "{\n"
+                "  \"items\": [\n"
+                "    {\n"
+                "      \"id\": \"fallen_log_001\",\n"
+                "      \"type\": \"fallen_log\",\n"
+                "      \"family\": \"forest_debris\",\n"
+                "      \"x\": 1,\n"
+                "      \"y\": 1,\n"
+                "      \"visual_bounds\": {\"x\": 1, \"y\": 1, \"width\": 1, \"height\": 1},\n"
+                "      \"blocks_movement\": false,\n"
+                "      \"blocks_projectiles\": false,\n"
+                "      \"blocks_vision\": false,\n"
+                "      \"tags\": [\"decor\", \"forest\"]\n"
+                "    }\n"
+                "  ]\n"
+                "}\n");
+
+  WriteTextFile(package_path / "objects" / "places.json",
+                "{\n"
+                "  \"items\": [\n"
+                "    {\n"
+                "      \"id\": \"camp_001\",\n"
+                "      \"type\": \"camp\",\n"
+                "      \"center\": {\"x\": 1, \"y\": 1},\n"
+                "      \"radius\": 2,\n"
+                "      \"tags\": [\"camp\"]\n"
+                "    }\n"
+                "  ]\n"
+                "}\n");
+
+  WriteTextFile(package_path / "routes.json",
+                "{\n"
+                "  \"items\": [\n"
+                "    {\n"
+                "      \"id\": \"main_road_000\",\n"
+                "      \"type\": \"main_road\",\n"
+                "      \"waypoints\": [{\"x\": 0, \"y\": 0}, {\"x\": 1, \"y\": 1}],\n"
+                "      \"tags\": [\"primary\"]\n"
+                "    }\n"
+                "  ]\n"
+                "}\n");
+
+  WriteTextFile(package_path / "world_graph.json",
+                "{\n"
+                "  \"nodes\": [\n"
+                "    {\"id\": \"start\", \"type\": \"start\", \"position\": {\"x\": 0, \"y\": 0}},\n"
+                "    {\"id\": \"camp_001\", \"type\": \"camp\", \"position\": {\"x\": 1, \"y\": 1}}\n"
+                "  ],\n"
+                "  \"edges\": [\n"
+                "    {\"source\": \"start\", \"target\": \"camp_001\", \"type\": \"main_path\", \"cost_tiles\": 2}\n"
+                "  ]\n"
+                "}\n");
+
+  WriteTextFile(package_path / "gameplay_zones.json",
+                "{\n"
+                "  \"items\": [\n"
+                "    {\n"
+                "      \"id\": \"zone_safe_001\",\n"
+                "      \"type\": \"safe_area\",\n"
+                "      \"bounds\": {\"min_x\": 0, \"min_y\": 0, \"max_x\": 1, \"max_y\": 1},\n"
+                "      \"tags\": [\"safe\"]\n"
+                "    }\n"
+                "  ]\n"
+                "}\n");
+
   const sar::LevelLoader loader;
   const sar::LevelLoadResult result = loader.LoadBasicPackage(package_path);
   Expect(result.ok, "manifest level package should load successfully");
@@ -648,12 +723,38 @@ void TestLevelLoaderManifestPackage() {
          "manifest runtime grids should be validated");
   Expect(result.summary.marker_count == 1,
          "manifest markers should be loaded");
+  Expect(result.summary.object_count == 1,
+         "manifest runtime objects should be loaded");
+  Expect(result.summary.place_count == 1,
+         "manifest places should be loaded");
+  Expect(result.summary.route_count == 1,
+         "manifest routes should be loaded");
+  Expect(result.summary.graph_node_count == 2,
+         "manifest graph nodes should be loaded");
+  Expect(result.summary.graph_edge_count == 1,
+         "manifest graph edges should be loaded");
+  Expect(result.summary.gameplay_zone_count == 1,
+         "manifest gameplay zones should be loaded");
   Expect(result.level.markers.size() == 1,
          "manifest marker list should be available");
   Expect(result.level.markers[0].type == "player_spawn",
          "player spawn marker should be parsed");
   Expect(result.level.markers[0].x == 1 && result.level.markers[0].y == 0,
          "player spawn marker coordinates should be parsed");
+  Expect(result.level.objects.size() == 1 &&
+             result.level.objects[0].type == "fallen_log",
+         "runtime object should be parsed");
+  Expect(result.level.places.size() == 1 && result.level.places[0].x == 1 &&
+             result.level.places[0].y == 1,
+         "place center should be parsed");
+  Expect(result.level.routes.size() == 1 &&
+             result.level.routes[0].waypoints.size() == 2,
+         "route waypoints should be parsed");
+  Expect(result.level.world_graph.nodes.size() == 2 &&
+             result.level.world_graph.edges.size() == 1,
+         "world graph should be parsed");
+  Expect(result.level.zones.size() == 1 && result.level.zones[0].width == 2,
+         "gameplay zone bounds should be parsed");
 
   WriteTextFile(package_path / "markers.json",
                 "{\n"
@@ -742,6 +843,74 @@ void TestLevelLoaderBasicPackage() {
                 "  \"cover_grid\": [[0, 0], [0, 0]],\n"
                 "  \"concealment_grid\": [[1, 0], [0, 1]],\n"
                 "  \"height_grid\": [[0, 0], [0, -1]]\n"
+                "}\n");
+
+
+  std::filesystem::create_directories(package_path / "objects");
+  WriteTextFile(package_path / "objects" / "runtime_objects.json",
+                "{\n"
+                "  \"items\": [\n"
+                "    {\n"
+                "      \"id\": \"fallen_log_001\",\n"
+                "      \"type\": \"fallen_log\",\n"
+                "      \"family\": \"forest_debris\",\n"
+                "      \"x\": 1,\n"
+                "      \"y\": 1,\n"
+                "      \"visual_bounds\": {\"x\": 1, \"y\": 1, \"width\": 1, \"height\": 1},\n"
+                "      \"blocks_movement\": false,\n"
+                "      \"blocks_projectiles\": false,\n"
+                "      \"blocks_vision\": false,\n"
+                "      \"tags\": [\"decor\", \"forest\"]\n"
+                "    }\n"
+                "  ]\n"
+                "}\n");
+
+  WriteTextFile(package_path / "objects" / "places.json",
+                "{\n"
+                "  \"items\": [\n"
+                "    {\n"
+                "      \"id\": \"camp_001\",\n"
+                "      \"type\": \"camp\",\n"
+                "      \"center\": {\"x\": 1, \"y\": 1},\n"
+                "      \"radius\": 2,\n"
+                "      \"tags\": [\"camp\"]\n"
+                "    }\n"
+                "  ]\n"
+                "}\n");
+
+  WriteTextFile(package_path / "routes.json",
+                "{\n"
+                "  \"items\": [\n"
+                "    {\n"
+                "      \"id\": \"main_road_000\",\n"
+                "      \"type\": \"main_road\",\n"
+                "      \"waypoints\": [{\"x\": 0, \"y\": 0}, {\"x\": 1, \"y\": 1}],\n"
+                "      \"tags\": [\"primary\"]\n"
+                "    }\n"
+                "  ]\n"
+                "}\n");
+
+  WriteTextFile(package_path / "world_graph.json",
+                "{\n"
+                "  \"nodes\": [\n"
+                "    {\"id\": \"start\", \"type\": \"start\", \"position\": {\"x\": 0, \"y\": 0}},\n"
+                "    {\"id\": \"camp_001\", \"type\": \"camp\", \"position\": {\"x\": 1, \"y\": 1}}\n"
+                "  ],\n"
+                "  \"edges\": [\n"
+                "    {\"source\": \"start\", \"target\": \"camp_001\", \"type\": \"main_path\", \"cost_tiles\": 2}\n"
+                "  ]\n"
+                "}\n");
+
+  WriteTextFile(package_path / "gameplay_zones.json",
+                "{\n"
+                "  \"items\": [\n"
+                "    {\n"
+                "      \"id\": \"zone_safe_001\",\n"
+                "      \"type\": \"safe_area\",\n"
+                "      \"bounds\": {\"min_x\": 0, \"min_y\": 0, \"max_x\": 1, \"max_y\": 1},\n"
+                "      \"tags\": [\"safe\"]\n"
+                "    }\n"
+                "  ]\n"
                 "}\n");
 
   const sar::LevelLoader loader;
