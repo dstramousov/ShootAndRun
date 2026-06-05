@@ -4,12 +4,26 @@
 
 namespace sar::visual_pipeline {
 
+const char* PreparedLevelSourceName(PreparedLevelSource source) {
+  switch (source) {
+    case PreparedLevelSource::kCppPipeline:
+      return "cpp_pipeline";
+    case PreparedLevelSource::kPreparedVisualMap:
+      return "prepared_visual_map";
+    case PreparedLevelSource::kHybrid:
+      return "hybrid";
+  }
+
+  return "cpp_pipeline";
+}
+
 std::string PreparedLevel::Dump() const {
   std::string dump =
       "PreparedLevel { ready: " + std::string(ready ? "true" : "false") +
       ", size: " + std::to_string(size.width) + "x" +
       std::to_string(size.height) + ", tile_size: " +
-      std::to_string(size.tile_size) + ", semantic_masks: " +
+      std::to_string(size.tile_size) + ", source: " +
+      PreparedLevelSourceName(source) + ", semantic_masks: " +
       std::to_string(semantic_mask_count) + ", regions: " +
       std::to_string(terrain_region_count) + ", region_borders: " +
       std::to_string(region_border_count) + ", visual_layers: " +
@@ -50,6 +64,17 @@ std::string PreparedLevel::Dump() const {
             ", corner: " + std::to_string(summary.corner_tile_count) +
             ", map_edge: " + std::to_string(summary.map_edge_tile_count) +
             " }";
+  }
+
+  if (prepared_visual_map.loaded) {
+    dump += ", prepared_visual_map: { layers: " +
+            std::to_string(prepared_visual_map.visual_layer_count) +
+            ", unique_tiles: " +
+            std::to_string(prepared_visual_map.unique_tile_id_count) +
+            ", objects: " +
+            std::to_string(prepared_visual_map.visual_object_count) +
+            ", chunks: " +
+            std::to_string(prepared_visual_map.visual_chunk_count) + " }";
   }
 
   dump += " }";

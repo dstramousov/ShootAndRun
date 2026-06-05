@@ -170,3 +170,13 @@
 - Loaded runtime grid values into `RuntimeCell` instead of only validating grid shapes.
 - Fixed runtime semantic mask summaries for walkable, blocked, vision/projectile blocking, cover, concealment, and height.
 - Added tests for catalog-aware terrain mapping and runtime grid cell data.
+
+## v0.1.19 -> v0.1.20
+
+- Bumped CMake project and runtime application version to `0.1.20`.
+- Added `visual_pipeline` configuration for prepared visual-map loading mode, fallback behavior, and optional C++ analysis.
+- Added `VisualMapLoader` and `VisualMapData` for loading `visual_map/visual_map.json`, visual layers, visual objects, and visual chunks.
+- Added prepared visual-map validation against raw map package dimensions.
+- Extended `PreparedLevel` with source tracking and prepared visual-map summary data.
+- Updated the map preparation pipeline to use prepared Python `visual_map` data when available while keeping the C++ analysis pipeline as fallback/debug data.
+- Added tests for prepared visual-map loading and pipeline integration.

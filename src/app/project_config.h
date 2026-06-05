@@ -5,6 +5,7 @@
 #include <string>
 
 #include "window/window_config.h"
+#include "visual_pipeline/visual_pipeline_config.h"
 
 namespace sar {
 
@@ -39,6 +40,7 @@ struct ProjectConfig {
   RaylibLogLevel raylib_log_level = RaylibLogLevel::kWarning;
   WindowConfig window_config;
   ServiceInfoConfig service_info;
+  visual_pipeline::VisualPipelineConfig visual_pipeline_config;
 
   /**
    * @brief Returns a readable dump of the project configuration.
@@ -58,7 +60,7 @@ struct ProjectConfigResult {
  * @brief Loads project configuration from a JSON file.
  *
  * The loader requires the `map_package_path` string field. Font, window,
- * service-info and raylib log settings are optional and use safe defaults
+ * service-info, raylib log and visual pipeline settings are optional and use safe defaults
  * when they are not present. Unknown fields are ignored so the format can be
  * extended later.
  *

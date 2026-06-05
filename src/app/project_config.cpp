@@ -1,5 +1,7 @@
 #include "app/project_config.h"
 
+#include <utility>
+
 #include <cctype>
 #include <charconv>
 #include <fstream>
@@ -333,7 +335,18 @@ std::string ProjectConfig::Dump() const {
          ", show_memory: " +
          std::string(service_info.show_memory ? "true" : "false") +
          ", update_interval_ms: " +
-         std::to_string(service_info.update_interval_ms) + " } }";
+         std::to_string(service_info.update_interval_ms) +
+         " }, visual_pipeline: { mode: " +
+         visual_pipeline::VisualPipelineModeName(visual_pipeline_config.mode) +
+         ", prepared_visual_map_path: \"" +
+         visual_pipeline_config.prepared_visual_map_path.string() +
+         "\", fallback_to_cpp_pipeline: " +
+         std::string(visual_pipeline_config.fallback_to_cpp_pipeline ? "true" :
+                                                                    "false") +
+         ", run_cpp_analysis: " +
+         std::string(visual_pipeline_config.run_cpp_analysis ? "true" :
+                                                           "false") +
+         " } }";
 }
 
 ProjectConfigResult LoadProjectConfig(
@@ -493,6 +506,58 @@ ProjectConfigResult LoadProjectConfig(
       return {false, {}, "update_interval_ms must be positive"};
     }
     config.service_info.update_interval_ms = update_interval_ms.value;
+  }
+
+  ParseStringResult visual_pipeline_mode =
+      ExtractOptionalJsonStringField(content, "visual_pipeline_mode");
+  if (!visual_pipeline_mode.ok) {
+    return {false, {}, visual_pipeline_mode.error};
+  }
+  if (visual_pipeline_mode.value.empty()) {
+    visual_pipeline_mode = ExtractOptionalJsonStringField(content, "mode");
+    if (!visual_pipeline_mode.ok) {
+      return {false, {}, visual_pipeline_mode.error};
+    }
+  }
+  if (!visual_pipeline_mode.value.empty()) {
+    const std::optional<visual_pipeline::VisualPipelineMode> parsed =
+        visual_pipeline::ParseVisualPipelineMode(visual_pipeline_mode.value);
+    if (!parsed.has_value()) {
+      return {false, {},
+              "unsupported visual_pipeline mode: " +
+                  visual_pipeline_mode.value};
+    }
+    config.visual_pipeline_config.mode = *parsed;
+  }
+
+  ParseStringResult prepared_visual_map_path =
+      ExtractOptionalJsonStringField(content, "prepared_visual_map_path");
+  if (!prepared_visual_map_path.ok) {
+    return {false, {}, prepared_visual_map_path.error};
+  }
+  if (!prepared_visual_map_path.value.empty()) {
+    config.visual_pipeline_config.prepared_visual_map_path =
+        std::filesystem::path(prepared_visual_map_path.value);
+  }
+
+  ParseBoolResult fallback_to_cpp_pipeline =
+      ExtractOptionalJsonBoolField(content, "fallback_to_cpp_pipeline");
+  if (!fallback_to_cpp_pipeline.ok) {
+    return {false, {}, fallback_to_cpp_pipeline.error};
+  }
+  if (fallback_to_cpp_pipeline.found) {
+    config.visual_pipeline_config.fallback_to_cpp_pipeline =
+        fallback_to_cpp_pipeline.value;
+  }
+
+  ParseBoolResult run_cpp_analysis =
+      ExtractOptionalJsonBoolField(content, "run_cpp_analysis");
+  if (!run_cpp_analysis.ok) {
+    return {false, {}, run_cpp_analysis.error};
+  }
+  if (run_cpp_analysis.found) {
+    config.visual_pipeline_config.run_cpp_analysis =
+        run_cpp_analysis.value;
   }
 
   return {true, config, {}};

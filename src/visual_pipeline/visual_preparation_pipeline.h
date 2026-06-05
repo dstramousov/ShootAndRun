@@ -1,17 +1,24 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_VISUAL_PREPARATION_PIPELINE_H_
 #define SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_VISUAL_PREPARATION_PIPELINE_H_
 
+#include <filesystem>
 #include <string>
 #include <vector>
 
 #include "level/level_data.h"
 #include "visual_pipeline/pipeline_progress.h"
 #include "visual_pipeline/prepared_level.h"
+#include "visual_pipeline/visual_pipeline_config.h"
 
 namespace sar::visual_pipeline {
 
 struct PipelineStepInfo {
   std::string name;
+};
+
+struct VisualPreparationOptions {
+  std::filesystem::path map_package_path;
+  VisualPipelineConfig visual_pipeline_config;
 };
 
 struct PipelineStepReport {
@@ -32,6 +39,14 @@ class VisualPreparationPipeline {
    * @param level Raw loaded level data.
    */
   void Start(const LevelData& level);
+
+  /**
+   * @brief Resets the pipeline and prepares it for a new level.
+   *
+   * @param level Raw loaded level data.
+   * @param options Visual preparation options.
+   */
+  void Start(const LevelData& level, VisualPreparationOptions options);
 
   /**
    * @brief Advances the preparation pipeline by one step.
@@ -86,6 +101,7 @@ class VisualPreparationPipeline {
   PipelineProgress progress_;
   PipelineStepReport last_step_report_;
   PreparedLevel prepared_level_;
+  VisualPreparationOptions options_;
 };
 
 }  // namespace sar::visual_pipeline

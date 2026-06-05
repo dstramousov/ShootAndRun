@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <filesystem>
 #include <iomanip>
 #include <sstream>
 #include <string>
@@ -15,23 +16,80 @@
 #include "visual_pipeline/steps/build_terrain_regions_step.h"
 #include "visual_pipeline/terrain_regions.h"
 #include "visual_pipeline/region_borders.h"
+#include "visual_pipeline/visual_map_loader.h"
+#include "visual_pipeline/visual_pipeline_config.h"
 
 namespace sar::visual_pipeline {
 namespace {
 
-std::vector<PipelineStepInfo> BuildDefaultSteps() {
-  return {
+bool UsesPreparedVisualMap(VisualPipelineMode mode) {
+  return mode == VisualPipelineMode::kUsePreparedVisualMap ||
+         mode == VisualPipelineMode::kHybrid ||
+         mode == VisualPipelineMode::kCompare;
+}
+
+bool ShouldRunCppAnalysis(const VisualPreparationOptions& options) {
+  if (options.visual_pipeline_config.mode == VisualPipelineMode::kBuildCpp ||
+      options.visual_pipeline_config.mode == VisualPipelineMode::kCompare) {
+    return true;
+  }
+  return options.visual_pipeline_config.run_cpp_analysis;
+}
+
+std::vector<PipelineStepInfo> BuildDefaultSteps(
+    const VisualPreparationOptions& options) {
+  std::vector<PipelineStepInfo> steps = {
       {"Load raw map package"},
       {"Validate raw map data"},
-      {"Build semantic terrain masks"},
-      {"Build terrain regions"},
-      {"Classify region borders"},
-      {"Build road and path shapes"},
-      {"Build forest masses"},
-      {"Build water and swamp edges"},
-      {"Place visual decorations"},
-      {"Build render cache"},
   };
+
+  if (UsesPreparedVisualMap(options.visual_pipeline_config.mode)) {
+    steps.push_back({"Load prepared visual map"});
+  }
+
+  if (ShouldRunCppAnalysis(options)) {
+    steps.push_back({"Build semantic terrain masks"});
+    steps.push_back({"Build terrain regions"});
+    steps.push_back({"Classify region borders"});
+  }
+
+  steps.push_back({"Build road and path shapes"});
+  steps.push_back({"Build forest masses"});
+  steps.push_back({"Build water and swamp edges"});
+  steps.push_back({"Place visual decorations"});
+  steps.push_back({"Build render cache"});
+  return steps;
+}
+
+std::filesystem::path ResolvePreparedVisualMapPath(
+    const VisualPreparationOptions& options) {
+  const std::filesystem::path configured =
+      options.visual_pipeline_config.prepared_visual_map_path;
+  if (configured.is_absolute()) {
+    return configured;
+  }
+  if (options.map_package_path.empty()) {
+    return configured;
+  }
+  return options.map_package_path / configured;
+}
+
+bool HasPreparedVisualMap(const PreparedLevel& prepared_level) {
+  return prepared_level.prepared_visual_map.loaded;
+}
+
+PreparedLevelSource SourceForMode(VisualPipelineMode mode) {
+  switch (mode) {
+    case VisualPipelineMode::kUsePreparedVisualMap:
+      return PreparedLevelSource::kPreparedVisualMap;
+    case VisualPipelineMode::kHybrid:
+    case VisualPipelineMode::kCompare:
+      return PreparedLevelSource::kHybrid;
+    case VisualPipelineMode::kBuildCpp:
+      return PreparedLevelSource::kCppPipeline;
+  }
+
+  return PreparedLevelSource::kCppPipeline;
 }
 
 
@@ -181,14 +239,42 @@ void AddRegionBorderDiagnostics(const RegionBorderSummary& summary,
   }
 }
 
+void AddVisualMapDiagnostics(const VisualMapData& data,
+                             PipelineStepReport* report) {
+  if (report == nullptr) {
+    return;
+  }
+
+  report->summaries.push_back(data.Dump());
+  report->summaries.push_back(
+      "visual_map summary layers=" +
+      std::to_string(data.visual_layer_count) +
+      " unique_tiles=" + std::to_string(data.unique_tile_id_count) +
+      " objects=" + std::to_string(data.visual_object_count) +
+      " chunks=" + std::to_string(data.visual_chunk_count));
+  for (const std::string& warning : data.warnings) {
+    report->warnings.push_back(warning);
+  }
+}
+
 }  // namespace
 
 void VisualPreparationPipeline::Start(const LevelData& level) {
-  steps_ = BuildDefaultSteps();
+  VisualPreparationOptions options;
+  options.visual_pipeline_config.mode = VisualPipelineMode::kBuildCpp;
+  Start(level, std::move(options));
+}
+
+void VisualPreparationPipeline::Start(const LevelData& level,
+                                      VisualPreparationOptions options) {
+  options_ = std::move(options);
+  steps_ = BuildDefaultSteps(options_);
   progress_ = {};
   last_step_report_ = {};
   prepared_level_ = {};
   prepared_level_.size = level.size;
+  prepared_level_.source =
+      SourceForMode(options_.visual_pipeline_config.mode);
   progress_.total_steps = static_cast<int>(steps_.size());
   progress_.running = true;
   progress_.finished = steps_.empty();
@@ -274,6 +360,49 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
     return;
   }
 
+  if (step.name == "Load prepared visual map") {
+    const std::filesystem::path visual_map_path =
+        ResolvePreparedVisualMapPath(options_);
+    VisualMapLoader loader;
+    const VisualMapLoadResult result = loader.Load(visual_map_path, level.size);
+    if (!result.ok) {
+      if (options_.visual_pipeline_config.fallback_to_cpp_pipeline) {
+        prepared_level_.source = PreparedLevelSource::kCppPipeline;
+        report->warnings.push_back(
+            "prepared visual_map load failed; falling back to cpp pipeline: " +
+            result.error);
+        return;
+      }
+      Fail(result.error.empty() ? "prepared visual_map load failed" :
+                             result.error);
+      return;
+    }
+
+    if (!result.found) {
+      if (options_.visual_pipeline_config.fallback_to_cpp_pipeline) {
+        prepared_level_.source = PreparedLevelSource::kCppPipeline;
+        report->warnings.push_back(
+            "prepared visual_map not found path=" +
+            visual_map_path.string() + "; falling back to cpp pipeline");
+        return;
+      }
+      Fail("prepared visual_map not found path=" + visual_map_path.string());
+      return;
+    }
+
+    prepared_level_.prepared_visual_map = result.data;
+    prepared_level_.source =
+        SourceForMode(options_.visual_pipeline_config.mode);
+    prepared_level_.visual_layer_count =
+        result.data.visual_layer_count;
+    prepared_level_.decoration_count =
+        result.data.visual_object_count;
+    prepared_level_.render_cache_entry_count =
+        result.data.visual_chunk_count;
+    AddVisualMapDiagnostics(result.data, report);
+    return;
+  }
+
   if (step.name == "Build semantic terrain masks") {
     std::string error;
     if (!RunBuildSemanticMasksStep(level, &prepared_level_, &error)) {
@@ -313,6 +442,12 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
   }
 
   if (step.name == "Build road and path shapes") {
+    if (HasPreparedVisualMap(prepared_level_)) {
+      report->summaries.push_back(
+          "road shapes using prepared visual_map layers=" +
+          std::to_string(prepared_level_.visual_layer_count));
+      return;
+    }
     prepared_level_.visual_layer_count =
         std::max(prepared_level_.visual_layer_count, 2);
     report->summaries.push_back("road shape placeholder layers=" +
@@ -322,6 +457,13 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
   }
 
   if (step.name == "Build forest masses") {
+    if (HasPreparedVisualMap(prepared_level_)) {
+      report->summaries.push_back(
+          "forest masses using prepared visual_map unique_tiles=" +
+          std::to_string(
+              prepared_level_.prepared_visual_map.unique_tile_id_count));
+      return;
+    }
     prepared_level_.visual_layer_count =
         std::max(prepared_level_.visual_layer_count, 3);
     report->summaries.push_back("forest mass placeholder layers=" +
@@ -331,6 +473,12 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
   }
 
   if (step.name == "Build water and swamp edges") {
+    if (HasPreparedVisualMap(prepared_level_)) {
+      report->summaries.push_back(
+          "water edges using prepared visual_map layers=" +
+          std::to_string(prepared_level_.visual_layer_count));
+      return;
+    }
     prepared_level_.visual_layer_count =
         std::max(prepared_level_.visual_layer_count, 4);
     report->summaries.push_back("water edge placeholder layers=" +
@@ -340,6 +488,12 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
   }
 
   if (step.name == "Place visual decorations") {
+    if (HasPreparedVisualMap(prepared_level_)) {
+      report->summaries.push_back(
+          "decorations using prepared visual_map objects=" +
+          std::to_string(prepared_level_.decoration_count));
+      return;
+    }
     prepared_level_.decoration_count =
         std::max(1, (level.size.width * level.size.height) / 64);
     report->summaries.push_back(
@@ -349,6 +503,12 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
   }
 
   if (step.name == "Build render cache") {
+    if (HasPreparedVisualMap(prepared_level_)) {
+      report->summaries.push_back(
+          "render cache using prepared visual_map chunks=" +
+          std::to_string(prepared_level_.render_cache_entry_count));
+      return;
+    }
     prepared_level_.render_cache_entry_count =
         level.size.width * level.size.height;
     report->summaries.push_back(

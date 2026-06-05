@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(ShootAndRun
-  VERSION 0.1.19
+  VERSION 0.1.20
   DESCRIPTION "ShootAndRun C++ raylib bootstrap"
   LANGUAGES CXX
 )
@@ -44,6 +44,9 @@ add_executable(shoot_and_run
   src/visual_pipeline/semantic_masks.cpp
   src/visual_pipeline/terrain_regions.cpp
   src/visual_pipeline/region_borders.cpp
+  src/visual_pipeline/visual_map_data.cpp
+  src/visual_pipeline/visual_map_loader.cpp
+  src/visual_pipeline/visual_pipeline_config.cpp
   src/visual_pipeline/steps/build_semantic_masks_step.cpp
   src/visual_pipeline/steps/build_terrain_regions_step.cpp
   src/visual_pipeline/steps/classify_region_borders_step.cpp
@@ -84,6 +87,9 @@ if(SAR_BUILD_TESTS)
     src/visual_pipeline/semantic_masks.cpp
     src/visual_pipeline/terrain_regions.cpp
     src/visual_pipeline/region_borders.cpp
+    src/visual_pipeline/visual_map_data.cpp
+    src/visual_pipeline/visual_map_loader.cpp
+    src/visual_pipeline/visual_pipeline_config.cpp
     src/visual_pipeline/steps/build_semantic_masks_step.cpp
     src/visual_pipeline/steps/build_terrain_regions_step.cpp
     src/visual_pipeline/steps/classify_region_borders_step.cpp

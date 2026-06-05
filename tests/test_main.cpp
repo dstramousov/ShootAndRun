@@ -11,6 +11,7 @@
 #include "ui/main_menu.h"
 #include "visual_pipeline/terrain_regions.h"
 #include "visual_pipeline/visual_preparation_pipeline.h"
+#include "visual_pipeline/visual_map_loader.h"
 #include "window/window_layout.h"
 
 namespace {
@@ -89,6 +90,12 @@ void TestProjectConfigLoader() {
                 "    \"enabled\": false,\n"
                 "    \"show_memory\": false,\n"
                 "    \"update_interval_ms\": 2000\n"
+                "  },\n"
+                "  \"visual_pipeline\": {\n"
+                "    \"visual_pipeline_mode\": \"compare\",\n"
+                "    \"prepared_visual_map_path\": \"../visual_map/visual_map.json\",\n"
+                "    \"fallback_to_cpp_pipeline\": false,\n"
+                "    \"run_cpp_analysis\": true\n"
                 "  }\n"
                 "}\n");
 
@@ -120,6 +127,16 @@ void TestProjectConfigLoader() {
          "service info memory flag should be read from project config");
   Expect(result.config.service_info.update_interval_ms == 2000,
          "service info update interval should be read from project config");
+  Expect(result.config.visual_pipeline_config.mode ==
+             sar::visual_pipeline::VisualPipelineMode::kCompare,
+         "visual pipeline mode should be read from project config");
+  Expect(result.config.visual_pipeline_config.prepared_visual_map_path ==
+             "../visual_map/visual_map.json",
+         "prepared visual map path should be read from project config");
+  Expect(!result.config.visual_pipeline_config.fallback_to_cpp_pipeline,
+         "visual pipeline fallback flag should be read from project config");
+  Expect(result.config.visual_pipeline_config.run_cpp_analysis,
+         "visual pipeline analysis flag should be read from project config");
 
   std::filesystem::remove(config_path);
 }
@@ -186,6 +203,152 @@ void TestProjectConfigLoaderUsesFontDefaults() {
   std::filesystem::remove(config_path);
 }
 
+
+
+void WriteMinimalVisualMap(const std::filesystem::path& visual_map_dir) {
+  std::filesystem::create_directories(visual_map_dir);
+
+  WriteTextFile(visual_map_dir / "visual_map.json",
+                "{\n"
+                "  \"schema_version\": \"visual-map-v1\",\n"
+                "  \"visual_generator_version\": \"0.0.test\",\n"
+                "  \"visual_profile\": { \"id\": \"dark_forest\", \"name\": \"Dark Forest\" },\n"
+                "  \"dimensions\": {\n"
+                "    \"width_tiles\": 2,\n"
+                "    \"height_tiles\": 2,\n"
+                "    \"tile_size_px\": 16\n"
+                "  },\n"
+                "  \"files\": {\n"
+                "    \"visual_layers\": \"visual_layers.json\",\n"
+                "    \"visual_objects\": \"visual_objects.json\",\n"
+                "    \"visual_chunks\": \"visual_chunks.json\"\n"
+                "  },\n"
+                "  \"contract\": {\n"
+                "    \"changes_gameplay\": false,\n"
+                "    \"moves_markers\": false,\n"
+                "    \"changes_collision\": false\n"
+                "  }\n"
+                "}\n");
+
+  WriteTextFile(visual_map_dir / "visual_layers.json",
+                "{\n"
+                "  \"schema_version\": \"visual-layers-v1\",\n"
+                "  \"width\": 2,\n"
+                "  \"height\": 2,\n"
+                "  \"tile_size_px\": 16,\n"
+                "  \"layers\": [\n"
+                "    {\n"
+                "      \"id\": \"terrain_base\",\n"
+                "      \"rows\": [[\"grass.base\", \"forest.edge_n\"], [\"road.end_e\", \"swamp.fill\"]],\n"
+                "      \"summary\": { \"unique_tile_ids\": 4 }\n"
+                "    }\n"
+                "  ]\n"
+                "}\n");
+
+  WriteTextFile(visual_map_dir / "visual_objects.json",
+                "{\n"
+                "  \"schema_version\": \"visual-objects-v2\",\n"
+                "  \"items\": [\n"
+                "    { \"id\": \"visual_decor_000\", \"sprite_id\": \"decor.stone\" },\n"
+                "    { \"id\": \"visual_decor_001\", \"sprite_id\": \"decor.reeds\" }\n"
+                "  ],\n"
+                "  \"summary\": { \"total\": 2 }\n"
+                "}\n");
+
+  WriteTextFile(visual_map_dir / "visual_chunks.json",
+                "{\n"
+                "  \"schema_version\": \"visual-chunks-v1\",\n"
+                "  \"chunk_size_tiles\": 32,\n"
+                "  \"items\": [\n"
+                "    { \"id\": \"chunk_000_000\", \"object_count\": 2 }\n"
+                "  ],\n"
+                "  \"summary\": { \"total\": 1 }\n"
+                "}\n");
+}
+
+void TestVisualMapLoader() {
+  const std::filesystem::path visual_map_dir =
+      std::filesystem::temp_directory_path() /
+      "shoot_and_run_test_visual_map_loader";
+  WriteMinimalVisualMap(visual_map_dir);
+
+  sar::visual_pipeline::VisualMapLoader loader;
+  const sar::LevelSize raw_size{2, 2, 16};
+  const sar::visual_pipeline::VisualMapLoadResult result =
+      loader.Load(visual_map_dir / "visual_map.json", raw_size);
+
+  Expect(result.ok, "prepared visual_map should load successfully");
+  Expect(result.found, "prepared visual_map should be reported as found");
+  Expect(result.data.loaded, "visual map data should be marked loaded");
+  Expect(result.data.size.width == 2 && result.data.size.height == 2,
+         "visual map dimensions should be loaded");
+  Expect(result.data.visual_layer_count == 1,
+         "visual map layer count should be loaded");
+  Expect(result.data.unique_tile_id_count == 4,
+         "visual map unique tile count should be loaded");
+  Expect(result.data.visual_object_count == 2,
+         "visual map object count should be loaded");
+  Expect(result.data.visual_chunk_count == 1,
+         "visual map chunk count should be loaded");
+  Expect(!result.data.changes_gameplay,
+         "visual map contract should not change gameplay");
+
+  std::filesystem::remove_all(visual_map_dir);
+}
+
+void TestVisualPreparationPipelineUsesPreparedVisualMap() {
+  const std::filesystem::path temp_root =
+      std::filesystem::temp_directory_path() /
+      "shoot_and_run_test_prepared_visual_pipeline";
+  const std::filesystem::path map_package = temp_root / "map_package";
+  const std::filesystem::path visual_map_dir = temp_root / "visual_map";
+  std::filesystem::create_directories(map_package);
+  WriteMinimalVisualMap(visual_map_dir);
+
+  sar::LevelData level;
+  level.size.width = 2;
+  level.size.height = 2;
+  level.size.tile_size = 16;
+  level.cells.resize(4);
+
+  sar::visual_pipeline::VisualPreparationOptions options;
+  options.map_package_path = map_package;
+  options.visual_pipeline_config.mode =
+      sar::visual_pipeline::VisualPipelineMode::kUsePreparedVisualMap;
+  options.visual_pipeline_config.prepared_visual_map_path =
+      "../visual_map/visual_map.json";
+  options.visual_pipeline_config.fallback_to_cpp_pipeline = false;
+  options.visual_pipeline_config.run_cpp_analysis = true;
+
+  sar::visual_pipeline::VisualPreparationPipeline pipeline;
+  pipeline.Start(level, options);
+  Expect(pipeline.progress().total_steps == 11,
+         "prepared visual-map pipeline should add one loading step");
+
+  while (!pipeline.finished() && !pipeline.progress().failed) {
+    pipeline.AdvanceOneStep(level);
+  }
+
+  const sar::visual_pipeline::PreparedLevel& prepared =
+      pipeline.prepared_level();
+  Expect(pipeline.finished(),
+         "prepared visual-map pipeline should finish successfully");
+  Expect(prepared.prepared_visual_map.loaded,
+         "prepared level should keep loaded visual_map data");
+  Expect(prepared.source ==
+             sar::visual_pipeline::PreparedLevelSource::kPreparedVisualMap,
+         "prepared level source should be prepared_visual_map");
+  Expect(prepared.visual_layer_count == 1,
+         "prepared level should expose visual map layer count");
+  Expect(prepared.decoration_count == 2,
+         "prepared level should expose visual object count");
+  Expect(prepared.render_cache_entry_count == 1,
+         "prepared level should expose visual chunk count");
+  Expect(prepared.semantic_masks.IsValid(),
+         "prepared visual-map mode should still keep C++ analysis when enabled");
+
+  std::filesystem::remove_all(temp_root);
+}
 
 void TestVisualPreparationPipelineSkeleton() {
   sar::LevelData level;
@@ -591,6 +754,8 @@ int main() {
   TestProjectConfigLoader();
   TestDeveloperConfigLoader();
   TestProjectConfigLoaderUsesFontDefaults();
+  TestVisualMapLoader();
+  TestVisualPreparationPipelineUsesPreparedVisualMap();
   TestVisualPreparationPipelineSkeleton();
   TestVisualPreparationSemanticMasks();
   TestVisualPreparationTerrainRegions();

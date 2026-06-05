@@ -627,7 +627,11 @@ bool Application::StartNewGameFromConfig() {
   loaded_level_summary_ = level_result.summary;
   loaded_level_ = level_result.level;
   prepared_level_.reset();
-  visual_pipeline_.Start(*loaded_level_);
+  visual_pipeline::VisualPreparationOptions preparation_options;
+  preparation_options.map_package_path = project_config_->map_package_path;
+  preparation_options.visual_pipeline_config =
+      project_config_->visual_pipeline_config;
+  visual_pipeline_.Start(*loaded_level_, std::move(preparation_options));
   last_preparation_step_time_ = -1.0;
   screen_ = AppScreen::kMapPreparing;
   logger_.Info("level", loaded_level_summary_->Dump());
