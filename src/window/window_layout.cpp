@@ -1,22 +1,38 @@
 #include "window/window_layout.h"
 
 #include <algorithm>
+#include <cmath>
 
 namespace sar {
 
 WindowState CalculateWindowState(const MonitorInfo& monitor,
                                  const WindowConfig& config) {
   const int max_width = static_cast<int>(
-      static_cast<float>(monitor.width) * config.max_monitor_fraction);
+      std::floor(static_cast<float>(monitor.width) *
+                 config.max_monitor_fraction));
   const int max_height = static_cast<int>(
-      static_cast<float>(monitor.height) * config.max_monitor_fraction);
+      std::floor(static_cast<float>(monitor.height) *
+                 config.max_monitor_fraction));
 
   int window_width = config.preferred_width;
   int window_height = config.preferred_height;
 
   if (window_width > max_width || window_height > max_height) {
-    window_width = config.fallback_width;
-    window_height = config.fallback_height;
+    const float scale_x = static_cast<float>(max_width) /
+                          static_cast<float>(std::max(1, window_width));
+    const float scale_y = static_cast<float>(max_height) /
+                          static_cast<float>(std::max(1, window_height));
+    const float scale = std::min(scale_x, scale_y);
+    window_width = static_cast<int>(
+        std::floor(static_cast<float>(window_width) * scale));
+    window_height = static_cast<int>(
+        std::floor(static_cast<float>(window_height) * scale));
+  }
+
+  if (window_width < config.fallback_width ||
+      window_height < config.fallback_height) {
+    window_width = std::min(config.fallback_width, max_width);
+    window_height = std::min(config.fallback_height, max_height);
   }
 
   window_width = std::max(320, std::min(window_width, max_width));

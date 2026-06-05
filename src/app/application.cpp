@@ -8,7 +8,9 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <utility>
+#include <vector>
 
 #include "logging/thread_context.h"
 #include "platform/memory_info.h"
@@ -100,6 +102,157 @@ std::string PipelineStepLabel(
   return "step " + std::to_string(report.step_index) + "/" +
          std::to_string(report.total_steps) + " name=\"" +
          report.step_name + "\"";
+}
+
+
+std::string TileShareLine(std::string_view label, int count, int total_tiles) {
+  const double percent = total_tiles > 0
+                             ? static_cast<double>(count) * 100.0 /
+                                   static_cast<double>(total_tiles)
+                             : 0.0;
+  std::ostringstream stream;
+  stream << "  " << std::left << std::setw(14) << label << ": "
+         << std::right << std::setw(7) << count << " tiles = "
+         << std::setw(5) << FormatDouble(percent, 1) << "%";
+  return stream.str();
+}
+
+std::string CountLine(std::string_view label, int count) {
+  std::ostringstream stream;
+  stream << "  " << std::left << std::setw(14) << label << ": "
+         << std::right << std::setw(7) << count;
+  return stream.str();
+}
+
+std::string BuildMapPreparationReport(
+    const LevelData& level,
+    const visual_pipeline::PreparedLevel& prepared_level,
+    const std::filesystem::path& map_package_path) {
+  const int total_tiles = level.size.width * level.size.height;
+  std::ostringstream report;
+  report << "Map preparation report:\n";
+  report << "  output: " << map_package_path.string() << "\n";
+  report << "  map:    " << level.size.width << " x "
+         << level.size.height << " = " << total_tiles << " tiles\n";
+  report << "  tile:   " << level.size.tile_size << " px\n";
+  report << "  source: "
+         << visual_pipeline::PreparedLevelSourceName(prepared_level.source)
+         << "\n";
+  report << "  status: " << (prepared_level.ready ? "ok" : "not ready")
+         << "\n\n";
+
+  if (prepared_level.prepared_visual_map.loaded) {
+    const visual_pipeline::VisualMapData& visual_map =
+        prepared_level.prepared_visual_map;
+    report << "Prepared visual map:\n";
+    report << "  profile: " << visual_map.visual_profile_id << "\n";
+    report << CountLine("layers", visual_map.visual_layer_count) << "\n";
+    report << CountLine("unique tiles", visual_map.unique_tile_id_count)
+           << "\n";
+    report << CountLine("objects", visual_map.visual_object_count) << "\n";
+    report << CountLine("chunks", visual_map.visual_chunk_count) << "\n";
+    report << "  contract: gameplay="
+           << (visual_map.changes_gameplay ? "changed" : "unchanged")
+           << " markers="
+           << (visual_map.moves_markers ? "moved" : "unchanged")
+           << " collision="
+           << (visual_map.changes_collision ? "changed" : "unchanged")
+           << "\n\n";
+  }
+
+  if (prepared_level.semantic_masks.IsValid()) {
+    const visual_pipeline::SemanticMaskSummary& summary =
+        prepared_level.semantic_masks.summary;
+    report << "Terrain:\n";
+    report << TileShareLine("forest", summary.forest_tiles, total_tiles)
+           << "\n";
+    report << TileShareLine("road", summary.road_tiles, total_tiles) << "\n";
+    report << TileShareLine("water", summary.water_tiles, total_tiles)
+           << "\n";
+    report << TileShareLine("swamp", summary.swamp_tiles, total_tiles)
+           << "\n";
+    report << TileShareLine("ruins", summary.ruins_tiles, total_tiles)
+           << "\n";
+    report << TileShareLine("wall", summary.wall_tiles, total_tiles) << "\n";
+    report << TileShareLine("open ground", summary.open_ground_tiles,
+                            total_tiles)
+           << "\n";
+    if (summary.unknown_tiles > 0) {
+      report << TileShareLine("unknown", summary.unknown_tiles, total_tiles)
+             << "\n";
+    }
+
+    report << "\nRuntime:\n";
+    report << TileShareLine("walkable", summary.walkable_tiles, total_tiles)
+           << "\n";
+    report << TileShareLine("blocked", summary.blocked_tiles, total_tiles)
+           << "\n";
+    report << TileShareLine("vision block", summary.vision_blocked_tiles,
+                            total_tiles)
+           << "\n";
+    report << CountLine("cover", summary.cover_tiles) << "\n";
+    report << CountLine("concealment", summary.concealment_tiles) << "\n";
+    report << CountLine("low ground", summary.low_ground_tiles) << "\n";
+    report << CountLine("elevated", summary.elevated_tiles) << "\n\n";
+  }
+
+  if (prepared_level.terrain_regions.IsValid()) {
+    const visual_pipeline::TerrainRegionSummary& summary =
+        prepared_level.terrain_regions.summary;
+    report << "Regions:\n";
+    report << CountLine("total", summary.total_regions) << "\n";
+    report << CountLine("forest", summary.forest_regions) << "\n";
+    report << CountLine("open", summary.open_ground_regions) << "\n";
+    report << CountLine("road", summary.road_regions) << "\n";
+    report << CountLine("water", summary.water_regions) << "\n";
+    report << CountLine("wall", summary.wall_regions) << "\n";
+    report << CountLine("tiny", summary.tiny_regions) << "\n";
+    report << CountLine("largest", summary.largest_region_area) << "\n\n";
+  }
+
+  if (prepared_level.region_borders.IsValid()) {
+    const visual_pipeline::RegionBorderSummary& summary =
+        prepared_level.region_borders.summary;
+    report << "Borders:\n";
+    report << CountLine("tiles", summary.border_tile_count) << "\n";
+    report << CountLine("edge", summary.edge_tile_count) << "\n";
+    report << CountLine("corner", summary.corner_tile_count) << "\n";
+    report << CountLine("complex", summary.complex_tile_count) << "\n";
+    report << CountLine("map edge", summary.map_edge_tile_count) << "\n";
+  }
+
+  std::vector<std::string> warnings;
+  if (prepared_level.semantic_masks.IsValid() &&
+      prepared_level.semantic_masks.summary.unknown_tiles > 0) {
+    warnings.push_back("unknown terrain tiles=" +
+                       std::to_string(
+                           prepared_level.semantic_masks.summary.unknown_tiles));
+  }
+  if (prepared_level.terrain_regions.IsValid() &&
+      prepared_level.terrain_regions.summary.tiny_regions > 0) {
+    warnings.push_back("tiny terrain regions=" +
+                       std::to_string(
+                           prepared_level.terrain_regions.summary.tiny_regions));
+  }
+  if (prepared_level.region_borders.IsValid() &&
+      prepared_level.region_borders.summary.complex_tile_count > 0) {
+    warnings.push_back("complex border tiles=" +
+                       std::to_string(prepared_level.region_borders.summary
+                                          .complex_tile_count));
+  }
+  for (const std::string& warning :
+       prepared_level.prepared_visual_map.warnings) {
+    warnings.push_back(warning);
+  }
+
+  if (!warnings.empty()) {
+    report << "\nWarnings:\n";
+    for (const std::string& warning : warnings) {
+      report << "  - " << warning << "\n";
+    }
+  }
+
+  return report.str();
 }
 
 std::string WindowStateToString(const WindowState& state) {
@@ -414,11 +567,12 @@ void Application::UpdateMapPreparation() {
   last_preparation_step_time_ = now;
   const visual_pipeline::PipelineProgress& before =
       visual_pipeline_.progress();
-  if (developer_config_.log.visual_pipeline_diagnostics) {
-    logger_.Info("visual_pipeline",
-                 "step " + std::to_string(before.completed_steps + 1) +
-                     "/" + std::to_string(before.total_steps) +
-                     " started name=\"" + before.current_step_name + "\"");
+  if (developer_config_.log.visual_pipeline_diagnostics &&
+      developer_config_.log.visual_pipeline_step_details) {
+    logger_.Debug("visual_pipeline",
+                  "step " + std::to_string(before.completed_steps + 1) +
+                      "/" + std::to_string(before.total_steps) +
+                      " started name=\"" + before.current_step_name + "\"");
   }
 
   visual_pipeline_.AdvanceOneStep(*loaded_level_);
@@ -426,16 +580,17 @@ void Application::UpdateMapPreparation() {
       visual_pipeline_.last_step_report();
 
   if (report.step_index > 0 &&
-      developer_config_.log.visual_pipeline_diagnostics) {
+      developer_config_.log.visual_pipeline_diagnostics &&
+      developer_config_.log.visual_pipeline_step_details) {
     const std::string status = report.success ? "done" : "failed";
-    logger_.Info("visual_pipeline",
-                 PipelineStepLabel(report) + " " + status +
-                     " duration_ms=" + FormatDouble(report.duration_ms, 2));
+    logger_.Debug("visual_pipeline",
+                  PipelineStepLabel(report) + " " + status +
+                      " duration_ms=" + FormatDouble(report.duration_ms, 2));
     for (const std::string& summary : report.summaries) {
-      logger_.Info("map_analysis", summary);
+      logger_.Debug("map_analysis", summary);
     }
     for (const std::string& warning : report.warnings) {
-      logger_.Warn("map_analysis", warning);
+      logger_.Debug("map_analysis", "warning: " + warning);
     }
   }
 
@@ -450,7 +605,14 @@ void Application::UpdateMapPreparation() {
   }
 
   prepared_level_ = visual_pipeline_.prepared_level();
-  logger_.Info("visual_pipeline", prepared_level_->Dump());
+  if (developer_config_.log.visual_pipeline_diagnostics &&
+      developer_config_.log.visual_pipeline_summary &&
+      project_config_.has_value()) {
+    logger_.Info("map_analysis",
+                 BuildMapPreparationReport(*loaded_level_, *prepared_level_,
+                                           project_config_->map_package_path));
+  }
+  logger_.Debug("visual_pipeline", prepared_level_->Dump());
   InitializeLevelView(*loaded_level_, &level_view_);
   ClampLevelViewToMap(*loaded_level_, window_state_, &level_view_);
   logger_.Info("camera", LevelViewStateToString(level_view_));
@@ -635,14 +797,15 @@ bool Application::StartNewGameFromConfig() {
   last_preparation_step_time_ = -1.0;
   screen_ = AppScreen::kMapPreparing;
   logger_.Info("level", loaded_level_summary_->Dump());
-  if (developer_config_.log.visual_pipeline_diagnostics) {
-    logger_.Info("visual_pipeline",
-                 "started steps=" +
-                     std::to_string(visual_pipeline_.progress().total_steps) +
-                     " map=" + std::to_string(loaded_level_->size.width) +
-                     "x" + std::to_string(loaded_level_->size.height) +
-                     " tile_size=" +
-                     std::to_string(loaded_level_->size.tile_size));
+  if (developer_config_.log.visual_pipeline_diagnostics &&
+      developer_config_.log.visual_pipeline_step_details) {
+    logger_.Debug("visual_pipeline",
+                  "started steps=" +
+                      std::to_string(visual_pipeline_.progress().total_steps) +
+                      " map=" + std::to_string(loaded_level_->size.width) +
+                      "x" + std::to_string(loaded_level_->size.height) +
+                      " tile_size=" +
+                      std::to_string(loaded_level_->size.tile_size));
     logger_.Debug("visual_pipeline", visual_pipeline_.progress().Dump());
   }
   ApplyFramePacing();

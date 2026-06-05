@@ -180,3 +180,11 @@
 - Extended `PreparedLevel` with source tracking and prepared visual-map summary data.
 - Updated the map preparation pipeline to use prepared Python `visual_map` data when available while keeping the C++ analysis pipeline as fallback/debug data.
 - Added tests for prepared visual-map loading and pipeline integration.
+
+## v0.1.20 -> v0.1.21
+
+- Bumped CMake project and runtime application version to `0.1.21`.
+- Changed window sizing so `max_monitor_fraction` is a hard upper limit and oversized preferred windows are scaled down proportionally instead of falling straight back to the fallback size.
+- Added developer-log controls for compact visual-pipeline summaries and optional per-step details.
+- Replaced noisy INFO-level visual-pipeline step logs with a single compact map preparation report.
+- Moved detailed visual-pipeline step diagnostics to DEBUG logging when `visual_pipeline_step_details` is enabled.

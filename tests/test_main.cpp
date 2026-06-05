@@ -53,6 +53,26 @@ void TestSmallWindowLayout() {
          "ui scale should not go below minimum");
 }
 
+
+void TestWindowLayoutScalesPreferredToMonitorLimit() {
+  const sar::MonitorInfo monitor{0, 0, 1920, 1080};
+  sar::WindowConfig config;
+  config.preferred_width = 1920;
+  config.preferred_height = 1080;
+  config.fallback_width = 1280;
+  config.fallback_height = 720;
+  config.max_monitor_fraction = 0.90F;
+
+  const sar::WindowState state = sar::CalculateWindowState(monitor, config);
+
+  Expect(state.width == 1728,
+         "preferred width should be scaled down to monitor limit");
+  Expect(state.height == 972,
+         "preferred height should be scaled down to monitor limit");
+  Expect(state.x == 96, "scaled window x should keep a visible border");
+  Expect(state.y == 54, "scaled window y should keep a visible border");
+}
+
 void TestMenuNavigationSkipsDisabledItems() {
   sar::MainMenu menu;
   Expect(menu.selected_index() == 0, "default selected item should be New Game");
@@ -154,6 +174,8 @@ void TestDeveloperConfigLoader() {
                 "    \"color_enabled\": false,\n"
                 "    \"show_execution_context\": false,\n"
                 "    \"visual_pipeline_diagnostics\": false,\n"
+                "    \"visual_pipeline_summary\": false,\n"
+                "    \"visual_pipeline_step_details\": true,\n"
                 "    \"highlight_rules\": [\n"
                 "      {\n"
                 "        \"name\": \"numbers\",\n"
@@ -176,6 +198,10 @@ void TestDeveloperConfigLoader() {
          "developer config should load execution context flag");
   Expect(!result.config.log.visual_pipeline_diagnostics,
          "developer config should load pipeline diagnostics flag");
+  Expect(!result.config.log.visual_pipeline_summary,
+         "developer config should load pipeline summary flag");
+  Expect(result.config.log.visual_pipeline_step_details,
+         "developer config should load pipeline step details flag");
   Expect(result.config.log.highlight_rules.size() == 1,
          "developer config should load highlight rules");
   Expect(result.config.log.highlight_rules[0].color == "orange",
@@ -749,6 +775,7 @@ void TestLevelLoaderBasicPackage() {
 int main() {
   TestWindowLayout();
   TestSmallWindowLayout();
+  TestWindowLayoutScalesPreferredToMonitorLimit();
   TestMenuNavigationSkipsDisabledItems();
   TestTerrainMapping();
   TestProjectConfigLoader();

@@ -286,6 +286,10 @@ std::string DeveloperConfig::Dump() const {
          std::string(log.show_execution_context ? "true" : "false") +
          ", visual_pipeline_diagnostics: " +
          std::string(log.visual_pipeline_diagnostics ? "true" : "false") +
+         ", visual_pipeline_summary: " +
+         std::string(log.visual_pipeline_summary ? "true" : "false") +
+         ", visual_pipeline_step_details: " +
+         std::string(log.visual_pipeline_step_details ? "true" : "false") +
          ", highlight_rules: " + std::to_string(log.highlight_rules.size()) +
          " } }";
 }
@@ -317,6 +321,11 @@ DeveloperConfigResult LoadDeveloperConfig(
                               &config.log.show_execution_context, &error) ||
       !ApplyOptionalBoolField(content, "visual_pipeline_diagnostics",
                               &config.log.visual_pipeline_diagnostics,
+                              &error) ||
+      !ApplyOptionalBoolField(content, "visual_pipeline_summary",
+                              &config.log.visual_pipeline_summary, &error) ||
+      !ApplyOptionalBoolField(content, "visual_pipeline_step_details",
+                              &config.log.visual_pipeline_step_details,
                               &error)) {
     return {false, true, {}, error};
   }

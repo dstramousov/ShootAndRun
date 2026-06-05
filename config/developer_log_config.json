@@ -4,6 +4,8 @@
     "color_enabled": true,
     "show_execution_context": false,
     "visual_pipeline_diagnostics": true,
+    "visual_pipeline_summary": true,
+    "visual_pipeline_step_details": false,
     "highlight_rules": [
       {
         "name": "numbers",

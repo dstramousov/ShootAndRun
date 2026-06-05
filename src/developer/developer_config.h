@@ -20,6 +20,8 @@ struct DeveloperLogConfig {
   bool color_enabled = true;
   bool show_execution_context = true;
   bool visual_pipeline_diagnostics = true;
+  bool visual_pipeline_summary = true;
+  bool visual_pipeline_step_details = false;
   std::vector<DeveloperHighlightRuleConfig> highlight_rules;
 };
 
