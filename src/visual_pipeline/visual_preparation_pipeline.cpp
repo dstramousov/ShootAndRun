@@ -251,7 +251,10 @@ void AddVisualMapDiagnostics(const VisualMapData& data,
       std::to_string(data.visual_layer_count) +
       " unique_tiles=" + std::to_string(data.unique_tile_id_count) +
       " objects=" + std::to_string(data.visual_object_count) +
-      " chunks=" + std::to_string(data.visual_chunk_count));
+      " chunks=" + std::to_string(data.visual_chunk_count) +
+      " final_render=" +
+      (data.final_render_path.empty() ? std::string("none")
+                                      : data.final_render_path.string()));
   for (const std::string& warning : data.warnings) {
     report->warnings.push_back(warning);
   }

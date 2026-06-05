@@ -196,3 +196,11 @@
 - Added a prepared visual-map render mode that draws Python-prepared visual tiles and placeholder visual objects.
 - Added runtime view switching in the game screen: `F1` raw terrain, `F2` C++ analysis borders, `F3` prepared visual map.
 - Added concise game overlay text showing the active view mode and prepared-level source.
+
+## v0.1.22 -> v0.1.23
+
+- Bumped CMake project and runtime application version to `0.1.23`.
+- Added prepared `visual_map/final_render.png` reference loading as a raylib texture.
+- Added `F4` game view mode for the baked final-render reference image.
+- Defaulted the game view to the final-render reference when it is available, while keeping `F1` raw terrain, `F2` C++ analysis, and `F3` prepared visual-map placeholder views.
+- Extended visual-map diagnostics and overlay data with the final-render reference path.

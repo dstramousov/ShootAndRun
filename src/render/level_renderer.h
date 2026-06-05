@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include <raylib.h>
+
 #include "level/level_data.h"
 #include "visual_pipeline/prepared_level.h"
 #include "window/window_state.h"
@@ -22,6 +24,7 @@ enum class LevelRenderMode {
   kRawTerrain,
   kCppAnalysis,
   kPreparedVisualMap,
+  kFinalRenderReference,
 };
 
 /**
@@ -68,11 +71,13 @@ class LevelRenderer {
    * @param view Current level view state.
    * @param window Current window state.
    * @param mode Selected level render mode.
+   * @param final_render_texture Optional baked final render texture.
    */
   void Draw(const LevelData& level,
             const visual_pipeline::PreparedLevel* prepared_level,
             const LevelViewState& view, const WindowState& window,
-            LevelRenderMode mode) const;
+            LevelRenderMode mode,
+            const Texture2D* final_render_texture = nullptr) const;
 
   /**
    * @brief Draws the loaded level terrain and debug markers.

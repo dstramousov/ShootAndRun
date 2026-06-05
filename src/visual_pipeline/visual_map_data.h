@@ -38,6 +38,7 @@ struct VisualMapData {
   bool loaded = false;
   std::filesystem::path manifest_path;
   std::filesystem::path base_path;
+  std::filesystem::path final_render_path;
   std::string schema_version;
   std::string generator_version;
   std::string visual_profile_id;

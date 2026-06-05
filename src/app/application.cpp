@@ -151,6 +151,10 @@ std::string BuildMapPreparationReport(
            << "\n";
     report << CountLine("objects", visual_map.visual_object_count) << "\n";
     report << CountLine("chunks", visual_map.visual_chunk_count) << "\n";
+    report << "  final render: "
+           << (visual_map.final_render_path.empty() ? "none"
+                                                     : visual_map.final_render_path.string())
+           << "\n";
     report << "  contract: gameplay="
            << (visual_map.changes_gameplay ? "changed" : "unchanged")
            << " markers="
@@ -276,6 +280,9 @@ std::string PreparedLevelOverlayLine(
     stream << " visual_objects="
            << prepared_level.prepared_visual_map.visual_object_count
            << " chunks=" << prepared_level.prepared_visual_map.visual_chunk_count;
+    if (!prepared_level.prepared_visual_map.final_render_path.empty()) {
+      stream << " final_render=yes";
+    }
   }
   return stream.str();
 }
@@ -391,6 +398,7 @@ void Application::LoadUiFont() {
 
 void Application::ShutdownWindow() {
   if (window_initialized_) {
+    UnloadFinalRenderTexture();
     ui_font_.Reset();
     CloseWindow();
     window_initialized_ = false;
@@ -581,6 +589,15 @@ void Application::HandleGameInput(const InputState& input) {
     logger_.Info("render", std::string("level view mode=") +
                                LevelRenderModeName(level_render_mode_));
   }
+  if (input.debug_view_final_render_pressed) {
+    if (final_render_texture_loaded_) {
+      level_render_mode_ = LevelRenderMode::kFinalRenderReference;
+      logger_.Info("render", std::string("level view mode=") +
+                                 LevelRenderModeName(level_render_mode_));
+    } else {
+      logger_.Warn("render", "final_render reference view is not loaded");
+    }
+  }
 
   UpdateGameCamera(input);
 }
@@ -638,6 +655,7 @@ void Application::UpdateMapPreparation() {
   }
 
   prepared_level_ = visual_pipeline_.prepared_level();
+  const bool final_render_loaded = LoadFinalRenderTexture();
   if (developer_config_.log.visual_pipeline_diagnostics &&
       developer_config_.log.visual_pipeline_summary &&
       project_config_.has_value()) {
@@ -646,11 +664,14 @@ void Application::UpdateMapPreparation() {
                                            project_config_->map_package_path));
   }
   logger_.Debug("visual_pipeline", prepared_level_->Dump());
-  level_render_mode_ =
-      prepared_level_->prepared_visual_map.loaded &&
-              prepared_level_->prepared_visual_map.HasRenderableLayer()
-          ? LevelRenderMode::kPreparedVisualMap
-          : LevelRenderMode::kRawTerrain;
+  if (final_render_loaded) {
+    level_render_mode_ = LevelRenderMode::kFinalRenderReference;
+  } else if (prepared_level_->prepared_visual_map.loaded &&
+             prepared_level_->prepared_visual_map.HasRenderableLayer()) {
+    level_render_mode_ = LevelRenderMode::kPreparedVisualMap;
+  } else {
+    level_render_mode_ = LevelRenderMode::kRawTerrain;
+  }
   logger_.Info("render", std::string("level view mode=") +
                              LevelRenderModeName(level_render_mode_));
   InitializeLevelView(*loaded_level_, &level_view_);
@@ -780,13 +801,73 @@ void Application::DrawGameOverlay() const {
   y += line_step;
   ui_font_.DrawTextLine(std::string("view: ") +
                             LevelRenderModeName(level_render_mode_) +
-                            "  F1 raw  F2 analysis  F3 visual",
+                            "  F1 raw  F2 analysis  F3 visual  F4 final",
                         x, y, font_size, color);
   if (prepared_level_.has_value()) {
     y += line_step;
     ui_font_.DrawTextLine(PreparedLevelOverlayLine(*prepared_level_), x, y,
                           font_size, color);
   }
+}
+
+void Application::UnloadFinalRenderTexture() {
+  if (!final_render_texture_loaded_) {
+    return;
+  }
+
+  UnloadTexture(final_render_texture_);
+  final_render_texture_ = Texture2D{};
+  final_render_texture_loaded_ = false;
+}
+
+bool Application::LoadFinalRenderTexture() {
+  UnloadFinalRenderTexture();
+  if (!prepared_level_.has_value() ||
+      !prepared_level_->prepared_visual_map.loaded) {
+    return false;
+  }
+
+  const std::filesystem::path& path =
+      prepared_level_->prepared_visual_map.final_render_path;
+  if (path.empty()) {
+    logger_.Debug("render", "visual_map has no final_render path");
+    return false;
+  }
+
+  std::error_code error_code;
+  if (!std::filesystem::exists(path, error_code)) {
+    if (error_code) {
+      logger_.Warn("render", "failed to inspect final_render path=" +
+                                 path.string() +
+                                 " reason=" + error_code.message());
+    } else {
+      logger_.Warn("render", "final_render not found path=" + path.string());
+    }
+    return false;
+  }
+
+  final_render_texture_ = LoadTexture(path.string().c_str());
+  if (final_render_texture_.id == 0) {
+    logger_.Warn("render", "failed to load final_render texture path=" +
+                               path.string());
+    final_render_texture_ = Texture2D{};
+    return false;
+  }
+
+  final_render_texture_loaded_ = true;
+  logger_.Info("render", "final_render loaded path=" + path.string() +
+                             " size=" +
+                             std::to_string(final_render_texture_.width) +
+                             "x" +
+                             std::to_string(final_render_texture_.height));
+  return true;
+}
+
+const Texture2D* Application::FinalRenderTexture() const {
+  if (!final_render_texture_loaded_) {
+    return nullptr;
+  }
+  return &final_render_texture_;
 }
 
 void Application::ActivateMenuItem(const MenuItem& item) {
@@ -832,6 +913,7 @@ bool Application::StartNewGameFromConfig() {
     return false;
   }
 
+  UnloadFinalRenderTexture();
   loaded_level_summary_ = level_result.summary;
   loaded_level_ = level_result.level;
   prepared_level_.reset();
@@ -915,7 +997,8 @@ void Application::RenderFrame() {
       level_renderer_.Draw(*loaded_level_,
                            prepared_level_.has_value() ? &(*prepared_level_)
                                                         : nullptr,
-                           level_view_, window_state_, level_render_mode_);
+                           level_view_, window_state_, level_render_mode_,
+                           FinalRenderTexture());
       DrawGameOverlay();
     } else {
       const int title_size = ScaledFontSize(ui_font_, window_state_, 1.0F);

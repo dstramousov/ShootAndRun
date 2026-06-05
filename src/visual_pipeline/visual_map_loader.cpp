@@ -705,6 +705,7 @@ VisualMapLoadResult VisualMapLoader::Load(
   std::string visual_layers_path = "visual_layers.json";
   std::string visual_objects_path = "visual_objects.json";
   std::string visual_chunks_path = "visual_chunks.json";
+  std::string final_render_path = "final_render.png";
   const std::optional<std::string_view> files =
       ExtractJsonObject(manifest.text, "files", &error);
   if (!error.empty()) {
@@ -716,10 +717,14 @@ VisualMapLoadResult VisualMapLoader::Load(
         !ApplyOptionalString(*files, "visual_objects", &visual_objects_path,
                              &error) ||
         !ApplyOptionalString(*files, "visual_chunks", &visual_chunks_path,
+                             &error) ||
+        !ApplyOptionalString(*files, "final_render", &final_render_path,
                              &error)) {
       return {false, true, {}, error};
     }
   }
+
+  data.final_render_path = ResolveSiblingFile(data.base_path, final_render_path);
 
   const VisualMapLoadResult layers = LoadVisualLayers(
       ResolveSiblingFile(data.base_path, visual_layers_path), &data);

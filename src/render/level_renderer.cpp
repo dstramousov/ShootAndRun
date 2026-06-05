@@ -316,6 +316,17 @@ void DrawPreparedVisualTiles(const visual_pipeline::VisualLayerGrid& layer,
   }
 }
 
+
+void DrawFinalRenderReference(const Texture2D& texture,
+                              const LevelData& level) {
+  const Rectangle source{0.0F, 0.0F, static_cast<float>(texture.width),
+                         static_cast<float>(texture.height)};
+  const Rectangle destination{0.0F, 0.0F, MapWidthPx(level),
+                              MapHeightPx(level)};
+  DrawTexturePro(texture, source, destination, Vector2{0.0F, 0.0F}, 0.0F,
+                 WHITE);
+}
+
 void DrawPreparedVisualObjects(const visual_pipeline::VisualMapData& visual_map,
                                int tile_size,
                                const VisibleTileRange& range) {
@@ -347,6 +358,8 @@ const char* LevelRenderModeName(LevelRenderMode mode) {
       return "cpp_analysis";
     case LevelRenderMode::kPreparedVisualMap:
       return "prepared_visual_map";
+    case LevelRenderMode::kFinalRenderReference:
+      return "final_render_reference";
   }
   return "raw_terrain";
 }
@@ -407,7 +420,8 @@ void LevelRenderer::Draw(const LevelData& level,
                          const visual_pipeline::PreparedLevel* prepared_level,
                          const LevelViewState& view,
                          const WindowState& window,
-                         LevelRenderMode mode) const {
+                         LevelRenderMode mode,
+                         const Texture2D* final_render_texture) const {
   if (level.size.width <= 0 || level.size.height <= 0 ||
       level.size.tile_size <= 0 || level.cells.empty()) {
     return;
@@ -423,11 +437,16 @@ void LevelRenderer::Draw(const LevelData& level,
   DrawRectangle(0, 0, static_cast<int>(MapWidthPx(level)),
                 static_cast<int>(MapHeightPx(level)), Color{12, 16, 14, 255});
 
+  const bool can_draw_final_render =
+      mode == LevelRenderMode::kFinalRenderReference &&
+      final_render_texture != nullptr && final_render_texture->id > 0;
   const bool can_draw_prepared_visual =
       prepared_level != nullptr && prepared_level->prepared_visual_map.loaded &&
       prepared_level->prepared_visual_map.HasRenderableLayer();
-  if (mode == LevelRenderMode::kPreparedVisualMap &&
-      can_draw_prepared_visual) {
+  if (can_draw_final_render) {
+    DrawFinalRenderReference(*final_render_texture, level);
+  } else if (mode == LevelRenderMode::kPreparedVisualMap &&
+             can_draw_prepared_visual) {
     const visual_pipeline::VisualLayerGrid* layer = FindRenderableVisualLayer(
         prepared_level->prepared_visual_map);
     if (layer != nullptr) {

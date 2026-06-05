@@ -3,6 +3,8 @@
 
 #include <optional>
 
+#include <raylib.h>
+
 #include "app/app_config.h"
 #include "app/app_state.h"
 #include "app/project_config.h"
@@ -60,6 +62,9 @@ class Application {
   void UpdateGameCamera(const InputState& input);
   void DrawMapPreparingScreen() const;
   void DrawGameOverlay() const;
+  void UnloadFinalRenderTexture();
+  bool LoadFinalRenderTexture();
+  const Texture2D* FinalRenderTexture() const;
   void ActivateMenuItem(const MenuItem& item);
   bool StartNewGameFromConfig();
   bool ValidateMapPackagePath(const ProjectConfig& project_config);
@@ -89,6 +94,8 @@ class Application {
   visual_pipeline::VisualPreparationPipeline visual_pipeline_;
   LevelViewState level_view_;
   LevelRenderMode level_render_mode_ = LevelRenderMode::kRawTerrain;
+  Texture2D final_render_texture_{};
+  bool final_render_texture_loaded_ = false;
   double last_preparation_step_time_ = -1.0;
   ServiceInfoOverlayData service_info_data_;
   double last_service_info_update_time_ = -1.0;

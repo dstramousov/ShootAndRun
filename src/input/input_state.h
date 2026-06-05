@@ -21,6 +21,7 @@ struct InputState {
   bool debug_view_raw_pressed = false;
   bool debug_view_analysis_pressed = false;
   bool debug_view_visual_pressed = false;
+  bool debug_view_final_render_pressed = false;
   float mouse_wheel_delta = 0.0F;
   Vec2 mouse_position;
 };

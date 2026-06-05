@@ -4,10 +4,10 @@
   "ui_font_size": 14,
   "raylib_log_level": "warning",
   "window": {
-    "preferred_width": 1920,
-    "preferred_height": 1080,
-    "fallback_width": 1280,
-    "fallback_height": 720,
+    "preferred_width": 1366,
+    "preferred_height": 768,
+    "fallback_width": 1366,
+    "fallback_height": 768,
     "max_monitor_fraction": 0.9,
     "resizable": true
   },
