@@ -363,6 +363,50 @@ Color CppAnalysisTileColor(
   return TerrainColor(cell.terrain);
 }
 
+Color ForestClearingAnalysisTileColor(
+    const RuntimeCell& cell,
+    const visual_pipeline::ForestVisualPlan* forest_visual_plan,
+    std::size_t index) {
+  if (forest_visual_plan == nullptr || !forest_visual_plan->IsValid()) {
+    return TerrainColor(cell.terrain);
+  }
+
+  if (index < forest_visual_plan->forest_depth.size() &&
+      forest_visual_plan->forest_depth[index] != 0) {
+    return ForestDepthColor(forest_visual_plan->forest_depth[index]);
+  }
+  if (index < forest_visual_plan->clearing_scene_roles.size() &&
+      forest_visual_plan->clearing_scene_roles[index] != 0) {
+    return ClearingSceneRoleColor(
+        forest_visual_plan->clearing_scene_roles[index]);
+  }
+  if (index < forest_visual_plan->clearing_roles.size() &&
+      forest_visual_plan->clearing_roles[index] != 0) {
+    return ClearingRoleColor(forest_visual_plan->clearing_roles[index]);
+  }
+  return TerrainColor(cell.terrain);
+}
+
+Color VisualIntentPreviewTileColor(
+    const RuntimeCell& cell,
+    const visual_pipeline::ForestVisualPlan* forest_visual_plan,
+    const visual_pipeline::RoadVisualPlan* road_visual_plan,
+    std::size_t index) {
+  if (road_visual_plan != nullptr && road_visual_plan->IsValid() &&
+      index < road_visual_plan->road_bands.size() &&
+      road_visual_plan->road_bands[index] != 0) {
+    return RoadBandColor(road_visual_plan->road_bands[index]);
+  }
+
+  if (forest_visual_plan != nullptr && forest_visual_plan->IsValid() &&
+      index < forest_visual_plan->forest_depth.size() &&
+      forest_visual_plan->forest_depth[index] != 0) {
+    return ForestDepthColor(forest_visual_plan->forest_depth[index]);
+  }
+
+  return TerrainColor(cell.terrain);
+}
+
 void DrawCppAnalysisTiles(
     const LevelData& level,
     const visual_pipeline::PreparedLevel& prepared_level,
@@ -388,6 +432,60 @@ void DrawCppAnalysisTiles(
                     level.size.tile_size, level.size.tile_size,
                     CppAnalysisTileColor(cell, forest_visual_plan,
                                          road_visual_plan, item));
+    }
+  }
+}
+
+void DrawForestClearingAnalysisTiles(
+    const LevelData& level,
+    const visual_pipeline::PreparedLevel& prepared_level,
+    const VisibleTileRange& range) {
+  const visual_pipeline::ForestVisualPlan* forest_visual_plan =
+      prepared_level.forest_visual_plan.IsValid()
+          ? &prepared_level.forest_visual_plan
+          : nullptr;
+  for (int y = range.min_y; y <= range.max_y; ++y) {
+    for (int x = range.min_x; x <= range.max_x; ++x) {
+      const int index = y * level.size.width + x;
+      if (index < 0 || index >= static_cast<int>(level.cells.size())) {
+        continue;
+      }
+
+      const auto item = static_cast<std::size_t>(index);
+      const RuntimeCell& cell = level.cells[item];
+      DrawRectangle(x * level.size.tile_size, y * level.size.tile_size,
+                    level.size.tile_size, level.size.tile_size,
+                    ForestClearingAnalysisTileColor(cell, forest_visual_plan,
+                                                    item));
+    }
+  }
+}
+
+void DrawVisualIntentPreviewTiles(
+    const LevelData& level,
+    const visual_pipeline::PreparedLevel& prepared_level,
+    const VisibleTileRange& range) {
+  const visual_pipeline::ForestVisualPlan* forest_visual_plan =
+      prepared_level.forest_visual_plan.IsValid()
+          ? &prepared_level.forest_visual_plan
+          : nullptr;
+  const visual_pipeline::RoadVisualPlan* road_visual_plan =
+      prepared_level.road_visual_plan.IsValid()
+          ? &prepared_level.road_visual_plan
+          : nullptr;
+  for (int y = range.min_y; y <= range.max_y; ++y) {
+    for (int x = range.min_x; x <= range.max_x; ++x) {
+      const int index = y * level.size.width + x;
+      if (index < 0 || index >= static_cast<int>(level.cells.size())) {
+        continue;
+      }
+
+      const auto item = static_cast<std::size_t>(index);
+      const RuntimeCell& cell = level.cells[item];
+      DrawRectangle(x * level.size.tile_size, y * level.size.tile_size,
+                    level.size.tile_size, level.size.tile_size,
+                    VisualIntentPreviewTileColor(cell, forest_visual_plan,
+                                                 road_visual_plan, item));
     }
   }
 }
@@ -463,6 +561,49 @@ void DrawFinalRenderReference(const Texture2D& texture,
                  WHITE);
 }
 
+Color RuntimeObjectPreviewColor(const RuntimeObject& object) {
+  if (StartsWith(object.type, "tree") || StartsWith(object.family, "forest") ||
+      StartsWith(object.family, "vegetation")) {
+    return Color{18, 84, 45, 120};
+  }
+  if (StartsWith(object.type, "ruin") || StartsWith(object.family, "ruin") ||
+      StartsWith(object.type, "wall") || StartsWith(object.family, "wall") ||
+      StartsWith(object.type, "bunker") || StartsWith(object.family, "military")) {
+    return Color{112, 101, 84, 150};
+  }
+  if (StartsWith(object.type, "water") || StartsWith(object.family, "swamp")) {
+    return Color{50, 105, 98, 110};
+  }
+  if (object.blocks_movement || object.blocks_vision ||
+      object.blocks_projectiles) {
+    return Color{70, 61, 45, 130};
+  }
+  return Color{165, 132, 86, 105};
+}
+
+void DrawRuntimeObjectsForVisualPreview(const LevelData& level,
+                                        const VisibleTileRange& range) {
+  for (const RuntimeObject& object : level.objects) {
+    if (object.width <= 0 || object.height <= 0) {
+      continue;
+    }
+
+    const int max_x = object.x + object.width - 1;
+    const int max_y = object.y + object.height - 1;
+    if (max_x < range.min_x || object.x > range.max_x || max_y < range.min_y ||
+        object.y > range.max_y) {
+      continue;
+    }
+
+    const Rectangle bounds{
+        static_cast<float>(object.x * level.size.tile_size),
+        static_cast<float>(object.y * level.size.tile_size),
+        static_cast<float>(object.width * level.size.tile_size),
+        static_cast<float>(object.height * level.size.tile_size)};
+    DrawRectangleRec(bounds, RuntimeObjectPreviewColor(object));
+  }
+}
+
 void DrawPreparedVisualObjects(const visual_pipeline::VisualMapData& visual_map,
                                int tile_size,
                                const VisibleTileRange& range) {
@@ -492,6 +633,10 @@ const char* LevelRenderModeName(LevelRenderMode mode) {
       return "raw_terrain";
     case LevelRenderMode::kCppAnalysis:
       return "cpp_analysis";
+    case LevelRenderMode::kForestClearingAnalysis:
+      return "forest_clearing_analysis";
+    case LevelRenderMode::kVisualIntentPreview:
+      return "visual_intent_preview";
     case LevelRenderMode::kPreparedVisualMap:
       return "prepared_visual_map";
     case LevelRenderMode::kFinalRenderReference:
@@ -590,21 +735,31 @@ void LevelRenderer::Draw(const LevelData& level,
       DrawPreparedVisualObjects(prepared_level->prepared_visual_map,
                                 level.size.tile_size, range);
     }
+  } else if (mode == LevelRenderMode::kCppAnalysis &&
+             prepared_level != nullptr) {
+    DrawCppAnalysisTiles(level, *prepared_level, range);
+    DrawAnalysisOverlay(*prepared_level, level.size.tile_size, view.zoom,
+                        range);
+  } else if (mode == LevelRenderMode::kForestClearingAnalysis &&
+             prepared_level != nullptr) {
+    DrawForestClearingAnalysisTiles(level, *prepared_level, range);
+  } else if (mode == LevelRenderMode::kVisualIntentPreview &&
+             prepared_level != nullptr) {
+    DrawVisualIntentPreviewTiles(level, *prepared_level, range);
+    DrawRuntimeObjectsForVisualPreview(level, range);
   } else {
-    if (mode == LevelRenderMode::kCppAnalysis && prepared_level != nullptr) {
-      DrawCppAnalysisTiles(level, *prepared_level, range);
-      DrawAnalysisOverlay(*prepared_level, level.size.tile_size, view.zoom,
-                          range);
-    } else {
-      DrawRawTerrainTiles(level, range);
-    }
+    DrawRawTerrainTiles(level, range);
   }
 
   DrawRectangleLinesEx(Rectangle{0.0F, 0.0F, MapWidthPx(level),
                                  MapHeightPx(level)},
                        2.0F / view.zoom, Color{180, 180, 190, 160});
 
-  DrawDebugMarkers(level, view.zoom);
+  if (mode == LevelRenderMode::kRawTerrain ||
+      mode == LevelRenderMode::kCppAnalysis ||
+      mode == LevelRenderMode::kForestClearingAnalysis) {
+    DrawDebugMarkers(level, view.zoom);
+  }
 
   EndMode2D();
 }

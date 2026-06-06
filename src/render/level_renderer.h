@@ -23,6 +23,8 @@ struct LevelViewState {
 enum class LevelRenderMode {
   kRawTerrain,
   kCppAnalysis,
+  kForestClearingAnalysis,
+  kVisualIntentPreview,
   kPreparedVisualMap,
   kFinalRenderReference,
 };

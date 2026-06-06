@@ -238,7 +238,7 @@ std::string BuildMapPreparationReport(
     report << CountLine("canopy", summary.canopy_candidate_tiles) << "\n";
     report << CountLine("mass groups", summary.forest_mass_group_count)
            << "\n";
-    report << CountLine("route influence", summary.route_influenced_tiles)
+    report << CountLine("route ref only", summary.route_influenced_tiles)
            << "\n";
     report << "\nClearings:\n";
     report << CountLine("main", summary.main_clearing_tiles) << "\n";
@@ -610,12 +610,12 @@ void Application::HandleGameInput(const InputState& input) {
                                LevelRenderModeName(level_render_mode_));
   }
   if (input.debug_view_analysis_pressed) {
-    level_render_mode_ = LevelRenderMode::kCppAnalysis;
+    level_render_mode_ = LevelRenderMode::kForestClearingAnalysis;
     logger_.Info("render", std::string("level view mode=") +
                                LevelRenderModeName(level_render_mode_));
   }
   if (input.debug_view_visual_pressed) {
-    level_render_mode_ = LevelRenderMode::kPreparedVisualMap;
+    level_render_mode_ = LevelRenderMode::kVisualIntentPreview;
     logger_.Info("render", std::string("level view mode=") +
                                LevelRenderModeName(level_render_mode_));
   }
@@ -694,11 +694,14 @@ void Application::UpdateMapPreparation() {
                                            project_config_->map_package_path));
   }
   logger_.Debug("visual_pipeline", prepared_level_->Dump());
-  if (prepared_level_->region_borders.IsValid()) {
-    level_render_mode_ = LevelRenderMode::kCppAnalysis;
+  if (prepared_level_->forest_visual_plan.IsValid() ||
+      prepared_level_->road_visual_plan.IsValid()) {
+    level_render_mode_ = LevelRenderMode::kVisualIntentPreview;
   } else if (prepared_level_->prepared_visual_map.loaded &&
              prepared_level_->prepared_visual_map.HasRenderableLayer()) {
     level_render_mode_ = LevelRenderMode::kPreparedVisualMap;
+  } else if (prepared_level_->region_borders.IsValid()) {
+    level_render_mode_ = LevelRenderMode::kCppAnalysis;
   } else {
     level_render_mode_ = LevelRenderMode::kRawTerrain;
   }
@@ -835,7 +838,7 @@ void Application::DrawGameOverlay() const {
   y += line_step;
   ui_font_.DrawTextLine(std::string("view: ") +
                             LevelRenderModeName(level_render_mode_) +
-                            "  F1 raw  F2 analysis  F3 visual  F4 final",
+                            "  F1 raw  F2 forest  F3 preview  F4 final",
                         x, y, font_size, color);
   if (prepared_level_.has_value()) {
     y += line_step;
