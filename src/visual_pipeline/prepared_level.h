@@ -1,6 +1,7 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_PREPARED_LEVEL_H_
 #define SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_PREPARED_LEVEL_H_
 
+#include <filesystem>
 #include <string>
 
 #include "level/level_data.h"
@@ -51,6 +52,8 @@ struct PreparedLevel {
   int decoration_count = 0;
   int render_cache_entry_count = 0;
   VisualMapData prepared_visual_map;
+  std::filesystem::path visual_package_path;
+  std::filesystem::path final_render_path;
 
   /**
    * @brief Returns a readable dump of the prepared level state.

@@ -244,3 +244,11 @@
 - Added micro-scene debug artifacts: `09_micro_scenes.png`, `09_micro_scene_dressing.png`, and `09_micro_scenes.json`.
 - Updated the visual intent preview to draw micro-scene ground dressing below typed runtime objects.
 - Kept micro-scenes visual-only: roads, ruins, water, routes, collision, markers, and runtime grids remain unchanged.
+
+## v0.1.28 -> v0.1.29
+
+- Bumped CMake project and runtime application version to `0.1.29`.
+- Added final C++ visual package writing to `prepared_map/visual_map.json`, `visual_layers.json`, `visual_objects.json`, and `visual_chunks.json`.
+- Added C++ pipeline `final_render.png` generation instead of relying only on the old prepared reference render.
+- Added final package reports: `final_render_report.json`, `visual_density_report.json`, and `quality_score.json`.
+- Kept the final package visual-only: gameplay grids, collision, markers, and routes remain unchanged.

@@ -153,6 +153,13 @@ std::string PreparedLevel::Dump() const {
             std::to_string(prepared_visual_map.visual_chunk_count) + " }";
   }
 
+  if (!visual_package_path.empty()) {
+    dump += ", visual_package: " + visual_package_path.string();
+  }
+  if (!final_render_path.empty()) {
+    dump += ", final_render: " + final_render_path.string();
+  }
+
   dump += " }";
   return dump;
 }

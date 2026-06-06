@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(ShootAndRun
-  VERSION 0.1.28
+  VERSION 0.1.29
   DESCRIPTION "ShootAndRun C++ raylib bootstrap"
   LANGUAGES CXX
 )
@@ -48,6 +48,7 @@ add_executable(shoot_and_run
   src/visual_pipeline/water_visual_plan.cpp
   src/visual_pipeline/object_visual_plan.cpp
   src/visual_pipeline/micro_scene_visual_plan.cpp
+  src/visual_pipeline/final_visual_package_writer.cpp
   src/visual_pipeline/terrain_regions.cpp
   src/visual_pipeline/region_borders.cpp
   src/visual_pipeline/debug_artifact_writer.cpp
@@ -104,6 +105,7 @@ if(SAR_BUILD_TESTS)
     src/visual_pipeline/water_visual_plan.cpp
     src/visual_pipeline/object_visual_plan.cpp
   src/visual_pipeline/micro_scene_visual_plan.cpp
+  src/visual_pipeline/final_visual_package_writer.cpp
     src/visual_pipeline/terrain_regions.cpp
     src/visual_pipeline/region_borders.cpp
     src/visual_pipeline/debug_artifact_writer.cpp

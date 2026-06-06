@@ -892,6 +892,11 @@ bool Application::LoadFinalRenderTexture() {
   UnloadFinalRenderTexture();
   std::filesystem::path path;
   if (prepared_level_.has_value() &&
+      !prepared_level_->final_render_path.empty()) {
+    path = prepared_level_->final_render_path;
+  }
+
+  if (path.empty() && prepared_level_.has_value() &&
       prepared_level_->prepared_visual_map.loaded) {
     path = prepared_level_->prepared_visual_map.final_render_path;
   }

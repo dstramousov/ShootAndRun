@@ -13,6 +13,7 @@
 
 #include "visual_pipeline/semantic_masks.h"
 #include "visual_pipeline/debug_artifact_writer.h"
+#include "visual_pipeline/final_visual_package_writer.h"
 #include "visual_pipeline/steps/build_semantic_masks_step.h"
 #include "visual_pipeline/steps/classify_region_borders_step.h"
 #include "visual_pipeline/steps/build_forest_visual_plan_step.h"
@@ -68,7 +69,7 @@ std::vector<PipelineStepInfo> BuildDefaultSteps(
   steps.push_back({"Build ruin scene compositions"});
   steps.push_back({"Build water and swamp edges"});
   steps.push_back({"Place visual decorations"});
-  steps.push_back({"Build render cache"});
+  steps.push_back({"Build final visual package"});
   return steps;
 }
 
@@ -133,6 +134,15 @@ PreparedLevelSource SourceForMode(VisualPipelineMode mode) {
   return PreparedLevelSource::kCppPipeline;
 }
 
+
+std::filesystem::path ResolveFinalPackageOutputPath(
+    const VisualPreparationOptions& options) {
+  const std::filesystem::path debug_path = ResolveDebugOutputPath(options);
+  if (debug_path.empty()) {
+    return options.map_package_path / "../prepared_map";
+  }
+  return debug_path.parent_path();
+}
 
 std::string TerrainSummaryLine(const SemanticMaskSummary& summary) {
   return "terrain tiles=" + std::to_string(summary.total_tiles) +
@@ -876,18 +886,39 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
     return;
   }
 
-  if (step.name == "Build render cache") {
+  if (step.name == "Build final visual package") {
     if (HasPreparedVisualMap(prepared_level_)) {
       report->summaries.push_back(
-          "render cache using prepared visual_map chunks=" +
+          "final visual package using prepared visual_map chunks=" +
           std::to_string(prepared_level_.render_cache_entry_count));
       return;
     }
-    prepared_level_.render_cache_entry_count =
-        level.size.width * level.size.height;
+
+    std::string error;
+    const FinalVisualPackageWriter writer(
+        ResolveFinalPackageOutputPath(options_));
+    const FinalVisualPackageResult result = writer.Write(level, prepared_level_,
+                                                         &error);
+    if (result.visual_map_path.empty()) {
+      Fail(error.empty() ? "final visual package write failed" : error);
+      return;
+    }
+
+    prepared_level_.visual_layer_count = result.visual_layer_count;
+    prepared_level_.decoration_count = result.visual_object_count;
+    prepared_level_.render_cache_entry_count = result.visual_chunk_count;
+    prepared_level_.final_render_path = result.final_render_path;
+    prepared_level_.visual_package_path = result.visual_map_path;
     report->summaries.push_back(
-        "render cache placeholder entries=" +
-        std::to_string(prepared_level_.render_cache_entry_count));
+        "final visual package written visual_map=" +
+        result.visual_map_path.string());
+    report->summaries.push_back(
+        "final render written path=" + result.final_render_path.string());
+    report->summaries.push_back(
+        "visual package layers=" + std::to_string(result.visual_layer_count) +
+        " objects=" + std::to_string(result.visual_object_count) +
+        " chunks=" + std::to_string(result.visual_chunk_count));
+    return;
   }
 }
 
