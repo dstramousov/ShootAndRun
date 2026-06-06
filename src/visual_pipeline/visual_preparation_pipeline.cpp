@@ -18,8 +18,10 @@
 #include "visual_pipeline/steps/build_forest_visual_plan_step.h"
 #include "visual_pipeline/steps/build_road_visual_plan_step.h"
 #include "visual_pipeline/steps/build_ruin_visual_plan_step.h"
+#include "visual_pipeline/steps/build_water_visual_plan_step.h"
 #include "visual_pipeline/steps/build_terrain_regions_step.h"
 #include "visual_pipeline/terrain_regions.h"
+#include "visual_pipeline/water_visual_plan.h"
 #include "visual_pipeline/region_borders.h"
 #include "visual_pipeline/visual_map_loader.h"
 #include "visual_pipeline/visual_pipeline_config.h"
@@ -381,6 +383,35 @@ void AddRuinVisualDiagnostics(const RuinVisualSummary& summary,
   }
 }
 
+std::string WaterVisualSummaryLine(const WaterVisualSummary& summary) {
+  return "water_visual regions=" +
+         std::to_string(summary.water_region_count) +
+         " source_water=" + std::to_string(summary.source_water_tiles) +
+         " source_swamp=" + std::to_string(summary.source_swamp_tiles) +
+         " core=" + std::to_string(summary.water_core_tiles) +
+         " edge=" + std::to_string(summary.water_edge_tiles) +
+         " mud=" + std::to_string(summary.mud_ring_tiles) +
+         " wet_grass=" + std::to_string(summary.wet_grass_tiles) +
+         " reeds=" + std::to_string(summary.reed_zone_tiles) +
+         " crossings=" + std::to_string(summary.crossing_tiles) +
+         " visual=" + std::to_string(summary.visual_tiles);
+}
+
+void AddWaterVisualDiagnostics(const WaterVisualSummary& summary,
+                               PipelineStepReport* report) {
+  if (report == nullptr) {
+    return;
+  }
+
+  report->summaries.push_back(WaterVisualSummaryLine(summary));
+  if (summary.water_like_tiles > 0 && summary.water_edge_tiles == 0) {
+    report->warnings.push_back("water edge band is empty");
+  }
+  if (summary.water_like_tiles > 0 && summary.mud_ring_tiles == 0) {
+    report->warnings.push_back("water mud ring is empty");
+  }
+}
+
 void AddVisualMapDiagnostics(const VisualMapData& data,
                              PipelineStepReport* report) {
   if (report == nullptr) {
@@ -719,17 +750,26 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
   }
 
   if (step.name == "Build water and swamp edges") {
-    if (HasPreparedVisualMap(prepared_level_)) {
-      report->summaries.push_back(
-          "water edges using prepared visual_map layers=" +
-          std::to_string(prepared_level_.visual_layer_count));
+    std::string error;
+    if (!RunBuildWaterVisualPlanStep(level, &prepared_level_, &error)) {
+      Fail(error.empty() ? "water visual plan step failed" : error);
       return;
     }
-    prepared_level_.visual_layer_count =
-        std::max(prepared_level_.visual_layer_count, 5);
-    report->summaries.push_back("water edge placeholder layers=" +
-                                std::to_string(
-                                    prepared_level_.visual_layer_count));
+
+    if (!HasPreparedVisualMap(prepared_level_)) {
+      prepared_level_.visual_layer_count =
+          std::max(prepared_level_.visual_layer_count, 5);
+    }
+    AddWaterVisualDiagnostics(prepared_level_.water_visual_plan.summary,
+                              report);
+    if (options_.visual_pipeline_config.write_debug_artifacts) {
+      std::string artifact_error;
+      const DebugArtifactWriter writer(ResolveDebugOutputPath(options_));
+      const bool written = writer.WriteWaterVisualArtifacts(
+          prepared_level_.water_visual_plan, &artifact_error);
+      AddDebugArtifactResult("water visual plan", written, artifact_error,
+                             report);
+    }
     return;
   }
 

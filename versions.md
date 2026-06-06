@@ -222,3 +222,10 @@
 - Reduced visual-only ruin dressing spread so rubble and overgrowth no longer flood central ruin sites.
 - Increased non-black wall contrast so wall cores remain readable without returning to the old technical black-line look.
 - Kept ruin rendering visual-only: gameplay collision, markers, routes, and runtime grids remain unchanged.
+
+## v0.1.25 -> v0.1.26
+
+- Bumped CMake project and runtime application version to `0.1.26`.
+- Added a visual-only water and swamp pass for `water_core`, `water_edge`, `mud_ring`, `wet_grass`, `reed_zone`, and crossing roles.
+- Added water debug artifacts: `07_water_regions.png`, `07_water_visual.png`, and `07_water_pass.json`.
+- Updated the visual intent preview to draw water-zone intent without changing collision, markers, routes, or runtime grids.

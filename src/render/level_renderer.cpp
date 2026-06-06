@@ -14,6 +14,7 @@
 #include "visual_pipeline/forest_visual_plan.h"
 #include "visual_pipeline/road_visual_plan.h"
 #include "visual_pipeline/ruin_visual_plan.h"
+#include "visual_pipeline/water_visual_plan.h"
 #include "visual_pipeline/region_borders.h"
 #include "visual_pipeline/visual_map_data.h"
 
@@ -141,6 +142,27 @@ Color RuinVisualTileColor(std::uint8_t value) {
     case visual_pipeline::RuinVisualTile::kEntrance:
       return Color{148, 119, 72, 255};
     case visual_pipeline::RuinVisualTile::kNone:
+      return Color{78, 104, 58, 255};
+  }
+  return Color{78, 104, 58, 255};
+}
+
+Color WaterVisualTileColor(std::uint8_t value) {
+  const auto tile = static_cast<visual_pipeline::WaterVisualTile>(value);
+  switch (tile) {
+    case visual_pipeline::WaterVisualTile::kWaterCore:
+      return Color{28, 82, 108, 255};
+    case visual_pipeline::WaterVisualTile::kWaterEdge:
+      return Color{42, 102, 118, 255};
+    case visual_pipeline::WaterVisualTile::kMudRing:
+      return Color{79, 67, 48, 255};
+    case visual_pipeline::WaterVisualTile::kWetGrass:
+      return Color{55, 101, 70, 255};
+    case visual_pipeline::WaterVisualTile::kReedZone:
+      return Color{68, 123, 74, 255};
+    case visual_pipeline::WaterVisualTile::kCrossing:
+      return Color{112, 98, 67, 255};
+    case visual_pipeline::WaterVisualTile::kNone:
       return Color{78, 104, 58, 255};
   }
   return Color{78, 104, 58, 255};
@@ -360,11 +382,18 @@ Color CppAnalysisTileColor(
     const visual_pipeline::ForestVisualPlan* forest_visual_plan,
     const visual_pipeline::RoadVisualPlan* road_visual_plan,
     const visual_pipeline::RuinVisualPlan* ruin_visual_plan,
+    const visual_pipeline::WaterVisualPlan* water_visual_plan,
     std::size_t index) {
   if (ruin_visual_plan != nullptr && ruin_visual_plan->IsValid() &&
       index < ruin_visual_plan->tiles.size() &&
       ruin_visual_plan->tiles[index] != 0) {
     return RuinVisualTileColor(ruin_visual_plan->tiles[index]);
+  }
+
+  if (water_visual_plan != nullptr && water_visual_plan->IsValid() &&
+      index < water_visual_plan->tiles.size() &&
+      water_visual_plan->tiles[index] != 0) {
+    return WaterVisualTileColor(water_visual_plan->tiles[index]);
   }
 
   if (road_visual_plan != nullptr && road_visual_plan->IsValid() &&
@@ -425,11 +454,18 @@ Color VisualIntentPreviewTileColor(
     const visual_pipeline::ForestVisualPlan* forest_visual_plan,
     const visual_pipeline::RoadVisualPlan* road_visual_plan,
     const visual_pipeline::RuinVisualPlan* ruin_visual_plan,
+    const visual_pipeline::WaterVisualPlan* water_visual_plan,
     std::size_t index) {
   if (ruin_visual_plan != nullptr && ruin_visual_plan->IsValid() &&
       index < ruin_visual_plan->tiles.size() &&
       ruin_visual_plan->tiles[index] != 0) {
     return RuinVisualTileColor(ruin_visual_plan->tiles[index]);
+  }
+
+  if (water_visual_plan != nullptr && water_visual_plan->IsValid() &&
+      index < water_visual_plan->tiles.size() &&
+      water_visual_plan->tiles[index] != 0) {
+    return WaterVisualTileColor(water_visual_plan->tiles[index]);
   }
 
   if (road_visual_plan != nullptr && road_visual_plan->IsValid() &&
@@ -463,6 +499,10 @@ void DrawCppAnalysisTiles(
       prepared_level.ruin_visual_plan.IsValid()
           ? &prepared_level.ruin_visual_plan
           : nullptr;
+  const visual_pipeline::WaterVisualPlan* water_visual_plan =
+      prepared_level.water_visual_plan.IsValid()
+          ? &prepared_level.water_visual_plan
+          : nullptr;
   for (int y = range.min_y; y <= range.max_y; ++y) {
     for (int x = range.min_x; x <= range.max_x; ++x) {
       const int index = y * level.size.width + x;
@@ -476,7 +516,7 @@ void DrawCppAnalysisTiles(
                     level.size.tile_size, level.size.tile_size,
                     CppAnalysisTileColor(cell, forest_visual_plan,
                                          road_visual_plan, ruin_visual_plan,
-                                         item));
+                                         water_visual_plan, item));
     }
   }
 }
@@ -522,6 +562,10 @@ void DrawVisualIntentPreviewTiles(
       prepared_level.ruin_visual_plan.IsValid()
           ? &prepared_level.ruin_visual_plan
           : nullptr;
+  const visual_pipeline::WaterVisualPlan* water_visual_plan =
+      prepared_level.water_visual_plan.IsValid()
+          ? &prepared_level.water_visual_plan
+          : nullptr;
   for (int y = range.min_y; y <= range.max_y; ++y) {
     for (int x = range.min_x; x <= range.max_x; ++x) {
       const int index = y * level.size.width + x;
@@ -535,7 +579,8 @@ void DrawVisualIntentPreviewTiles(
                     level.size.tile_size, level.size.tile_size,
                     VisualIntentPreviewTileColor(cell, forest_visual_plan,
                                                  road_visual_plan,
-                                                 ruin_visual_plan, item));
+                                                 ruin_visual_plan,
+                                                 water_visual_plan, item));
     }
   }
 }

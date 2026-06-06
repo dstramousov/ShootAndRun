@@ -7,6 +7,7 @@
 #include "visual_pipeline/forest_visual_plan.h"
 #include "visual_pipeline/road_visual_plan.h"
 #include "visual_pipeline/ruin_visual_plan.h"
+#include "visual_pipeline/water_visual_plan.h"
 #include "visual_pipeline/semantic_masks.h"
 #include "visual_pipeline/region_borders.h"
 #include "visual_pipeline/terrain_regions.h"
@@ -41,6 +42,7 @@ struct PreparedLevel {
   ForestVisualPlan forest_visual_plan;
   RoadVisualPlan road_visual_plan;
   RuinVisualPlan ruin_visual_plan;
+  WaterVisualPlan water_visual_plan;
   int visual_layer_count = 0;
   int decoration_count = 0;
   int render_cache_entry_count = 0;

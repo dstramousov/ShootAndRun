@@ -103,6 +103,19 @@ std::string PreparedLevel::Dump() const {
             " }";
   }
 
+
+  if (water_visual_plan.IsValid()) {
+    const WaterVisualSummary& summary = water_visual_plan.summary;
+    dump += ", water_visual: { regions: " +
+            std::to_string(summary.water_region_count) +
+            ", core: " + std::to_string(summary.water_core_tiles) +
+            ", edge: " + std::to_string(summary.water_edge_tiles) +
+            ", mud: " + std::to_string(summary.mud_ring_tiles) +
+            ", wet_grass: " + std::to_string(summary.wet_grass_tiles) +
+            ", reeds: " + std::to_string(summary.reed_zone_tiles) +
+            " }";
+  }
+
   if (prepared_visual_map.loaded) {
     dump += ", prepared_visual_map: { layers: " +
             std::to_string(prepared_visual_map.visual_layer_count) +

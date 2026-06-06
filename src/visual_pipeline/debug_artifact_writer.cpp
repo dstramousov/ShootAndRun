@@ -18,6 +18,7 @@
 #include "visual_pipeline/forest_visual_plan.h"
 #include "visual_pipeline/road_visual_plan.h"
 #include "visual_pipeline/ruin_visual_plan.h"
+#include "visual_pipeline/water_visual_plan.h"
 
 namespace sar::visual_pipeline {
 namespace {
@@ -579,6 +580,54 @@ std::vector<RgbaColor> BuildRuinSiteImage(const RuinVisualPlan& plan) {
   return pixels;
 }
 
+RgbaColor WaterVisualColor(std::uint8_t value) {
+  const WaterVisualTile tile = static_cast<WaterVisualTile>(value);
+  switch (tile) {
+    case WaterVisualTile::kWaterCore:
+      return RgbaColor{28, 86, 112, 255};
+    case WaterVisualTile::kWaterEdge:
+      return RgbaColor{38, 104, 122, 255};
+    case WaterVisualTile::kMudRing:
+      return RgbaColor{78, 66, 48, 255};
+    case WaterVisualTile::kWetGrass:
+      return RgbaColor{54, 102, 72, 255};
+    case WaterVisualTile::kReedZone:
+      return RgbaColor{68, 126, 76, 255};
+    case WaterVisualTile::kCrossing:
+      return RgbaColor{112, 98, 68, 255};
+    case WaterVisualTile::kNone:
+      return kBlack;
+  }
+  return kBlack;
+}
+
+std::vector<RgbaColor> BuildWaterVisualImage(const WaterVisualPlan& plan) {
+  std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
+                                static_cast<std::size_t>(plan.size.height),
+                                kBlack);
+  for (std::size_t i = 0; i < plan.tiles.size(); ++i) {
+    pixels[i] = WaterVisualColor(plan.tiles[i]);
+  }
+  return pixels;
+}
+
+std::vector<RgbaColor> BuildWaterRegionImage(const WaterVisualPlan& plan) {
+  std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
+                                static_cast<std::size_t>(plan.size.height),
+                                kBlack);
+  for (std::size_t i = 0; i < plan.region_ids.size(); ++i) {
+    const std::uint16_t region_id = plan.region_ids[i];
+    if (region_id == 0) {
+      continue;
+    }
+    pixels[i] = RgbaColor{
+        static_cast<std::uint8_t>(26 + (region_id * 29U) % 70U),
+        static_cast<std::uint8_t>(82 + (region_id * 47U) % 110U),
+        static_cast<std::uint8_t>(104 + (region_id * 61U) % 110U), 255};
+  }
+  return pixels;
+}
+
 RgbaColor ForestDepthColor(std::uint8_t value) {
   const ForestDepthBand band = static_cast<ForestDepthBand>(value);
   switch (band) {
@@ -1076,6 +1125,69 @@ bool DebugArtifactWriter::WriteRuinVisualArtifacts(
   json << "}\n";
 
   return WriteTextFile(output_root_ / "reports" / "06_ruins_pass.json",
+                       json.str(), error);
+}
+
+bool DebugArtifactWriter::WriteWaterVisualArtifacts(
+    const WaterVisualPlan& plan, std::string* error) const {
+  if (!plan.IsValid()) {
+    if (error != nullptr) {
+      *error = "water visual plan is invalid for debug artifact writing";
+    }
+    return false;
+  }
+
+  const std::filesystem::path directory = output_root_ / "passes";
+  const std::vector<std::pair<std::string, std::vector<RgbaColor>>> images = {
+      {"07_water_regions.png", BuildWaterRegionImage(plan)},
+      {"07_water_visual.png", BuildWaterVisualImage(plan)},
+  };
+
+  for (const auto& [filename, pixels] : images) {
+    if (!WritePngRgba(directory / filename, plan.size.width,
+                      plan.size.height, pixels, error)) {
+      return false;
+    }
+  }
+
+  const WaterVisualSummary& summary = plan.summary;
+  const int total = std::max(summary.visual_tiles, 1);
+  std::ostringstream json;
+  json << "{\n";
+  json << "  \"schema_version\": \"visual-debug-water-pass-v1\",\n";
+  json << "  \"status\": \"ok\",\n";
+  json << "  \"width\": " << plan.size.width << ",\n";
+  json << "  \"height\": " << plan.size.height << ",\n";
+  json << "  \"source\": {\n";
+  json << "    \"water_tiles\": " << summary.source_water_tiles
+       << ",\n";
+  json << "    \"swamp_tiles\": " << summary.source_swamp_tiles
+       << ",\n";
+  json << "    \"water_like_tiles\": " << summary.water_like_tiles
+       << ",\n";
+  json << "    \"regions\": " << summary.water_region_count << "\n";
+  json << "  },\n";
+  json << "  \"visual_tiles\": {\n";
+  AppendJsonCountField(&json, "water_core", summary.water_core_tiles,
+                       total, true);
+  AppendJsonCountField(&json, "water_edge", summary.water_edge_tiles,
+                       total, true);
+  AppendJsonCountField(&json, "mud_ring", summary.mud_ring_tiles,
+                       total, true);
+  AppendJsonCountField(&json, "wet_grass", summary.wet_grass_tiles,
+                       total, true);
+  AppendJsonCountField(&json, "reed_zone", summary.reed_zone_tiles,
+                       total, true);
+  AppendJsonCountField(&json, "crossing", summary.crossing_tiles,
+                       total, false);
+  json << "  },\n";
+  json << "  \"artifacts\": [\n";
+  json << "    \"passes/07_water_regions.png\",\n";
+  json << "    \"passes/07_water_visual.png\"\n";
+  json << "  ]\n";
+  json << "}\n";
+
+  return WriteTextFile(output_root_ / "reports" / "07_water_pass.json",
                        json.str(), error);
 }
 
