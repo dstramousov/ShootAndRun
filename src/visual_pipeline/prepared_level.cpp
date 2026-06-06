@@ -92,6 +92,17 @@ std::string PreparedLevel::Dump() const {
             std::to_string(summary.ruin_approach_tiles) + " }";
   }
 
+  if (ruin_visual_plan.IsValid()) {
+    const RuinVisualSummary& summary = ruin_visual_plan.summary;
+    dump += ", ruin_visual: { sites: " +
+            std::to_string(summary.site_count) +
+            ", walls: " + std::to_string(summary.source_wall_tiles) +
+            ", floors: " + std::to_string(summary.source_ruin_tiles) +
+            ", rubble: " + std::to_string(summary.rubble_tiles) +
+            ", entrances: " + std::to_string(summary.entrance_tiles) +
+            " }";
+  }
+
   if (prepared_visual_map.loaded) {
     dump += ", prepared_visual_map: { layers: " +
             std::to_string(prepared_visual_map.visual_layer_count) +

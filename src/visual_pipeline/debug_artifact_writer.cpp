@@ -17,6 +17,7 @@
 #include "level/terrain_type.h"
 #include "visual_pipeline/forest_visual_plan.h"
 #include "visual_pipeline/road_visual_plan.h"
+#include "visual_pipeline/ruin_visual_plan.h"
 
 namespace sar::visual_pipeline {
 namespace {
@@ -526,6 +527,58 @@ std::vector<RgbaColor> BuildRoadDressingInfluenceImage(const RoadVisualPlan& pla
   return pixels;
 }
 
+RgbaColor RuinVisualColor(std::uint8_t value) {
+  const RuinVisualTile tile = static_cast<RuinVisualTile>(value);
+  switch (tile) {
+    case RuinVisualTile::kCrackedFloor:
+      return RgbaColor{112, 106, 87, 255};
+    case RuinVisualTile::kOvergrownFloor:
+      return RgbaColor{88, 112, 68, 255};
+    case RuinVisualTile::kWallIntact:
+      return RgbaColor{82, 74, 62, 255};
+    case RuinVisualTile::kWallBroken:
+      return RgbaColor{104, 91, 72, 255};
+    case RuinVisualTile::kWallCorner:
+      return RgbaColor{122, 107, 82, 255};
+    case RuinVisualTile::kWallEndcap:
+      return RgbaColor{132, 116, 86, 255};
+    case RuinVisualTile::kRubble:
+      return RgbaColor{144, 124, 84, 255};
+    case RuinVisualTile::kEntrance:
+      return RgbaColor{162, 133, 78, 255};
+    case RuinVisualTile::kNone:
+      return kBlack;
+  }
+  return kBlack;
+}
+
+std::vector<RgbaColor> BuildRuinCompositionImage(const RuinVisualPlan& plan) {
+  std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
+                                static_cast<std::size_t>(plan.size.height),
+                                kBlack);
+  for (std::size_t i = 0; i < plan.tiles.size(); ++i) {
+    pixels[i] = RuinVisualColor(plan.tiles[i]);
+  }
+  return pixels;
+}
+
+std::vector<RgbaColor> BuildRuinSiteImage(const RuinVisualPlan& plan) {
+  std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
+                                static_cast<std::size_t>(plan.size.height),
+                                kBlack);
+  for (std::size_t i = 0; i < plan.site_ids.size(); ++i) {
+    const std::uint16_t site_id = plan.site_ids[i];
+    if (site_id == 0) {
+      continue;
+    }
+    pixels[i] = RgbaColor{
+        static_cast<std::uint8_t>(70 + (site_id * 43U) % 150U),
+        static_cast<std::uint8_t>(70 + (site_id * 73U) % 130U),
+        static_cast<std::uint8_t>(60 + (site_id * 29U) % 100U), 255};
+  }
+  return pixels;
+}
+
 RgbaColor ForestDepthColor(std::uint8_t value) {
   const ForestDepthBand band = static_cast<ForestDepthBand>(value);
   switch (band) {
@@ -960,6 +1013,69 @@ bool DebugArtifactWriter::WriteSemanticLinkArtifacts(
   json << "}\n";
 
   return WriteTextFile(output_root_ / "reports" / "03_semantic_links.json",
+                       json.str(), error);
+}
+
+bool DebugArtifactWriter::WriteRuinVisualArtifacts(
+    const RuinVisualPlan& plan, std::string* error) const {
+  if (!plan.IsValid()) {
+    if (error != nullptr) {
+      *error = "ruin visual plan is invalid for debug artifact writing";
+    }
+    return false;
+  }
+
+  const std::filesystem::path directory = output_root_ / "passes";
+  const std::vector<std::pair<std::string, std::vector<RgbaColor>>> images = {
+      {"06_ruin_regions.png", BuildRuinSiteImage(plan)},
+      {"06_ruin_compositions.png", BuildRuinCompositionImage(plan)},
+  };
+
+  for (const auto& [filename, pixels] : images) {
+    if (!WritePngRgba(directory / filename, plan.size.width,
+                      plan.size.height, pixels, error)) {
+      return false;
+    }
+  }
+
+  const RuinVisualSummary& summary = plan.summary;
+  const int total = std::max(summary.visual_tiles, 1);
+  std::ostringstream json;
+  json << "{\n";
+  json << "  \"schema_version\": \"visual-debug-ruins-pass-v1\",\n";
+  json << "  \"status\": \"ok\",\n";
+  json << "  \"width\": " << plan.size.width << ",\n";
+  json << "  \"height\": " << plan.size.height << ",\n";
+  json << "  \"sites\": " << summary.site_count << ",\n";
+  json << "  \"source\": {\n";
+  json << "    \"ruin_floor_tiles\": " << summary.source_ruin_tiles
+       << ",\n";
+  json << "    \"wall_tiles\": " << summary.source_wall_tiles << "\n";
+  json << "  },\n";
+  json << "  \"visual_tiles\": {\n";
+  AppendJsonCountField(&json, "cracked_floor",
+                       summary.cracked_floor_tiles, total, true);
+  AppendJsonCountField(&json, "overgrown_floor",
+                       summary.overgrown_floor_tiles, total, true);
+  AppendJsonCountField(&json, "wall_intact",
+                       summary.wall_intact_tiles, total, true);
+  AppendJsonCountField(&json, "wall_broken",
+                       summary.wall_broken_tiles, total, true);
+  AppendJsonCountField(&json, "wall_corner",
+                       summary.wall_corner_tiles, total, true);
+  AppendJsonCountField(&json, "wall_endcap",
+                       summary.wall_endcap_tiles, total, true);
+  AppendJsonCountField(&json, "rubble", summary.rubble_tiles, total, true);
+  AppendJsonCountField(&json, "entrance", summary.entrance_tiles, total,
+                       false);
+  json << "  },\n";
+  json << "  \"artifacts\": [\n";
+  json << "    \"passes/06_ruin_regions.png\",\n";
+  json << "    \"passes/06_ruin_compositions.png\"\n";
+  json << "  ]\n";
+  json << "}\n";
+
+  return WriteTextFile(output_root_ / "reports" / "06_ruins_pass.json",
                        json.str(), error);
 }
 

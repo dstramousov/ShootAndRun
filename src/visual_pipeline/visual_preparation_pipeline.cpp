@@ -17,6 +17,7 @@
 #include "visual_pipeline/steps/classify_region_borders_step.h"
 #include "visual_pipeline/steps/build_forest_visual_plan_step.h"
 #include "visual_pipeline/steps/build_road_visual_plan_step.h"
+#include "visual_pipeline/steps/build_ruin_visual_plan_step.h"
 #include "visual_pipeline/steps/build_terrain_regions_step.h"
 #include "visual_pipeline/terrain_regions.h"
 #include "visual_pipeline/region_borders.h"
@@ -60,6 +61,7 @@ std::vector<PipelineStepInfo> BuildDefaultSteps(
 
   steps.push_back({"Build road and path shapes"});
   steps.push_back({"Build forest masses"});
+  steps.push_back({"Build ruin scene compositions"});
   steps.push_back({"Build water and swamp edges"});
   steps.push_back({"Place visual decorations"});
   steps.push_back({"Build render cache"});
@@ -346,6 +348,36 @@ void AddRoadVisualDiagnostics(const RoadVisualSummary& summary,
   }
   if (summary.terrain_road_tiles > 0 && summary.road_core_tiles == 0) {
     report->warnings.push_back("road core band is empty");
+  }
+}
+
+std::string RuinVisualSummaryLine(const RuinVisualSummary& summary) {
+  return "ruin_visual sites=" + std::to_string(summary.site_count) +
+         " source_ruins=" + std::to_string(summary.source_ruin_tiles) +
+         " source_walls=" + std::to_string(summary.source_wall_tiles) +
+         " cracked=" + std::to_string(summary.cracked_floor_tiles) +
+         " overgrown=" + std::to_string(summary.overgrown_floor_tiles) +
+         " intact=" + std::to_string(summary.wall_intact_tiles) +
+         " broken=" + std::to_string(summary.wall_broken_tiles) +
+         " corners=" + std::to_string(summary.wall_corner_tiles) +
+         " endcaps=" + std::to_string(summary.wall_endcap_tiles) +
+         " rubble=" + std::to_string(summary.rubble_tiles) +
+         " entrances=" + std::to_string(summary.entrance_tiles) +
+         " visual=" + std::to_string(summary.visual_tiles);
+}
+
+void AddRuinVisualDiagnostics(const RuinVisualSummary& summary,
+                              PipelineStepReport* report) {
+  if (report == nullptr) {
+    return;
+  }
+
+  report->summaries.push_back(RuinVisualSummaryLine(summary));
+  if (summary.source_wall_tiles > 0 &&
+      summary.wall_broken_tiles + summary.wall_corner_tiles +
+              summary.wall_endcap_tiles ==
+          0) {
+    report->warnings.push_back("ruin wall detail bands are empty");
   }
 }
 
@@ -662,6 +694,30 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
     return;
   }
 
+  if (step.name == "Build ruin scene compositions") {
+    std::string error;
+    if (!RunBuildRuinVisualPlanStep(level, &prepared_level_, &error)) {
+      Fail(error.empty() ? "ruin visual plan step failed" : error);
+      return;
+    }
+
+    if (!HasPreparedVisualMap(prepared_level_)) {
+      prepared_level_.visual_layer_count =
+          std::max(prepared_level_.visual_layer_count, 4);
+    }
+    AddRuinVisualDiagnostics(prepared_level_.ruin_visual_plan.summary,
+                             report);
+    if (options_.visual_pipeline_config.write_debug_artifacts) {
+      std::string artifact_error;
+      const DebugArtifactWriter writer(ResolveDebugOutputPath(options_));
+      const bool written = writer.WriteRuinVisualArtifacts(
+          prepared_level_.ruin_visual_plan, &artifact_error);
+      AddDebugArtifactResult("ruin visual plan", written, artifact_error,
+                             report);
+    }
+    return;
+  }
+
   if (step.name == "Build water and swamp edges") {
     if (HasPreparedVisualMap(prepared_level_)) {
       report->summaries.push_back(
@@ -670,7 +726,7 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
       return;
     }
     prepared_level_.visual_layer_count =
-        std::max(prepared_level_.visual_layer_count, 4);
+        std::max(prepared_level_.visual_layer_count, 5);
     report->summaries.push_back("water edge placeholder layers=" +
                                 std::to_string(
                                     prepared_level_.visual_layer_count));

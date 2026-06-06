@@ -204,3 +204,12 @@
 - Added `F4` game view mode for the baked final-render reference image.
 - Defaulted the game view to the final-render reference when it is available, while keeping `F1` raw terrain, `F2` C++ analysis, and `F3` prepared visual-map placeholder views.
 - Extended visual-map diagnostics and overlay data with the final-render reference path.
+
+## v0.1.23 -> v0.1.24
+
+- Bumped CMake project and runtime application version to `0.1.24`.
+- Added a C++ ruin-scene visual pass that groups ruin floor and wall cells into sites.
+- Added wall detail classification for intact, broken, corner, and endcap wall pieces.
+- Added visual-only ruin floor, rubble, and entrance roles for cleaner preview rendering.
+- Added ruin debug artifacts: `06_ruin_regions.png`, `06_ruin_compositions.png`, and `06_ruins_pass.json`.
+- Updated the visual intent preview to draw ruin compositions instead of raw black wall lines.

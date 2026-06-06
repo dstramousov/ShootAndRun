@@ -13,6 +13,7 @@
 #include "level/terrain_type.h"
 #include "visual_pipeline/forest_visual_plan.h"
 #include "visual_pipeline/road_visual_plan.h"
+#include "visual_pipeline/ruin_visual_plan.h"
 #include "visual_pipeline/region_borders.h"
 #include "visual_pipeline/visual_map_data.h"
 
@@ -118,6 +119,31 @@ Color ClearingSceneRoleColor(std::uint8_t value) {
       return Color{106, 101, 70, 255};
   }
   return Color{106, 101, 70, 255};
+}
+
+Color RuinVisualTileColor(std::uint8_t value) {
+  const auto tile = static_cast<visual_pipeline::RuinVisualTile>(value);
+  switch (tile) {
+    case visual_pipeline::RuinVisualTile::kCrackedFloor:
+      return Color{102, 99, 82, 255};
+    case visual_pipeline::RuinVisualTile::kOvergrownFloor:
+      return Color{78, 105, 66, 255};
+    case visual_pipeline::RuinVisualTile::kWallIntact:
+      return Color{74, 65, 54, 255};
+    case visual_pipeline::RuinVisualTile::kWallBroken:
+      return Color{96, 82, 64, 255};
+    case visual_pipeline::RuinVisualTile::kWallCorner:
+      return Color{112, 96, 72, 255};
+    case visual_pipeline::RuinVisualTile::kWallEndcap:
+      return Color{126, 108, 80, 255};
+    case visual_pipeline::RuinVisualTile::kRubble:
+      return Color{132, 112, 78, 255};
+    case visual_pipeline::RuinVisualTile::kEntrance:
+      return Color{150, 123, 75, 255};
+    case visual_pipeline::RuinVisualTile::kNone:
+      return Color{78, 104, 58, 255};
+  }
+  return Color{78, 104, 58, 255};
 }
 
 Color AddTileVariation(Color base, std::string_view key) {
@@ -333,7 +359,14 @@ Color CppAnalysisTileColor(
     const RuntimeCell& cell,
     const visual_pipeline::ForestVisualPlan* forest_visual_plan,
     const visual_pipeline::RoadVisualPlan* road_visual_plan,
+    const visual_pipeline::RuinVisualPlan* ruin_visual_plan,
     std::size_t index) {
+  if (ruin_visual_plan != nullptr && ruin_visual_plan->IsValid() &&
+      index < ruin_visual_plan->tiles.size() &&
+      ruin_visual_plan->tiles[index] != 0) {
+    return RuinVisualTileColor(ruin_visual_plan->tiles[index]);
+  }
+
   if (road_visual_plan != nullptr && road_visual_plan->IsValid() &&
       index < road_visual_plan->road_bands.size() &&
       road_visual_plan->road_bands[index] != 0) {
@@ -391,7 +424,14 @@ Color VisualIntentPreviewTileColor(
     const RuntimeCell& cell,
     const visual_pipeline::ForestVisualPlan* forest_visual_plan,
     const visual_pipeline::RoadVisualPlan* road_visual_plan,
+    const visual_pipeline::RuinVisualPlan* ruin_visual_plan,
     std::size_t index) {
+  if (ruin_visual_plan != nullptr && ruin_visual_plan->IsValid() &&
+      index < ruin_visual_plan->tiles.size() &&
+      ruin_visual_plan->tiles[index] != 0) {
+    return RuinVisualTileColor(ruin_visual_plan->tiles[index]);
+  }
+
   if (road_visual_plan != nullptr && road_visual_plan->IsValid() &&
       index < road_visual_plan->road_bands.size() &&
       road_visual_plan->road_bands[index] != 0) {
@@ -419,6 +459,10 @@ void DrawCppAnalysisTiles(
       prepared_level.road_visual_plan.IsValid()
           ? &prepared_level.road_visual_plan
           : nullptr;
+  const visual_pipeline::RuinVisualPlan* ruin_visual_plan =
+      prepared_level.ruin_visual_plan.IsValid()
+          ? &prepared_level.ruin_visual_plan
+          : nullptr;
   for (int y = range.min_y; y <= range.max_y; ++y) {
     for (int x = range.min_x; x <= range.max_x; ++x) {
       const int index = y * level.size.width + x;
@@ -431,7 +475,8 @@ void DrawCppAnalysisTiles(
       DrawRectangle(x * level.size.tile_size, y * level.size.tile_size,
                     level.size.tile_size, level.size.tile_size,
                     CppAnalysisTileColor(cell, forest_visual_plan,
-                                         road_visual_plan, item));
+                                         road_visual_plan, ruin_visual_plan,
+                                         item));
     }
   }
 }
@@ -473,6 +518,10 @@ void DrawVisualIntentPreviewTiles(
       prepared_level.road_visual_plan.IsValid()
           ? &prepared_level.road_visual_plan
           : nullptr;
+  const visual_pipeline::RuinVisualPlan* ruin_visual_plan =
+      prepared_level.ruin_visual_plan.IsValid()
+          ? &prepared_level.ruin_visual_plan
+          : nullptr;
   for (int y = range.min_y; y <= range.max_y; ++y) {
     for (int x = range.min_x; x <= range.max_x; ++x) {
       const int index = y * level.size.width + x;
@@ -485,7 +534,8 @@ void DrawVisualIntentPreviewTiles(
       DrawRectangle(x * level.size.tile_size, y * level.size.tile_size,
                     level.size.tile_size, level.size.tile_size,
                     VisualIntentPreviewTileColor(cell, forest_visual_plan,
-                                                 road_visual_plan, item));
+                                                 road_visual_plan,
+                                                 ruin_visual_plan, item));
     }
   }
 }

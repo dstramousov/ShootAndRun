@@ -10,6 +10,7 @@
 #include "level/terrain_type.h"
 #include "ui/main_menu.h"
 #include "visual_pipeline/road_visual_plan.h"
+#include "visual_pipeline/ruin_visual_plan.h"
 #include "visual_pipeline/terrain_regions.h"
 #include "visual_pipeline/visual_preparation_pipeline.h"
 #include "visual_pipeline/visual_map_loader.h"
@@ -349,7 +350,7 @@ void TestVisualPreparationPipelineUsesPreparedVisualMap() {
 
   sar::visual_pipeline::VisualPreparationPipeline pipeline;
   pipeline.Start(level, options);
-  Expect(pipeline.progress().total_steps == 12,
+  Expect(pipeline.progress().total_steps == 13,
          "prepared visual-map pipeline should add one loading step");
 
   while (!pipeline.finished() && !pipeline.progress().failed) {
@@ -387,7 +388,7 @@ void TestVisualPreparationPipelineSkeleton() {
   sar::visual_pipeline::VisualPreparationPipeline pipeline;
   pipeline.Start(level);
   Expect(pipeline.running(), "visual pipeline should start running");
-  Expect(pipeline.progress().total_steps == 11,
+  Expect(pipeline.progress().total_steps == 12,
          "visual pipeline should expose default step count");
 
   while (!pipeline.finished() && !pipeline.progress().failed) {
@@ -411,6 +412,8 @@ void TestVisualPreparationPipelineSkeleton() {
          "prepared level should contain valid region borders");
   Expect(pipeline.prepared_level().region_border_count == 1,
          "prepared level should expose one unknown region border");
+  Expect(pipeline.prepared_level().ruin_visual_plan.IsValid(),
+         "prepared level should contain valid ruin visual plan");
   Expect(pipeline.prepared_level().render_cache_entry_count == 16,
          "prepared level should expose placeholder render cache size");
   Expect(pipeline.last_step_report().step_name == "Build render cache",
@@ -816,6 +819,51 @@ void TestTerrainMapping() {
          "swamp enum should map to swamp identifier");
 }
 
+void TestRuinVisualPlanBuildsSceneComposition() {
+  sar::LevelData level;
+  level.size.width = 6;
+  level.size.height = 5;
+  level.size.tile_size = 16;
+  level.cells.resize(30);
+  for (sar::RuntimeCell& cell : level.cells) {
+    cell.terrain = sar::TerrainType::kOpenGround;
+    cell.walkable = true;
+  }
+
+  const auto set_terrain = [&level](int x, int y, sar::TerrainType terrain) {
+    level.cells[static_cast<std::size_t>(y * level.size.width + x)].terrain =
+        terrain;
+  };
+  set_terrain(1, 1, sar::TerrainType::kWall);
+  set_terrain(2, 1, sar::TerrainType::kWall);
+  set_terrain(3, 1, sar::TerrainType::kWall);
+  set_terrain(1, 2, sar::TerrainType::kWall);
+  set_terrain(2, 2, sar::TerrainType::kRuins);
+  set_terrain(3, 2, sar::TerrainType::kRoad);
+
+  sar::visual_pipeline::VisualPreparationPipeline pipeline;
+  pipeline.Start(level);
+  while (!pipeline.finished() && !pipeline.progress().failed) {
+    pipeline.AdvanceOneStep(level);
+  }
+
+  const sar::visual_pipeline::RuinVisualPlan& ruin_plan =
+      pipeline.prepared_level().ruin_visual_plan;
+  Expect(ruin_plan.IsValid(), "ruin visual plan should be valid");
+  Expect(ruin_plan.summary.site_count == 1,
+         "ruin visual plan should group adjacent ruin cells into one site");
+  Expect(ruin_plan.summary.source_wall_tiles == 4,
+         "ruin visual plan should count source wall tiles");
+  Expect(ruin_plan.summary.source_ruin_tiles == 1,
+         "ruin visual plan should count source ruin floor tiles");
+  Expect(ruin_plan.summary.wall_corner_tiles > 0 ||
+             ruin_plan.summary.wall_endcap_tiles > 0,
+         "ruin visual plan should classify wall details");
+  Expect(ruin_plan.summary.rubble_tiles > 0 ||
+             ruin_plan.summary.entrance_tiles > 0,
+         "ruin visual plan should add local scene dressing");
+}
+
 void TestRoadVisualPlanBuildsTerrainRoadDressing() {
   sar::LevelData level;
   level.size.width = 12;
@@ -1012,6 +1060,7 @@ int main() {
   TestVisualPreparationSemanticMasks();
   TestVisualPreparationTerrainRegions();
   TestVisualPreparationRegionBorders();
+  TestRuinVisualPlanBuildsSceneComposition();
   TestRoadVisualPlanBuildsTerrainRoadDressing();
   TestLevelLoaderBasicPackage();
   TestLevelLoaderManifestPackage();

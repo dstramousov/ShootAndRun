@@ -8,6 +8,7 @@
 #include "visual_pipeline/semantic_masks.h"
 #include "visual_pipeline/forest_visual_plan.h"
 #include "visual_pipeline/road_visual_plan.h"
+#include "visual_pipeline/ruin_visual_plan.h"
 #include "visual_pipeline/terrain_regions.h"
 
 namespace sar::visual_pipeline {
@@ -66,6 +67,16 @@ class DebugArtifactWriter {
    */
   bool WriteForestVisualArtifacts(const ForestVisualPlan& plan,
                                   std::string* error) const;
+
+  /**
+   * @brief Writes ruin scene PNGs and a JSON report.
+   *
+   * @param plan Ruin visual plan produced by the visual pipeline.
+   * @param error Error text populated on failure.
+   * @return True when all artifacts were written successfully.
+   */
+  bool WriteRuinVisualArtifacts(const RuinVisualPlan& plan,
+                                std::string* error) const;
 
   /**
    * @brief Writes road band PNGs and a JSON report.
