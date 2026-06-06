@@ -80,6 +80,18 @@ std::string PreparedLevel::Dump() const {
             " }";
   }
 
+  if (road_visual_plan.IsValid()) {
+    const RoadVisualSummary& summary = road_visual_plan.summary;
+    dump += ", road_visual: { core: " +
+            std::to_string(summary.road_core_tiles) +
+            ", side: " + std::to_string(summary.road_side_tiles) +
+            ", trampled: " +
+            std::to_string(summary.trampled_grass_tiles) +
+            ", mud: " + std::to_string(summary.mud_patch_tiles) +
+            ", ruin_approach: " +
+            std::to_string(summary.ruin_approach_tiles) + " }";
+  }
+
   if (prepared_visual_map.loaded) {
     dump += ", prepared_visual_map: { layers: " +
             std::to_string(prepared_visual_map.visual_layer_count) +

@@ -232,6 +232,12 @@ std::string BuildMapPreparationReport(
     report << CountLine("edge band", summary.forest_edge_tiles) << "\n";
     report << CountLine("mid band", summary.forest_mid_tiles) << "\n";
     report << CountLine("deep band", summary.forest_deep_tiles) << "\n";
+    report << CountLine("suppressed tiny",
+                        summary.suppressed_tiny_forest_tiles)
+           << "\n";
+    report << CountLine("canopy", summary.canopy_candidate_tiles) << "\n";
+    report << CountLine("mass groups", summary.forest_mass_group_count)
+           << "\n";
     report << CountLine("route influence", summary.route_influenced_tiles)
            << "\n";
     report << "\nClearings:\n";
@@ -241,6 +247,12 @@ std::string BuildMapPreparationReport(
            << "\n";
     report << CountLine("micro", summary.micro_clearing_tiles) << "\n";
     report << CountLine("scene", summary.scene_space_tiles) << "\n";
+    report << "\nScene roles:\n";
+    report << CountLine("ruins", summary.ruins_scene_tiles) << "\n";
+    report << CountLine("road approach", summary.road_approach_scene_tiles)
+           << "\n";
+    report << CountLine("object", summary.object_scene_tiles) << "\n";
+    report << CountLine("generic", summary.generic_scene_tiles) << "\n";
   }
 
   std::vector<std::string> warnings;

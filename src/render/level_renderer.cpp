@@ -12,6 +12,7 @@
 
 #include "level/terrain_type.h"
 #include "visual_pipeline/forest_visual_plan.h"
+#include "visual_pipeline/road_visual_plan.h"
 #include "visual_pipeline/region_borders.h"
 #include "visual_pipeline/visual_map_data.h"
 
@@ -48,6 +49,25 @@ Color TerrainColor(TerrainType terrain) {
   return Color{138, 62, 128, 255};
 }
 
+Color RoadBandColor(std::uint8_t value) {
+  const auto band = static_cast<visual_pipeline::RoadVisualBand>(value);
+  switch (band) {
+    case visual_pipeline::RoadVisualBand::kRoadCore:
+      return Color{154, 112, 62, 255};
+    case visual_pipeline::RoadVisualBand::kRoadSide:
+      return Color{122, 108, 67, 255};
+    case visual_pipeline::RoadVisualBand::kTrampledGrass:
+      return Color{91, 112, 61, 255};
+    case visual_pipeline::RoadVisualBand::kMudPatch:
+      return Color{74, 56, 42, 255};
+    case visual_pipeline::RoadVisualBand::kRuinApproach:
+      return Color{136, 115, 77, 255};
+    case visual_pipeline::RoadVisualBand::kNone:
+      return Color{78, 104, 58, 255};
+  }
+  return Color{78, 104, 58, 255};
+}
+
 Color ForestDepthColor(std::uint8_t value) {
   const auto band =
       static_cast<visual_pipeline::ForestDepthBand>(value);
@@ -81,6 +101,23 @@ Color ClearingRoleColor(std::uint8_t value) {
       return Color{78, 104, 58, 255};
   }
   return Color{78, 104, 58, 255};
+}
+
+Color ClearingSceneRoleColor(std::uint8_t value) {
+  const auto role = static_cast<visual_pipeline::ClearingSceneRole>(value);
+  switch (role) {
+    case visual_pipeline::ClearingSceneRole::kRuinsScene:
+      return Color{126, 99, 82, 255};
+    case visual_pipeline::ClearingSceneRole::kRoadApproach:
+      return Color{139, 112, 63, 255};
+    case visual_pipeline::ClearingSceneRole::kObjectScene:
+      return Color{105, 92, 128, 255};
+    case visual_pipeline::ClearingSceneRole::kGenericScene:
+      return Color{90, 108, 122, 255};
+    case visual_pipeline::ClearingSceneRole::kNone:
+      return Color{106, 101, 70, 255};
+  }
+  return Color{106, 101, 70, 255};
 }
 
 Color AddTileVariation(Color base, std::string_view key) {
@@ -295,11 +332,23 @@ void DrawRawTerrainTiles(const LevelData& level,
 Color CppAnalysisTileColor(
     const RuntimeCell& cell,
     const visual_pipeline::ForestVisualPlan* forest_visual_plan,
+    const visual_pipeline::RoadVisualPlan* road_visual_plan,
     std::size_t index) {
+  if (road_visual_plan != nullptr && road_visual_plan->IsValid() &&
+      index < road_visual_plan->road_bands.size() &&
+      road_visual_plan->road_bands[index] != 0) {
+    return RoadBandColor(road_visual_plan->road_bands[index]);
+  }
+
   if (forest_visual_plan != nullptr && forest_visual_plan->IsValid()) {
     if (index < forest_visual_plan->forest_depth.size() &&
         forest_visual_plan->forest_depth[index] != 0) {
       return ForestDepthColor(forest_visual_plan->forest_depth[index]);
+    }
+    if (index < forest_visual_plan->clearing_scene_roles.size() &&
+        forest_visual_plan->clearing_scene_roles[index] != 0) {
+      return ClearingSceneRoleColor(
+          forest_visual_plan->clearing_scene_roles[index]);
     }
     if (index < forest_visual_plan->clearing_roles.size() &&
         forest_visual_plan->clearing_roles[index] != 0) {
@@ -322,6 +371,10 @@ void DrawCppAnalysisTiles(
       prepared_level.forest_visual_plan.IsValid()
           ? &prepared_level.forest_visual_plan
           : nullptr;
+  const visual_pipeline::RoadVisualPlan* road_visual_plan =
+      prepared_level.road_visual_plan.IsValid()
+          ? &prepared_level.road_visual_plan
+          : nullptr;
   for (int y = range.min_y; y <= range.max_y; ++y) {
     for (int x = range.min_x; x <= range.max_x; ++x) {
       const int index = y * level.size.width + x;
@@ -333,7 +386,8 @@ void DrawCppAnalysisTiles(
       const RuntimeCell& cell = level.cells[item];
       DrawRectangle(x * level.size.tile_size, y * level.size.tile_size,
                     level.size.tile_size, level.size.tile_size,
-                    CppAnalysisTileColor(cell, forest_visual_plan, item));
+                    CppAnalysisTileColor(cell, forest_visual_plan,
+                                         road_visual_plan, item));
     }
   }
 }

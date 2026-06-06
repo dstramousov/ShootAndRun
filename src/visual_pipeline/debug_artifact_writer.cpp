@@ -16,6 +16,7 @@
 
 #include "level/terrain_type.h"
 #include "visual_pipeline/forest_visual_plan.h"
+#include "visual_pipeline/road_visual_plan.h"
 
 namespace sar::visual_pipeline {
 namespace {
@@ -474,6 +475,57 @@ std::vector<RgbaColor> BuildObjectFootprintImage(const LevelData& level) {
   return pixels;
 }
 
+RgbaColor RoadBandColor(std::uint8_t value) {
+  const RoadVisualBand band = static_cast<RoadVisualBand>(value);
+  switch (band) {
+    case RoadVisualBand::kRoadCore:
+      return RgbaColor{168, 118, 62, 255};
+    case RoadVisualBand::kRoadSide:
+      return RgbaColor{132, 112, 70, 255};
+    case RoadVisualBand::kTrampledGrass:
+      return RgbaColor{104, 122, 66, 255};
+    case RoadVisualBand::kMudPatch:
+      return RgbaColor{92, 70, 50, 255};
+    case RoadVisualBand::kRuinApproach:
+      return RgbaColor{152, 126, 86, 255};
+    case RoadVisualBand::kNone:
+      return kBlack;
+  }
+  return kBlack;
+}
+
+std::vector<RgbaColor> BuildRoadBandImage(const RoadVisualPlan& plan) {
+  std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
+                                static_cast<std::size_t>(plan.size.height),
+                                kBlack);
+  for (std::size_t i = 0; i < plan.road_bands.size(); ++i) {
+    pixels[i] = RoadBandColor(plan.road_bands[i]);
+  }
+  return pixels;
+}
+
+std::vector<RgbaColor> BuildRoadDressingInfluenceImage(const RoadVisualPlan& plan) {
+  std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
+                                static_cast<std::size_t>(plan.size.height),
+                                kBlack);
+  for (std::size_t i = 0; i < plan.route_influence.size(); ++i) {
+    switch (plan.route_influence[i]) {
+      case 1:
+        pixels[i] = RgbaColor{92, 116, 74, 255};
+        break;
+      case 2:
+        pixels[i] = RgbaColor{142, 112, 70, 255};
+        break;
+      case 3:
+        pixels[i] = RgbaColor{226, 172, 72, 255};
+        break;
+      default:
+        break;
+    }
+  }
+  return pixels;
+}
+
 RgbaColor ForestDepthColor(std::uint8_t value) {
   const ForestDepthBand band = static_cast<ForestDepthBand>(value);
   switch (band) {
@@ -508,6 +560,23 @@ RgbaColor ClearingRoleColor(std::uint8_t value) {
   return kBlack;
 }
 
+RgbaColor ClearingSceneRoleColor(std::uint8_t value) {
+  const ClearingSceneRole role = static_cast<ClearingSceneRole>(value);
+  switch (role) {
+    case ClearingSceneRole::kRuinsScene:
+      return RgbaColor{156, 104, 88, 255};
+    case ClearingSceneRole::kRoadApproach:
+      return RgbaColor{196, 146, 74, 255};
+    case ClearingSceneRole::kObjectScene:
+      return RgbaColor{128, 104, 166, 255};
+    case ClearingSceneRole::kGenericScene:
+      return RgbaColor{96, 122, 154, 255};
+    case ClearingSceneRole::kNone:
+      return kBlack;
+  }
+  return kBlack;
+}
+
 std::vector<RgbaColor> BuildForestDepthImage(const ForestVisualPlan& plan) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
                                 static_cast<std::size_t>(plan.size.height),
@@ -530,6 +599,37 @@ std::vector<RgbaColor> BuildForestEdgeImage(const ForestVisualPlan& plan) {
   return pixels;
 }
 
+std::vector<RgbaColor> BuildForestMassGroupImage(
+    const ForestVisualPlan& plan) {
+  std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
+                                static_cast<std::size_t>(plan.size.height),
+                                kBlack);
+  for (std::size_t i = 0; i < plan.forest_mass_groups.size(); ++i) {
+    const std::uint16_t group = plan.forest_mass_groups[i];
+    if (group == 0) {
+      continue;
+    }
+    pixels[i] = RgbaColor{
+        static_cast<std::uint8_t>(24 + (group * 37U) % 80U),
+        static_cast<std::uint8_t>(78 + (group * 53U) % 120U),
+        static_cast<std::uint8_t>(42 + (group * 19U) % 70U), 255};
+  }
+  return pixels;
+}
+
+std::vector<RgbaColor> BuildCanopyCandidateImage(
+    const ForestVisualPlan& plan) {
+  std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
+                                static_cast<std::size_t>(plan.size.height),
+                                kBlack);
+  for (std::size_t i = 0; i < plan.canopy_candidates.size(); ++i) {
+    if (plan.canopy_candidates[i] != 0) {
+      pixels[i] = RgbaColor{18, 120, 58, 255};
+    }
+  }
+  return pixels;
+}
+
 std::vector<RgbaColor> BuildForestMassImage(const ForestVisualPlan& plan) {
   std::vector<RgbaColor> pixels = BuildForestDepthImage(plan);
   for (std::size_t i = 0; i < plan.route_influence.size(); ++i) {
@@ -546,6 +646,17 @@ std::vector<RgbaColor> BuildClearingRoleImage(const ForestVisualPlan& plan) {
                                 kBlack);
   for (std::size_t i = 0; i < plan.clearing_roles.size(); ++i) {
     pixels[i] = ClearingRoleColor(plan.clearing_roles[i]);
+  }
+  return pixels;
+}
+
+std::vector<RgbaColor> BuildClearingSceneRoleImage(
+    const ForestVisualPlan& plan) {
+  std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
+                                static_cast<std::size_t>(plan.size.height),
+                                kBlack);
+  for (std::size_t i = 0; i < plan.clearing_scene_roles.size(); ++i) {
+    pixels[i] = ClearingSceneRoleColor(plan.clearing_scene_roles[i]);
   }
   return pixels;
 }
@@ -852,6 +963,74 @@ bool DebugArtifactWriter::WriteSemanticLinkArtifacts(
                        json.str(), error);
 }
 
+bool DebugArtifactWriter::WriteRoadVisualArtifacts(
+    const RoadVisualPlan& plan, std::string* error) const {
+  if (!plan.IsValid()) {
+    if (error != nullptr) {
+      *error = "road visual plan is invalid for debug artifact writing";
+    }
+    return false;
+  }
+
+  const std::filesystem::path directory = output_root_ / "passes";
+  const std::vector<std::pair<std::string, std::vector<RgbaColor>>> images = {
+      {"05_road_dressing_influence.png", BuildRoadDressingInfluenceImage(plan)},
+      {"05_road_visual.png", BuildRoadBandImage(plan)},
+  };
+
+  for (const auto& [filename, pixels] : images) {
+    if (!WritePngRgba(directory / filename, plan.size.width,
+                      plan.size.height, pixels, error)) {
+      return false;
+    }
+  }
+
+  const RoadVisualSummary& summary = plan.summary;
+  const int total = summary.road_core_tiles + summary.road_dressing_tiles;
+  std::ostringstream json;
+  json << "{\n";
+  json << "  \"schema_version\": \"visual-debug-road-pass-v2\",\n";
+  json << "  \"status\": \"ok\",\n";
+  json << "  \"width\": " << plan.size.width << ",\n";
+  json << "  \"height\": " << plan.size.height << ",\n";
+  json << "  \"source\": \"terrain_road\",\n";
+  json << "  \"routes_used_for_visual_roads\": "
+       << (summary.routes_used_for_visual_roads ? "true" : "false")
+       << ",\n";
+  json << "  \"routes\": {\n";
+  json << "    \"total\": " << summary.route_count << ",\n";
+  json << "    \"main\": " << summary.main_route_count << ",\n";
+  json << "    \"side\": " << summary.side_route_count << ",\n";
+  json << "    \"hidden\": " << summary.hidden_route_count << "\n";
+  json << "  },\n";
+  json << "  \"terrain_road_tiles\": " << summary.terrain_road_tiles
+       << ",\n";
+  json << "  \"road_dressing_tiles\": " << summary.road_dressing_tiles
+       << ",\n";
+  json << "  \"road_bands\": {\n";
+  AppendJsonCountField(&json, "road_core", summary.road_core_tiles, total,
+                       true);
+  AppendJsonCountField(&json, "road_side", summary.road_side_tiles, total,
+                       true);
+  AppendJsonCountField(&json, "trampled_grass",
+                       summary.trampled_grass_tiles, total, true);
+  AppendJsonCountField(&json, "mud_patch", summary.mud_patch_tiles, total,
+                       true);
+  AppendJsonCountField(&json, "ruin_approach",
+                       summary.ruin_approach_tiles, total, false);
+  json << "  },\n";
+  json << "  \"road_influenced_tiles\": "
+       << summary.route_influenced_tiles << ",\n";
+  json << "  \"artifacts\": [\n";
+  json << "    \"passes/05_road_dressing_influence.png\",\n";
+  json << "    \"passes/05_road_visual.png\"\n";
+  json << "  ]\n";
+  json << "}\n";
+
+  return WriteTextFile(output_root_ / "reports" / "05_road_pass.json",
+                       json.str(), error);
+}
+
 bool DebugArtifactWriter::WriteForestVisualArtifacts(
     const ForestVisualPlan& plan, std::string* error) const {
   if (!plan.IsValid()) {
@@ -866,7 +1045,11 @@ bool DebugArtifactWriter::WriteForestVisualArtifacts(
       {"03_forest_depth.png", BuildForestDepthImage(plan)},
       {"03_forest_edges.png", BuildForestEdgeImage(plan)},
       {"03_forest_mass.png", BuildForestMassImage(plan)},
+      {"03_forest_mass_groups.png", BuildForestMassGroupImage(plan)},
+      {"03_canopy_candidates.png", BuildCanopyCandidateImage(plan)},
       {"04_clearing_roles.png", BuildClearingRoleImage(plan)},
+      {"04_clearing_roles_detailed.png",
+       BuildClearingSceneRoleImage(plan)},
   };
 
   for (const auto& [filename, pixels] : images) {
@@ -894,10 +1077,18 @@ bool DebugArtifactWriter::WriteForestVisualArtifacts(
   forest_json << "  },\n";
   forest_json << "  \"route_influenced_tiles\": "
               << summary.route_influenced_tiles << ",\n";
+  forest_json << "  \"suppressed_tiny_forest_tiles\": "
+              << summary.suppressed_tiny_forest_tiles << ",\n";
+  forest_json << "  \"canopy_candidate_tiles\": "
+              << summary.canopy_candidate_tiles << ",\n";
+  forest_json << "  \"forest_mass_group_count\": "
+              << summary.forest_mass_group_count << ",\n";
   forest_json << "  \"artifacts\": [\n";
   forest_json << "    \"passes/03_forest_depth.png\",\n";
   forest_json << "    \"passes/03_forest_edges.png\",\n";
-  forest_json << "    \"passes/03_forest_mass.png\"\n";
+  forest_json << "    \"passes/03_forest_mass.png\",\n";
+  forest_json << "    \"passes/03_forest_mass_groups.png\",\n";
+  forest_json << "    \"passes/03_canopy_candidates.png\"\n";
   forest_json << "  ]\n";
   forest_json << "}\n";
   if (!WriteTextFile(output_root_ / "reports" /
@@ -931,13 +1122,43 @@ bool DebugArtifactWriter::WriteForestVisualArtifacts(
                        summary.scene_space_tiles, total_clearings, false);
   clearing_json << "  },\n";
   clearing_json << "  \"artifacts\": [\n";
-  clearing_json << "    \"passes/04_clearing_roles.png\"\n";
+  clearing_json << "    \"passes/04_clearing_roles.png\",\n";
+  clearing_json << "    \"passes/04_clearing_roles_detailed.png\"\n";
   clearing_json << "  ]\n";
   clearing_json << "}\n";
 
+  if (!WriteTextFile(output_root_ / "reports" /
+                         "04_clearing_normalization.json",
+                     clearing_json.str(), error)) {
+    return false;
+  }
+
+  std::ostringstream detailed_json;
+  detailed_json << "{\n";
+  detailed_json << "  \"schema_version\": "
+                << "\"visual-debug-clearing-roles-detailed-v1\",\n";
+  detailed_json << "  \"status\": \"ok\",\n";
+  detailed_json << "  \"width\": " << plan.size.width << ",\n";
+  detailed_json << "  \"height\": " << plan.size.height << ",\n";
+  detailed_json << "  \"scene_roles\": {\n";
+  AppendJsonCountField(&detailed_json, "ruins_scene",
+                       summary.ruins_scene_tiles, total_clearings, true);
+  AppendJsonCountField(&detailed_json, "road_approach",
+                       summary.road_approach_scene_tiles, total_clearings,
+                       true);
+  AppendJsonCountField(&detailed_json, "object_scene",
+                       summary.object_scene_tiles, total_clearings, true);
+  AppendJsonCountField(&detailed_json, "generic_scene",
+                       summary.generic_scene_tiles, total_clearings, false);
+  detailed_json << "  },\n";
+  detailed_json << "  \"artifacts\": [\n";
+  detailed_json << "    \"passes/04_clearing_roles_detailed.png\"\n";
+  detailed_json << "  ]\n";
+  detailed_json << "}\n";
+
   return WriteTextFile(output_root_ / "reports" /
-                           "04_clearing_normalization.json",
-                       clearing_json.str(), error);
+                           "04_clearing_roles_detailed.json",
+                       detailed_json.str(), error);
 }
 
 bool DebugArtifactWriter::WriteTerrainRegionArtifacts(

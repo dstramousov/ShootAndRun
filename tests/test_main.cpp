@@ -9,6 +9,7 @@
 #include "level/level_loader.h"
 #include "level/terrain_type.h"
 #include "ui/main_menu.h"
+#include "visual_pipeline/road_visual_plan.h"
 #include "visual_pipeline/terrain_regions.h"
 #include "visual_pipeline/visual_preparation_pipeline.h"
 #include "visual_pipeline/visual_map_loader.h"
@@ -815,6 +816,61 @@ void TestTerrainMapping() {
          "swamp enum should map to swamp identifier");
 }
 
+void TestRoadVisualPlanBuildsTerrainRoadDressing() {
+  sar::LevelData level;
+  level.size.width = 12;
+  level.size.height = 9;
+  level.size.tile_size = 16;
+  level.cells.resize(108);
+  for (sar::RuntimeCell& cell : level.cells) {
+    cell.terrain = sar::TerrainType::kOpenGround;
+    cell.walkable = true;
+  }
+  for (int x = 1; x <= 9; ++x) {
+    const int road_index = 4 * level.size.width + x;
+    level.cells[static_cast<std::size_t>(road_index)].terrain =
+        sar::TerrainType::kRoad;
+  }
+
+  const int ruin_index = 4 * level.size.width + 10;
+  level.cells[static_cast<std::size_t>(ruin_index)].terrain =
+      sar::TerrainType::kRuins;
+
+  sar::Route route;
+  route.id = "route_main_test";
+  route.type = "main_path";
+  route.tags.push_back("critical");
+  route.waypoints.push_back(sar::RoutePoint{1, 4});
+  route.waypoints.push_back(sar::RoutePoint{10, 4});
+  level.routes.push_back(route);
+
+  sar::visual_pipeline::VisualPreparationPipeline pipeline;
+  pipeline.Start(level);
+  while (!pipeline.finished() && !pipeline.progress().failed) {
+    pipeline.AdvanceOneStep(level);
+  }
+
+  const sar::visual_pipeline::RoadVisualPlan& road_plan =
+      pipeline.prepared_level().road_visual_plan;
+  Expect(road_plan.IsValid(), "road visual plan should be valid");
+  Expect(road_plan.summary.route_count == 1,
+         "road visual plan should count routes");
+  Expect(road_plan.summary.main_route_count == 1,
+         "road visual plan should classify main route");
+  Expect(!road_plan.summary.routes_used_for_visual_roads,
+         "road visual plan should not paint routes as roads");
+  Expect(road_plan.summary.terrain_road_tiles == 9,
+         "road visual plan should count terrain road cells");
+  Expect(road_plan.summary.road_core_tiles > 0,
+         "road visual plan should build road core band");
+  Expect(road_plan.summary.road_side_tiles > 0,
+         "road visual plan should build road side band");
+  Expect(road_plan.summary.trampled_grass_tiles > 0,
+         "road visual plan should build trampled grass band");
+  Expect(road_plan.summary.ruin_approach_tiles > 0,
+         "road visual plan should mark ruin approach tiles");
+}
+
 void TestLevelLoaderBasicPackage() {
   const std::filesystem::path package_path =
       std::filesystem::temp_directory_path() /
@@ -956,6 +1012,7 @@ int main() {
   TestVisualPreparationSemanticMasks();
   TestVisualPreparationTerrainRegions();
   TestVisualPreparationRegionBorders();
+  TestRoadVisualPlanBuildsTerrainRoadDressing();
   TestLevelLoaderBasicPackage();
   TestLevelLoaderManifestPackage();
   std::cout << "All tests passed.\n";

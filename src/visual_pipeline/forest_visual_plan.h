@@ -27,6 +27,14 @@ enum class ClearingRole : std::uint8_t {
   kSceneSpace = 5,
 };
 
+enum class ClearingSceneRole : std::uint8_t {
+  kNone = 0,
+  kRuinsScene = 1,
+  kRoadApproach = 2,
+  kObjectScene = 3,
+  kGenericScene = 4,
+};
+
 /**
  * @brief Returns the stable name for a forest depth band.
  *
@@ -43,17 +51,32 @@ const char* ForestDepthBandName(ForestDepthBand band);
  */
 const char* ClearingRoleName(ClearingRole role);
 
+/**
+ * @brief Returns the stable name for a clearing scene role.
+ *
+ * @param role Clearing scene role value.
+ * @return Stable lowercase role name.
+ */
+const char* ClearingSceneRoleName(ClearingSceneRole role);
+
 struct ForestVisualSummary {
   int forest_tiles = 0;
   int forest_edge_tiles = 0;
   int forest_mid_tiles = 0;
   int forest_deep_tiles = 0;
+  int suppressed_tiny_forest_tiles = 0;
+  int canopy_candidate_tiles = 0;
+  int forest_mass_group_count = 0;
   int route_influenced_tiles = 0;
   int main_clearing_tiles = 0;
   int side_clearing_tiles = 0;
   int connector_corridor_tiles = 0;
   int micro_clearing_tiles = 0;
   int scene_space_tiles = 0;
+  int ruins_scene_tiles = 0;
+  int road_approach_scene_tiles = 0;
+  int object_scene_tiles = 0;
+  int generic_scene_tiles = 0;
 
   /**
    * @brief Returns a readable dump of forest visual counters.
@@ -67,7 +90,10 @@ struct ForestVisualPlan {
   LevelSize size;
   std::vector<std::uint8_t> forest_depth;
   std::vector<std::uint8_t> forest_edges;
+  std::vector<std::uint16_t> forest_mass_groups;
+  std::vector<std::uint8_t> canopy_candidates;
   std::vector<std::uint8_t> clearing_roles;
+  std::vector<std::uint8_t> clearing_scene_roles;
   std::vector<std::uint8_t> route_influence;
   ForestVisualSummary summary;
 

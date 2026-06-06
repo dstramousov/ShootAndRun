@@ -43,6 +43,7 @@ add_executable(shoot_and_run
   src/visual_pipeline/pipeline_progress.cpp
   src/visual_pipeline/semantic_masks.cpp
   src/visual_pipeline/forest_visual_plan.cpp
+  src/visual_pipeline/road_visual_plan.cpp
   src/visual_pipeline/terrain_regions.cpp
   src/visual_pipeline/region_borders.cpp
   src/visual_pipeline/debug_artifact_writer.cpp
@@ -53,6 +54,7 @@ add_executable(shoot_and_run
   src/visual_pipeline/steps/build_terrain_regions_step.cpp
   src/visual_pipeline/steps/classify_region_borders_step.cpp
   src/visual_pipeline/steps/build_forest_visual_plan_step.cpp
+  src/visual_pipeline/steps/build_road_visual_plan_step.cpp
   src/visual_pipeline/prepared_level.cpp
   src/visual_pipeline/visual_preparation_pipeline.cpp
   src/window/window_layout.cpp
@@ -89,6 +91,7 @@ if(SAR_BUILD_TESTS)
     src/visual_pipeline/pipeline_progress.cpp
     src/visual_pipeline/semantic_masks.cpp
     src/visual_pipeline/forest_visual_plan.cpp
+    src/visual_pipeline/road_visual_plan.cpp
     src/visual_pipeline/terrain_regions.cpp
     src/visual_pipeline/region_borders.cpp
     src/visual_pipeline/debug_artifact_writer.cpp
@@ -99,6 +102,7 @@ if(SAR_BUILD_TESTS)
     src/visual_pipeline/steps/build_terrain_regions_step.cpp
     src/visual_pipeline/steps/classify_region_borders_step.cpp
     src/visual_pipeline/steps/build_forest_visual_plan_step.cpp
+    src/visual_pipeline/steps/build_road_visual_plan_step.cpp
     src/visual_pipeline/prepared_level.cpp
     src/visual_pipeline/visual_preparation_pipeline.cpp
     src/window/window_layout.cpp

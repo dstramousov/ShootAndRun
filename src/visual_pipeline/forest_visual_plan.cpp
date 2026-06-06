@@ -18,6 +18,8 @@ namespace {
 
 constexpr int kNoRegionArea = 0;
 constexpr int kTinyOpenRegionArea = 32;
+constexpr int kTinyForestRegionArea = 8;
+constexpr int kForestMassMergeGapTiles = 3;
 constexpr int kForestEdgeMaxDistance = 2;
 constexpr int kForestMidMaxDistance = 5;
 
@@ -38,6 +40,41 @@ int ToIndex(const LevelSize& size, int x, int y) {
 
 bool TextContains(std::string_view text, std::string_view needle) {
   return text.find(needle) != std::string_view::npos;
+}
+
+struct DisjointSet {
+  std::vector<int> parent;
+
+  explicit DisjointSet(int size) : parent(static_cast<std::size_t>(size), 0) {
+    for (int i = 0; i < size; ++i) {
+      parent[static_cast<std::size_t>(i)] = i;
+    }
+  }
+
+  int Find(int item) {
+    int& parent_item = parent[static_cast<std::size_t>(item)];
+    if (parent_item == item) {
+      return item;
+    }
+    parent_item = Find(parent_item);
+    return parent_item;
+  }
+
+  void Unite(int a, int b) {
+    const int root_a = Find(a);
+    const int root_b = Find(b);
+    if (root_a != root_b) {
+      parent[static_cast<std::size_t>(root_b)] = root_a;
+    }
+  }
+};
+
+int RegionGap(const TerrainRegion& a, const TerrainRegion& b) {
+  const int gap_x = std::max({0, a.min_x - b.max_x - 1,
+                              b.min_x - a.max_x - 1});
+  const int gap_y = std::max({0, a.min_y - b.max_y - 1,
+                              b.min_y - a.max_y - 1});
+  return std::max(gap_x, gap_y);
 }
 
 bool RouteIsMain(const Route& route) {
@@ -127,6 +164,74 @@ std::vector<std::uint8_t> BuildRouteInfluence(const LevelData& level) {
   return influence;
 }
 
+void BuildForestRegionAreaLookup(const TerrainRegions& regions,
+                                 std::vector<int>* forest_region_area) {
+  if (forest_region_area == nullptr) {
+    return;
+  }
+  for (const TerrainRegion& region : regions.regions) {
+    if (region.type != TerrainType::kForest) {
+      continue;
+    }
+    for (const int index : region.tile_indices) {
+      if (index < 0 || index >= static_cast<int>(forest_region_area->size())) {
+        continue;
+      }
+      (*forest_region_area)[static_cast<std::size_t>(index)] = region.area;
+    }
+  }
+}
+
+int BuildForestMassGroups(const TerrainRegions& regions, const LevelSize& size,
+                          std::vector<std::uint16_t>* forest_mass_groups) {
+  if (forest_mass_groups == nullptr) {
+    return 0;
+  }
+
+  std::vector<const TerrainRegion*> forest_regions;
+  for (const TerrainRegion& region : regions.regions) {
+    if (region.type == TerrainType::kForest &&
+        region.area > kTinyForestRegionArea) {
+      forest_regions.push_back(&region);
+    }
+  }
+
+  if (forest_regions.empty()) {
+    return 0;
+  }
+
+  DisjointSet groups(static_cast<int>(forest_regions.size()));
+  for (std::size_t i = 0; i < forest_regions.size(); ++i) {
+    for (std::size_t j = i + 1; j < forest_regions.size(); ++j) {
+      if (RegionGap(*forest_regions[i], *forest_regions[j]) <=
+          kForestMassMergeGapTiles) {
+        groups.Unite(static_cast<int>(i), static_cast<int>(j));
+      }
+    }
+  }
+
+  std::vector<int> root_to_group(forest_regions.size(), 0);
+  int next_group = 1;
+  for (std::size_t i = 0; i < forest_regions.size(); ++i) {
+    const int root = groups.Find(static_cast<int>(i));
+    int& group_id = root_to_group[static_cast<std::size_t>(root)];
+    if (group_id == 0) {
+      group_id = next_group;
+      ++next_group;
+    }
+
+    for (const int index : forest_regions[i]->tile_indices) {
+      if (index < 0 || index >= CellCount(size)) {
+        continue;
+      }
+      (*forest_mass_groups)[static_cast<std::size_t>(index)] =
+          static_cast<std::uint16_t>(group_id);
+    }
+  }
+
+  return next_group - 1;
+}
+
 void BuildOpenRegionAreaLookup(const TerrainRegions& regions,
                                std::vector<int>* open_region_area) {
   if (open_region_area == nullptr) {
@@ -181,20 +286,29 @@ void MarkObjectInfluence(const RuntimeObject& object, const LevelSize& size,
   }
 }
 
-std::vector<std::uint8_t> BuildSceneInfluence(const LevelData& level,
-                                              const SemanticMasks& masks) {
-  const int cell_count = CellCount(level.size);
-  std::vector<std::uint8_t> influence(static_cast<std::size_t>(cell_count), 0);
-
+std::vector<std::uint8_t> BuildPlaceInfluence(const LevelData& level) {
+  std::vector<std::uint8_t> influence(
+      static_cast<std::size_t>(CellCount(level.size)), 0);
   for (const Place& place : level.places) {
     const int radius = std::clamp(place.radius > 0 ? place.radius : 4, 3, 12);
     MarkRadius(place.x, place.y, radius, level.size, &influence);
   }
+  return influence;
+}
 
+std::vector<std::uint8_t> BuildObjectInfluence(const LevelData& level) {
+  std::vector<std::uint8_t> influence(
+      static_cast<std::size_t>(CellCount(level.size)), 0);
   for (const RuntimeObject& object : level.objects) {
     MarkObjectInfluence(object, level.size, &influence);
   }
+  return influence;
+}
 
+std::vector<std::uint8_t> BuildRuinInfluence(const LevelData& level,
+                                             const SemanticMasks& masks) {
+  std::vector<std::uint8_t> influence(
+      static_cast<std::size_t>(CellCount(level.size)), 0);
   for (int y = 0; y < level.size.height; ++y) {
     for (int x = 0; x < level.size.width; ++x) {
       const int index = ToIndex(level.size, x, y);
@@ -206,7 +320,20 @@ std::vector<std::uint8_t> BuildSceneInfluence(const LevelData& level,
       MarkRadius(x, y, 3, level.size, &influence);
     }
   }
+  return influence;
+}
 
+std::vector<std::uint8_t> CombineSceneInfluence(
+    const std::vector<std::uint8_t>& place_influence,
+    const std::vector<std::uint8_t>& object_influence,
+    const std::vector<std::uint8_t>& ruin_influence) {
+  std::vector<std::uint8_t> influence(place_influence.size(), 0);
+  for (std::size_t i = 0; i < influence.size(); ++i) {
+    if (place_influence[i] != 0 || object_influence[i] != 0 ||
+        ruin_influence[i] != 0) {
+      influence[i] = 1;
+    }
+  }
   return influence;
 }
 
@@ -303,6 +430,29 @@ void CountClearingRole(ClearingRole role, ForestVisualSummary* summary) {
   }
 }
 
+void CountClearingSceneRole(ClearingSceneRole role,
+                            ForestVisualSummary* summary) {
+  if (summary == nullptr) {
+    return;
+  }
+  switch (role) {
+    case ClearingSceneRole::kRuinsScene:
+      ++summary->ruins_scene_tiles;
+      break;
+    case ClearingSceneRole::kRoadApproach:
+      ++summary->road_approach_scene_tiles;
+      break;
+    case ClearingSceneRole::kObjectScene:
+      ++summary->object_scene_tiles;
+      break;
+    case ClearingSceneRole::kGenericScene:
+      ++summary->generic_scene_tiles;
+      break;
+    case ClearingSceneRole::kNone:
+      break;
+  }
+}
+
 ForestDepthBand ClassifyForestDepth(int distance) {
   if (distance <= 0) {
     return ForestDepthBand::kNone;
@@ -333,6 +483,27 @@ ClearingRole ClassifyClearingRole(std::uint8_t route_influence,
     return ClearingRole::kMicroClearing;
   }
   return ClearingRole::kSideClearing;
+}
+
+ClearingSceneRole ClassifyClearingSceneRole(std::uint8_t route_influence,
+                                            std::uint8_t scene_influence,
+                                            std::uint8_t ruin_influence,
+                                            std::uint8_t object_influence,
+                                            std::uint8_t place_influence) {
+  if (scene_influence == 0) {
+    return ClearingSceneRole::kNone;
+  }
+  if (route_influence != 0 &&
+      (ruin_influence != 0 || object_influence != 0 || place_influence != 0)) {
+    return ClearingSceneRole::kRoadApproach;
+  }
+  if (ruin_influence != 0) {
+    return ClearingSceneRole::kRuinsScene;
+  }
+  if (object_influence != 0) {
+    return ClearingSceneRole::kObjectScene;
+  }
+  return ClearingSceneRole::kGenericScene;
 }
 
 }  // namespace
@@ -369,17 +540,41 @@ const char* ClearingRoleName(ClearingRole role) {
   return "none";
 }
 
+const char* ClearingSceneRoleName(ClearingSceneRole role) {
+  switch (role) {
+    case ClearingSceneRole::kNone:
+      return "none";
+    case ClearingSceneRole::kRuinsScene:
+      return "ruins_scene";
+    case ClearingSceneRole::kRoadApproach:
+      return "road_approach";
+    case ClearingSceneRole::kObjectScene:
+      return "object_scene";
+    case ClearingSceneRole::kGenericScene:
+      return "generic_scene";
+  }
+  return "none";
+}
+
 std::string ForestVisualSummary::Dump() const {
   return "ForestVisualSummary { forest=" + std::to_string(forest_tiles) +
          ", edge=" + std::to_string(forest_edge_tiles) +
          ", mid=" + std::to_string(forest_mid_tiles) +
          ", deep=" + std::to_string(forest_deep_tiles) +
+         ", suppressed_tiny=" +
+         std::to_string(suppressed_tiny_forest_tiles) +
+         ", canopy=" + std::to_string(canopy_candidate_tiles) +
+         ", forest_groups=" + std::to_string(forest_mass_group_count) +
          ", route_influence=" + std::to_string(route_influenced_tiles) +
          ", main_clearing=" + std::to_string(main_clearing_tiles) +
          ", side_clearing=" + std::to_string(side_clearing_tiles) +
          ", connector=" + std::to_string(connector_corridor_tiles) +
          ", micro=" + std::to_string(micro_clearing_tiles) +
-         ", scene=" + std::to_string(scene_space_tiles) + " }";
+         ", scene=" + std::to_string(scene_space_tiles) +
+         ", ruins_scene=" + std::to_string(ruins_scene_tiles) +
+         ", road_approach=" + std::to_string(road_approach_scene_tiles) +
+         ", object_scene=" + std::to_string(object_scene_tiles) +
+         ", generic_scene=" + std::to_string(generic_scene_tiles) + " }";
 }
 
 bool ForestVisualPlan::IsValid() const {
@@ -389,7 +584,11 @@ bool ForestVisualPlan::IsValid() const {
   }
   const std::size_t expected = static_cast<std::size_t>(expected_size);
   return forest_depth.size() == expected && forest_edges.size() == expected &&
-         clearing_roles.size() == expected && route_influence.size() == expected;
+         forest_mass_groups.size() == expected &&
+         canopy_candidates.size() == expected &&
+         clearing_roles.size() == expected &&
+         clearing_scene_roles.size() == expected &&
+         route_influence.size() == expected;
 }
 
 std::string ForestVisualPlan::Dump() const {
@@ -426,13 +625,27 @@ ForestVisualPlan BuildForestVisualPlan(const LevelData& level,
   const std::size_t expected_size = static_cast<std::size_t>(cell_count);
   plan.forest_depth.assign(expected_size, 0);
   plan.forest_edges.assign(expected_size, 0);
+  plan.forest_mass_groups.assign(expected_size, 0);
+  plan.canopy_candidates.assign(expected_size, 0);
   plan.clearing_roles.assign(expected_size, 0);
+  plan.clearing_scene_roles.assign(expected_size, 0);
   plan.route_influence = BuildRouteInfluence(level);
+
+  std::vector<int> forest_region_area(expected_size, kNoRegionArea);
+  BuildForestRegionAreaLookup(regions, &forest_region_area);
+  plan.summary.forest_mass_group_count = BuildForestMassGroups(
+      regions, level.size, &plan.forest_mass_groups);
 
   std::vector<int> open_region_area(expected_size, kNoRegionArea);
   BuildOpenRegionAreaLookup(regions, &open_region_area);
-  const std::vector<std::uint8_t> scene_influence = BuildSceneInfluence(level,
-                                                                        masks);
+  const std::vector<std::uint8_t> place_influence =
+      BuildPlaceInfluence(level);
+  const std::vector<std::uint8_t> object_influence =
+      BuildObjectInfluence(level);
+  const std::vector<std::uint8_t> ruin_influence =
+      BuildRuinInfluence(level, masks);
+  const std::vector<std::uint8_t> scene_influence = CombineSceneInfluence(
+      place_influence, object_influence, ruin_influence);
   const std::vector<int> forest_distance = BuildForestDistance(masks);
 
   for (int index = 0; index < cell_count; ++index) {
@@ -443,10 +656,20 @@ ForestVisualPlan BuildForestVisualPlan(const LevelData& level,
 
     if (masks.forest[item] != 0) {
       ++plan.summary.forest_tiles;
+      if (forest_region_area[item] > kNoRegionArea &&
+          forest_region_area[item] <= kTinyForestRegionArea) {
+        ++plan.summary.suppressed_tiny_forest_tiles;
+        continue;
+      }
+
       const ForestDepthBand band = ClassifyForestDepth(forest_distance[item]);
       plan.forest_depth[item] = static_cast<std::uint8_t>(band);
       if (band == ForestDepthBand::kEdge) {
         plan.forest_edges[item] = 1;
+      }
+      if (band == ForestDepthBand::kMid || band == ForestDepthBand::kDeep) {
+        plan.canopy_candidates[item] = 1;
+        ++plan.summary.canopy_candidate_tiles;
       }
       CountForestDepth(band, &plan.summary);
       continue;
@@ -458,6 +681,12 @@ ForestVisualPlan BuildForestVisualPlan(const LevelData& level,
           open_region_area[item]);
       plan.clearing_roles[item] = static_cast<std::uint8_t>(role);
       CountClearingRole(role, &plan.summary);
+
+      const ClearingSceneRole scene_role = ClassifyClearingSceneRole(
+          plan.route_influence[item], scene_influence[item], ruin_influence[item],
+          object_influence[item], place_influence[item]);
+      plan.clearing_scene_roles[item] = static_cast<std::uint8_t>(scene_role);
+      CountClearingSceneRole(scene_role, &plan.summary);
     }
   }
 

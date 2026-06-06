@@ -16,6 +16,7 @@
 #include "visual_pipeline/steps/build_semantic_masks_step.h"
 #include "visual_pipeline/steps/classify_region_borders_step.h"
 #include "visual_pipeline/steps/build_forest_visual_plan_step.h"
+#include "visual_pipeline/steps/build_road_visual_plan_step.h"
 #include "visual_pipeline/steps/build_terrain_regions_step.h"
 #include "visual_pipeline/terrain_regions.h"
 #include "visual_pipeline/region_borders.h"
@@ -277,6 +278,11 @@ std::string ForestVisualSummaryLine(const ForestVisualSummary& summary) {
   return "forest_visual edge=" + std::to_string(summary.forest_edge_tiles) +
          " mid=" + std::to_string(summary.forest_mid_tiles) +
          " deep=" + std::to_string(summary.forest_deep_tiles) +
+         " suppressed_tiny=" +
+         std::to_string(summary.suppressed_tiny_forest_tiles) +
+         " canopy=" + std::to_string(summary.canopy_candidate_tiles) +
+         " mass_groups=" +
+         std::to_string(summary.forest_mass_group_count) +
          " route_influence=" +
          std::to_string(summary.route_influenced_tiles);
 }
@@ -288,7 +294,12 @@ std::string ClearingRoleSummaryLine(const ForestVisualSummary& summary) {
          " connector=" +
          std::to_string(summary.connector_corridor_tiles) +
          " micro=" + std::to_string(summary.micro_clearing_tiles) +
-         " scene=" + std::to_string(summary.scene_space_tiles);
+         " scene=" + std::to_string(summary.scene_space_tiles) +
+         " ruins_scene=" + std::to_string(summary.ruins_scene_tiles) +
+         " road_approach=" +
+         std::to_string(summary.road_approach_scene_tiles) +
+         " object_scene=" + std::to_string(summary.object_scene_tiles) +
+         " generic_scene=" + std::to_string(summary.generic_scene_tiles);
 }
 
 void AddForestVisualDiagnostics(const ForestVisualSummary& summary,
@@ -304,6 +315,37 @@ void AddForestVisualDiagnostics(const ForestVisualSummary& summary,
   }
   if (summary.route_influenced_tiles == 0) {
     report->warnings.push_back("route influence is empty");
+  }
+}
+
+std::string RoadVisualSummaryLine(const RoadVisualSummary& summary) {
+  return "road_visual source=terrain_road routes_used_for_visual_roads=" +
+         std::string(summary.routes_used_for_visual_roads ? "true" : "false") +
+         " routes=" + std::to_string(summary.route_count) +
+         " main=" + std::to_string(summary.main_route_count) +
+         " side=" + std::to_string(summary.side_route_count) +
+         " hidden=" + std::to_string(summary.hidden_route_count) +
+         " terrain_road=" + std::to_string(summary.terrain_road_tiles) +
+         " core=" + std::to_string(summary.road_core_tiles) +
+         " side_band=" + std::to_string(summary.road_side_tiles) +
+         " trampled=" + std::to_string(summary.trampled_grass_tiles) +
+         " mud=" + std::to_string(summary.mud_patch_tiles) +
+         " ruin_approach=" + std::to_string(summary.ruin_approach_tiles) +
+         " dressing=" + std::to_string(summary.road_dressing_tiles);
+}
+
+void AddRoadVisualDiagnostics(const RoadVisualSummary& summary,
+                              PipelineStepReport* report) {
+  if (report == nullptr) {
+    return;
+  }
+
+  report->summaries.push_back(RoadVisualSummaryLine(summary));
+  if (summary.routes_used_for_visual_roads) {
+    report->warnings.push_back("routes are used for visual roads");
+  }
+  if (summary.terrain_road_tiles > 0 && summary.road_core_tiles == 0) {
+    report->warnings.push_back("road core band is empty");
   }
 }
 
@@ -574,11 +616,25 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
           std::to_string(prepared_level_.visual_layer_count));
       return;
     }
+
+    std::string error;
+    if (!RunBuildRoadVisualPlanStep(level, &prepared_level_, &error)) {
+      Fail(error.empty() ? "road visual plan step failed" : error);
+      return;
+    }
+
     prepared_level_.visual_layer_count =
         std::max(prepared_level_.visual_layer_count, 2);
-    report->summaries.push_back("road shape placeholder layers=" +
-                                std::to_string(
-                                    prepared_level_.visual_layer_count));
+    AddRoadVisualDiagnostics(prepared_level_.road_visual_plan.summary,
+                             report);
+    if (options_.visual_pipeline_config.write_debug_artifacts) {
+      std::string artifact_error;
+      const DebugArtifactWriter writer(ResolveDebugOutputPath(options_));
+      const bool written = writer.WriteRoadVisualArtifacts(
+          prepared_level_.road_visual_plan, &artifact_error);
+      AddDebugArtifactResult("road visual plan", written, artifact_error,
+                             report);
+    }
     return;
   }
 
