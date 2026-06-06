@@ -19,6 +19,7 @@
 #include "visual_pipeline/steps/build_road_visual_plan_step.h"
 #include "visual_pipeline/steps/build_ruin_visual_plan_step.h"
 #include "visual_pipeline/steps/build_water_visual_plan_step.h"
+#include "visual_pipeline/steps/build_object_visual_plan_step.h"
 #include "visual_pipeline/steps/build_terrain_regions_step.h"
 #include "visual_pipeline/terrain_regions.h"
 #include "visual_pipeline/water_visual_plan.h"
@@ -412,6 +413,36 @@ void AddWaterVisualDiagnostics(const WaterVisualSummary& summary,
   }
 }
 
+std::string ObjectVisualSummaryLine(const ObjectVisualSummary& summary) {
+  return "object_visual source=" +
+         std::to_string(summary.source_object_count) +
+         " mapped=" + std::to_string(summary.mapped_object_count) +
+         " typed_fallback=" +
+         std::to_string(summary.typed_fallback_count) +
+         " object_generic=" +
+         std::to_string(summary.generic_object_count) +
+         " missing_sprite_uses=" +
+         std::to_string(summary.missing_sprite_uses) +
+         " skipped_sprites=" + std::to_string(summary.skipped_sprites);
+}
+
+void AddObjectVisualDiagnostics(const ObjectVisualSummary& summary,
+                                PipelineStepReport* report) {
+  if (report == nullptr) {
+    return;
+  }
+
+  report->summaries.push_back(ObjectVisualSummaryLine(summary));
+  if (summary.generic_object_count > 0) {
+    report->warnings.push_back("generic visual objects=" +
+                               std::to_string(summary.generic_object_count));
+  }
+  if (summary.missing_sprite_uses > 0) {
+    report->warnings.push_back("missing sprite uses=" +
+                               std::to_string(summary.missing_sprite_uses));
+  }
+}
+
 void AddVisualMapDiagnostics(const VisualMapData& data,
                              PipelineStepReport* report) {
   if (report == nullptr) {
@@ -780,11 +811,25 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
           std::to_string(prepared_level_.decoration_count));
       return;
     }
+
+    std::string error;
+    if (!RunBuildObjectVisualPlanStep(level, &prepared_level_, &error)) {
+      Fail(error.empty() ? "object visual plan step failed" : error);
+      return;
+    }
+
     prepared_level_.decoration_count =
-        std::max(1, (level.size.width * level.size.height) / 64);
-    report->summaries.push_back(
-        "decoration placeholder count=" +
-        std::to_string(prepared_level_.decoration_count));
+        prepared_level_.object_visual_plan.summary.mapped_object_count;
+    AddObjectVisualDiagnostics(prepared_level_.object_visual_plan.summary,
+                               report);
+    if (options_.visual_pipeline_config.write_debug_artifacts) {
+      std::string artifact_error;
+      const DebugArtifactWriter writer(ResolveDebugOutputPath(options_));
+      const bool written = writer.WriteObjectVisualArtifacts(
+          prepared_level_.object_visual_plan, &artifact_error);
+      AddDebugArtifactResult("object visual plan", written, artifact_error,
+                             report);
+    }
     return;
   }
 

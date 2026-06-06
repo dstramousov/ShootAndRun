@@ -7,6 +7,7 @@
 #include "level/level_data.h"
 #include "visual_pipeline/semantic_masks.h"
 #include "visual_pipeline/forest_visual_plan.h"
+#include "visual_pipeline/object_visual_plan.h"
 #include "visual_pipeline/road_visual_plan.h"
 #include "visual_pipeline/ruin_visual_plan.h"
 #include "visual_pipeline/water_visual_plan.h"
@@ -88,6 +89,16 @@ class DebugArtifactWriter {
    */
   bool WriteWaterVisualArtifacts(const WaterVisualPlan& plan,
                                  std::string* error) const;
+
+  /**
+   * @brief Writes object mapping PNGs and a JSON report.
+   *
+   * @param plan Object visual plan produced by the visual pipeline.
+   * @param error Error text populated on failure.
+   * @return True when all artifacts were written successfully.
+   */
+  bool WriteObjectVisualArtifacts(const ObjectVisualPlan& plan,
+                                  std::string* error) const;
 
   /**
    * @brief Writes road band PNGs and a JSON report.

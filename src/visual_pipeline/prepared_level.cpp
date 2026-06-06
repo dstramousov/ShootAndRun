@@ -116,6 +116,16 @@ std::string PreparedLevel::Dump() const {
             " }";
   }
 
+  if (object_visual_plan.IsValid()) {
+    const ObjectVisualSummary& summary = object_visual_plan.summary;
+    dump += ", object_visual: { mapped: " +
+            std::to_string(summary.mapped_object_count) +
+            ", typed_fallback: " +
+            std::to_string(summary.typed_fallback_count) +
+            ", object_generic: " +
+            std::to_string(summary.generic_object_count) + " }";
+  }
+
   if (prepared_visual_map.loaded) {
     dump += ", prepared_visual_map: { layers: " +
             std::to_string(prepared_visual_map.visual_layer_count) +

@@ -16,6 +16,7 @@
 
 #include "level/terrain_type.h"
 #include "visual_pipeline/forest_visual_plan.h"
+#include "visual_pipeline/object_visual_plan.h"
 #include "visual_pipeline/road_visual_plan.h"
 #include "visual_pipeline/ruin_visual_plan.h"
 #include "visual_pipeline/water_visual_plan.h"
@@ -77,6 +78,10 @@ std::string JsonEscape(std::string_view text) {
 
 std::string JsonString(std::string_view text) {
   return "\"" + JsonEscape(text) + "\"";
+}
+
+bool StartsWith(std::string_view text, std::string_view prefix) {
+  return text.size() >= prefix.size() && text.substr(0, prefix.size()) == prefix;
 }
 
 bool EnsureDirectory(const std::filesystem::path& path, std::string* error) {
@@ -624,6 +629,76 @@ std::vector<RgbaColor> BuildWaterRegionImage(const WaterVisualPlan& plan) {
         static_cast<std::uint8_t>(26 + (region_id * 29U) % 70U),
         static_cast<std::uint8_t>(82 + (region_id * 47U) % 110U),
         static_cast<std::uint8_t>(104 + (region_id * 61U) % 110U), 255};
+  }
+  return pixels;
+}
+
+RgbaColor ObjectVisualColor(ObjectVisualKind kind) {
+  switch (kind) {
+    case ObjectVisualKind::kVegetation:
+      return RgbaColor{42, 112, 58, 255};
+    case ObjectVisualKind::kWood:
+      return RgbaColor{132, 92, 48, 255};
+    case ObjectVisualKind::kStone:
+      return RgbaColor{142, 134, 116, 255};
+    case ObjectVisualKind::kScrap:
+      return RgbaColor{126, 104, 92, 255};
+    case ObjectVisualKind::kCamp:
+      return RgbaColor{174, 124, 64, 255};
+    case ObjectVisualKind::kCache:
+      return RgbaColor{218, 176, 72, 255};
+    case ObjectVisualKind::kStructure:
+      return RgbaColor{102, 92, 76, 255};
+    case ObjectVisualKind::kRuin:
+      return RgbaColor{116, 106, 88, 255};
+    case ObjectVisualKind::kElevation:
+      return RgbaColor{104, 86, 64, 255};
+    case ObjectVisualKind::kLandmark:
+      return RgbaColor{184, 138, 82, 255};
+    case ObjectVisualKind::kCover:
+      return RgbaColor{88, 76, 58, 255};
+    case ObjectVisualKind::kTypedFallback:
+      return RgbaColor{166, 132, 84, 255};
+    case ObjectVisualKind::kUnknown:
+      return RgbaColor{206, 46, 180, 255};
+  }
+  return RgbaColor{206, 46, 180, 255};
+}
+
+void DrawObjectFootprint(const ObjectVisualItem& item, const LevelSize& size,
+                         RgbaColor color, std::vector<RgbaColor>* pixels) {
+  if (pixels == nullptr) {
+    return;
+  }
+
+  for (int y = item.y; y < item.y + item.height; ++y) {
+    for (int x = item.x; x < item.x + item.width; ++x) {
+      SetPixel(x, y, size, color, pixels);
+    }
+  }
+  SetPixel(item.x, item.y, size, kWhite, pixels);
+}
+
+std::vector<RgbaColor> BuildObjectMappingImage(const ObjectVisualPlan& plan) {
+  std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
+                                static_cast<std::size_t>(plan.size.height),
+                                kBlack);
+  for (const ObjectVisualItem& item : plan.items) {
+    DrawObjectFootprint(item, plan.size, ObjectVisualColor(item.kind), &pixels);
+  }
+  return pixels;
+}
+
+std::vector<RgbaColor> BuildObjectFallbackImage(const ObjectVisualPlan& plan) {
+  std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
+                                static_cast<std::size_t>(plan.size.height),
+                                kBlack);
+  for (const ObjectVisualItem& item : plan.items) {
+    if (StartsWith(item.sprite_family, "object.fallback") ||
+        StartsWith(item.sprite_family, "structure.fallback")) {
+      DrawObjectFootprint(item, plan.size, RgbaColor{238, 156, 64, 255},
+                          &pixels);
+    }
   }
   return pixels;
 }
@@ -1188,6 +1263,71 @@ bool DebugArtifactWriter::WriteWaterVisualArtifacts(
   json << "}\n";
 
   return WriteTextFile(output_root_ / "reports" / "07_water_pass.json",
+                       json.str(), error);
+}
+
+bool DebugArtifactWriter::WriteObjectVisualArtifacts(
+    const ObjectVisualPlan& plan, std::string* error) const {
+  if (!plan.IsValid()) {
+    if (error != nullptr) {
+      *error = "object visual plan is invalid for debug artifact writing";
+    }
+    return false;
+  }
+
+  const std::filesystem::path directory = output_root_ / "passes";
+  const std::vector<std::pair<std::string, std::vector<RgbaColor>>> images = {
+      {"08_object_mapping.png", BuildObjectMappingImage(plan)},
+      {"08_object_fallbacks.png", BuildObjectFallbackImage(plan)},
+  };
+
+  for (const auto& [filename, pixels] : images) {
+    if (!WritePngRgba(directory / filename, plan.size.width,
+                      plan.size.height, pixels, error)) {
+      return false;
+    }
+  }
+
+  const ObjectVisualSummary& summary = plan.summary;
+  std::ostringstream json;
+  json << "{\n";
+  json << "  \"schema_version\": \"visual-debug-object-mapping-v1\",\n";
+  json << "  \"status\": \"ok\",\n";
+  json << "  \"width\": " << plan.size.width << ",\n";
+  json << "  \"height\": " << plan.size.height << ",\n";
+  json << "  \"summary\": {\n";
+  json << "    \"source_object_count\": "
+       << summary.source_object_count << ",\n";
+  json << "    \"mapped_object_count\": "
+       << summary.mapped_object_count << ",\n";
+  json << "    \"typed_fallback_count\": "
+       << summary.typed_fallback_count << ",\n";
+  json << "    \"object_generic\": " << summary.generic_object_count
+       << ",\n";
+  json << "    \"missing_sprite_uses\": "
+       << summary.missing_sprite_uses << ",\n";
+  json << "    \"skipped_sprites\": " << summary.skipped_sprites << "\n";
+  json << "  },\n";
+
+  json << "  \"visual_kind_counts\": {\n";
+  AppendJsonIntMap(&json, summary.visual_kind_counts, 4);
+  json << "  },\n";
+
+  json << "  \"sprite_family_counts\": {\n";
+  AppendJsonIntMap(&json, summary.sprite_family_counts, 4);
+  json << "  },\n";
+
+  json << "  \"source_type_counts\": {\n";
+  AppendJsonIntMap(&json, summary.source_type_counts, 4);
+  json << "  },\n";
+
+  json << "  \"artifacts\": [\n";
+  json << "    \"passes/08_object_mapping.png\",\n";
+  json << "    \"passes/08_object_fallbacks.png\"\n";
+  json << "  ]\n";
+  json << "}\n";
+
+  return WriteTextFile(output_root_ / "reports" / "08_object_mapping.json",
                        json.str(), error);
 }
 

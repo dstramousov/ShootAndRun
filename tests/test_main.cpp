@@ -9,6 +9,7 @@
 #include "level/level_loader.h"
 #include "level/terrain_type.h"
 #include "ui/main_menu.h"
+#include "visual_pipeline/object_visual_plan.h"
 #include "visual_pipeline/road_visual_plan.h"
 #include "visual_pipeline/ruin_visual_plan.h"
 #include "visual_pipeline/terrain_regions.h"
@@ -919,6 +920,66 @@ void TestRoadVisualPlanBuildsTerrainRoadDressing() {
          "road visual plan should mark ruin approach tiles");
 }
 
+
+void TestObjectVisualPlanRemovesGenericObjects() {
+  sar::LevelData level;
+  level.size.width = 8;
+  level.size.height = 6;
+  level.size.tile_size = 16;
+  level.cells.resize(48);
+  for (sar::RuntimeCell& cell : level.cells) {
+    cell.terrain = sar::TerrainType::kOpenGround;
+    cell.walkable = true;
+  }
+
+  sar::RuntimeObject known;
+  known.id = "fallen_log_001";
+  known.type = "fallen_log";
+  known.family = "forest_debris";
+  known.x = 1;
+  known.y = 1;
+  known.width = 2;
+  known.height = 1;
+  known.tags.push_back("forest");
+  level.objects.push_back(known);
+
+  sar::RuntimeObject fallback;
+  fallback.id = "unknown_stone_001";
+  fallback.type = "unknown_object";
+  fallback.family = "stone_cover";
+  fallback.x = 4;
+  fallback.y = 2;
+  fallback.width = 1;
+  fallback.height = 1;
+  fallback.blocks_movement = true;
+  fallback.tags.push_back("cover");
+  level.objects.push_back(fallback);
+
+  sar::visual_pipeline::VisualPreparationPipeline pipeline;
+  pipeline.Start(level);
+  while (!pipeline.finished() && !pipeline.progress().failed) {
+    pipeline.AdvanceOneStep(level);
+  }
+
+  const sar::visual_pipeline::ObjectVisualPlan& object_plan =
+      pipeline.prepared_level().object_visual_plan;
+  Expect(object_plan.IsValid(), "object visual plan should be valid");
+  Expect(object_plan.summary.source_object_count == 2,
+         "object visual plan should count source objects");
+  Expect(object_plan.summary.mapped_object_count == 2,
+         "object visual plan should map all valid runtime objects");
+  Expect(object_plan.summary.generic_object_count == 0,
+         "object visual plan should not emit object.generic");
+  Expect(object_plan.summary.missing_sprite_uses == 0,
+         "object visual plan should not report missing sprite uses");
+  Expect(object_plan.summary.typed_fallback_count == 1,
+         "object visual plan should use typed fallback for unknown objects");
+  Expect(object_plan.items[0].sprite_family == "object.fallen_log",
+         "known object should use explicit sprite family");
+  Expect(object_plan.items[1].sprite_family != "object.generic",
+         "fallback object should not use generic sprite family");
+}
+
 void TestLevelLoaderBasicPackage() {
   const std::filesystem::path package_path =
       std::filesystem::temp_directory_path() /
@@ -1062,6 +1123,7 @@ int main() {
   TestVisualPreparationRegionBorders();
   TestRuinVisualPlanBuildsSceneComposition();
   TestRoadVisualPlanBuildsTerrainRoadDressing();
+  TestObjectVisualPlanRemovesGenericObjects();
   TestLevelLoaderBasicPackage();
   TestLevelLoaderManifestPackage();
   std::cout << "All tests passed.\n";

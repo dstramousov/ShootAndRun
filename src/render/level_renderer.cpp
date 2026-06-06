@@ -12,6 +12,7 @@
 
 #include "level/terrain_type.h"
 #include "visual_pipeline/forest_visual_plan.h"
+#include "visual_pipeline/object_visual_plan.h"
 #include "visual_pipeline/road_visual_plan.h"
 #include "visual_pipeline/ruin_visual_plan.h"
 #include "visual_pipeline/water_visual_plan.h"
@@ -656,6 +657,38 @@ void DrawFinalRenderReference(const Texture2D& texture,
                  WHITE);
 }
 
+Color ObjectVisualItemColor(const visual_pipeline::ObjectVisualItem& item) {
+  switch (item.kind) {
+    case visual_pipeline::ObjectVisualKind::kVegetation:
+      return Color{34, 102, 54, 150};
+    case visual_pipeline::ObjectVisualKind::kWood:
+      return Color{128, 86, 46, 150};
+    case visual_pipeline::ObjectVisualKind::kStone:
+      return Color{132, 126, 112, 155};
+    case visual_pipeline::ObjectVisualKind::kScrap:
+      return Color{126, 102, 88, 150};
+    case visual_pipeline::ObjectVisualKind::kCamp:
+      return Color{174, 124, 64, 160};
+    case visual_pipeline::ObjectVisualKind::kCache:
+      return Color{218, 172, 72, 170};
+    case visual_pipeline::ObjectVisualKind::kStructure:
+      return Color{98, 88, 72, 170};
+    case visual_pipeline::ObjectVisualKind::kRuin:
+      return Color{116, 106, 88, 150};
+    case visual_pipeline::ObjectVisualKind::kElevation:
+      return Color{104, 86, 64, 120};
+    case visual_pipeline::ObjectVisualKind::kLandmark:
+      return Color{184, 138, 82, 165};
+    case visual_pipeline::ObjectVisualKind::kCover:
+      return Color{86, 74, 56, 145};
+    case visual_pipeline::ObjectVisualKind::kTypedFallback:
+      return Color{166, 132, 84, 130};
+    case visual_pipeline::ObjectVisualKind::kUnknown:
+      return Color{206, 46, 180, 170};
+  }
+  return Color{166, 132, 84, 130};
+}
+
 Color RuntimeObjectPreviewColor(const RuntimeObject& object) {
   if (StartsWith(object.type, "tree") || StartsWith(object.family, "forest") ||
       StartsWith(object.family, "vegetation")) {
@@ -696,6 +729,26 @@ void DrawRuntimeObjectsForVisualPreview(const LevelData& level,
         static_cast<float>(object.width * level.size.tile_size),
         static_cast<float>(object.height * level.size.tile_size)};
     DrawRectangleRec(bounds, RuntimeObjectPreviewColor(object));
+  }
+}
+
+void DrawObjectVisualPlanForPreview(
+    const visual_pipeline::ObjectVisualPlan& plan,
+    int tile_size,
+    const VisibleTileRange& range) {
+  for (const visual_pipeline::ObjectVisualItem& item : plan.items) {
+    const int max_x = item.x + item.width - 1;
+    const int max_y = item.y + item.height - 1;
+    if (max_x < range.min_x || item.x > range.max_x || max_y < range.min_y ||
+        item.y > range.max_y) {
+      continue;
+    }
+
+    const Rectangle bounds{static_cast<float>(item.x * tile_size),
+                           static_cast<float>(item.y * tile_size),
+                           static_cast<float>(item.width * tile_size),
+                           static_cast<float>(item.height * tile_size)};
+    DrawRectangleRec(bounds, ObjectVisualItemColor(item));
   }
 }
 
@@ -841,7 +894,12 @@ void LevelRenderer::Draw(const LevelData& level,
   } else if (mode == LevelRenderMode::kVisualIntentPreview &&
              prepared_level != nullptr) {
     DrawVisualIntentPreviewTiles(level, *prepared_level, range);
-    DrawRuntimeObjectsForVisualPreview(level, range);
+    if (prepared_level->object_visual_plan.IsValid()) {
+      DrawObjectVisualPlanForPreview(prepared_level->object_visual_plan,
+                                     level.size.tile_size, range);
+    } else {
+      DrawRuntimeObjectsForVisualPreview(level, range);
+    }
   } else {
     DrawRawTerrainTiles(level, range);
   }

@@ -251,8 +251,23 @@ std::string BuildMapPreparationReport(
     report << CountLine("ruins", summary.ruins_scene_tiles) << "\n";
     report << CountLine("road approach", summary.road_approach_scene_tiles)
            << "\n";
-    report << CountLine("object", summary.object_scene_tiles) << "\n";
-    report << CountLine("generic", summary.generic_scene_tiles) << "\n";
+    report << CountLine("object scene", summary.object_scene_tiles) << "\n";
+    report << CountLine("generic scene", summary.generic_scene_tiles) << "\n";
+  }
+
+  if (prepared_level.object_visual_plan.IsValid()) {
+    const visual_pipeline::ObjectVisualSummary& summary =
+        prepared_level.object_visual_plan.summary;
+    report << "\nObjects:\n";
+    report << CountLine("source", summary.source_object_count) << "\n";
+    report << CountLine("mapped", summary.mapped_object_count) << "\n";
+    report << CountLine("typed fallback", summary.typed_fallback_count)
+           << "\n";
+    report << CountLine("object.generic", summary.generic_object_count)
+           << "\n";
+    report << CountLine("missing sprites", summary.missing_sprite_uses)
+           << "\n";
+    report << CountLine("skipped", summary.skipped_sprites) << "\n";
   }
 
   std::vector<std::string> warnings;
