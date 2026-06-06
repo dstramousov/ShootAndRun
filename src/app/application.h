@@ -96,6 +96,7 @@ class Application {
   LevelRenderMode level_render_mode_ = LevelRenderMode::kRawTerrain;
   Texture2D final_render_texture_{};
   bool final_render_texture_loaded_ = false;
+  bool final_render_texture_from_cpp_package_ = false;
   double last_preparation_step_time_ = -1.0;
   ServiceInfoOverlayData service_info_data_;
   double last_service_info_update_time_ = -1.0;

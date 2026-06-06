@@ -656,7 +656,7 @@ void Application::HandleGameInput(const InputState& input) {
       logger_.Info("render", std::string("level view mode=") +
                                  LevelRenderModeName(level_render_mode_));
     } else {
-      logger_.Warn("render", "final_render reference view is not loaded");
+      logger_.Warn("render", "final_render package view is not loaded");
     }
   }
 
@@ -737,8 +737,10 @@ void Application::UpdateMapPreparation() {
     level_render_mode_ = LevelRenderMode::kRawTerrain;
   }
   if (final_render_loaded) {
-    logger_.Info("render",
-                 "final_render loaded as F4 reference only");
+    const std::string source = final_render_texture_from_cpp_package_
+                                   ? "cpp_package"
+                                   : "external_reference";
+    logger_.Info("render", "F4 final_render view ready source=" + source);
   }
   logger_.Info("render", std::string("level view mode=") +
                              LevelRenderModeName(level_render_mode_));
@@ -886,14 +888,17 @@ void Application::UnloadFinalRenderTexture() {
   UnloadTexture(final_render_texture_);
   final_render_texture_ = Texture2D{};
   final_render_texture_loaded_ = false;
+  final_render_texture_from_cpp_package_ = false;
 }
 
 bool Application::LoadFinalRenderTexture() {
   UnloadFinalRenderTexture();
   std::filesystem::path path;
+  bool from_cpp_package = false;
   if (prepared_level_.has_value() &&
       !prepared_level_->final_render_path.empty()) {
     path = prepared_level_->final_render_path;
+    from_cpp_package = true;
   }
 
   if (path.empty() && prepared_level_.has_value() &&
@@ -906,7 +911,7 @@ bool Application::LoadFinalRenderTexture() {
   }
 
   if (path.empty()) {
-    logger_.Debug("render", "final_render reference path is not available");
+    logger_.Debug("render", "final_render path is not available");
     return false;
   }
 
@@ -931,8 +936,12 @@ bool Application::LoadFinalRenderTexture() {
   }
 
   final_render_texture_loaded_ = true;
-  logger_.Info("render", "final_render reference loaded path=" +
-                             path.string() + " size=" +
+  final_render_texture_from_cpp_package_ = from_cpp_package;
+  const std::string source = final_render_texture_from_cpp_package_
+                                 ? "cpp_package"
+                                 : "external_reference";
+  logger_.Info("render", "final_render texture loaded source=" + source +
+                             " path=" + path.string() + " size=" +
                              std::to_string(final_render_texture_.width) +
                              "x" +
                              std::to_string(final_render_texture_.height));

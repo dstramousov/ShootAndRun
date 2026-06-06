@@ -252,3 +252,11 @@
 - Added C++ pipeline `final_render.png` generation instead of relying only on the old prepared reference render.
 - Added final package reports: `final_render_report.json`, `visual_density_report.json`, and `quality_score.json`.
 - Kept the final package visual-only: gameplay grids, collision, markers, and routes remain unchanged.
+
+
+## v0.1.29 -> v0.1.30
+
+- Bumped CMake project and runtime application version to `0.1.30`.
+- Clarified final-render runtime logging now that the C++ pipeline writes `prepared_map/final_render.png`.
+- Renamed the F4 view label from `final_render_reference` to `final_render_package` while keeping old external final renders as fallback references.
+- Kept rendering behavior unchanged: F3 remains the visual intent preview, and F4 displays the generated final render package when available.

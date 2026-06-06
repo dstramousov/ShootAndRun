@@ -835,7 +835,7 @@ const char* LevelRenderModeName(LevelRenderMode mode) {
     case LevelRenderMode::kPreparedVisualMap:
       return "prepared_visual_map";
     case LevelRenderMode::kFinalRenderReference:
-      return "final_render_reference";
+      return "final_render_package";
   }
   return "raw_terrain";
 }
