@@ -8,6 +8,7 @@
 #include "visual_pipeline/semantic_masks.h"
 #include "visual_pipeline/forest_visual_plan.h"
 #include "visual_pipeline/object_visual_plan.h"
+#include "visual_pipeline/micro_scene_visual_plan.h"
 #include "visual_pipeline/road_visual_plan.h"
 #include "visual_pipeline/ruin_visual_plan.h"
 #include "visual_pipeline/water_visual_plan.h"
@@ -99,6 +100,17 @@ class DebugArtifactWriter {
    */
   bool WriteObjectVisualArtifacts(const ObjectVisualPlan& plan,
                                   std::string* error) const;
+
+
+  /**
+   * @brief Writes micro-scene dressing PNGs and a JSON report.
+   *
+   * @param plan Micro-scene visual plan produced by the visual pipeline.
+   * @param error Error text populated on failure.
+   * @return True when all artifacts were written successfully.
+   */
+  bool WriteMicroSceneVisualArtifacts(const MicroSceneVisualPlan& plan,
+                                      std::string* error) const;
 
   /**
    * @brief Writes road band PNGs and a JSON report.

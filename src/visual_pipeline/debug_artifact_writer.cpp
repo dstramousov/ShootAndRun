@@ -17,6 +17,7 @@
 #include "level/terrain_type.h"
 #include "visual_pipeline/forest_visual_plan.h"
 #include "visual_pipeline/object_visual_plan.h"
+#include "visual_pipeline/micro_scene_visual_plan.h"
 #include "visual_pipeline/road_visual_plan.h"
 #include "visual_pipeline/ruin_visual_plan.h"
 #include "visual_pipeline/water_visual_plan.h"
@@ -703,6 +704,74 @@ std::vector<RgbaColor> BuildObjectFallbackImage(const ObjectVisualPlan& plan) {
   return pixels;
 }
 
+RgbaColor MicroSceneKindColor(MicroSceneKind kind) {
+  switch (kind) {
+    case MicroSceneKind::kCampScene:
+      return RgbaColor{198, 136, 62, 255};
+    case MicroSceneKind::kRoadsideDebris:
+      return RgbaColor{164, 122, 72, 255};
+    case MicroSceneKind::kLoggingSpot:
+      return RgbaColor{118, 82, 42, 255};
+    case MicroSceneKind::kRuinDebrisCluster:
+      return RgbaColor{146, 134, 108, 255};
+    case MicroSceneKind::kSwampCrossingDetail:
+      return RgbaColor{66, 138, 84, 255};
+    case MicroSceneKind::kObjectSceneDressing:
+      return RgbaColor{126, 112, 92, 255};
+    case MicroSceneKind::kCacheHint:
+      return RgbaColor{218, 176, 72, 255};
+    case MicroSceneKind::kNone:
+      return kBlack;
+  }
+  return kBlack;
+}
+
+RgbaColor MicroSceneTileColor(MicroSceneTile tile) {
+  switch (tile) {
+    case MicroSceneTile::kGroundDetail:
+      return RgbaColor{126, 112, 68, 255};
+    case MicroSceneTile::kSmallDebris:
+      return RgbaColor{144, 118, 78, 255};
+    case MicroSceneTile::kSecondaryProp:
+      return RgbaColor{164, 116, 68, 255};
+    case MicroSceneTile::kPrimaryProp:
+      return RgbaColor{214, 154, 76, 255};
+    case MicroSceneTile::kVegetationDetail:
+      return RgbaColor{68, 132, 62, 255};
+    case MicroSceneTile::kStoneDetail:
+      return RgbaColor{150, 140, 118, 255};
+    case MicroSceneTile::kWetDetail:
+      return RgbaColor{58, 124, 92, 255};
+    case MicroSceneTile::kNone:
+      return kBlack;
+  }
+  return kBlack;
+}
+
+std::vector<RgbaColor> BuildMicroSceneTileImage(
+    const MicroSceneVisualPlan& plan) {
+  std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
+                                static_cast<std::size_t>(plan.size.height),
+                                kBlack);
+  for (std::size_t i = 0; i < plan.tiles.size(); ++i) {
+    pixels[i] = MicroSceneTileColor(static_cast<MicroSceneTile>(plan.tiles[i]));
+  }
+  return pixels;
+}
+
+std::vector<RgbaColor> BuildMicroSceneKindImage(
+    const MicroSceneVisualPlan& plan) {
+  std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
+                                static_cast<std::size_t>(plan.size.height),
+                                kBlack);
+  for (const MicroSceneItem& scene : plan.scenes) {
+    DrawPoint(scene.x, scene.y, scene.radius, plan.size,
+              MicroSceneKindColor(scene.kind), &pixels);
+    SetPixel(scene.x, scene.y, plan.size, kWhite, &pixels);
+  }
+  return pixels;
+}
+
 RgbaColor ForestDepthColor(std::uint8_t value) {
   const ForestDepthBand band = static_cast<ForestDepthBand>(value);
   switch (band) {
@@ -1328,6 +1397,77 @@ bool DebugArtifactWriter::WriteObjectVisualArtifacts(
   json << "}\n";
 
   return WriteTextFile(output_root_ / "reports" / "08_object_mapping.json",
+                       json.str(), error);
+}
+
+bool DebugArtifactWriter::WriteMicroSceneVisualArtifacts(
+    const MicroSceneVisualPlan& plan, std::string* error) const {
+  if (!plan.IsValid()) {
+    if (error != nullptr) {
+      *error = "micro-scene visual plan is invalid for debug artifact writing";
+    }
+    return false;
+  }
+
+  const std::filesystem::path directory = output_root_ / "passes";
+  const std::vector<std::pair<std::string, std::vector<RgbaColor>>> images = {
+      {"09_micro_scenes.png", BuildMicroSceneKindImage(plan)},
+      {"09_micro_scene_dressing.png", BuildMicroSceneTileImage(plan)},
+  };
+
+  for (const auto& [filename, pixels] : images) {
+    if (!WritePngRgba(directory / filename, plan.size.width,
+                      plan.size.height, pixels, error)) {
+      return false;
+    }
+  }
+
+  const MicroSceneSummary& summary = plan.summary;
+  std::ostringstream json;
+  json << "{\n";
+  json << "  \"schema_version\": \"visual-debug-micro-scenes-v1\",\n";
+  json << "  \"status\": \"ok\",\n";
+  json << "  \"width\": " << plan.size.width << ",\n";
+  json << "  \"height\": " << plan.size.height << ",\n";
+  json << "  \"summary\": {\n";
+  json << "    \"scene_count\": " << summary.scene_count << ",\n";
+  json << "    \"visual_tiles\": " << summary.visual_tiles << ",\n";
+  json << "    \"camp_scene\": " << summary.camp_scene_count << ",\n";
+  json << "    \"roadside_debris\": "
+       << summary.roadside_debris_count << ",\n";
+  json << "    \"logging_spot\": " << summary.logging_spot_count << ",\n";
+  json << "    \"ruin_debris_cluster\": "
+       << summary.ruin_debris_cluster_count << ",\n";
+  json << "    \"swamp_crossing_detail\": "
+       << summary.swamp_crossing_detail_count << ",\n";
+  json << "    \"object_scene_dressing\": "
+       << summary.object_scene_dressing_count << ",\n";
+  json << "    \"cache_hint\": " << summary.cache_hint_count << "\n";
+  json << "  },\n";
+
+  json << "  \"tile_roles\": {\n";
+  json << "    \"primary_prop\": " << summary.primary_prop_tiles << ",\n";
+  json << "    \"secondary_prop\": " << summary.secondary_prop_tiles
+       << ",\n";
+  json << "    \"small_debris\": " << summary.small_debris_tiles << ",\n";
+  json << "    \"ground_detail\": " << summary.ground_detail_tiles << ",\n";
+  json << "    \"vegetation_detail\": "
+       << summary.vegetation_detail_tiles << ",\n";
+  json << "    \"stone_detail\": " << summary.stone_detail_tiles << ",\n";
+  json << "    \"wet_detail\": " << summary.wet_detail_tiles << "\n";
+  json << "  },\n";
+
+  json << "  \"theme_counts\": {\n";
+  AppendJsonIntMap(&json, summary.theme_counts, 4);
+  json << "  },\n";
+
+  json << "  \"artifacts\": [\n";
+  json << "    \"passes/09_micro_scenes.png\",\n";
+  json << "    \"passes/09_micro_scene_dressing.png\"\n";
+  json << "  ]\n";
+  json << "}\n";
+
+  return WriteTextFile(output_root_ / "reports" / "09_micro_scenes.json",
                        json.str(), error);
 }
 

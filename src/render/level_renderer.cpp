@@ -13,6 +13,7 @@
 #include "level/terrain_type.h"
 #include "visual_pipeline/forest_visual_plan.h"
 #include "visual_pipeline/object_visual_plan.h"
+#include "visual_pipeline/micro_scene_visual_plan.h"
 #include "visual_pipeline/road_visual_plan.h"
 #include "visual_pipeline/ruin_visual_plan.h"
 #include "visual_pipeline/water_visual_plan.h"
@@ -657,6 +658,52 @@ void DrawFinalRenderReference(const Texture2D& texture,
                  WHITE);
 }
 
+Color MicroSceneTileColor(std::uint8_t value) {
+  const auto tile = static_cast<visual_pipeline::MicroSceneTile>(value);
+  switch (tile) {
+    case visual_pipeline::MicroSceneTile::kGroundDetail:
+      return Color{126, 111, 66, 115};
+    case visual_pipeline::MicroSceneTile::kSmallDebris:
+      return Color{142, 112, 74, 130};
+    case visual_pipeline::MicroSceneTile::kSecondaryProp:
+      return Color{154, 108, 64, 140};
+    case visual_pipeline::MicroSceneTile::kPrimaryProp:
+      return Color{190, 132, 70, 155};
+    case visual_pipeline::MicroSceneTile::kVegetationDetail:
+      return Color{58, 118, 56, 120};
+    case visual_pipeline::MicroSceneTile::kStoneDetail:
+      return Color{142, 132, 112, 135};
+    case visual_pipeline::MicroSceneTile::kWetDetail:
+      return Color{54, 112, 82, 125};
+    case visual_pipeline::MicroSceneTile::kNone:
+      return Color{0, 0, 0, 0};
+  }
+  return Color{0, 0, 0, 0};
+}
+
+void DrawMicroSceneVisualPlanForPreview(
+    const visual_pipeline::MicroSceneVisualPlan& plan,
+    int tile_size,
+    const VisibleTileRange& range) {
+  if (!plan.IsValid()) {
+    return;
+  }
+  for (int y = range.min_y; y <= range.max_y; ++y) {
+    for (int x = range.min_x; x <= range.max_x; ++x) {
+      const int index = y * plan.size.width + x;
+      if (index < 0 || index >= static_cast<int>(plan.tiles.size())) {
+        continue;
+      }
+      const Color color = MicroSceneTileColor(
+          plan.tiles[static_cast<std::size_t>(index)]);
+      if (color.a == 0) {
+        continue;
+      }
+      DrawRectangle(x * tile_size, y * tile_size, tile_size, tile_size, color);
+    }
+  }
+}
+
 Color ObjectVisualItemColor(const visual_pipeline::ObjectVisualItem& item) {
   switch (item.kind) {
     case visual_pipeline::ObjectVisualKind::kVegetation:
@@ -894,6 +941,10 @@ void LevelRenderer::Draw(const LevelData& level,
   } else if (mode == LevelRenderMode::kVisualIntentPreview &&
              prepared_level != nullptr) {
     DrawVisualIntentPreviewTiles(level, *prepared_level, range);
+    if (prepared_level->micro_scene_visual_plan.IsValid()) {
+      DrawMicroSceneVisualPlanForPreview(
+          prepared_level->micro_scene_visual_plan, level.size.tile_size, range);
+    }
     if (prepared_level->object_visual_plan.IsValid()) {
       DrawObjectVisualPlanForPreview(prepared_level->object_visual_plan,
                                      level.size.tile_size, range);

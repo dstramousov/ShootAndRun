@@ -126,6 +126,22 @@ std::string PreparedLevel::Dump() const {
             std::to_string(summary.generic_object_count) + " }";
   }
 
+
+
+  if (micro_scene_visual_plan.IsValid()) {
+    const MicroSceneSummary& summary = micro_scene_visual_plan.summary;
+    dump += ", micro_scenes: { scenes: " +
+            std::to_string(summary.scene_count) +
+            ", visual_tiles: " + std::to_string(summary.visual_tiles) +
+            ", camp: " + std::to_string(summary.camp_scene_count) +
+            ", roadside: " +
+            std::to_string(summary.roadside_debris_count) +
+            ", ruins: " +
+            std::to_string(summary.ruin_debris_cluster_count) +
+            ", swamp: " +
+            std::to_string(summary.swamp_crossing_detail_count) + " }";
+  }
+
   if (prepared_visual_map.loaded) {
     dump += ", prepared_visual_map: { layers: " +
             std::to_string(prepared_visual_map.visual_layer_count) +

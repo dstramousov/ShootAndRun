@@ -229,3 +229,18 @@
 - Added a visual-only water and swamp pass for `water_core`, `water_edge`, `mud_ring`, `wet_grass`, `reed_zone`, and crossing roles.
 - Added water debug artifacts: `07_water_regions.png`, `07_water_visual.png`, and `07_water_pass.json`.
 - Updated the visual intent preview to draw water-zone intent without changing collision, markers, routes, or runtime grids.
+
+## v0.1.26 -> v0.1.27
+
+- Bumped CMake project and runtime application version to `0.1.27`.
+- Added typed runtime-object visual mapping and removed `object.generic` from the C++ visual preview path.
+- Added object mapping debug artifacts: `08_object_mapping.png`, `08_object_fallbacks.png`, and `08_object_mapping.json`.
+- Kept object mapping visual-only: roads, ruins, water, routes, collision, markers, and runtime grids remain unchanged.
+
+## v0.1.27 -> v0.1.28
+
+- Bumped CMake project and runtime application version to `0.1.28`.
+- Added a visual-only micro-scene dressing pass for camps, roadside debris, logging spots, ruin debris clusters, swamp crossing details, object-scene dressing, and cache hints.
+- Added micro-scene debug artifacts: `09_micro_scenes.png`, `09_micro_scene_dressing.png`, and `09_micro_scenes.json`.
+- Updated the visual intent preview to draw micro-scene ground dressing below typed runtime objects.
+- Kept micro-scenes visual-only: roads, ruins, water, routes, collision, markers, and runtime grids remain unchanged.

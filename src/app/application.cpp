@@ -270,6 +270,22 @@ std::string BuildMapPreparationReport(
     report << CountLine("skipped", summary.skipped_sprites) << "\n";
   }
 
+  if (prepared_level.micro_scene_visual_plan.IsValid()) {
+    const visual_pipeline::MicroSceneSummary& summary =
+        prepared_level.micro_scene_visual_plan.summary;
+    report << "\nMicro-scenes:\n";
+    report << CountLine("scenes", summary.scene_count) << "\n";
+    report << CountLine("visual tiles", summary.visual_tiles) << "\n";
+    report << CountLine("camp", summary.camp_scene_count) << "\n";
+    report << CountLine("roadside", summary.roadside_debris_count)
+           << "\n";
+    report << CountLine("logging", summary.logging_spot_count) << "\n";
+    report << CountLine("ruins", summary.ruin_debris_cluster_count)
+           << "\n";
+    report << CountLine("swamp", summary.swamp_crossing_detail_count)
+           << "\n";
+  }
+
   std::vector<std::string> warnings;
   if (prepared_level.semantic_masks.IsValid() &&
       prepared_level.semantic_masks.summary.unknown_tiles > 0) {

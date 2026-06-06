@@ -20,6 +20,7 @@
 #include "visual_pipeline/steps/build_ruin_visual_plan_step.h"
 #include "visual_pipeline/steps/build_water_visual_plan_step.h"
 #include "visual_pipeline/steps/build_object_visual_plan_step.h"
+#include "visual_pipeline/steps/build_micro_scene_visual_plan_step.h"
 #include "visual_pipeline/steps/build_terrain_regions_step.h"
 #include "visual_pipeline/terrain_regions.h"
 #include "visual_pipeline/water_visual_plan.h"
@@ -443,6 +444,34 @@ void AddObjectVisualDiagnostics(const ObjectVisualSummary& summary,
   }
 }
 
+
+std::string MicroSceneSummaryLine(const MicroSceneSummary& summary) {
+  return "micro_scenes scenes=" + std::to_string(summary.scene_count) +
+         " visual=" + std::to_string(summary.visual_tiles) +
+         " camp=" + std::to_string(summary.camp_scene_count) +
+         " roadside=" + std::to_string(summary.roadside_debris_count) +
+         " logging=" + std::to_string(summary.logging_spot_count) +
+         " ruins=" + std::to_string(summary.ruin_debris_cluster_count) +
+         " swamp=" + std::to_string(summary.swamp_crossing_detail_count) +
+         " object=" + std::to_string(summary.object_scene_dressing_count) +
+         " cache=" + std::to_string(summary.cache_hint_count);
+}
+
+void AddMicroSceneDiagnostics(const MicroSceneSummary& summary,
+                              PipelineStepReport* report) {
+  if (report == nullptr) {
+    return;
+  }
+
+  report->summaries.push_back(MicroSceneSummaryLine(summary));
+  if (summary.scene_count == 0) {
+    report->warnings.push_back("micro-scene placement produced no scenes");
+  }
+  if (summary.visual_tiles == 0) {
+    report->warnings.push_back("micro-scene placement produced no visual tiles");
+  }
+}
+
 void AddVisualMapDiagnostics(const VisualMapData& data,
                              PipelineStepReport* report) {
   if (report == nullptr) {
@@ -818,17 +847,31 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
       return;
     }
 
-    prepared_level_.decoration_count =
-        prepared_level_.object_visual_plan.summary.mapped_object_count;
     AddObjectVisualDiagnostics(prepared_level_.object_visual_plan.summary,
                                report);
+
+    if (!RunBuildMicroSceneVisualPlanStep(level, &prepared_level_, &error)) {
+      Fail(error.empty() ? "micro-scene visual plan step failed" : error);
+      return;
+    }
+
+    prepared_level_.decoration_count =
+        prepared_level_.object_visual_plan.summary.mapped_object_count +
+        prepared_level_.micro_scene_visual_plan.summary.scene_count;
+    AddMicroSceneDiagnostics(prepared_level_.micro_scene_visual_plan.summary,
+                             report);
     if (options_.visual_pipeline_config.write_debug_artifacts) {
       std::string artifact_error;
       const DebugArtifactWriter writer(ResolveDebugOutputPath(options_));
-      const bool written = writer.WriteObjectVisualArtifacts(
+      const bool objects_written = writer.WriteObjectVisualArtifacts(
           prepared_level_.object_visual_plan, &artifact_error);
-      AddDebugArtifactResult("object visual plan", written, artifact_error,
-                             report);
+      AddDebugArtifactResult("object visual plan", objects_written,
+                             artifact_error, report);
+      artifact_error.clear();
+      const bool scenes_written = writer.WriteMicroSceneVisualArtifacts(
+          prepared_level_.micro_scene_visual_plan, &artifact_error);
+      AddDebugArtifactResult("micro-scene visual plan", scenes_written,
+                             artifact_error, report);
     }
     return;
   }

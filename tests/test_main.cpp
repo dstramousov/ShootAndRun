@@ -980,6 +980,69 @@ void TestObjectVisualPlanRemovesGenericObjects() {
          "fallback object should not use generic sprite family");
 }
 
+
+void TestMicroSceneVisualPlanBuildsDressing() {
+  sar::LevelData level;
+  level.size.width = 8;
+  level.size.height = 8;
+  level.size.tile_size = 16;
+  level.cells.resize(64);
+  for (sar::RuntimeCell& cell : level.cells) {
+    cell.terrain = sar::TerrainType::kOpenGround;
+    cell.walkable = true;
+  }
+
+  auto set_terrain = [&level](int x, int y, sar::TerrainType terrain) {
+    level.cells[static_cast<std::size_t>(y * level.size.width + x)].terrain =
+        terrain;
+  };
+  for (int x = 1; x <= 5; ++x) {
+    set_terrain(x, 2, sar::TerrainType::kRoad);
+  }
+  set_terrain(4, 4, sar::TerrainType::kWater);
+  set_terrain(5, 4, sar::TerrainType::kWater);
+  set_terrain(2, 5, sar::TerrainType::kRuins);
+  set_terrain(2, 6, sar::TerrainType::kWall);
+
+  sar::RuntimeObject camp;
+  camp.id = "campfire_001";
+  camp.type = "dead_campfire";
+  camp.family = "camp";
+  camp.x = 1;
+  camp.y = 1;
+  camp.width = 1;
+  camp.height = 1;
+  level.objects.push_back(camp);
+
+  sar::RuntimeObject log;
+  log.id = "fallen_log_001";
+  log.type = "fallen_log";
+  log.family = "forest_debris";
+  log.x = 5;
+  log.y = 5;
+  log.width = 2;
+  log.height = 1;
+  level.objects.push_back(log);
+
+  sar::visual_pipeline::VisualPreparationPipeline pipeline;
+  pipeline.Start(level);
+  while (!pipeline.finished() && !pipeline.progress().failed) {
+    pipeline.AdvanceOneStep(level);
+  }
+
+  const sar::visual_pipeline::MicroSceneVisualPlan& plan =
+      pipeline.prepared_level().micro_scene_visual_plan;
+  Expect(plan.IsValid(), "micro-scene visual plan should be valid");
+  Expect(plan.summary.scene_count > 0,
+         "micro-scene visual plan should place scenes");
+  Expect(plan.summary.visual_tiles > 0,
+         "micro-scene visual plan should paint dressing tiles");
+  Expect(plan.summary.camp_scene_count > 0,
+         "micro-scene visual plan should detect camp scenes");
+  Expect(plan.summary.logging_spot_count > 0,
+         "micro-scene visual plan should detect logging spots");
+}
+
 void TestLevelLoaderBasicPackage() {
   const std::filesystem::path package_path =
       std::filesystem::temp_directory_path() /
@@ -1124,6 +1187,7 @@ int main() {
   TestRuinVisualPlanBuildsSceneComposition();
   TestRoadVisualPlanBuildsTerrainRoadDressing();
   TestObjectVisualPlanRemovesGenericObjects();
+  TestMicroSceneVisualPlanBuildsDressing();
   TestLevelLoaderBasicPackage();
   TestLevelLoaderManifestPackage();
   std::cout << "All tests passed.\n";
