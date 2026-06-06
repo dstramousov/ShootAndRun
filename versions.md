@@ -260,3 +260,10 @@
 - Clarified final-render runtime logging now that the C++ pipeline writes `prepared_map/final_render.png`.
 - Renamed the F4 view label from `final_render_reference` to `final_render_package` while keeping old external final renders as fallback references.
 - Kept rendering behavior unchanged: F3 remains the visual intent preview, and F4 displays the generated final render package when available.
+
+## v0.1.30 -> v0.1.31
+
+- Bumped CMake project and runtime application version to `0.1.31`.
+- Added runtime loading for the style-locked forest asset pack from `assets/visual/forest`.
+- Added asset-driven forest drawing for F3 visual intent preview and F4 final-render package view.
+- Kept the forest asset renderer visual-only: gameplay collision, markers, routes, runtime grids, and prepared semantics remain unchanged.

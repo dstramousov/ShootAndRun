@@ -1,0 +1,1987 @@
+{
+  "schema_version": "shootandrun-asset-manifest-v2",
+  "asset_pack": "forest_assets_v2_style_locked",
+  "style_lock": {
+    "source": "ChatGPT Image Jun 7, 2026, 12_12_24 AM.png",
+    "description": "Hand-painted top-down fir forest style locked to the approved bright variant.",
+    "notes": [
+      "No geometric triangle trees.",
+      "Sprites use transparent backgrounds.",
+      "Tiles assume 16x16 world tile grid.",
+      "Tall trees are visual objects; collision remains controlled by map_package/runtime_grids."
+    ]
+  },
+  "tile_size_px": 16,
+  "recommended_root": "assets/visual/forest",
+  "assets": [
+    {
+      "id": "forest.tile.grass_01",
+      "kind": "tile",
+      "file": "tiles/grass_01.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "terrain_base",
+      "tags": [
+        "forest_floor",
+        "ground"
+      ],
+      "source_rect": [
+        14,
+        558,
+        64,
+        64
+      ]
+    },
+    {
+      "id": "forest.tile.grass_02",
+      "kind": "tile",
+      "file": "tiles/grass_02.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "terrain_base",
+      "tags": [
+        "forest_floor",
+        "ground"
+      ],
+      "source_rect": [
+        94,
+        558,
+        64,
+        64
+      ]
+    },
+    {
+      "id": "forest.tile.grass_03",
+      "kind": "tile",
+      "file": "tiles/grass_03.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "terrain_base",
+      "tags": [
+        "forest_floor",
+        "ground"
+      ],
+      "source_rect": [
+        174,
+        558,
+        64,
+        64
+      ]
+    },
+    {
+      "id": "forest.tile.grass_moss",
+      "kind": "tile",
+      "file": "tiles/grass_moss.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "terrain_base",
+      "tags": [
+        "forest_floor",
+        "ground"
+      ],
+      "source_rect": [
+        254,
+        558,
+        64,
+        64
+      ]
+    },
+    {
+      "id": "forest.tile.forest_floor_01",
+      "kind": "tile",
+      "file": "tiles/forest_floor_01.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "terrain_base",
+      "tags": [
+        "forest_floor",
+        "ground"
+      ],
+      "source_rect": [
+        334,
+        558,
+        64,
+        64
+      ]
+    },
+    {
+      "id": "forest.tile.forest_floor_02",
+      "kind": "tile",
+      "file": "tiles/forest_floor_02.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "terrain_base",
+      "tags": [
+        "forest_floor",
+        "ground"
+      ],
+      "source_rect": [
+        414,
+        558,
+        64,
+        64
+      ]
+    },
+    {
+      "id": "forest.tile.forest_floor_03",
+      "kind": "tile",
+      "file": "tiles/forest_floor_03.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "terrain_base",
+      "tags": [
+        "forest_floor",
+        "ground"
+      ],
+      "source_rect": [
+        494,
+        558,
+        64,
+        64
+      ]
+    },
+    {
+      "id": "forest.tile.forest_floor_04",
+      "kind": "tile",
+      "file": "tiles/forest_floor_04.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "terrain_base",
+      "tags": [
+        "forest_floor",
+        "ground"
+      ],
+      "source_rect": [
+        574,
+        558,
+        64,
+        64
+      ]
+    },
+    {
+      "id": "forest.tile.deep_01",
+      "kind": "tile",
+      "file": "tiles/deep_01.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "forest_base",
+      "tags": [
+        "forest_depth"
+      ],
+      "source_rect": [
+        20,
+        680,
+        64,
+        64
+      ]
+    },
+    {
+      "id": "forest.tile.deep_02",
+      "kind": "tile",
+      "file": "tiles/deep_02.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "forest_base",
+      "tags": [
+        "forest_depth"
+      ],
+      "source_rect": [
+        100,
+        680,
+        64,
+        64
+      ]
+    },
+    {
+      "id": "forest.tile.deep_03",
+      "kind": "tile",
+      "file": "tiles/deep_03.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "forest_base",
+      "tags": [
+        "forest_depth"
+      ],
+      "source_rect": [
+        180,
+        680,
+        64,
+        64
+      ]
+    },
+    {
+      "id": "forest.tile.mid_01",
+      "kind": "tile",
+      "file": "tiles/mid_01.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "forest_base",
+      "tags": [
+        "forest_depth"
+      ],
+      "source_rect": [
+        260,
+        680,
+        64,
+        64
+      ]
+    },
+    {
+      "id": "forest.tile.mid_02",
+      "kind": "tile",
+      "file": "tiles/mid_02.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "forest_base",
+      "tags": [
+        "forest_depth"
+      ],
+      "source_rect": [
+        340,
+        680,
+        64,
+        64
+      ]
+    },
+    {
+      "id": "forest.tile.edge_n",
+      "kind": "tile",
+      "file": "tiles/edge_n.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "forest_edge",
+      "tags": [
+        "forest_edge"
+      ],
+      "source_rect": [
+        470,
+        680,
+        64,
+        48
+      ]
+    },
+    {
+      "id": "forest.tile.edge_s",
+      "kind": "tile",
+      "file": "tiles/edge_s.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "forest_edge",
+      "tags": [
+        "forest_edge"
+      ],
+      "source_rect": [
+        555,
+        680,
+        64,
+        48
+      ]
+    },
+    {
+      "id": "forest.tile.edge_e",
+      "kind": "tile",
+      "file": "tiles/edge_e.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "forest_edge",
+      "tags": [
+        "forest_edge"
+      ],
+      "source_rect": [
+        640,
+        680,
+        64,
+        48
+      ]
+    },
+    {
+      "id": "forest.tile.edge_w",
+      "kind": "tile",
+      "file": "tiles/edge_w.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "forest_edge",
+      "tags": [
+        "forest_edge"
+      ],
+      "source_rect": [
+        725,
+        680,
+        64,
+        48
+      ]
+    },
+    {
+      "id": "forest.tile.corner_nw",
+      "kind": "tile",
+      "file": "tiles/corner_nw.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "forest_edge",
+      "tags": [
+        "forest_edge"
+      ],
+      "source_rect": [
+        470,
+        745,
+        64,
+        48
+      ]
+    },
+    {
+      "id": "forest.tile.corner_ne",
+      "kind": "tile",
+      "file": "tiles/corner_ne.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "forest_edge",
+      "tags": [
+        "forest_edge"
+      ],
+      "source_rect": [
+        555,
+        745,
+        64,
+        48
+      ]
+    },
+    {
+      "id": "forest.tile.corner_sw",
+      "kind": "tile",
+      "file": "tiles/corner_sw.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "forest_edge",
+      "tags": [
+        "forest_edge"
+      ],
+      "source_rect": [
+        640,
+        745,
+        64,
+        48
+      ]
+    },
+    {
+      "id": "forest.tile.corner_se",
+      "kind": "tile",
+      "file": "tiles/corner_se.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "forest_edge",
+      "tags": [
+        "forest_edge"
+      ],
+      "source_rect": [
+        725,
+        745,
+        64,
+        48
+      ]
+    },
+    {
+      "id": "forest.tree.single.01",
+      "kind": "sprite",
+      "file": "sprites/trees/single_tree_01.png",
+      "size_px": [
+        32,
+        48
+      ],
+      "size_tiles": [
+        2,
+        3
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "fir",
+        "pine",
+        "single_tree"
+      ],
+      "source_rect": [
+        833,
+        98,
+        68,
+        96
+      ]
+    },
+    {
+      "id": "forest.tree.single.02",
+      "kind": "sprite",
+      "file": "sprites/trees/single_tree_02.png",
+      "size_px": [
+        32,
+        48
+      ],
+      "size_tiles": [
+        2,
+        3
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "fir",
+        "pine",
+        "single_tree"
+      ],
+      "source_rect": [
+        901,
+        98,
+        68,
+        96
+      ]
+    },
+    {
+      "id": "forest.tree.single.03",
+      "kind": "sprite",
+      "file": "sprites/trees/single_tree_03.png",
+      "size_px": [
+        32,
+        48
+      ],
+      "size_tiles": [
+        2,
+        3
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "fir",
+        "pine",
+        "single_tree"
+      ],
+      "source_rect": [
+        968,
+        98,
+        68,
+        96
+      ]
+    },
+    {
+      "id": "forest.tree.single.04",
+      "kind": "sprite",
+      "file": "sprites/trees/single_tree_04.png",
+      "size_px": [
+        32,
+        48
+      ],
+      "size_tiles": [
+        2,
+        3
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "fir",
+        "pine",
+        "single_tree"
+      ],
+      "source_rect": [
+        1036,
+        98,
+        68,
+        96
+      ]
+    },
+    {
+      "id": "forest.tree.single.05",
+      "kind": "sprite",
+      "file": "sprites/trees/single_tree_05.png",
+      "size_px": [
+        32,
+        48
+      ],
+      "size_tiles": [
+        2,
+        3
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "fir",
+        "pine",
+        "single_tree"
+      ],
+      "source_rect": [
+        1104,
+        98,
+        68,
+        96
+      ]
+    },
+    {
+      "id": "forest.tree.single.06",
+      "kind": "sprite",
+      "file": "sprites/trees/single_tree_06.png",
+      "size_px": [
+        32,
+        48
+      ],
+      "size_tiles": [
+        2,
+        3
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "fir",
+        "pine",
+        "single_tree"
+      ],
+      "source_rect": [
+        1172,
+        98,
+        68,
+        96
+      ]
+    },
+    {
+      "id": "forest.tree.single.07",
+      "kind": "sprite",
+      "file": "sprites/trees/single_tree_07.png",
+      "size_px": [
+        32,
+        48
+      ],
+      "size_tiles": [
+        2,
+        3
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "fir",
+        "pine",
+        "single_tree"
+      ],
+      "source_rect": [
+        1239,
+        98,
+        68,
+        96
+      ]
+    },
+    {
+      "id": "forest.tree.single.08",
+      "kind": "sprite",
+      "file": "sprites/trees/single_tree_08.png",
+      "size_px": [
+        32,
+        48
+      ],
+      "size_tiles": [
+        2,
+        3
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "fir",
+        "pine",
+        "single_tree"
+      ],
+      "source_rect": [
+        1306,
+        98,
+        68,
+        96
+      ]
+    },
+    {
+      "id": "forest.tree.single.09",
+      "kind": "sprite",
+      "file": "sprites/trees/single_tree_09.png",
+      "size_px": [
+        32,
+        48
+      ],
+      "size_tiles": [
+        2,
+        3
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "fir",
+        "pine",
+        "single_tree"
+      ],
+      "source_rect": [
+        1374,
+        98,
+        68,
+        96
+      ]
+    },
+    {
+      "id": "forest.tree.single.10",
+      "kind": "sprite",
+      "file": "sprites/trees/single_tree_10.png",
+      "size_px": [
+        32,
+        48
+      ],
+      "size_tiles": [
+        2,
+        3
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "fir",
+        "pine",
+        "single_tree"
+      ],
+      "source_rect": [
+        1441,
+        98,
+        68,
+        96
+      ]
+    },
+    {
+      "id": "forest.tree.single.11",
+      "kind": "sprite",
+      "file": "sprites/trees/single_tree_11.png",
+      "size_px": [
+        32,
+        48
+      ],
+      "size_tiles": [
+        2,
+        3
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "fir",
+        "pine",
+        "single_tree"
+      ],
+      "source_rect": [
+        833,
+        214,
+        68,
+        96
+      ]
+    },
+    {
+      "id": "forest.tree.single.12",
+      "kind": "sprite",
+      "file": "sprites/trees/single_tree_12.png",
+      "size_px": [
+        32,
+        48
+      ],
+      "size_tiles": [
+        2,
+        3
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "fir",
+        "pine",
+        "single_tree"
+      ],
+      "source_rect": [
+        901,
+        214,
+        68,
+        96
+      ]
+    },
+    {
+      "id": "forest.tree.single.13",
+      "kind": "sprite",
+      "file": "sprites/trees/single_tree_13.png",
+      "size_px": [
+        32,
+        48
+      ],
+      "size_tiles": [
+        2,
+        3
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "fir",
+        "pine",
+        "single_tree"
+      ],
+      "source_rect": [
+        968,
+        214,
+        68,
+        96
+      ]
+    },
+    {
+      "id": "forest.tree.single.14",
+      "kind": "sprite",
+      "file": "sprites/trees/single_tree_14.png",
+      "size_px": [
+        32,
+        48
+      ],
+      "size_tiles": [
+        2,
+        3
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "fir",
+        "pine",
+        "single_tree"
+      ],
+      "source_rect": [
+        1036,
+        214,
+        68,
+        96
+      ]
+    },
+    {
+      "id": "forest.tree.single.15",
+      "kind": "sprite",
+      "file": "sprites/trees/single_tree_15.png",
+      "size_px": [
+        32,
+        48
+      ],
+      "size_tiles": [
+        2,
+        3
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "fir",
+        "pine",
+        "single_tree"
+      ],
+      "source_rect": [
+        1104,
+        214,
+        68,
+        96
+      ]
+    },
+    {
+      "id": "forest.tree.single.16",
+      "kind": "sprite",
+      "file": "sprites/trees/single_tree_16.png",
+      "size_px": [
+        32,
+        48
+      ],
+      "size_tiles": [
+        2,
+        3
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "fir",
+        "pine",
+        "single_tree"
+      ],
+      "source_rect": [
+        1172,
+        214,
+        68,
+        96
+      ]
+    },
+    {
+      "id": "forest.tree.single.17",
+      "kind": "sprite",
+      "file": "sprites/trees/single_tree_17.png",
+      "size_px": [
+        32,
+        48
+      ],
+      "size_tiles": [
+        2,
+        3
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "fir",
+        "pine",
+        "single_tree"
+      ],
+      "source_rect": [
+        1239,
+        214,
+        68,
+        96
+      ]
+    },
+    {
+      "id": "forest.tree.single.18",
+      "kind": "sprite",
+      "file": "sprites/trees/single_tree_18.png",
+      "size_px": [
+        32,
+        48
+      ],
+      "size_tiles": [
+        2,
+        3
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "fir",
+        "pine",
+        "single_tree"
+      ],
+      "source_rect": [
+        1306,
+        214,
+        68,
+        96
+      ]
+    },
+    {
+      "id": "forest.tree.single.19",
+      "kind": "sprite",
+      "file": "sprites/trees/single_tree_19.png",
+      "size_px": [
+        32,
+        48
+      ],
+      "size_tiles": [
+        2,
+        3
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "fir",
+        "pine",
+        "single_tree"
+      ],
+      "source_rect": [
+        1374,
+        214,
+        68,
+        96
+      ]
+    },
+    {
+      "id": "forest.tree.single.20",
+      "kind": "sprite",
+      "file": "sprites/trees/single_tree_20.png",
+      "size_px": [
+        32,
+        48
+      ],
+      "size_tiles": [
+        2,
+        3
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "fir",
+        "pine",
+        "single_tree"
+      ],
+      "source_rect": [
+        1441,
+        214,
+        68,
+        96
+      ]
+    },
+    {
+      "id": "forest.cluster.cluster_2x2_01",
+      "kind": "sprite",
+      "file": "sprites/clusters/cluster_2x2_01.png",
+      "size_px": [
+        64,
+        64
+      ],
+      "size_tiles": [
+        4,
+        4
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "forest_cluster",
+        "fir",
+        "pine"
+      ],
+      "source_rect": [
+        835,
+        365,
+        88,
+        104
+      ]
+    },
+    {
+      "id": "forest.cluster.cluster_2x2_02",
+      "kind": "sprite",
+      "file": "sprites/clusters/cluster_2x2_02.png",
+      "size_px": [
+        64,
+        64
+      ],
+      "size_tiles": [
+        4,
+        4
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "forest_cluster",
+        "fir",
+        "pine"
+      ],
+      "source_rect": [
+        915,
+        365,
+        88,
+        104
+      ]
+    },
+    {
+      "id": "forest.cluster.cluster_3x2_01",
+      "kind": "sprite",
+      "file": "sprites/clusters/cluster_3x2_01.png",
+      "size_px": [
+        80,
+        64
+      ],
+      "size_tiles": [
+        5,
+        4
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "forest_cluster",
+        "fir",
+        "pine"
+      ],
+      "source_rect": [
+        995,
+        365,
+        110,
+        104
+      ]
+    },
+    {
+      "id": "forest.cluster.cluster_3x3_01",
+      "kind": "sprite",
+      "file": "sprites/clusters/cluster_3x3_01.png",
+      "size_px": [
+        96,
+        80
+      ],
+      "size_tiles": [
+        6,
+        5
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "forest_cluster",
+        "fir",
+        "pine"
+      ],
+      "source_rect": [
+        1100,
+        360,
+        126,
+        112
+      ]
+    },
+    {
+      "id": "forest.cluster.cluster_3x3_02",
+      "kind": "sprite",
+      "file": "sprites/clusters/cluster_3x3_02.png",
+      "size_px": [
+        96,
+        80
+      ],
+      "size_tiles": [
+        6,
+        5
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "forest_cluster",
+        "fir",
+        "pine"
+      ],
+      "source_rect": [
+        1200,
+        360,
+        126,
+        112
+      ]
+    },
+    {
+      "id": "forest.bush.bush_01",
+      "kind": "sprite",
+      "file": "sprites/bushes/bush_01.png",
+      "size_px": [
+        32,
+        24
+      ],
+      "size_tiles": [
+        2,
+        1.5
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "bush",
+        "low_vegetation"
+      ],
+      "source_rect": [
+        1316,
+        376,
+        68,
+        42
+      ]
+    },
+    {
+      "id": "forest.bush.bush_02",
+      "kind": "sprite",
+      "file": "sprites/bushes/bush_02.png",
+      "size_px": [
+        32,
+        24
+      ],
+      "size_tiles": [
+        2,
+        1.5
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "bush",
+        "low_vegetation"
+      ],
+      "source_rect": [
+        1386,
+        376,
+        68,
+        42
+      ]
+    },
+    {
+      "id": "forest.bush.bush_03",
+      "kind": "sprite",
+      "file": "sprites/bushes/bush_03.png",
+      "size_px": [
+        32,
+        24
+      ],
+      "size_tiles": [
+        2,
+        1.5
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "bush",
+        "low_vegetation"
+      ],
+      "source_rect": [
+        1456,
+        376,
+        68,
+        42
+      ]
+    },
+    {
+      "id": "forest.bush.bush_04",
+      "kind": "sprite",
+      "file": "sprites/bushes/bush_04.png",
+      "size_px": [
+        32,
+        24
+      ],
+      "size_tiles": [
+        2,
+        1.5
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "bush",
+        "low_vegetation"
+      ],
+      "source_rect": [
+        1316,
+        448,
+        68,
+        42
+      ]
+    },
+    {
+      "id": "forest.bush.bush_05",
+      "kind": "sprite",
+      "file": "sprites/bushes/bush_05.png",
+      "size_px": [
+        32,
+        24
+      ],
+      "size_tiles": [
+        2,
+        1.5
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "bush",
+        "low_vegetation"
+      ],
+      "source_rect": [
+        1386,
+        448,
+        68,
+        42
+      ]
+    },
+    {
+      "id": "forest.bush.bush_06",
+      "kind": "sprite",
+      "file": "sprites/bushes/bush_06.png",
+      "size_px": [
+        32,
+        24
+      ],
+      "size_tiles": [
+        2,
+        1.5
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "bush",
+        "low_vegetation"
+      ],
+      "source_rect": [
+        1456,
+        448,
+        68,
+        42
+      ]
+    },
+    {
+      "id": "forest.overlay.canopy_01",
+      "kind": "overlay",
+      "file": "overlays/canopy_01.png",
+      "size_px": [
+        48,
+        48
+      ],
+      "size_tiles": [
+        3,
+        3
+      ],
+      "anchor": "center",
+      "layer": "forest_canopy",
+      "tags": [
+        "canopy",
+        "overlay"
+      ],
+      "source_rect": [
+        840,
+        540,
+        82,
+        68
+      ]
+    },
+    {
+      "id": "forest.overlay.canopy_02",
+      "kind": "overlay",
+      "file": "overlays/canopy_02.png",
+      "size_px": [
+        48,
+        48
+      ],
+      "size_tiles": [
+        3,
+        3
+      ],
+      "anchor": "center",
+      "layer": "forest_canopy",
+      "tags": [
+        "canopy",
+        "overlay"
+      ],
+      "source_rect": [
+        930,
+        540,
+        82,
+        68
+      ]
+    },
+    {
+      "id": "forest.overlay.canopy_03",
+      "kind": "overlay",
+      "file": "overlays/canopy_03.png",
+      "size_px": [
+        48,
+        48
+      ],
+      "size_tiles": [
+        3,
+        3
+      ],
+      "anchor": "center",
+      "layer": "forest_canopy",
+      "tags": [
+        "canopy",
+        "overlay"
+      ],
+      "source_rect": [
+        1025,
+        540,
+        82,
+        68
+      ]
+    },
+    {
+      "id": "forest.overlay.canopy_04",
+      "kind": "overlay",
+      "file": "overlays/canopy_04.png",
+      "size_px": [
+        48,
+        48
+      ],
+      "size_tiles": [
+        3,
+        3
+      ],
+      "anchor": "center",
+      "layer": "forest_canopy",
+      "tags": [
+        "canopy",
+        "overlay"
+      ],
+      "source_rect": [
+        1122,
+        540,
+        82,
+        68
+      ]
+    },
+    {
+      "id": "forest.overlay.shadow_01",
+      "kind": "overlay",
+      "file": "overlays/shadow_01.png",
+      "size_px": [
+        48,
+        32
+      ],
+      "size_tiles": [
+        3,
+        2
+      ],
+      "anchor": "center",
+      "layer": "shadow_overlay",
+      "tags": [
+        "shadow",
+        "canopy_shadow"
+      ],
+      "source_rect": [
+        1225,
+        540,
+        88,
+        64
+      ]
+    },
+    {
+      "id": "forest.overlay.shadow_02",
+      "kind": "overlay",
+      "file": "overlays/shadow_02.png",
+      "size_px": [
+        48,
+        32
+      ],
+      "size_tiles": [
+        3,
+        2
+      ],
+      "anchor": "center",
+      "layer": "shadow_overlay",
+      "tags": [
+        "shadow",
+        "canopy_shadow"
+      ],
+      "source_rect": [
+        1320,
+        540,
+        88,
+        64
+      ]
+    },
+    {
+      "id": "forest.overlay.shadow_03",
+      "kind": "overlay",
+      "file": "overlays/shadow_03.png",
+      "size_px": [
+        48,
+        32
+      ],
+      "size_tiles": [
+        3,
+        2
+      ],
+      "anchor": "center",
+      "layer": "shadow_overlay",
+      "tags": [
+        "shadow",
+        "canopy_shadow"
+      ],
+      "source_rect": [
+        1408,
+        540,
+        88,
+        64
+      ]
+    },
+    {
+      "id": "forest.prop.stump_01",
+      "kind": "sprite",
+      "file": "sprites/props/stump_01.png",
+      "size_px": [
+        32,
+        32
+      ],
+      "size_tiles": [
+        2.0,
+        2.0
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "stump",
+        "forest_prop"
+      ],
+      "source_rect": [
+        840,
+        680,
+        72,
+        56
+      ]
+    },
+    {
+      "id": "forest.prop.stump_02",
+      "kind": "sprite",
+      "file": "sprites/props/stump_02.png",
+      "size_px": [
+        32,
+        32
+      ],
+      "size_tiles": [
+        2.0,
+        2.0
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "stump",
+        "forest_prop"
+      ],
+      "source_rect": [
+        925,
+        680,
+        72,
+        56
+      ]
+    },
+    {
+      "id": "forest.prop.stump_03",
+      "kind": "sprite",
+      "file": "sprites/props/stump_03.png",
+      "size_px": [
+        32,
+        32
+      ],
+      "size_tiles": [
+        2.0,
+        2.0
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "stump",
+        "forest_prop"
+      ],
+      "source_rect": [
+        1010,
+        680,
+        72,
+        56
+      ]
+    },
+    {
+      "id": "forest.prop.log_01",
+      "kind": "sprite",
+      "file": "sprites/props/log_01.png",
+      "size_px": [
+        48,
+        24
+      ],
+      "size_tiles": [
+        3.0,
+        1.5
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "log",
+        "forest_prop"
+      ],
+      "source_rect": [
+        1090,
+        680,
+        92,
+        52
+      ]
+    },
+    {
+      "id": "forest.prop.log_02",
+      "kind": "sprite",
+      "file": "sprites/props/log_02.png",
+      "size_px": [
+        48,
+        24
+      ],
+      "size_tiles": [
+        3.0,
+        1.5
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "log",
+        "forest_prop"
+      ],
+      "source_rect": [
+        1185,
+        680,
+        92,
+        52
+      ]
+    },
+    {
+      "id": "forest.prop.log_03",
+      "kind": "sprite",
+      "file": "sprites/props/log_03.png",
+      "size_px": [
+        48,
+        24
+      ],
+      "size_tiles": [
+        3.0,
+        1.5
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "log",
+        "forest_prop"
+      ],
+      "source_rect": [
+        1280,
+        680,
+        92,
+        52
+      ]
+    },
+    {
+      "id": "forest.prop.branch_01",
+      "kind": "sprite",
+      "file": "sprites/props/branch_01.png",
+      "size_px": [
+        32,
+        24
+      ],
+      "size_tiles": [
+        2.0,
+        1.5
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "branch",
+        "forest_prop"
+      ],
+      "source_rect": [
+        840,
+        775,
+        74,
+        42
+      ]
+    },
+    {
+      "id": "forest.prop.branch_02",
+      "kind": "sprite",
+      "file": "sprites/props/branch_02.png",
+      "size_px": [
+        32,
+        24
+      ],
+      "size_tiles": [
+        2.0,
+        1.5
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "branch",
+        "forest_prop"
+      ],
+      "source_rect": [
+        925,
+        775,
+        74,
+        42
+      ]
+    },
+    {
+      "id": "forest.prop.branch_03",
+      "kind": "sprite",
+      "file": "sprites/props/branch_03.png",
+      "size_px": [
+        32,
+        24
+      ],
+      "size_tiles": [
+        2.0,
+        1.5
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "branch",
+        "forest_prop"
+      ],
+      "source_rect": [
+        1010,
+        775,
+        74,
+        42
+      ]
+    },
+    {
+      "id": "forest.prop.rock_01",
+      "kind": "sprite",
+      "file": "sprites/props/rock_01.png",
+      "size_px": [
+        32,
+        32
+      ],
+      "size_tiles": [
+        2.0,
+        2.0
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "rock",
+        "forest_prop"
+      ],
+      "source_rect": [
+        1098,
+        760,
+        72,
+        58
+      ]
+    },
+    {
+      "id": "forest.prop.rock_02",
+      "kind": "sprite",
+      "file": "sprites/props/rock_02.png",
+      "size_px": [
+        32,
+        32
+      ],
+      "size_tiles": [
+        2.0,
+        2.0
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "rock",
+        "forest_prop"
+      ],
+      "source_rect": [
+        1190,
+        760,
+        72,
+        58
+      ]
+    },
+    {
+      "id": "forest.prop.rock_03",
+      "kind": "sprite",
+      "file": "sprites/props/rock_03.png",
+      "size_px": [
+        32,
+        32
+      ],
+      "size_tiles": [
+        2.0,
+        2.0
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "rock",
+        "forest_prop"
+      ],
+      "source_rect": [
+        1280,
+        760,
+        72,
+        58
+      ]
+    },
+    {
+      "id": "forest.prop.mushroom_01",
+      "kind": "sprite",
+      "file": "sprites/props/mushroom_01.png",
+      "size_px": [
+        32,
+        24
+      ],
+      "size_tiles": [
+        2.0,
+        1.5
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "mushroom",
+        "forest_prop"
+      ],
+      "source_rect": [
+        835,
+        850,
+        74,
+        52
+      ]
+    },
+    {
+      "id": "forest.prop.mushroom_02",
+      "kind": "sprite",
+      "file": "sprites/props/mushroom_02.png",
+      "size_px": [
+        32,
+        24
+      ],
+      "size_tiles": [
+        2.0,
+        1.5
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "mushroom",
+        "forest_prop"
+      ],
+      "source_rect": [
+        925,
+        850,
+        74,
+        52
+      ]
+    },
+    {
+      "id": "forest.prop.fern_01",
+      "kind": "sprite",
+      "file": "sprites/props/fern_01.png",
+      "size_px": [
+        40,
+        32
+      ],
+      "size_tiles": [
+        2.5,
+        2.0
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "fern",
+        "forest_prop"
+      ],
+      "source_rect": [
+        1035,
+        835,
+        90,
+        74
+      ]
+    },
+    {
+      "id": "forest.prop.fern_02",
+      "kind": "sprite",
+      "file": "sprites/props/fern_02.png",
+      "size_px": [
+        40,
+        32
+      ],
+      "size_tiles": [
+        2.5,
+        2.0
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "fern",
+        "forest_prop"
+      ],
+      "source_rect": [
+        1135,
+        835,
+        90,
+        74
+      ]
+    },
+    {
+      "id": "forest.prop.fern_03",
+      "kind": "sprite",
+      "file": "sprites/props/fern_03.png",
+      "size_px": [
+        40,
+        32
+      ],
+      "size_tiles": [
+        2.5,
+        2.0
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "fern",
+        "forest_prop"
+      ],
+      "source_rect": [
+        1230,
+        835,
+        90,
+        74
+      ]
+    },
+    {
+      "id": "forest.overlay.edge_darkening_01",
+      "kind": "overlay",
+      "file": "overlays/edge_darkening_01.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "center",
+      "layer": "atmosphere_overlay",
+      "tags": [
+        "atmosphere",
+        "forest"
+      ]
+    },
+    {
+      "id": "forest.overlay.moss_glow_01",
+      "kind": "overlay",
+      "file": "overlays/moss_glow_01.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "center",
+      "layer": "atmosphere_overlay",
+      "tags": [
+        "atmosphere",
+        "forest"
+      ]
+    },
+    {
+      "id": "forest.overlay.forest_depth_shadow_01",
+      "kind": "overlay",
+      "file": "overlays/forest_depth_shadow_01.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "center",
+      "layer": "atmosphere_overlay",
+      "tags": [
+        "atmosphere",
+        "forest"
+      ]
+    }
+  ]
+}

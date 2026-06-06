@@ -460,6 +460,7 @@ void Application::LoadUiFont() {
 void Application::ShutdownWindow() {
   if (window_initialized_) {
     UnloadFinalRenderTexture();
+    level_renderer_.ResetForestAssets();
     ui_font_.Reset();
     CloseWindow();
     window_initialized_ = false;
@@ -716,6 +717,16 @@ void Application::UpdateMapPreparation() {
   }
 
   prepared_level_ = visual_pipeline_.prepared_level();
+  const bool forest_assets_loaded = level_renderer_.PreloadForestAssets();
+  if (forest_assets_loaded) {
+    logger_.Info("render",
+                 "forest assets loaded textures=" +
+                     std::to_string(
+                         level_renderer_.forest_asset_texture_count()));
+  } else {
+    logger_.Warn("render",
+                 "forest assets are not available; using color fallback");
+  }
   const bool final_render_loaded = LoadFinalRenderTexture();
   if (developer_config_.log.visual_pipeline_diagnostics &&
       developer_config_.log.visual_pipeline_summary &&

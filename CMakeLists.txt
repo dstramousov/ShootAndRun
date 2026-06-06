@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(ShootAndRun
-  VERSION 0.1.30
+  VERSION 0.1.31
   DESCRIPTION "ShootAndRun C++ raylib bootstrap"
   LANGUAGES CXX
 )
@@ -33,6 +33,7 @@ add_executable(shoot_and_run
   src/platform/process_info.cpp
   src/platform/terminal.cpp
   src/render/debug_overlay.cpp
+  src/render/forest_asset_catalog.cpp
   src/render/level_renderer.cpp
   src/render/menu_renderer.cpp
   src/render/renderer.cpp
