@@ -664,13 +664,17 @@ void Application::UpdateMapPreparation() {
                                            project_config_->map_package_path));
   }
   logger_.Debug("visual_pipeline", prepared_level_->Dump());
-  if (final_render_loaded) {
-    level_render_mode_ = LevelRenderMode::kFinalRenderReference;
+  if (prepared_level_->region_borders.IsValid()) {
+    level_render_mode_ = LevelRenderMode::kCppAnalysis;
   } else if (prepared_level_->prepared_visual_map.loaded &&
              prepared_level_->prepared_visual_map.HasRenderableLayer()) {
     level_render_mode_ = LevelRenderMode::kPreparedVisualMap;
   } else {
     level_render_mode_ = LevelRenderMode::kRawTerrain;
+  }
+  if (final_render_loaded) {
+    logger_.Info("render",
+                 "final_render loaded as F4 reference only");
   }
   logger_.Info("render", std::string("level view mode=") +
                              LevelRenderModeName(level_render_mode_));
@@ -822,15 +826,18 @@ void Application::UnloadFinalRenderTexture() {
 
 bool Application::LoadFinalRenderTexture() {
   UnloadFinalRenderTexture();
-  if (!prepared_level_.has_value() ||
-      !prepared_level_->prepared_visual_map.loaded) {
-    return false;
+  std::filesystem::path path;
+  if (prepared_level_.has_value() &&
+      prepared_level_->prepared_visual_map.loaded) {
+    path = prepared_level_->prepared_visual_map.final_render_path;
   }
 
-  const std::filesystem::path& path =
-      prepared_level_->prepared_visual_map.final_render_path;
+  if (path.empty() && project_config_.has_value()) {
+    path = project_config_->map_package_path / "../visual_map/final_render.png";
+  }
+
   if (path.empty()) {
-    logger_.Debug("render", "visual_map has no final_render path");
+    logger_.Debug("render", "final_render reference path is not available");
     return false;
   }
 
@@ -855,8 +862,8 @@ bool Application::LoadFinalRenderTexture() {
   }
 
   final_render_texture_loaded_ = true;
-  logger_.Info("render", "final_render loaded path=" + path.string() +
-                             " size=" +
+  logger_.Info("render", "final_render reference loaded path=" +
+                             path.string() + " size=" +
                              std::to_string(final_render_texture_.width) +
                              "x" +
                              std::to_string(final_render_texture_.height));
