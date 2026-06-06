@@ -65,18 +65,21 @@ bool IsRoad(const LevelData& level, int x, int y) {
   return level.cells[ToItem(level.size, x, y)].terrain == TerrainType::kRoad;
 }
 
+std::uint32_t TileHash(int x, int y, std::uint32_t salt) {
+  return (static_cast<std::uint32_t>(x) * 1103515245U) ^
+         (static_cast<std::uint32_t>(y) * 2654435761U) ^ salt;
+}
+
 bool LooksBroken(int x, int y) {
-  const std::uint32_t hash =
-      (static_cast<std::uint32_t>(x) * 1103515245U) ^
-      (static_cast<std::uint32_t>(y) * 2654435761U) ^ 0x7F4A7C15U;
-  return hash % 7U == 0U;
+  return TileHash(x, y, 0x7F4A7C15U) % 9U == 0U;
 }
 
 bool LooksOvergrown(int x, int y) {
-  const std::uint32_t hash =
-      (static_cast<std::uint32_t>(x) * 2246822519U) ^
-      (static_cast<std::uint32_t>(y) * 3266489917U) ^ 0x9E3779B9U;
-  return hash % 3U == 0U;
+  return TileHash(x, y, 0x9E3779B9U) % 6U == 0U;
+}
+
+bool LooksRubble(int x, int y) {
+  return TileHash(x, y, 0xA24BAED5U) % 4U == 0U;
 }
 
 void SetTile(const LevelSize& size, int x, int y, RuinVisualTile tile,
@@ -198,34 +201,44 @@ void PaintRuinDressing(const LevelData& level, const SemanticMasks& masks,
       if (!IsRuinSeed(masks, x, y)) {
         continue;
       }
+
       const std::uint16_t site_id = plan->site_ids[ToItem(level.size, x, y)];
-      for (int dy = -1; dy <= 1; ++dy) {
-        for (int dx = -1; dx <= 1; ++dx) {
-          if (dx == 0 && dy == 0) {
-            continue;
-          }
-          const int nx = x + dx;
-          const int ny = y + dy;
-          if (!IsOpenForRuinDressing(level, nx, ny)) {
-            continue;
-          }
-          const std::size_t neighbor_item = ToItem(level.size, nx, ny);
-          if (plan->tiles[neighbor_item] != 0) {
-            continue;
-          }
-          if (site_id != 0 && plan->site_ids[neighbor_item] == 0) {
-            plan->site_ids[neighbor_item] = site_id;
-          }
-          if (IsRoad(level, nx, ny) && (std::abs(dx) + std::abs(dy) == 1)) {
-            SetTile(level.size, nx, ny, RuinVisualTile::kEntrance,
-                    &plan->tiles);
-          } else if (IsWall(masks, x, y) && (std::abs(dx) + std::abs(dy) == 1)) {
-            SetTile(level.size, nx, ny, RuinVisualTile::kRubble,
-                    &plan->tiles);
-          } else if (LooksOvergrown(nx, ny)) {
-            SetTile(level.size, nx, ny, RuinVisualTile::kOvergrownFloor,
-                    &plan->tiles);
-          }
+      const auto source_wall_role =
+          static_cast<RuinVisualTile>(plan->tiles[ToItem(level.size, x, y)]);
+      for (int direction = 0; direction < 4; ++direction) {
+        const int dx = direction == 0 ? -1 : (direction == 1 ? 1 : 0);
+        const int dy = direction == 2 ? -1 : (direction == 3 ? 1 : 0);
+        const int nx = x + dx;
+        const int ny = y + dy;
+        if (!IsOpenForRuinDressing(level, nx, ny)) {
+          continue;
+        }
+
+        const std::size_t neighbor_item = ToItem(level.size, nx, ny);
+        if (plan->tiles[neighbor_item] != 0) {
+          continue;
+        }
+        if (site_id != 0 && plan->site_ids[neighbor_item] == 0) {
+          plan->site_ids[neighbor_item] = site_id;
+        }
+
+        if (IsRoad(level, nx, ny)) {
+          SetTile(level.size, nx, ny, RuinVisualTile::kEntrance,
+                  &plan->tiles);
+          continue;
+        }
+
+        if (IsWall(masks, x, y) && LooksRubble(nx, ny) &&
+            (source_wall_role == RuinVisualTile::kWallBroken ||
+             source_wall_role == RuinVisualTile::kWallCorner ||
+             source_wall_role == RuinVisualTile::kWallEndcap)) {
+          SetTile(level.size, nx, ny, RuinVisualTile::kRubble, &plan->tiles);
+          continue;
+        }
+
+        if (IsRuinFloor(masks, x, y) && LooksOvergrown(nx, ny)) {
+          SetTile(level.size, nx, ny, RuinVisualTile::kOvergrownFloor,
+                  &plan->tiles);
         }
       }
     }

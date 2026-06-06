@@ -125,21 +125,21 @@ Color RuinVisualTileColor(std::uint8_t value) {
   const auto tile = static_cast<visual_pipeline::RuinVisualTile>(value);
   switch (tile) {
     case visual_pipeline::RuinVisualTile::kCrackedFloor:
-      return Color{102, 99, 82, 255};
+      return Color{104, 101, 84, 255};
     case visual_pipeline::RuinVisualTile::kOvergrownFloor:
-      return Color{78, 105, 66, 255};
+      return Color{78, 106, 66, 255};
     case visual_pipeline::RuinVisualTile::kWallIntact:
-      return Color{74, 65, 54, 255};
+      return Color{55, 49, 42, 255};
     case visual_pipeline::RuinVisualTile::kWallBroken:
-      return Color{96, 82, 64, 255};
+      return Color{78, 68, 55, 255};
     case visual_pipeline::RuinVisualTile::kWallCorner:
-      return Color{112, 96, 72, 255};
+      return Color{64, 56, 46, 255};
     case visual_pipeline::RuinVisualTile::kWallEndcap:
-      return Color{126, 108, 80, 255};
+      return Color{88, 76, 59, 255};
     case visual_pipeline::RuinVisualTile::kRubble:
-      return Color{132, 112, 78, 255};
+      return Color{124, 104, 76, 255};
     case visual_pipeline::RuinVisualTile::kEntrance:
-      return Color{150, 123, 75, 255};
+      return Color{148, 119, 72, 255};
     case visual_pipeline::RuinVisualTile::kNone:
       return Color{78, 104, 58, 255};
   }

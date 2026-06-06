@@ -531,21 +531,21 @@ RgbaColor RuinVisualColor(std::uint8_t value) {
   const RuinVisualTile tile = static_cast<RuinVisualTile>(value);
   switch (tile) {
     case RuinVisualTile::kCrackedFloor:
-      return RgbaColor{112, 106, 87, 255};
+      return RgbaColor{106, 102, 84, 255};
     case RuinVisualTile::kOvergrownFloor:
-      return RgbaColor{88, 112, 68, 255};
+      return RgbaColor{82, 110, 68, 255};
     case RuinVisualTile::kWallIntact:
-      return RgbaColor{82, 74, 62, 255};
+      return RgbaColor{58, 52, 44, 255};
     case RuinVisualTile::kWallBroken:
-      return RgbaColor{104, 91, 72, 255};
+      return RgbaColor{82, 72, 58, 255};
     case RuinVisualTile::kWallCorner:
-      return RgbaColor{122, 107, 82, 255};
+      return RgbaColor{66, 58, 48, 255};
     case RuinVisualTile::kWallEndcap:
-      return RgbaColor{132, 116, 86, 255};
+      return RgbaColor{92, 80, 62, 255};
     case RuinVisualTile::kRubble:
-      return RgbaColor{144, 124, 84, 255};
+      return RgbaColor{128, 108, 78, 255};
     case RuinVisualTile::kEntrance:
-      return RgbaColor{162, 133, 78, 255};
+      return RgbaColor{154, 124, 74, 255};
     case RuinVisualTile::kNone:
       return kBlack;
   }

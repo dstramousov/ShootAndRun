@@ -213,3 +213,12 @@
 - Added visual-only ruin floor, rubble, and entrance roles for cleaner preview rendering.
 - Added ruin debug artifacts: `06_ruin_regions.png`, `06_ruin_compositions.png`, and `06_ruins_pass.json`.
 - Updated the visual intent preview to draw ruin compositions instead of raw black wall lines.
+
+
+## v0.1.24 -> v0.1.25
+
+- Bumped CMake project and runtime application version to `0.1.25`.
+- Finalized ruin preview readability for the current ruin pass.
+- Reduced visual-only ruin dressing spread so rubble and overgrowth no longer flood central ruin sites.
+- Increased non-black wall contrast so wall cores remain readable without returning to the old technical black-line look.
+- Kept ruin rendering visual-only: gameplay collision, markers, routes, and runtime grids remain unchanged.
