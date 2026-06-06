@@ -225,6 +225,24 @@ std::string BuildMapPreparationReport(
     report << CountLine("map edge", summary.map_edge_tile_count) << "\n";
   }
 
+  if (prepared_level.forest_visual_plan.IsValid()) {
+    const visual_pipeline::ForestVisualSummary& summary =
+        prepared_level.forest_visual_plan.summary;
+    report << "\nForest visual:\n";
+    report << CountLine("edge band", summary.forest_edge_tiles) << "\n";
+    report << CountLine("mid band", summary.forest_mid_tiles) << "\n";
+    report << CountLine("deep band", summary.forest_deep_tiles) << "\n";
+    report << CountLine("route influence", summary.route_influenced_tiles)
+           << "\n";
+    report << "\nClearings:\n";
+    report << CountLine("main", summary.main_clearing_tiles) << "\n";
+    report << CountLine("side", summary.side_clearing_tiles) << "\n";
+    report << CountLine("connector", summary.connector_corridor_tiles)
+           << "\n";
+    report << CountLine("micro", summary.micro_clearing_tiles) << "\n";
+    report << CountLine("scene", summary.scene_space_tiles) << "\n";
+  }
+
   std::vector<std::string> warnings;
   if (prepared_level.semantic_masks.IsValid() &&
       prepared_level.semantic_masks.summary.unknown_tiles > 0) {

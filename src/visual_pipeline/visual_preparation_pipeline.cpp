@@ -15,6 +15,7 @@
 #include "visual_pipeline/debug_artifact_writer.h"
 #include "visual_pipeline/steps/build_semantic_masks_step.h"
 #include "visual_pipeline/steps/classify_region_borders_step.h"
+#include "visual_pipeline/steps/build_forest_visual_plan_step.h"
 #include "visual_pipeline/steps/build_terrain_regions_step.h"
 #include "visual_pipeline/terrain_regions.h"
 #include "visual_pipeline/region_borders.h"
@@ -269,6 +270,40 @@ void AddRegionBorderDiagnostics(const RegionBorderSummary& summary,
   if (summary.complex_tile_count > 0) {
     report->warnings.push_back("complex border tiles=" +
                                std::to_string(summary.complex_tile_count));
+  }
+}
+
+std::string ForestVisualSummaryLine(const ForestVisualSummary& summary) {
+  return "forest_visual edge=" + std::to_string(summary.forest_edge_tiles) +
+         " mid=" + std::to_string(summary.forest_mid_tiles) +
+         " deep=" + std::to_string(summary.forest_deep_tiles) +
+         " route_influence=" +
+         std::to_string(summary.route_influenced_tiles);
+}
+
+std::string ClearingRoleSummaryLine(const ForestVisualSummary& summary) {
+  return "clearing_roles main=" +
+         std::to_string(summary.main_clearing_tiles) +
+         " side=" + std::to_string(summary.side_clearing_tiles) +
+         " connector=" +
+         std::to_string(summary.connector_corridor_tiles) +
+         " micro=" + std::to_string(summary.micro_clearing_tiles) +
+         " scene=" + std::to_string(summary.scene_space_tiles);
+}
+
+void AddForestVisualDiagnostics(const ForestVisualSummary& summary,
+                                PipelineStepReport* report) {
+  if (report == nullptr) {
+    return;
+  }
+
+  report->summaries.push_back(ForestVisualSummaryLine(summary));
+  report->summaries.push_back(ClearingRoleSummaryLine(summary));
+  if (summary.forest_tiles > 0 && summary.forest_deep_tiles == 0) {
+    report->warnings.push_back("deep forest band is empty");
+  }
+  if (summary.route_influenced_tiles == 0) {
+    report->warnings.push_back("route influence is empty");
   }
 }
 
@@ -548,18 +583,26 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
   }
 
   if (step.name == "Build forest masses") {
-    if (HasPreparedVisualMap(prepared_level_)) {
-      report->summaries.push_back(
-          "forest masses using prepared visual_map unique_tiles=" +
-          std::to_string(
-              prepared_level_.prepared_visual_map.unique_tile_id_count));
+    std::string error;
+    if (!RunBuildForestVisualPlanStep(level, &prepared_level_, &error)) {
+      Fail(error.empty() ? "forest visual plan step failed" : error);
       return;
     }
-    prepared_level_.visual_layer_count =
-        std::max(prepared_level_.visual_layer_count, 3);
-    report->summaries.push_back("forest mass placeholder layers=" +
-                                std::to_string(
-                                    prepared_level_.visual_layer_count));
+
+    if (!HasPreparedVisualMap(prepared_level_)) {
+      prepared_level_.visual_layer_count =
+          std::max(prepared_level_.visual_layer_count, 3);
+    }
+    AddForestVisualDiagnostics(prepared_level_.forest_visual_plan.summary,
+                               report);
+    if (options_.visual_pipeline_config.write_debug_artifacts) {
+      std::string artifact_error;
+      const DebugArtifactWriter writer(ResolveDebugOutputPath(options_));
+      const bool written = writer.WriteForestVisualArtifacts(
+          prepared_level_.forest_visual_plan, &artifact_error);
+      AddDebugArtifactResult("forest visual plan", written, artifact_error,
+                             report);
+    }
     return;
   }
 

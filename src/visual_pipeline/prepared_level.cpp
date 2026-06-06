@@ -66,6 +66,20 @@ std::string PreparedLevel::Dump() const {
             " }";
   }
 
+  if (forest_visual_plan.IsValid()) {
+    const ForestVisualSummary& summary = forest_visual_plan.summary;
+    dump += ", forest_visual: { edge: " +
+            std::to_string(summary.forest_edge_tiles) +
+            ", mid: " + std::to_string(summary.forest_mid_tiles) +
+            ", deep: " + std::to_string(summary.forest_deep_tiles) +
+            ", main_clearing: " +
+            std::to_string(summary.main_clearing_tiles) +
+            ", connector: " +
+            std::to_string(summary.connector_corridor_tiles) +
+            ", scene: " + std::to_string(summary.scene_space_tiles) +
+            " }";
+  }
+
   if (prepared_visual_map.loaded) {
     dump += ", prepared_visual_map: { layers: " +
             std::to_string(prepared_visual_map.visual_layer_count) +

@@ -15,6 +15,7 @@
 #include <vector>
 
 #include "level/terrain_type.h"
+#include "visual_pipeline/forest_visual_plan.h"
 
 namespace sar::visual_pipeline {
 namespace {
@@ -473,6 +474,82 @@ std::vector<RgbaColor> BuildObjectFootprintImage(const LevelData& level) {
   return pixels;
 }
 
+RgbaColor ForestDepthColor(std::uint8_t value) {
+  const ForestDepthBand band = static_cast<ForestDepthBand>(value);
+  switch (band) {
+    case ForestDepthBand::kEdge:
+      return RgbaColor{44, 96, 52, 255};
+    case ForestDepthBand::kMid:
+      return RgbaColor{24, 73, 42, 255};
+    case ForestDepthBand::kDeep:
+      return RgbaColor{9, 42, 28, 255};
+    case ForestDepthBand::kNone:
+      return kBlack;
+  }
+  return kBlack;
+}
+
+RgbaColor ClearingRoleColor(std::uint8_t value) {
+  const ClearingRole role = static_cast<ClearingRole>(value);
+  switch (role) {
+    case ClearingRole::kMainClearing:
+      return RgbaColor{150, 152, 76, 255};
+    case ClearingRole::kSideClearing:
+      return RgbaColor{92, 132, 66, 255};
+    case ClearingRole::kConnectorCorridor:
+      return RgbaColor{156, 122, 72, 255};
+    case ClearingRole::kMicroClearing:
+      return RgbaColor{112, 152, 84, 255};
+    case ClearingRole::kSceneSpace:
+      return RgbaColor{146, 126, 86, 255};
+    case ClearingRole::kNone:
+      return kBlack;
+  }
+  return kBlack;
+}
+
+std::vector<RgbaColor> BuildForestDepthImage(const ForestVisualPlan& plan) {
+  std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
+                                static_cast<std::size_t>(plan.size.height),
+                                kBlack);
+  for (std::size_t i = 0; i < plan.forest_depth.size(); ++i) {
+    pixels[i] = ForestDepthColor(plan.forest_depth[i]);
+  }
+  return pixels;
+}
+
+std::vector<RgbaColor> BuildForestEdgeImage(const ForestVisualPlan& plan) {
+  std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
+                                static_cast<std::size_t>(plan.size.height),
+                                kBlack);
+  for (std::size_t i = 0; i < plan.forest_edges.size(); ++i) {
+    if (plan.forest_edges[i] != 0) {
+      pixels[i] = RgbaColor{226, 178, 76, 255};
+    }
+  }
+  return pixels;
+}
+
+std::vector<RgbaColor> BuildForestMassImage(const ForestVisualPlan& plan) {
+  std::vector<RgbaColor> pixels = BuildForestDepthImage(plan);
+  for (std::size_t i = 0; i < plan.route_influence.size(); ++i) {
+    if (plan.route_influence[i] >= 3 && pixels[i].a != 0) {
+      pixels[i] = RgbaColor{34, 72, 38, 255};
+    }
+  }
+  return pixels;
+}
+
+std::vector<RgbaColor> BuildClearingRoleImage(const ForestVisualPlan& plan) {
+  std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
+                                static_cast<std::size_t>(plan.size.height),
+                                kBlack);
+  for (std::size_t i = 0; i < plan.clearing_roles.size(); ++i) {
+    pixels[i] = ClearingRoleColor(plan.clearing_roles[i]);
+  }
+  return pixels;
+}
+
 std::map<std::string, int> CountObjectsByType(const LevelData& level) {
   std::map<std::string, int> counts;
   for (const RuntimeObject& object : level.objects) {
@@ -773,6 +850,94 @@ bool DebugArtifactWriter::WriteSemanticLinkArtifacts(
 
   return WriteTextFile(output_root_ / "reports" / "03_semantic_links.json",
                        json.str(), error);
+}
+
+bool DebugArtifactWriter::WriteForestVisualArtifacts(
+    const ForestVisualPlan& plan, std::string* error) const {
+  if (!plan.IsValid()) {
+    if (error != nullptr) {
+      *error = "forest visual plan is invalid for debug artifact writing";
+    }
+    return false;
+  }
+
+  const std::filesystem::path directory = output_root_ / "passes";
+  const std::vector<std::pair<std::string, std::vector<RgbaColor>>> images = {
+      {"03_forest_depth.png", BuildForestDepthImage(plan)},
+      {"03_forest_edges.png", BuildForestEdgeImage(plan)},
+      {"03_forest_mass.png", BuildForestMassImage(plan)},
+      {"04_clearing_roles.png", BuildClearingRoleImage(plan)},
+  };
+
+  for (const auto& [filename, pixels] : images) {
+    if (!WritePngRgba(directory / filename, plan.size.width,
+                      plan.size.height, pixels, error)) {
+      return false;
+    }
+  }
+
+  const ForestVisualSummary& summary = plan.summary;
+  const int total_forest = summary.forest_tiles;
+  std::ostringstream forest_json;
+  forest_json << "{\n";
+  forest_json << "  \"schema_version\": \"visual-debug-forest-normalization-v1\",\n";
+  forest_json << "  \"status\": \"ok\",\n";
+  forest_json << "  \"width\": " << plan.size.width << ",\n";
+  forest_json << "  \"height\": " << plan.size.height << ",\n";
+  forest_json << "  \"forest_depth\": {\n";
+  AppendJsonCountField(&forest_json, "edge", summary.forest_edge_tiles,
+                       total_forest, true);
+  AppendJsonCountField(&forest_json, "mid", summary.forest_mid_tiles,
+                       total_forest, true);
+  AppendJsonCountField(&forest_json, "deep", summary.forest_deep_tiles,
+                       total_forest, false);
+  forest_json << "  },\n";
+  forest_json << "  \"route_influenced_tiles\": "
+              << summary.route_influenced_tiles << ",\n";
+  forest_json << "  \"artifacts\": [\n";
+  forest_json << "    \"passes/03_forest_depth.png\",\n";
+  forest_json << "    \"passes/03_forest_edges.png\",\n";
+  forest_json << "    \"passes/03_forest_mass.png\"\n";
+  forest_json << "  ]\n";
+  forest_json << "}\n";
+  if (!WriteTextFile(output_root_ / "reports" /
+                         "03_forest_normalization.json",
+                     forest_json.str(), error)) {
+    return false;
+  }
+
+  const int total_clearings = summary.main_clearing_tiles +
+                              summary.side_clearing_tiles +
+                              summary.connector_corridor_tiles +
+                              summary.micro_clearing_tiles +
+                              summary.scene_space_tiles;
+  std::ostringstream clearing_json;
+  clearing_json << "{\n";
+  clearing_json << "  \"schema_version\": \"visual-debug-clearing-normalization-v1\",\n";
+  clearing_json << "  \"status\": \"ok\",\n";
+  clearing_json << "  \"width\": " << plan.size.width << ",\n";
+  clearing_json << "  \"height\": " << plan.size.height << ",\n";
+  clearing_json << "  \"clearing_roles\": {\n";
+  AppendJsonCountField(&clearing_json, "main_clearing",
+                       summary.main_clearing_tiles, total_clearings, true);
+  AppendJsonCountField(&clearing_json, "side_clearing",
+                       summary.side_clearing_tiles, total_clearings, true);
+  AppendJsonCountField(&clearing_json, "connector_corridor",
+                       summary.connector_corridor_tiles, total_clearings,
+                       true);
+  AppendJsonCountField(&clearing_json, "micro_clearing",
+                       summary.micro_clearing_tiles, total_clearings, true);
+  AppendJsonCountField(&clearing_json, "scene_space",
+                       summary.scene_space_tiles, total_clearings, false);
+  clearing_json << "  },\n";
+  clearing_json << "  \"artifacts\": [\n";
+  clearing_json << "    \"passes/04_clearing_roles.png\"\n";
+  clearing_json << "  ]\n";
+  clearing_json << "}\n";
+
+  return WriteTextFile(output_root_ / "reports" /
+                           "04_clearing_normalization.json",
+                       clearing_json.str(), error);
 }
 
 bool DebugArtifactWriter::WriteTerrainRegionArtifacts(

@@ -6,6 +6,7 @@
 
 #include "level/level_data.h"
 #include "visual_pipeline/semantic_masks.h"
+#include "visual_pipeline/forest_visual_plan.h"
 #include "visual_pipeline/terrain_regions.h"
 
 namespace sar::visual_pipeline {
@@ -53,6 +54,16 @@ class DebugArtifactWriter {
    * @return True when all artifacts were written successfully.
    */
   bool WriteSemanticLinkArtifacts(const LevelData& level,
+                                  std::string* error) const;
+
+  /**
+   * @brief Writes forest mass and clearing role PNGs and JSON reports.
+   *
+   * @param plan Forest visual plan produced by the visual pipeline.
+   * @param error Error text populated on failure.
+   * @return True when all artifacts were written successfully.
+   */
+  bool WriteForestVisualArtifacts(const ForestVisualPlan& plan,
                                   std::string* error) const;
 
   /**

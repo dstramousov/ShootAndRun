@@ -11,6 +11,7 @@
 #include <string_view>
 
 #include "level/terrain_type.h"
+#include "visual_pipeline/forest_visual_plan.h"
 #include "visual_pipeline/region_borders.h"
 #include "visual_pipeline/visual_map_data.h"
 
@@ -45,6 +46,41 @@ Color TerrainColor(TerrainType terrain) {
   }
 
   return Color{138, 62, 128, 255};
+}
+
+Color ForestDepthColor(std::uint8_t value) {
+  const auto band =
+      static_cast<visual_pipeline::ForestDepthBand>(value);
+  switch (band) {
+    case visual_pipeline::ForestDepthBand::kEdge:
+      return Color{38, 88, 48, 255};
+    case visual_pipeline::ForestDepthBand::kMid:
+      return Color{22, 67, 39, 255};
+    case visual_pipeline::ForestDepthBand::kDeep:
+      return Color{10, 42, 27, 255};
+    case visual_pipeline::ForestDepthBand::kNone:
+      return Color{22, 64, 40, 255};
+  }
+  return Color{22, 64, 40, 255};
+}
+
+Color ClearingRoleColor(std::uint8_t value) {
+  const auto role = static_cast<visual_pipeline::ClearingRole>(value);
+  switch (role) {
+    case visual_pipeline::ClearingRole::kMainClearing:
+      return Color{114, 132, 70, 255};
+    case visual_pipeline::ClearingRole::kSideClearing:
+      return Color{78, 112, 58, 255};
+    case visual_pipeline::ClearingRole::kConnectorCorridor:
+      return Color{123, 110, 64, 255};
+    case visual_pipeline::ClearingRole::kMicroClearing:
+      return Color{94, 130, 72, 255};
+    case visual_pipeline::ClearingRole::kSceneSpace:
+      return Color{106, 101, 70, 255};
+    case visual_pipeline::ClearingRole::kNone:
+      return Color{78, 104, 58, 255};
+  }
+  return Color{78, 104, 58, 255};
 }
 
 Color AddTileVariation(Color base, std::string_view key) {
@@ -256,6 +292,52 @@ void DrawRawTerrainTiles(const LevelData& level,
   }
 }
 
+Color CppAnalysisTileColor(
+    const RuntimeCell& cell,
+    const visual_pipeline::ForestVisualPlan* forest_visual_plan,
+    std::size_t index) {
+  if (forest_visual_plan != nullptr && forest_visual_plan->IsValid()) {
+    if (index < forest_visual_plan->forest_depth.size() &&
+        forest_visual_plan->forest_depth[index] != 0) {
+      return ForestDepthColor(forest_visual_plan->forest_depth[index]);
+    }
+    if (index < forest_visual_plan->clearing_roles.size() &&
+        forest_visual_plan->clearing_roles[index] != 0) {
+      return ClearingRoleColor(forest_visual_plan->clearing_roles[index]);
+    }
+    if (index < forest_visual_plan->route_influence.size() &&
+        forest_visual_plan->route_influence[index] >= 3 &&
+        cell.terrain == TerrainType::kRoad) {
+      return Color{154, 120, 66, 255};
+    }
+  }
+  return TerrainColor(cell.terrain);
+}
+
+void DrawCppAnalysisTiles(
+    const LevelData& level,
+    const visual_pipeline::PreparedLevel& prepared_level,
+    const VisibleTileRange& range) {
+  const visual_pipeline::ForestVisualPlan* forest_visual_plan =
+      prepared_level.forest_visual_plan.IsValid()
+          ? &prepared_level.forest_visual_plan
+          : nullptr;
+  for (int y = range.min_y; y <= range.max_y; ++y) {
+    for (int x = range.min_x; x <= range.max_x; ++x) {
+      const int index = y * level.size.width + x;
+      if (index < 0 || index >= static_cast<int>(level.cells.size())) {
+        continue;
+      }
+
+      const auto item = static_cast<std::size_t>(index);
+      const RuntimeCell& cell = level.cells[item];
+      DrawRectangle(x * level.size.tile_size, y * level.size.tile_size,
+                    level.size.tile_size, level.size.tile_size,
+                    CppAnalysisTileColor(cell, forest_visual_plan, item));
+    }
+  }
+}
+
 void DrawAnalysisOverlay(const visual_pipeline::PreparedLevel& prepared_level,
                          int tile_size, float zoom,
                          const VisibleTileRange& range) {
@@ -455,10 +537,12 @@ void LevelRenderer::Draw(const LevelData& level,
                                 level.size.tile_size, range);
     }
   } else {
-    DrawRawTerrainTiles(level, range);
     if (mode == LevelRenderMode::kCppAnalysis && prepared_level != nullptr) {
+      DrawCppAnalysisTiles(level, *prepared_level, range);
       DrawAnalysisOverlay(*prepared_level, level.size.tile_size, view.zoom,
                           range);
+    } else {
+      DrawRawTerrainTiles(level, range);
     }
   }
 
