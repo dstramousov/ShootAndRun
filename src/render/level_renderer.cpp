@@ -386,50 +386,54 @@ bool HasForestAt(const visual_pipeline::ForestVisualPlan& plan, int x, int y) {
          IsForestAssetBand(plan.forest_depth[index]);
 }
 
-ForestAssetBand ToAssetBand(std::uint8_t value) {
-  const auto band = static_cast<visual_pipeline::ForestDepthBand>(value);
-  switch (band) {
-    case visual_pipeline::ForestDepthBand::kEdge:
-      return ForestAssetBand::kEdge;
-    case visual_pipeline::ForestDepthBand::kMid:
-      return ForestAssetBand::kMid;
-    case visual_pipeline::ForestDepthBand::kDeep:
-      return ForestAssetBand::kDeep;
-    case visual_pipeline::ForestDepthBand::kNone:
-      return ForestAssetBand::kEdge;
+int CountForestNeighbors(const visual_pipeline::ForestVisualPlan& plan,
+                         int x, int y) {
+  int count = 0;
+  for (int dy = -1; dy <= 1; ++dy) {
+    for (int dx = -1; dx <= 1; ++dx) {
+      if (dx == 0 && dy == 0) {
+        continue;
+      }
+      if (HasForestAt(plan, x + dx, y + dy)) {
+        ++count;
+      }
+    }
   }
-  return ForestAssetBand::kEdge;
+  return count;
 }
 
-void DrawTextureTile(const ForestAssetTexture& item, int x, int y,
-                     int tile_size) {
-  const Rectangle source{0.0F, 0.0F,
-                         static_cast<float>(item.texture.width),
-                         static_cast<float>(item.texture.height)};
-  const Rectangle destination{static_cast<float>(x * tile_size),
-                              static_cast<float>(y * tile_size),
-                              static_cast<float>(tile_size),
-                              static_cast<float>(tile_size)};
-  DrawTexturePro(item.texture, source, destination, Vector2{0.0F, 0.0F},
-                 0.0F, WHITE);
+int HashSignedOffset(int x, int y, int salt, int max_abs) {
+  const int span = max_abs * 2 + 1;
+  return static_cast<int>(VisualHashTile(x, y, salt) %
+                          static_cast<std::uint32_t>(span)) -
+         max_abs;
+}
+
+Vector2 ForestSpriteJitter(int x, int y, int salt, int max_abs_px) {
+  return Vector2{static_cast<float>(HashSignedOffset(x, y, salt, max_abs_px)),
+                 static_cast<float>(HashSignedOffset(x, y, salt + 11,
+                                                     max_abs_px))};
 }
 
 void DrawAnchoredForestSprite(const ForestAssetTexture& item, int tile_x,
-                              int tile_y, int tile_size) {
+                              int tile_y, int tile_size, Vector2 offset,
+                              Color tint) {
   const float width = static_cast<float>(item.texture.width);
   const float height = static_cast<float>(item.texture.height);
   const float anchor_x = (static_cast<float>(tile_x) + 0.5F) *
-                         static_cast<float>(tile_size);
-  const float anchor_y = static_cast<float>((tile_y + 1) * tile_size);
+                         static_cast<float>(tile_size) +
+                         offset.x;
+  const float anchor_y = static_cast<float>((tile_y + 1) * tile_size) +
+                         offset.y;
   const Rectangle source{0.0F, 0.0F, width, height};
   const Rectangle destination{anchor_x - width * 0.5F, anchor_y - height,
                               width, height};
   DrawTexturePro(item.texture, source, destination, Vector2{0.0F, 0.0F},
-                 0.0F, WHITE);
+                 0.0F, tint);
 }
 
 void DrawForestSpriteShadow(const ForestAssetCatalog& assets, int tile_x,
-                            int tile_y, int tile_size) {
+                            int tile_y, int tile_size, Vector2 offset) {
   const ForestAssetTexture* shadow = assets.PickShadow(tile_x, tile_y);
   if (shadow == nullptr) {
     return;
@@ -437,44 +441,68 @@ void DrawForestSpriteShadow(const ForestAssetCatalog& assets, int tile_x,
   const float width = static_cast<float>(shadow->texture.width);
   const float height = static_cast<float>(shadow->texture.height);
   const float anchor_x = (static_cast<float>(tile_x) + 0.5F) *
-                         static_cast<float>(tile_size);
-  const float anchor_y = static_cast<float>((tile_y + 1) * tile_size);
+                         static_cast<float>(tile_size) +
+                         offset.x;
+  const float anchor_y = static_cast<float>((tile_y + 1) * tile_size) +
+                         offset.y;
   const Rectangle source{0.0F, 0.0F, width, height};
   const Rectangle destination{anchor_x - width * 0.5F,
                               anchor_y - height * 0.55F, width, height};
   DrawTexturePro(shadow->texture, source, destination, Vector2{0.0F, 0.0F},
-                 0.0F, Color{255, 255, 255, 155});
+                 0.0F, Color{255, 255, 255, 105});
 }
 
-void DrawForestAssetGroundTiles(
-    const visual_pipeline::ForestVisualPlan& plan,
-    const ForestAssetCatalog& assets, int tile_size,
-    const VisibleTileRange& range) {
-  for (int y = range.min_y; y <= range.max_y; ++y) {
-    for (int x = range.min_x; x <= range.max_x; ++x) {
-      const std::size_t index = static_cast<std::size_t>(y * plan.size.width + x);
-      if (index >= plan.forest_depth.size() ||
-          !IsForestAssetBand(plan.forest_depth[index])) {
-        continue;
-      }
-
-      const ForestAssetTexture* ground = assets.PickGround(
-          ToAssetBand(plan.forest_depth[index]), x, y);
-      if (ground != nullptr) {
-        DrawTextureTile(*ground, x, y, tile_size);
-      }
-
-      const bool north_open = !HasForestAt(plan, x, y - 1);
-      const bool south_open = !HasForestAt(plan, x, y + 1);
-      const bool east_open = !HasForestAt(plan, x + 1, y);
-      const bool west_open = !HasForestAt(plan, x - 1, y);
-      const ForestAssetTexture* edge = assets.PickEdge(
-          north_open, south_open, east_open, west_open);
-      if (edge != nullptr) {
-        DrawTextureTile(*edge, x, y, tile_size);
-      }
-    }
+bool IsCanopyPlacement(const visual_pipeline::ForestVisualPlan& plan,
+                       int x, int y, std::size_t index) {
+  if (index >= plan.canopy_candidates.size() ||
+      plan.canopy_candidates[index] == 0U) {
+    return false;
   }
+  if (CountForestNeighbors(plan, x, y) < 7) {
+    return false;
+  }
+  return VisualHashTile(x, y, 149) % 86U == 0U;
+}
+
+bool IsTreePlacement(const visual_pipeline::ForestVisualPlan& plan,
+                     visual_pipeline::ForestDepthBand band, int x, int y) {
+  const int neighbor_count = CountForestNeighbors(plan, x, y);
+  std::uint32_t modulo = 34U;
+  int salt = 131;
+  int min_neighbors = 3;
+
+  if (band == visual_pipeline::ForestDepthBand::kMid) {
+    modulo = 27U;
+    salt = 137;
+    min_neighbors = 5;
+  } else if (band == visual_pipeline::ForestDepthBand::kDeep) {
+    modulo = 21U;
+    salt = 139;
+    min_neighbors = 6;
+  }
+
+  if (neighbor_count < min_neighbors) {
+    return false;
+  }
+  return VisualHashTile(x, y, salt) % modulo == 0U;
+}
+
+ForestSpriteBand SpriteBandForDepth(
+    visual_pipeline::ForestDepthBand band) {
+  if (band == visual_pipeline::ForestDepthBand::kMid) {
+    return ForestSpriteBand::kMid;
+  }
+  if (band == visual_pipeline::ForestDepthBand::kDeep) {
+    return ForestSpriteBand::kDeep;
+  }
+  return ForestSpriteBand::kEdge;
+}
+
+Color ForestSpriteTint(visual_pipeline::ForestDepthBand band) {
+  if (band == visual_pipeline::ForestDepthBand::kEdge) {
+    return Color{255, 255, 255, 225};
+  }
+  return Color{255, 255, 255, 240};
 }
 
 void DrawForestAssetSprites(const visual_pipeline::ForestVisualPlan& plan,
@@ -482,7 +510,8 @@ void DrawForestAssetSprites(const visual_pipeline::ForestVisualPlan& plan,
                             const VisibleTileRange& range) {
   for (int y = range.min_y; y <= range.max_y; ++y) {
     for (int x = range.min_x; x <= range.max_x; ++x) {
-      const std::size_t index = static_cast<std::size_t>(y * plan.size.width + x);
+      const std::size_t index =
+          static_cast<std::size_t>(y * plan.size.width + x);
       if (index >= plan.forest_depth.size() ||
           !IsForestAssetBand(plan.forest_depth[index])) {
         continue;
@@ -490,40 +519,34 @@ void DrawForestAssetSprites(const visual_pipeline::ForestVisualPlan& plan,
 
       const auto band = static_cast<visual_pipeline::ForestDepthBand>(
           plan.forest_depth[index]);
-      ForestSpriteBand sprite_band = ForestSpriteBand::kEdge;
-      std::uint32_t modulo = 24U;
-      int salt = 131;
-      if (band == visual_pipeline::ForestDepthBand::kMid) {
-        sprite_band = ForestSpriteBand::kMid;
-        modulo = 13U;
-        salt = 137;
-      } else if (band == visual_pipeline::ForestDepthBand::kDeep) {
-        sprite_band = ForestSpriteBand::kDeep;
-        modulo = 10U;
-        salt = 139;
-      }
-
-      if (index < plan.canopy_candidates.size() &&
-          plan.canopy_candidates[index] != 0U &&
-          VisualHashTile(x, y, 149) % 34U == 0U) {
+      if (IsCanopyPlacement(plan, x, y, index)) {
         const ForestAssetTexture* canopy = assets.PickSprite(
             ForestSpriteBand::kCanopy, x, y);
         if (canopy != nullptr) {
-          DrawForestSpriteShadow(assets, x, y, tile_size);
-          DrawAnchoredForestSprite(*canopy, x, y, tile_size);
+          const Vector2 jitter = ForestSpriteJitter(x, y, 211, 5);
+          DrawForestSpriteShadow(assets, x, y, tile_size, jitter);
+          DrawAnchoredForestSprite(*canopy, x, y, tile_size, jitter,
+                                   Color{255, 255, 255, 210});
         }
         continue;
       }
 
-      if (VisualHashTile(x, y, salt) % modulo != 0U) {
+      if (!IsTreePlacement(plan, band, x, y)) {
         continue;
       }
-      const ForestAssetTexture* sprite = assets.PickSprite(sprite_band, x, y);
+      const ForestAssetTexture* sprite = assets.PickSprite(
+          SpriteBandForDepth(band), x, y);
       if (sprite == nullptr) {
         continue;
       }
-      DrawForestSpriteShadow(assets, x, y, tile_size);
-      DrawAnchoredForestSprite(*sprite, x, y, tile_size);
+
+      const int jitter_px = band == visual_pipeline::ForestDepthBand::kEdge
+                                ? 3
+                                : 5;
+      const Vector2 jitter = ForestSpriteJitter(x, y, 223, jitter_px);
+      DrawForestSpriteShadow(assets, x, y, tile_size, jitter);
+      DrawAnchoredForestSprite(*sprite, x, y, tile_size, jitter,
+                               ForestSpriteTint(band));
     }
   }
 }
@@ -535,8 +558,6 @@ void DrawForestAssetsForVisualPreview(
   if (!prepared_level.forest_visual_plan.IsValid() || !assets.loaded()) {
     return;
   }
-  DrawForestAssetGroundTiles(prepared_level.forest_visual_plan, assets,
-                             tile_size, range);
   DrawForestAssetSprites(prepared_level.forest_visual_plan, assets, tile_size,
                          range);
 }

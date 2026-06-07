@@ -267,3 +267,11 @@
 - Added runtime loading for the style-locked forest asset pack from `assets/visual/forest`.
 - Added asset-driven forest drawing for F3 visual intent preview and F4 final-render package view.
 - Kept the forest asset renderer visual-only: gameplay collision, markers, routes, runtime grids, and prepared semantics remain unchanged.
+
+## v0.1.31 -> v0.1.32
+
+- Bumped CMake project and runtime application version to `0.1.32`.
+- Tuned forest asset placement so the renderer no longer tiles PNG forest ground and edge textures over every forest cell.
+- Changed the forest asset renderer to keep forest depth as the visual base and place trees, bushes, clusters, canopy, and shadows sparsely as sprites.
+- Added deterministic jitter and neighborhood gates for forest sprites so forest areas read as organic masses instead of a repeated texture carpet.
+- Kept the forest asset renderer visual-only: gameplay collision, markers, routes, runtime grids, and prepared semantics remain unchanged.
