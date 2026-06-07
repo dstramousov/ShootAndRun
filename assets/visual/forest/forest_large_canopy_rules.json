@@ -1,0 +1,81 @@
+{
+  "schema_version": "shootandrun-forest-large-canopy-rules-v1",
+  "asset_pack": "forest_large_canopy_assets_v1",
+  "intended_pass": "forest_large_canopy_pass",
+  "placement": {
+    "large_cluster_3x3": {
+      "allowed_depth": [
+        "deep"
+      ],
+      "min_distance_from_forest_edge_tiles": 4,
+      "recommended_spacing_tiles": [
+        7,
+        12
+      ],
+      "avoid_masks": [
+        "road",
+        "water",
+        "ruins",
+        "route_corridor",
+        "start_goal_clearance"
+      ],
+      "max_density_per_1000_forest_tiles": 18
+    },
+    "large_cluster_4x3": {
+      "allowed_depth": [
+        "deep"
+      ],
+      "min_distance_from_forest_edge_tiles": 5,
+      "recommended_spacing_tiles": [
+        10,
+        16
+      ],
+      "avoid_masks": [
+        "road",
+        "water",
+        "ruins",
+        "route_corridor",
+        "start_goal_clearance"
+      ],
+      "max_density_per_1000_forest_tiles": 10
+    },
+    "deep_canopy_mass": {
+      "allowed_depth": [
+        "mid",
+        "deep"
+      ],
+      "min_distance_from_forest_edge_tiles": 3,
+      "recommended_spacing_tiles": [
+        5,
+        9
+      ],
+      "layer": "forest_canopy",
+      "use_to_fill_empty_deep_forest_gaps": true
+    },
+    "deep_shadow": {
+      "allowed_depth": [
+        "deep"
+      ],
+      "layer": "shadow_overlay",
+      "use_under_large_clusters": true
+    },
+    "edge_canopy_break": {
+      "allowed_depth": [
+        "edge",
+        "mid"
+      ],
+      "min_distance_from_forest_edge_tiles": 1,
+      "recommended_spacing_tiles": [
+        6,
+        10
+      ],
+      "use_to_break_straight_edges": true
+    }
+  },
+  "rendering_notes": [
+    "Place deep_shadow before tree clusters.",
+    "Sort clusters by bottom-center anchor y.",
+    "Reduce small-tree density where large clusters are placed.",
+    "Do not use this pack as tile fill; these are sparse visual mass sprites."
+  ]
+}

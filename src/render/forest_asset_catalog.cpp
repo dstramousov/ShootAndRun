@@ -195,6 +195,31 @@ bool ForestAssetCatalog::Load(const std::filesystem::path& root,
                           NumberedPaths("fringe/shadows/edge_shadow_blob_", 1,
                                         8, ".png"),
                           &fringe_shadows_);
+  LoadOptionalTextureList(root,
+                          NumberedPaths(
+                              "large_canopy/clusters/large_cluster_3x3_",
+                              1, 10, ".png"),
+                          &large_clusters_3x3_);
+  LoadOptionalTextureList(root,
+                          NumberedPaths(
+                              "large_canopy/clusters/large_cluster_4x3_",
+                              1, 6, ".png"),
+                          &large_clusters_4x3_);
+  LoadOptionalTextureList(root,
+                          NumberedPaths(
+                              "large_canopy/canopy/deep_canopy_mass_3x3_",
+                              1, 8, ".png"),
+                          &large_canopy_masses_3x3_);
+  LoadOptionalTextureList(root,
+                          NumberedPaths(
+                              "large_canopy/shadows/deep_shadow_3x3_", 1,
+                              6, ".png"),
+                          &large_deep_shadows_3x3_);
+  LoadOptionalTextureList(root,
+                          NumberedPaths(
+                              "large_canopy/edge_breaks/edge_canopy_break_2x2_",
+                              1, 6, ".png"),
+                          &large_edge_breaks_2x2_);
 
   loaded_ = ok && !forest_floor_tiles_.empty() && !mid_tiles_.empty() &&
             !deep_tiles_.empty() && !trees_.empty();
@@ -239,6 +264,11 @@ void ForestAssetCatalog::Reset() {
   unload(&fringe_wood_);
   unload(&fringe_rocks_);
   unload(&fringe_shadows_);
+  unload(&large_clusters_3x3_);
+  unload(&large_clusters_4x3_);
+  unload(&large_canopy_masses_3x3_);
+  unload(&large_deep_shadows_3x3_);
+  unload(&large_edge_breaks_2x2_);
 
   loaded_texture_count_ = 0;
   loaded_ = false;
@@ -333,6 +363,23 @@ const ForestAssetTexture* ForestAssetCatalog::PickFringe(
       return PickFrom(fringe_rocks_, x, y, 257);
     case ForestFringeAssetKind::kShadow:
       return PickFrom(fringe_shadows_, x, y, 263);
+  }
+  return nullptr;
+}
+
+const ForestAssetTexture* ForestAssetCatalog::PickLargeCanopy(
+    ForestLargeCanopyAssetKind kind, int x, int y) const {
+  switch (kind) {
+    case ForestLargeCanopyAssetKind::kCluster3x3:
+      return PickFrom(large_clusters_3x3_, x, y, 269);
+    case ForestLargeCanopyAssetKind::kCluster4x3:
+      return PickFrom(large_clusters_4x3_, x, y, 271);
+    case ForestLargeCanopyAssetKind::kCanopyMass3x3:
+      return PickFrom(large_canopy_masses_3x3_, x, y, 277);
+    case ForestLargeCanopyAssetKind::kDeepShadow3x3:
+      return PickFrom(large_deep_shadows_3x3_, x, y, 281);
+    case ForestLargeCanopyAssetKind::kEdgeBreak2x2:
+      return PickFrom(large_edge_breaks_2x2_, x, y, 283);
   }
   return nullptr;
 }

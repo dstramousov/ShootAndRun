@@ -32,6 +32,14 @@ enum class ForestFringeAssetKind {
   kShadow,
 };
 
+enum class ForestLargeCanopyAssetKind {
+  kCluster3x3,
+  kCluster4x3,
+  kCanopyMass3x3,
+  kDeepShadow3x3,
+  kEdgeBreak2x2,
+};
+
 struct ForestAssetTexture {
   std::string id;
   std::filesystem::path relative_path;
@@ -138,6 +146,17 @@ class ForestAssetCatalog {
   const ForestAssetTexture* PickFringe(ForestFringeAssetKind kind, int x,
                                        int y) const;
 
+  /**
+   * @brief Selects a deterministic large forest canopy asset.
+   *
+   * @param kind Large canopy asset kind.
+   * @param x Tile X coordinate.
+   * @param y Tile Y coordinate.
+   * @return Selected texture entry or nullptr when unavailable.
+   */
+  const ForestAssetTexture* PickLargeCanopy(
+      ForestLargeCanopyAssetKind kind, int x, int y) const;
+
  private:
   bool LoadTextureList(const std::filesystem::path& root,
                        const std::vector<std::filesystem::path>& paths,
@@ -177,6 +196,11 @@ class ForestAssetCatalog {
   std::vector<ForestAssetTexture> fringe_wood_;
   std::vector<ForestAssetTexture> fringe_rocks_;
   std::vector<ForestAssetTexture> fringe_shadows_;
+  std::vector<ForestAssetTexture> large_clusters_3x3_;
+  std::vector<ForestAssetTexture> large_clusters_4x3_;
+  std::vector<ForestAssetTexture> large_canopy_masses_3x3_;
+  std::vector<ForestAssetTexture> large_deep_shadows_3x3_;
+  std::vector<ForestAssetTexture> large_edge_breaks_2x2_;
 };
 
 }  // namespace sar

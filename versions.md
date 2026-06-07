@@ -283,3 +283,11 @@
 - Added visual-only forest mass underlay blending to soften square tile contours without changing gameplay masks.
 - Increased edge/mid/deep tree placement density with depth-aware sprite scaling: smaller trees near edges, larger trees and canopy clusters inside deep forest.
 - Kept forest composition visual-only: gameplay collision, markers, routes, runtime grids, and prepared semantics remain unchanged.
+
+## v0.1.34 -> v0.1.35
+
+- Bumped CMake project and runtime application version to `0.1.35`.
+- Added large-canopy forest composition support for the approved `forest_large_canopy` asset pack.
+- Deep forest now uses sparse 3x3/4x3 canopy masses and shadows, while regular small-tree density is reduced under those large crowns.
+- Edge forest can receive occasional 2x2 canopy breaks for more varied, smoother forest borders.
+- Gameplay data, collision, routes, markers and runtime grids remain unchanged.
