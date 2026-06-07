@@ -6,7 +6,6 @@
 #include <raylib.h>
 
 #include "level/level_data.h"
-#include "render/forest_asset_catalog.h"
 #include "visual_pipeline/prepared_level.h"
 #include "window/window_state.h"
 
@@ -92,30 +91,6 @@ class LevelRenderer {
   void DrawTerrain(const LevelData& level, const LevelViewState& view,
                    const WindowState& window) const;
 
-  /**
-   * @brief Loads forest asset textures before the first visual draw.
-   *
-   * @return True when forest assets are ready for rendering.
-   */
-  bool PreloadForestAssets();
-
-  /**
-   * @brief Returns the number of loaded forest asset textures.
-   *
-   * @return Loaded forest texture count.
-   */
-  int forest_asset_texture_count() const;
-
-  /**
-   * @brief Releases all forest asset textures owned by this renderer.
-   */
-  void ResetForestAssets();
-
- private:
-  bool EnsureForestAssetsLoaded() const;
-
-  mutable ForestAssetCatalog forest_assets_;
-  mutable bool forest_assets_load_attempted_ = false;
 };
 
 }  // namespace sar

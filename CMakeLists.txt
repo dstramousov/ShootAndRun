@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(ShootAndRun
-  VERSION 0.1.35
+  VERSION 0.1.40
   DESCRIPTION "ShootAndRun C++ raylib bootstrap"
   LANGUAGES CXX
 )
@@ -33,7 +33,6 @@ add_executable(shoot_and_run
   src/platform/process_info.cpp
   src/platform/terminal.cpp
   src/render/debug_overlay.cpp
-  src/render/forest_asset_catalog.cpp
   src/render/level_renderer.cpp
   src/render/menu_renderer.cpp
   src/render/renderer.cpp
@@ -128,6 +127,10 @@ if(SAR_BUILD_TESTS)
   )
 
   target_include_directories(shoot_and_run_tests PRIVATE src)
+  target_link_libraries(shoot_and_run_tests PRIVATE raylib)
+  if(UNIX AND NOT APPLE)
+    target_link_libraries(shoot_and_run_tests PRIVATE m pthread dl)
+  endif()
   target_compile_options(shoot_and_run_tests PRIVATE
     $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion>
     $<$<CXX_COMPILER_ID:MSVC>:/W4 /permissive->

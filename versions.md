@@ -293,3 +293,43 @@
 - Disabled runtime canopy/cluster placement in the forest preview path; large canopy assets remain unused until a baked/chunked renderer exists.
 - Kept forest rendering visual-only: gameplay collision, markers, routes, runtime grids, and prepared semantics remain unchanged.
 
+## v0.1.35 -> v0.1.36
+
+- Bumped CMake project and runtime application version to `0.1.36`.
+- Added baked forest mass pattern fill for forest interiors so deep and mid forest read as continuous dense canopy instead of individually placed runtime trees.
+- Tightened forest depth classification so deep forest starts closer to the forest edge and more interior tiles receive the pattern-fill treatment.
+- Changed F4 `final_render_package` to display only baked `prepared_map/final_render.png` without re-drawing the live forest asset overlay on top.
+- Reduced runtime tree placement inside deep forest; F3 now relies on cheap visual mass stamps plus fringe/detail instead of thousands of tree sprites.
+- Added forest pattern-fill counters to final render and visual density reports.
+- Kept forest filling visual-only: gameplay collision, markers, routes, runtime grids, and prepared semantics remain unchanged.
+## v0.1.36 -> v0.1.37
+
+- Bumped CMake project and runtime application version to `0.1.37`.
+- Replaced the temporary triangle forest mass stamps with layered spruce stamps built from rounded branch lobes, trunk pixels, highlights and shadowed lower boughs.
+- Updated baked `final_render.png` forest filling to use the same spruce-shaped stamp logic instead of simple triangular/oval canopy blobs.
+- Kept the fill as a cheap visual-only pattern pass: no gameplay grids, collision, routes, markers, places, start/goal or world graph data are changed.
+
+## v0.1.37 -> v0.1.38
+
+- Bumped CMake project and runtime application version to `0.1.38`.
+- Added use of `assets/visual/forest/reference_v1` forest reference assets.
+- Runtime forest preview now draws reference mass PNGs for deep/mid forest instead of procedural spruce stamps when the reference pack is available.
+- Baked `final_render.png` now uses the reference forest PNG pack when available and falls back to the older procedural pattern only if the pack is missing.
+- Kept gameplay data, collision, routes, markers, places and runtime grids untouched.
+## v0.1.38 -> v0.1.39
+
+- Bumped CMake project and runtime application version to `0.1.39`.
+- Added `interior_v1` deep forest asset loading for runtime preview.
+- Changed deep forest runtime fill to place only opaque interior tiles fully inside `kDeep` forest regions.
+- Changed final baked render to use `interior_v1` for deep forest before any edge/reference overlays.
+- Stopped using `reference_v1/mass` as deep forest fill when interior assets are available.
+
+## v0.1.39 -> v0.1.40
+
+- Bumped CMake project and runtime application version to `0.1.40`.
+- Removed the failed forest asset replacement path from runtime rendering.
+- Removed forest PNG asset catalog loading and renderer ownership.
+- Removed procedural spruce/pattern forest fill from baked `final_render.png`.
+- Removed forest pattern/canopy-only counters and debug artifacts.
+- Kept forest depth, edge, clearing, route influence, and mass group analysis.
+- Kept gameplay data, collision, routes, markers, places, world graph, and runtime grids untouched.

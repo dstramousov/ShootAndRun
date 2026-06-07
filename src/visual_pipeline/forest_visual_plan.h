@@ -65,7 +65,6 @@ struct ForestVisualSummary {
   int forest_mid_tiles = 0;
   int forest_deep_tiles = 0;
   int suppressed_tiny_forest_tiles = 0;
-  int canopy_candidate_tiles = 0;
   int forest_mass_group_count = 0;
   int route_influenced_tiles = 0;
   int main_clearing_tiles = 0;
@@ -91,7 +90,6 @@ struct ForestVisualPlan {
   std::vector<std::uint8_t> forest_depth;
   std::vector<std::uint8_t> forest_edges;
   std::vector<std::uint16_t> forest_mass_groups;
-  std::vector<std::uint8_t> canopy_candidates;
   std::vector<std::uint8_t> clearing_roles;
   std::vector<std::uint8_t> clearing_scene_roles;
   std::vector<std::uint8_t> route_influence;

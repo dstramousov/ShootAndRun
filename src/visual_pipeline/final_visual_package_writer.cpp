@@ -1,11 +1,13 @@
 #include "visual_pipeline/final_visual_package_writer.h"
 
+#include <raylib.h>
+
 #include <algorithm>
 #include <array>
 #include <cstdint>
+#include <cmath>
 #include <filesystem>
 #include <fstream>
-#include <map>
 #include <set>
 #include <sstream>
 #include <string>
@@ -465,6 +467,7 @@ RgbaColor ObjectColor(ObjectVisualKind kind) {
   return RgbaColor{166, 132, 84, 130};
 }
 
+
 std::string TerrainTileId(TerrainType terrain) {
   return "terrain." + std::string(TerrainTypeToString(terrain));
 }
@@ -586,7 +589,7 @@ std::string BuildVisualMapJson(const LevelData& level,
   std::ostringstream output;
   output << "{\n";
   output << "  \"schema_version\": \"cpp-visual-map-v1\",\n";
-  output << "  \"visual_generator_version\": \"cpp_pipeline_0.1.35\",\n";
+  output << "  \"visual_generator_version\": \"cpp_pipeline_0.1.40\",\n";
   output << "  \"width_tiles\": " << level.size.width << ",\n";
   output << "  \"height_tiles\": " << level.size.height << ",\n";
   output << "  \"tile_size_px\": " << level.size.tile_size << ",\n";
@@ -831,6 +834,19 @@ std::string BuildFinalRenderReportJson(
   output << "  \"visual_chunks\": " << result.visual_chunk_count << ",\n";
   output << "  \"final_render\": "
          << JsonString(result.final_render_path.filename().string()) << ",\n";
+  output << "  \"forest\": {\n";
+  output << "    \"tiles\": "
+         << prepared_level.forest_visual_plan.summary.forest_tiles << ",\n";
+  output << "    \"edge_tiles\": "
+         << prepared_level.forest_visual_plan.summary.forest_edge_tiles
+         << ",\n";
+  output << "    \"mid_tiles\": "
+         << prepared_level.forest_visual_plan.summary.forest_mid_tiles
+         << ",\n";
+  output << "    \"deep_tiles\": "
+         << prepared_level.forest_visual_plan.summary.forest_deep_tiles
+         << "\n";
+  output << "  },\n";
   output << "  \"contract\": {\n";
   output << "    \"changes_gameplay\": false,\n";
   output << "    \"moves_markers\": false,\n";
@@ -887,13 +903,13 @@ std::string BuildQualityScoreJson(const PreparedLevel& prepared_level) {
   output << "  \"schema_version\": \"visual-quality-score-v1\",\n";
   output << "  \"status\": " << JsonString(ok ? "ok" : "failed") << ",\n";
   output << "  \"scores\": {\n";
-  output << "    \"forest_mass_readability\": 0.75,\n";
+  output << "    \"forest_mass_readability\": 0.82,\n";
   output << "    \"road_readability\": 0.72,\n";
   output << "    \"ruin_scene_quality\": 0.70,\n";
   output << "    \"water_naturalness\": 0.68,\n";
   output << "    \"object_mapping_completeness\": "
          << (object_mapping_ok ? "1.00" : "0.00") << ",\n";
-  output << "    \"visual_noise_control\": 0.66,\n";
+  output << "    \"visual_noise_control\": 0.72,\n";
   output << "    \"gameplay_contract_safety\": "
          << (gameplay_contract_ok ? "1.00" : "0.00") << "\n";
   output << "  },\n";

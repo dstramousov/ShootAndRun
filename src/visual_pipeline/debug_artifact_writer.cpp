@@ -863,19 +863,6 @@ std::vector<RgbaColor> BuildForestMassGroupImage(
   return pixels;
 }
 
-std::vector<RgbaColor> BuildCanopyCandidateImage(
-    const ForestVisualPlan& plan) {
-  std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
-                                static_cast<std::size_t>(plan.size.height),
-                                kBlack);
-  for (std::size_t i = 0; i < plan.canopy_candidates.size(); ++i) {
-    if (plan.canopy_candidates[i] != 0) {
-      pixels[i] = RgbaColor{18, 120, 58, 255};
-    }
-  }
-  return pixels;
-}
-
 std::vector<RgbaColor> BuildForestMassImage(const ForestVisualPlan& plan) {
   std::vector<RgbaColor> pixels = BuildForestDepthImage(plan);
   for (std::size_t i = 0; i < plan.route_influence.size(); ++i) {
@@ -1554,7 +1541,6 @@ bool DebugArtifactWriter::WriteForestVisualArtifacts(
       {"03_forest_edges.png", BuildForestEdgeImage(plan)},
       {"03_forest_mass.png", BuildForestMassImage(plan)},
       {"03_forest_mass_groups.png", BuildForestMassGroupImage(plan)},
-      {"03_canopy_candidates.png", BuildCanopyCandidateImage(plan)},
       {"04_clearing_roles.png", BuildClearingRoleImage(plan)},
       {"04_clearing_roles_detailed.png",
        BuildClearingSceneRoleImage(plan)},
@@ -1587,16 +1573,13 @@ bool DebugArtifactWriter::WriteForestVisualArtifacts(
               << summary.route_influenced_tiles << ",\n";
   forest_json << "  \"suppressed_tiny_forest_tiles\": "
               << summary.suppressed_tiny_forest_tiles << ",\n";
-  forest_json << "  \"canopy_candidate_tiles\": "
-              << summary.canopy_candidate_tiles << ",\n";
   forest_json << "  \"forest_mass_group_count\": "
               << summary.forest_mass_group_count << ",\n";
   forest_json << "  \"artifacts\": [\n";
   forest_json << "    \"passes/03_forest_depth.png\",\n";
   forest_json << "    \"passes/03_forest_edges.png\",\n";
   forest_json << "    \"passes/03_forest_mass.png\",\n";
-  forest_json << "    \"passes/03_forest_mass_groups.png\",\n";
-  forest_json << "    \"passes/03_canopy_candidates.png\"\n";
+  forest_json << "    \"passes/03_forest_mass_groups.png\"\n";
   forest_json << "  ]\n";
   forest_json << "}\n";
   if (!WriteTextFile(output_root_ / "reports" /

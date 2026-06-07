@@ -21,7 +21,7 @@ constexpr int kTinyOpenRegionArea = 32;
 constexpr int kTinyForestRegionArea = 8;
 constexpr int kForestMassMergeGapTiles = 3;
 constexpr int kForestEdgeMaxDistance = 2;
-constexpr int kForestMidMaxDistance = 5;
+constexpr int kForestMidMaxDistance = 3;
 
 int CellCount(const LevelSize& size) {
   if (size.width <= 0 || size.height <= 0) {
@@ -563,7 +563,6 @@ std::string ForestVisualSummary::Dump() const {
          ", deep=" + std::to_string(forest_deep_tiles) +
          ", suppressed_tiny=" +
          std::to_string(suppressed_tiny_forest_tiles) +
-         ", canopy=" + std::to_string(canopy_candidate_tiles) +
          ", forest_groups=" + std::to_string(forest_mass_group_count) +
          ", route_influence=" + std::to_string(route_influenced_tiles) +
          ", main_clearing=" + std::to_string(main_clearing_tiles) +
@@ -585,7 +584,6 @@ bool ForestVisualPlan::IsValid() const {
   const std::size_t expected = static_cast<std::size_t>(expected_size);
   return forest_depth.size() == expected && forest_edges.size() == expected &&
          forest_mass_groups.size() == expected &&
-         canopy_candidates.size() == expected &&
          clearing_roles.size() == expected &&
          clearing_scene_roles.size() == expected &&
          route_influence.size() == expected;
@@ -626,7 +624,6 @@ ForestVisualPlan BuildForestVisualPlan(const LevelData& level,
   plan.forest_depth.assign(expected_size, 0);
   plan.forest_edges.assign(expected_size, 0);
   plan.forest_mass_groups.assign(expected_size, 0);
-  plan.canopy_candidates.assign(expected_size, 0);
   plan.clearing_roles.assign(expected_size, 0);
   plan.clearing_scene_roles.assign(expected_size, 0);
   plan.route_influence = BuildRouteInfluence(level);
@@ -666,10 +663,6 @@ ForestVisualPlan BuildForestVisualPlan(const LevelData& level,
       plan.forest_depth[item] = static_cast<std::uint8_t>(band);
       if (band == ForestDepthBand::kEdge) {
         plan.forest_edges[item] = 1;
-      }
-      if (band == ForestDepthBand::kMid || band == ForestDepthBand::kDeep) {
-        plan.canopy_candidates[item] = 1;
-        ++plan.summary.canopy_candidate_tiles;
       }
       CountForestDepth(band, &plan.summary);
       continue;

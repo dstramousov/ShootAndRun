@@ -296,7 +296,6 @@ std::string ForestVisualSummaryLine(const ForestVisualSummary& summary) {
          " deep=" + std::to_string(summary.forest_deep_tiles) +
          " suppressed_tiny=" +
          std::to_string(summary.suppressed_tiny_forest_tiles) +
-         " canopy=" + std::to_string(summary.canopy_candidate_tiles) +
          " mass_groups=" +
          std::to_string(summary.forest_mass_group_count) +
          " route_influence=" +
