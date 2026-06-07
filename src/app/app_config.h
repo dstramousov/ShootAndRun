@@ -8,7 +8,7 @@
 #include "window/window_config.h"
 
 #ifndef SAR_APP_VERSION
-#define SAR_APP_VERSION "0.1.35"
+#define SAR_APP_VERSION "0.1.35-dev"
 #endif
 
 namespace sar {

@@ -287,7 +287,9 @@
 ## v0.1.34 -> v0.1.35
 
 - Bumped CMake project and runtime application version to `0.1.35`.
-- Added large-canopy forest composition support for the approved `forest_large_canopy` asset pack.
-- Deep forest now uses sparse 3x3/4x3 canopy masses and shadows, while regular small-tree density is reduced under those large crowns.
-- Edge forest can receive occasional 2x2 canopy breaks for more varied, smoother forest borders.
-- Gameplay data, collision, routes, markers and runtime grids remain unchanged.
+- Replaced the rejected large-canopy runtime experiment with a safe forest density pass based on regular tree sprites.
+- Added zoom-aware forest rendering budgets so zoomed-out views skip expensive forest details instead of drawing thousands of transparent sprites.
+- Increased deep-forest density through deterministic grouped placement while keeping edge trees smaller and sparser.
+- Disabled runtime canopy/cluster placement in the forest preview path; large canopy assets remain unused until a baked/chunked renderer exists.
+- Kept forest rendering visual-only: gameplay collision, markers, routes, runtime grids, and prepared semantics remain unchanged.
+

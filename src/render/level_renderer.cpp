@@ -31,6 +31,65 @@ struct VisibleTileRange {
   int max_y = 0;
 };
 
+struct ForestRenderBudget {
+  bool draw_underlay = true;
+  bool draw_tree_sprites = true;
+  bool draw_fringe_sprites = true;
+  bool draw_shadows = true;
+  int tree_sprites_left = 0;
+  int shadow_sprites_left = 0;
+  int fringe_sprites_left = 0;
+};
+
+int VisibleTileCount(const VisibleTileRange& range) {
+  if (range.max_x < range.min_x || range.max_y < range.min_y) {
+    return 0;
+  }
+  return (range.max_x - range.min_x + 1) *
+         (range.max_y - range.min_y + 1);
+}
+
+bool ConsumeBudget(int* items_left) {
+  if (items_left == nullptr || *items_left <= 0) {
+    return false;
+  }
+  --(*items_left);
+  return true;
+}
+
+ForestRenderBudget BuildForestRenderBudget(float zoom,
+                                           const VisibleTileRange& range) {
+  const int visible_tiles = VisibleTileCount(range);
+  ForestRenderBudget budget;
+
+  if (zoom < 0.70F) {
+    budget.draw_underlay = false;
+    budget.draw_tree_sprites = false;
+    budget.draw_fringe_sprites = false;
+    budget.draw_shadows = false;
+    return budget;
+  }
+
+  if (zoom < 0.95F) {
+    budget.draw_shadows = false;
+    budget.draw_fringe_sprites = false;
+    budget.tree_sprites_left = std::min(140, std::max(40, visible_tiles / 34));
+    return budget;
+  }
+
+  if (zoom < 1.35F) {
+    budget.tree_sprites_left = std::min(520, std::max(160, visible_tiles / 9));
+    budget.shadow_sprites_left = budget.tree_sprites_left / 3;
+    budget.fringe_sprites_left = std::min(180, std::max(60, visible_tiles / 24));
+    return budget;
+  }
+
+  budget.tree_sprites_left = std::min(760, std::max(220, visible_tiles / 7));
+  budget.shadow_sprites_left = budget.tree_sprites_left / 3;
+  budget.fringe_sprites_left = std::min(240, std::max(80, visible_tiles / 20));
+  return budget;
+}
+
 Color TerrainColor(TerrainType terrain) {
   switch (terrain) {
     case TerrainType::kOpenGround:
@@ -554,7 +613,11 @@ void DrawCenteredForestSprite(const ForestAssetTexture& item, int tile_x,
 
 void DrawForestSpriteShadow(const ForestAssetCatalog& assets, int tile_x,
                             int tile_y, int tile_size, Vector2 offset,
-                            float scale) {
+                            float scale, ForestRenderBudget* budget) {
+  if (budget == nullptr || !budget->draw_shadows ||
+      !ConsumeBudget(&budget->shadow_sprites_left)) {
+    return;
+  }
   const ForestAssetTexture* shadow = assets.PickShadow(tile_x, tile_y);
   if (shadow == nullptr) {
     return;
@@ -578,44 +641,53 @@ void DrawForestSpriteShadow(const ForestAssetCatalog& assets, int tile_x,
 bool IsCanopyPlacement(const visual_pipeline::ForestVisualPlan& plan,
                        visual_pipeline::ForestDepthBand band, int x, int y,
                        std::size_t index) {
-  if (index >= plan.canopy_candidates.size() ||
-      plan.canopy_candidates[index] == 0U) {
-    return false;
-  }
-  if (!IsForestInterior(plan, x, y)) {
-    return false;
-  }
-
-  if (band == visual_pipeline::ForestDepthBand::kDeep) {
-    return VisualHashTile(x, y, 149) % 13U == 0U;
-  }
-  if (band == visual_pipeline::ForestDepthBand::kMid) {
-    return VisualHashTile(x, y, 151) % 23U == 0U;
-  }
+  static_cast<void>(plan);
+  static_cast<void>(band);
+  static_cast<void>(x);
+  static_cast<void>(y);
+  static_cast<void>(index);
   return false;
 }
 
 bool IsTreePlacement(const visual_pipeline::ForestVisualPlan& plan,
                      visual_pipeline::ForestDepthBand band, int x, int y) {
   const int neighbor_count = CountForestNeighbors(plan, x, y);
-  std::uint32_t modulo = 11U;
-  int salt = 131;
-  int min_neighbors = 3;
+  if (band == visual_pipeline::ForestDepthBand::kEdge) {
+    if (neighbor_count < 4) {
+      return false;
+    }
+    return VisualHashTile(x, y, 131) % 10U == 0U;
+  }
 
+  const std::uint32_t group_hash =
+      VisualHashTile(x / 3, y / 3, band == visual_pipeline::ForestDepthBand::kDeep
+                                      ? 383
+                                      : 379) %
+      100U;
   if (band == visual_pipeline::ForestDepthBand::kMid) {
-    modulo = 7U;
-    salt = 137;
-    min_neighbors = 5;
-  } else if (band == visual_pipeline::ForestDepthBand::kDeep) {
-    modulo = 12U;
-    salt = 139;
-    min_neighbors = 6;
+    if (neighbor_count < 5) {
+      return false;
+    }
+    const std::uint32_t tile_hash = VisualHashTile(x, y, 137);
+    return group_hash < 68U ? tile_hash % 3U == 0U
+                            : tile_hash % 6U == 0U;
   }
 
-  if (neighbor_count < min_neighbors) {
-    return false;
+  if (band == visual_pipeline::ForestDepthBand::kDeep) {
+    if (neighbor_count < 6) {
+      return false;
+    }
+    const std::uint32_t tile_hash = VisualHashTile(x, y, 139);
+    if (group_hash < 72U) {
+      return tile_hash % 2U == 0U;
+    }
+    if (group_hash < 92U) {
+      return tile_hash % 4U == 0U;
+    }
+    return tile_hash % 8U == 0U;
   }
-  return VisualHashTile(x, y, salt) % modulo == 0U;
+
+  return false;
 }
 
 ForestSpriteBand SpriteBandForDepth(
@@ -641,140 +713,18 @@ Color ForestSpriteTint(visual_pipeline::ForestDepthBand band) {
 
 float ForestSpriteScale(visual_pipeline::ForestDepthBand band) {
   if (band == visual_pipeline::ForestDepthBand::kEdge) {
-    return 0.78F;
+    return 0.70F;
   }
   if (band == visual_pipeline::ForestDepthBand::kMid) {
-    return 0.94F;
+    return 0.92F;
   }
-  return 1.06F;
-}
-
-bool IsCoarseCellAnchor(int x, int y, int cell_size, int salt) {
-  if (cell_size <= 0) {
-    return false;
-  }
-  const int cell_x = x / cell_size;
-  const int cell_y = y / cell_size;
-  const int origin_x = cell_x * cell_size;
-  const int origin_y = cell_y * cell_size;
-  const int picked_x = origin_x + static_cast<int>(
-      VisualHashTile(cell_x, cell_y, salt) %
-      static_cast<std::uint32_t>(cell_size));
-  const int picked_y = origin_y + static_cast<int>(
-      VisualHashTile(cell_x, cell_y, salt + 1) %
-      static_cast<std::uint32_t>(cell_size));
-  return x == picked_x && y == picked_y;
-}
-
-bool HasReservedVisualNear(
-    const visual_pipeline::PreparedLevel& prepared_level, int x, int y,
-    int radius) {
-  for (int dy = -radius; dy <= radius; ++dy) {
-    for (int dx = -radius; dx <= radius; ++dx) {
-      if (HasReservedVisualAt(prepared_level, x + dx, y + dy)) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-bool HasDeepForestFootprint(const visual_pipeline::ForestVisualPlan& plan,
-                            int x, int y) {
-  int forest_count = 0;
-  int deep_or_mid_count = 0;
-  for (int dy = -3; dy <= 3; ++dy) {
-    for (int dx = -3; dx <= 3; ++dx) {
-      if (dx * dx + dy * dy > 10) {
-        continue;
-      }
-      const auto band = ForestBandAt(plan, x + dx, y + dy);
-      if (band == visual_pipeline::ForestDepthBand::kNone) {
-        continue;
-      }
-      ++forest_count;
-      if (band == visual_pipeline::ForestDepthBand::kDeep ||
-          band == visual_pipeline::ForestDepthBand::kMid) {
-        ++deep_or_mid_count;
-      }
-    }
-  }
-  return forest_count >= 24 && deep_or_mid_count >= 18;
-}
-
-bool IsLargeCanopyAnchor(
-    const visual_pipeline::PreparedLevel& prepared_level,
-    const visual_pipeline::ForestVisualPlan& plan,
-    visual_pipeline::ForestDepthBand band, int x, int y) {
-  if (band != visual_pipeline::ForestDepthBand::kDeep ||
-      !IsForestInterior(plan, x, y) || !HasDeepForestFootprint(plan, x, y) ||
-      HasReservedVisualNear(prepared_level, x, y, 3)) {
-    return false;
-  }
-  return IsCoarseCellAnchor(x, y, 5, 401) &&
-         VisualHashTile(x, y, 409) % 100U < 72U;
-}
-
-bool IsEdgeBreakCanopyAnchor(
-    const visual_pipeline::PreparedLevel& prepared_level,
-    const visual_pipeline::ForestVisualPlan& plan,
-    visual_pipeline::ForestDepthBand band, int x, int y) {
-  if ((band != visual_pipeline::ForestDepthBand::kEdge &&
-       band != visual_pipeline::ForestDepthBand::kMid) ||
-      CountForestNeighbors(plan, x, y) < 4 ||
-      HasReservedVisualNear(prepared_level, x, y, 2)) {
-    return false;
-  }
-  return IsCoarseCellAnchor(x, y, 4, 419) &&
-         VisualHashTile(x, y, 421) % 100U < 36U;
-}
-
-bool HasNearbyLargeCanopyAnchor(
-    const visual_pipeline::PreparedLevel& prepared_level,
-    const visual_pipeline::ForestVisualPlan& plan, int x, int y, int radius) {
-  for (int dy = -radius; dy <= radius; ++dy) {
-    for (int dx = -radius; dx <= radius; ++dx) {
-      const int px = x + dx;
-      const int py = y + dy;
-      const auto band = ForestBandAt(plan, px, py);
-      if (IsLargeCanopyAnchor(prepared_level, plan, band, px, py)) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-const ForestAssetTexture* PickLargeCanopySprite(
-    const ForestAssetCatalog& assets, int x, int y) {
-  const std::uint32_t hash = VisualHashTile(x, y, 431) % 100U;
-  if (hash < 44U) {
-    return assets.PickLargeCanopy(
-        ForestLargeCanopyAssetKind::kCanopyMass3x3, x, y);
-  }
-  if (hash < 78U) {
-    return assets.PickLargeCanopy(
-        ForestLargeCanopyAssetKind::kCluster3x3, x, y);
-  }
-  return assets.PickLargeCanopy(
-      ForestLargeCanopyAssetKind::kCluster4x3, x, y);
-}
-
-float LargeCanopyScale(int x, int y) {
-  const float base = VisualHashTile(x, y, 433) % 3U == 0U ? 0.76F : 0.82F;
-  return base + static_cast<float>(VisualHashTile(x, y, 439) % 7U) * 0.01F;
-}
-
-Color LargeCanopyTint(int x, int y) {
-  const unsigned char light = static_cast<unsigned char>(
-      220U + VisualHashTile(x, y, 443) % 22U);
-  return Color{light, static_cast<unsigned char>(light + 8U), 198, 236};
+  return 1.03F;
 }
 
 void DrawForestMassCompositionUnderlay(
     const visual_pipeline::ForestVisualPlan& plan, int tile_size,
-    const VisibleTileRange& range) {
-  if (!plan.IsValid()) {
+    const VisibleTileRange& range, const ForestRenderBudget& budget) {
+  if (!plan.IsValid() || !budget.draw_underlay) {
     return;
   }
   const float tile = static_cast<float>(tile_size);
@@ -788,15 +738,17 @@ void DrawForestMassCompositionUnderlay(
       const Vector2 center{(static_cast<float>(x) + 0.5F) * tile,
                            (static_cast<float>(y) + 0.5F) * tile};
       if (band == visual_pipeline::ForestDepthBand::kEdge) {
-        DrawCircleV(center, tile * 0.58F, Color{39, 91, 48, 80});
+        if (VisualHashTile(x, y, 167) % 2U == 0U) {
+          DrawCircleV(center, tile * 0.58F, Color{39, 91, 48, 68});
+        }
       } else if (band == visual_pipeline::ForestDepthBand::kMid) {
-        DrawCircleV(center, tile * 0.76F, Color{18, 65, 38, 72});
+        DrawCircleV(center, tile * 0.74F, Color{18, 65, 38, 62});
       } else {
-        DrawCircleV(center, tile * 0.92F, Color{6, 34, 22, 88});
-        if (VisualHashTile(x, y, 173) % 5U == 0U) {
+        DrawCircleV(center, tile * 0.90F, Color{6, 34, 22, 78});
+        if (VisualHashTile(x, y, 173) % 7U == 0U) {
           const Vector2 jitter = ForestSpriteJitter(x, y, 179, 5);
           DrawCircleV(Vector2{center.x + jitter.x, center.y + jitter.y},
-                      tile * 1.18F, Color{4, 25, 17, 52});
+                      tile * 1.08F, Color{4, 25, 17, 40});
         }
       }
     }
@@ -854,11 +806,10 @@ void DrawForestFringeGround(
       const Vector2 center{(static_cast<float>(x) + 0.5F) * tile,
                            (static_cast<float>(y) + 0.5F) * tile};
       if (outer_band > 0) {
-        const unsigned char alpha = outer_band == 1 ? 46U :
-                                    outer_band == 2 ? 28U : 15U;
-        const float radius = tile * (0.88F - 0.10F *
-                                     static_cast<float>(outer_band));
-        DrawCircleV(center, radius, Color{23, 67, 38, alpha});
+        const unsigned char alpha = outer_band == 1 ? 54U :
+                                    outer_band == 2 ? 34U : 20U;
+        DrawCircleV(center, tile * (0.84F - 0.10F * static_cast<float>(outer_band)),
+                    Color{23, 67, 38, alpha});
         if (VisualHashTile(x, y, 307) %
                 static_cast<std::uint32_t>(outer_band + 1) ==
             0U) {
@@ -919,8 +870,9 @@ void DrawForestFringeSprites(
     const LevelData& level,
     const visual_pipeline::PreparedLevel& prepared_level,
     const ForestAssetCatalog& assets, int tile_size,
-    const VisibleTileRange& range) {
-  if (!prepared_level.forest_visual_plan.IsValid()) {
+    const VisibleTileRange& range, ForestRenderBudget* budget) {
+  if (!prepared_level.forest_visual_plan.IsValid() || budget == nullptr ||
+      !budget->draw_fringe_sprites) {
     return;
   }
   const auto& plan = prepared_level.forest_visual_plan;
@@ -946,7 +898,7 @@ void DrawForestFringeSprites(
         tint = Color{226, 238, 204, 216};
       }
 
-      if (sprite == nullptr) {
+      if (sprite == nullptr || !ConsumeBudget(&budget->fringe_sprites_left)) {
         continue;
       }
       const Vector2 jitter = ForestSpriteJitter(x, y, 359, 6);
@@ -955,56 +907,13 @@ void DrawForestFringeSprites(
   }
 }
 
-void DrawForestLargeCanopySprites(
-    const visual_pipeline::PreparedLevel& prepared_level,
-    const ForestAssetCatalog& assets, int tile_size,
-    const VisibleTileRange& range) {
-  const auto& plan = prepared_level.forest_visual_plan;
-  for (int y = range.min_y; y <= range.max_y; ++y) {
-    for (int x = range.min_x; x <= range.max_x; ++x) {
-      const std::size_t index =
-          static_cast<std::size_t>(y * plan.size.width + x);
-      if (index >= plan.forest_depth.size()) {
-        continue;
-      }
-
-      const auto band = static_cast<visual_pipeline::ForestDepthBand>(
-          plan.forest_depth[index]);
-      const Vector2 jitter = ForestSpriteJitter(x, y, 461, 8);
-      if (IsLargeCanopyAnchor(prepared_level, plan, band, x, y)) {
-        const ForestAssetTexture* shadow = assets.PickLargeCanopy(
-            ForestLargeCanopyAssetKind::kDeepShadow3x3, x, y);
-        if (shadow != nullptr) {
-          DrawCenteredForestSprite(*shadow, x, y, tile_size, jitter, 0.88F,
-                                   Color{255, 255, 255, 128});
-        }
-
-        const ForestAssetTexture* canopy = PickLargeCanopySprite(assets, x, y);
-        if (canopy != nullptr) {
-          DrawAnchoredForestSprite(*canopy, x, y, tile_size, jitter,
-                                   LargeCanopyScale(x, y),
-                                   LargeCanopyTint(x, y));
-        }
-        continue;
-      }
-
-      if (IsEdgeBreakCanopyAnchor(prepared_level, plan, band, x, y)) {
-        const ForestAssetTexture* edge_break = assets.PickLargeCanopy(
-            ForestLargeCanopyAssetKind::kEdgeBreak2x2, x, y);
-        if (edge_break != nullptr) {
-          DrawAnchoredForestSprite(*edge_break, x, y, tile_size, jitter,
-                                   0.72F, Color{238, 248, 216, 222});
-        }
-      }
-    }
+void DrawForestAssetSprites(const visual_pipeline::ForestVisualPlan& plan,
+                            const ForestAssetCatalog& assets, int tile_size,
+                            const VisibleTileRange& range,
+                            ForestRenderBudget* budget) {
+  if (budget == nullptr || !budget->draw_tree_sprites) {
+    return;
   }
-}
-
-void DrawForestAssetSprites(
-    const visual_pipeline::PreparedLevel& prepared_level,
-    const visual_pipeline::ForestVisualPlan& plan,
-    const ForestAssetCatalog& assets, int tile_size,
-    const VisibleTileRange& range) {
   for (int y = range.min_y; y <= range.max_y; ++y) {
     for (int x = range.min_x; x <= range.max_x; ++x) {
       const std::size_t index =
@@ -1016,19 +925,7 @@ void DrawForestAssetSprites(
 
       const auto band = static_cast<visual_pipeline::ForestDepthBand>(
           plan.forest_depth[index]);
-      if (band == visual_pipeline::ForestDepthBand::kDeep &&
-          HasNearbyLargeCanopyAnchor(prepared_level, plan, x, y, 3)) {
-        continue;
-      }
       if (IsCanopyPlacement(plan, band, x, y, index)) {
-        const ForestAssetTexture* canopy = assets.PickSprite(
-            ForestSpriteBand::kCanopy, x, y);
-        if (canopy != nullptr) {
-          const Vector2 jitter = ForestSpriteJitter(x, y, 211, 7);
-          DrawForestSpriteShadow(assets, x, y, tile_size, jitter, 1.12F);
-          DrawAnchoredForestSprite(*canopy, x, y, tile_size, jitter, 1.06F,
-                                   Color{232, 242, 210, 232});
-        }
         continue;
       }
 
@@ -1041,12 +938,16 @@ void DrawForestAssetSprites(
         continue;
       }
 
+      if (!ConsumeBudget(&budget->tree_sprites_left)) {
+        continue;
+      }
+
       const int jitter_px = band == visual_pipeline::ForestDepthBand::kEdge
                                 ? 5
                                 : 7;
       const float scale = ForestSpriteScale(band);
       const Vector2 jitter = ForestSpriteJitter(x, y, 223, jitter_px);
-      DrawForestSpriteShadow(assets, x, y, tile_size, jitter, scale);
+      DrawForestSpriteShadow(assets, x, y, tile_size, jitter, scale, budget);
       DrawAnchoredForestSprite(*sprite, x, y, tile_size, jitter, scale,
                                ForestSpriteTint(band));
     }
@@ -1056,17 +957,20 @@ void DrawForestAssetSprites(
 void DrawForestAssetsForVisualPreview(
     const LevelData& level, const visual_pipeline::PreparedLevel& prepared_level,
     const ForestAssetCatalog& assets, int tile_size,
-    const VisibleTileRange& range) {
+    const VisibleTileRange& range, float zoom) {
   if (!prepared_level.forest_visual_plan.IsValid() || !assets.loaded()) {
     return;
   }
+  ForestRenderBudget budget = BuildForestRenderBudget(zoom, range);
   DrawForestMassCompositionUnderlay(prepared_level.forest_visual_plan,
-                                     tile_size, range);
-  DrawForestFringeGround(level, prepared_level, assets, tile_size, range);
-  DrawForestLargeCanopySprites(prepared_level, assets, tile_size, range);
-  DrawForestAssetSprites(prepared_level, prepared_level.forest_visual_plan,
-                         assets, tile_size, range);
-  DrawForestFringeSprites(level, prepared_level, assets, tile_size, range);
+                                     tile_size, range, budget);
+  if (budget.draw_underlay) {
+    DrawForestFringeGround(level, prepared_level, assets, tile_size, range);
+  }
+  DrawForestAssetSprites(prepared_level.forest_visual_plan, assets, tile_size,
+                         range, &budget);
+  DrawForestFringeSprites(level, prepared_level, assets, tile_size, range,
+                          &budget);
 }
 
 bool IsTileVisible(int x, int y, const VisibleTileRange& range) {
@@ -1666,7 +1570,7 @@ void LevelRenderer::Draw(const LevelData& level,
     DrawFinalRenderReference(*final_render_texture, level);
     if (forest_assets_ready) {
       DrawForestAssetsForVisualPreview(level, *prepared_level, forest_assets_,
-                                       level.size.tile_size, range);
+                                       level.size.tile_size, range, view.zoom);
     }
   } else if (mode == LevelRenderMode::kPreparedVisualMap &&
              can_draw_prepared_visual) {
@@ -1690,7 +1594,7 @@ void LevelRenderer::Draw(const LevelData& level,
     DrawVisualIntentPreviewTiles(level, *prepared_level, range);
     if (forest_assets_ready) {
       DrawForestAssetsForVisualPreview(level, *prepared_level, forest_assets_,
-                                       level.size.tile_size, range);
+                                       level.size.tile_size, range, view.zoom);
     }
     if (prepared_level->micro_scene_visual_plan.IsValid()) {
       DrawMicroSceneVisualPlanForPreview(
