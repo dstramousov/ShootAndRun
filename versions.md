@@ -275,3 +275,11 @@
 - Changed the forest asset renderer to keep forest depth as the visual base and place trees, bushes, clusters, canopy, and shadows sparsely as sprites.
 - Added deterministic jitter and neighborhood gates for forest sprites so forest areas read as organic masses instead of a repeated texture carpet.
 - Kept the forest asset renderer visual-only: gameplay collision, markers, routes, runtime grids, and prepared semantics remain unchanged.
+
+## v0.1.32 -> v0.1.33
+
+- Bumped CMake project and runtime application version to `0.1.33`.
+- Reworked forest asset composition so forest regions render as denser visual masses instead of sparse trees on a dark mask.
+- Added visual-only forest mass underlay blending to soften square tile contours without changing gameplay masks.
+- Increased edge/mid/deep tree placement density with depth-aware sprite scaling: smaller trees near edges, larger trees and canopy clusters inside deep forest.
+- Kept forest composition visual-only: gameplay collision, markers, routes, runtime grids, and prepared semantics remain unchanged.
