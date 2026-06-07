@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <filesystem>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace sar {
@@ -47,6 +48,18 @@ bool FileExists(const std::filesystem::path& path, std::string* error) {
   return false;
 }
 
+std::vector<std::filesystem::path> NumberedPaths(std::string_view prefix,
+                                                 int first, int last,
+                                                 std::string_view suffix) {
+  std::vector<std::filesystem::path> paths;
+  for (int i = first; i <= last; ++i) {
+    const std::string index = i < 10 ? "0" + std::to_string(i)
+                                     : std::to_string(i);
+    paths.push_back(std::string(prefix) + index + std::string(suffix));
+  }
+  return paths;
+}
+
 }  // namespace
 
 ForestAssetCatalog::~ForestAssetCatalog() { Reset(); }
@@ -55,7 +68,8 @@ bool ForestAssetCatalog::Load(const std::filesystem::path& root,
                               std::string* error) {
   Reset();
 
-  const std::filesystem::path manifest_path = root / "forest_assets_manifest.json";
+  const std::filesystem::path manifest_path =
+      root / "forest_assets_manifest.json";
   if (!FileExists(manifest_path, error)) {
     return false;
   }
@@ -131,6 +145,57 @@ bool ForestAssetCatalog::Load(const std::filesystem::path& root,
                        &shadows_, error) &&
        ok;
 
+  LoadOptionalTextureList(root,
+                          NumberedPaths("fringe/ground/dark_grass_", 1, 8,
+                                        ".png"),
+                          &fringe_ground_);
+  LoadOptionalTextureList(root, NumberedPaths("fringe/ground/moss_", 1, 6,
+                                             ".png"),
+                          &fringe_ground_);
+  LoadOptionalTextureList(root,
+                          NumberedPaths("fringe/ground/leaf_litter_", 1, 6,
+                                        ".png"),
+                          &fringe_ground_);
+  LoadOptionalTextureList(root,
+                          NumberedPaths("fringe/ground/needle_litter_", 1, 6,
+                                        ".png"),
+                          &fringe_ground_);
+  LoadOptionalTextureList(root,
+                          NumberedPaths("fringe/bushes/small_bush_", 1, 10,
+                                        ".png"),
+                          &fringe_bushes_);
+  LoadOptionalTextureList(root,
+                          NumberedPaths("fringe/ferns/fern_fringe_", 1, 8,
+                                        ".png"),
+                          &fringe_ferns_);
+  LoadOptionalTextureList(root,
+                          NumberedPaths("fringe/saplings/sapling_", 1, 8,
+                                        ".png"),
+                          &fringe_saplings_);
+  LoadOptionalTextureList(root,
+                          NumberedPaths("fringe/wood/branch_fringe_", 1, 6,
+                                        ".png"),
+                          &fringe_wood_);
+  LoadOptionalTextureList(root,
+                          NumberedPaths("fringe/wood/stump_fringe_", 1, 4,
+                                        ".png"),
+                          &fringe_wood_);
+  LoadOptionalTextureList(root,
+                          NumberedPaths("fringe/wood/fallen_log_small_", 1,
+                                        4, ".png"),
+                          &fringe_wood_);
+  LoadOptionalTextureList(root, NumberedPaths("fringe/wood/roots_", 1, 5,
+                                             ".png"),
+                          &fringe_wood_);
+  LoadOptionalTextureList(root,
+                          NumberedPaths("fringe/rocks/rock_moss_", 1, 4,
+                                        ".png"),
+                          &fringe_rocks_);
+  LoadOptionalTextureList(root,
+                          NumberedPaths("fringe/shadows/edge_shadow_blob_", 1,
+                                        8, ".png"),
+                          &fringe_shadows_);
+
   loaded_ = ok && !forest_floor_tiles_.empty() && !mid_tiles_.empty() &&
             !deep_tiles_.empty() && !trees_.empty();
   if (!loaded_ && error != nullptr && error->empty()) {
@@ -167,6 +232,13 @@ void ForestAssetCatalog::Reset() {
   unload(&clusters_);
   unload(&canopies_);
   unload(&shadows_);
+  unload(&fringe_ground_);
+  unload(&fringe_bushes_);
+  unload(&fringe_ferns_);
+  unload(&fringe_saplings_);
+  unload(&fringe_wood_);
+  unload(&fringe_rocks_);
+  unload(&fringe_shadows_);
 
   loaded_texture_count_ = 0;
   loaded_ = false;
@@ -244,6 +316,27 @@ const ForestAssetTexture* ForestAssetCatalog::PickShadow(int x, int y) const {
   return PickFrom(shadows_, x, y, 113);
 }
 
+const ForestAssetTexture* ForestAssetCatalog::PickFringe(
+    ForestFringeAssetKind kind, int x, int y) const {
+  switch (kind) {
+    case ForestFringeAssetKind::kGround:
+      return PickFrom(fringe_ground_, x, y, 229);
+    case ForestFringeAssetKind::kBush:
+      return PickFrom(fringe_bushes_, x, y, 233);
+    case ForestFringeAssetKind::kFern:
+      return PickFrom(fringe_ferns_, x, y, 239);
+    case ForestFringeAssetKind::kSapling:
+      return PickFrom(fringe_saplings_, x, y, 241);
+    case ForestFringeAssetKind::kWood:
+      return PickFrom(fringe_wood_, x, y, 251);
+    case ForestFringeAssetKind::kRock:
+      return PickFrom(fringe_rocks_, x, y, 257);
+    case ForestFringeAssetKind::kShadow:
+      return PickFrom(fringe_shadows_, x, y, 263);
+  }
+  return nullptr;
+}
+
 bool ForestAssetCatalog::LoadTextureList(
     const std::filesystem::path& root,
     const std::vector<std::filesystem::path>& paths,
@@ -276,6 +369,14 @@ bool ForestAssetCatalog::LoadTextureList(
     ++loaded_texture_count_;
   }
   return ok;
+}
+
+void ForestAssetCatalog::LoadOptionalTextureList(
+    const std::filesystem::path& root,
+    const std::vector<std::filesystem::path>& paths,
+    std::vector<ForestAssetTexture>* textures) {
+  std::string ignored_error;
+  static_cast<void>(LoadTextureList(root, paths, textures, &ignored_error));
 }
 
 const ForestAssetTexture* ForestAssetCatalog::PickFrom(

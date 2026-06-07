@@ -1,0 +1,1714 @@
+{
+  "schema_version": "shootandrun-asset-manifest-v2",
+  "asset_pack": "forest_fringe_assets_v1",
+  "extends": "assets/visual/forest/forest_assets_manifest.json",
+  "style_lock": {
+    "source": "forest_assets_v2_style_locked",
+    "description": "Small undergrowth/fringe assets for forest edge softening in the approved hand-painted top-down fir forest style.",
+    "hard_rules": [
+      "No geometric triangle trees.",
+      "No visible baked grid.",
+      "Transparent backgrounds for all sprites and overlays.",
+      "Assets are visual-only; gameplay collision remains controlled by map_package/runtime_grids."
+    ]
+  },
+  "tile_size_px": 16,
+  "recommended_root": "assets/visual/forest",
+  "assets": [
+    {
+      "id": "forest.fringe.dark_grass.01",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/dark_grass_01.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "dark_grass",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.dark_grass.02",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/dark_grass_02.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "dark_grass",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.dark_grass.03",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/dark_grass_03.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "dark_grass",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.dark_grass.04",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/dark_grass_04.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "dark_grass",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.dark_grass.05",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/dark_grass_05.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "dark_grass",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.dark_grass.06",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/dark_grass_06.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "dark_grass",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.dark_grass.07",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/dark_grass_07.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "dark_grass",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.dark_grass.08",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/dark_grass_08.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "dark_grass",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.moss.01",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/moss_01.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "moss",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.moss.02",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/moss_02.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "moss",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.moss.03",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/moss_03.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "moss",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.moss.04",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/moss_04.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "moss",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.moss.05",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/moss_05.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "moss",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.moss.06",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/moss_06.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "moss",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.leaf_litter.01",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/leaf_litter_01.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "leaf_litter",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.leaf_litter.02",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/leaf_litter_02.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "leaf_litter",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.leaf_litter.03",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/leaf_litter_03.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "leaf_litter",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.leaf_litter.04",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/leaf_litter_04.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "leaf_litter",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.leaf_litter.05",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/leaf_litter_05.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "leaf_litter",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.leaf_litter.06",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/leaf_litter_06.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "leaf_litter",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.needle_litter.01",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/needle_litter_01.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "needle_litter",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.needle_litter.02",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/needle_litter_02.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "needle_litter",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.needle_litter.03",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/needle_litter_03.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "needle_litter",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.needle_litter.04",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/needle_litter_04.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "needle_litter",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.needle_litter.05",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/needle_litter_05.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "needle_litter",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.needle_litter.06",
+      "kind": "fringe_ground",
+      "file": "fringe/ground/needle_litter_06.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "tile_center",
+      "layer": "decoration_ground",
+      "tags": [
+        "forest_fringe",
+        "needle_litter",
+        "ground_patch"
+      ]
+    },
+    {
+      "id": "forest.fringe.small_bush.01",
+      "kind": "sprite",
+      "file": "fringe/bushes/small_bush_01.png",
+      "size_px": [
+        20,
+        16
+      ],
+      "size_tiles": [
+        2,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "bush",
+        "edge"
+      ]
+    },
+    {
+      "id": "forest.fringe.small_bush.02",
+      "kind": "sprite",
+      "file": "fringe/bushes/small_bush_02.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "bush",
+        "edge"
+      ]
+    },
+    {
+      "id": "forest.fringe.small_bush.03",
+      "kind": "sprite",
+      "file": "fringe/bushes/small_bush_03.png",
+      "size_px": [
+        24,
+        18
+      ],
+      "size_tiles": [
+        2,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "bush",
+        "edge"
+      ]
+    },
+    {
+      "id": "forest.fringe.small_bush.04",
+      "kind": "sprite",
+      "file": "fringe/bushes/small_bush_04.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "bush",
+        "edge"
+      ]
+    },
+    {
+      "id": "forest.fringe.small_bush.05",
+      "kind": "sprite",
+      "file": "fringe/bushes/small_bush_05.png",
+      "size_px": [
+        16,
+        14
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "bush",
+        "edge"
+      ]
+    },
+    {
+      "id": "forest.fringe.small_bush.06",
+      "kind": "sprite",
+      "file": "fringe/bushes/small_bush_06.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "bush",
+        "edge"
+      ]
+    },
+    {
+      "id": "forest.fringe.small_bush.07",
+      "kind": "sprite",
+      "file": "fringe/bushes/small_bush_07.png",
+      "size_px": [
+        20,
+        16
+      ],
+      "size_tiles": [
+        2,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "bush",
+        "edge"
+      ]
+    },
+    {
+      "id": "forest.fringe.small_bush.08",
+      "kind": "sprite",
+      "file": "fringe/bushes/small_bush_08.png",
+      "size_px": [
+        20,
+        16
+      ],
+      "size_tiles": [
+        2,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "bush",
+        "edge"
+      ]
+    },
+    {
+      "id": "forest.fringe.small_bush.09",
+      "kind": "sprite",
+      "file": "fringe/bushes/small_bush_09.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "bush",
+        "edge"
+      ]
+    },
+    {
+      "id": "forest.fringe.small_bush.10",
+      "kind": "sprite",
+      "file": "fringe/bushes/small_bush_10.png",
+      "size_px": [
+        16,
+        14
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "bush",
+        "edge"
+      ]
+    },
+    {
+      "id": "forest.fringe.fern.01",
+      "kind": "sprite",
+      "file": "fringe/ferns/fern_fringe_01.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "fern",
+        "edge",
+        "undergrowth"
+      ]
+    },
+    {
+      "id": "forest.fringe.fern.02",
+      "kind": "sprite",
+      "file": "fringe/ferns/fern_fringe_02.png",
+      "size_px": [
+        18,
+        18
+      ],
+      "size_tiles": [
+        2,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "fern",
+        "edge",
+        "undergrowth"
+      ]
+    },
+    {
+      "id": "forest.fringe.fern.03",
+      "kind": "sprite",
+      "file": "fringe/ferns/fern_fringe_03.png",
+      "size_px": [
+        20,
+        18
+      ],
+      "size_tiles": [
+        2,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "fern",
+        "edge",
+        "undergrowth"
+      ]
+    },
+    {
+      "id": "forest.fringe.fern.04",
+      "kind": "sprite",
+      "file": "fringe/ferns/fern_fringe_04.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "fern",
+        "edge",
+        "undergrowth"
+      ]
+    },
+    {
+      "id": "forest.fringe.fern.05",
+      "kind": "sprite",
+      "file": "fringe/ferns/fern_fringe_05.png",
+      "size_px": [
+        20,
+        18
+      ],
+      "size_tiles": [
+        2,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "fern",
+        "edge",
+        "undergrowth"
+      ]
+    },
+    {
+      "id": "forest.fringe.fern.06",
+      "kind": "sprite",
+      "file": "fringe/ferns/fern_fringe_06.png",
+      "size_px": [
+        20,
+        18
+      ],
+      "size_tiles": [
+        2,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "fern",
+        "edge",
+        "undergrowth"
+      ]
+    },
+    {
+      "id": "forest.fringe.fern.07",
+      "kind": "sprite",
+      "file": "fringe/ferns/fern_fringe_07.png",
+      "size_px": [
+        24,
+        20
+      ],
+      "size_tiles": [
+        2,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "fern",
+        "edge",
+        "undergrowth"
+      ]
+    },
+    {
+      "id": "forest.fringe.fern.08",
+      "kind": "sprite",
+      "file": "fringe/ferns/fern_fringe_08.png",
+      "size_px": [
+        24,
+        20
+      ],
+      "size_tiles": [
+        2,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "fern",
+        "edge",
+        "undergrowth"
+      ]
+    },
+    {
+      "id": "forest.fringe.sapling.01",
+      "kind": "sprite",
+      "file": "fringe/saplings/sapling_01.png",
+      "size_px": [
+        16,
+        24
+      ],
+      "size_tiles": [
+        1,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "forest_fringe",
+        "sapling",
+        "small_tree",
+        "inner_edge"
+      ]
+    },
+    {
+      "id": "forest.fringe.sapling.02",
+      "kind": "sprite",
+      "file": "fringe/saplings/sapling_02.png",
+      "size_px": [
+        18,
+        28
+      ],
+      "size_tiles": [
+        2,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "forest_fringe",
+        "sapling",
+        "small_tree",
+        "inner_edge"
+      ]
+    },
+    {
+      "id": "forest.fringe.sapling.03",
+      "kind": "sprite",
+      "file": "fringe/saplings/sapling_03.png",
+      "size_px": [
+        16,
+        24
+      ],
+      "size_tiles": [
+        1,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "forest_fringe",
+        "sapling",
+        "small_tree",
+        "inner_edge"
+      ]
+    },
+    {
+      "id": "forest.fringe.sapling.04",
+      "kind": "sprite",
+      "file": "fringe/saplings/sapling_04.png",
+      "size_px": [
+        18,
+        28
+      ],
+      "size_tiles": [
+        2,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "forest_fringe",
+        "sapling",
+        "small_tree",
+        "inner_edge"
+      ]
+    },
+    {
+      "id": "forest.fringe.sapling.05",
+      "kind": "sprite",
+      "file": "fringe/saplings/sapling_05.png",
+      "size_px": [
+        18,
+        28
+      ],
+      "size_tiles": [
+        2,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "forest_fringe",
+        "sapling",
+        "small_tree",
+        "inner_edge"
+      ]
+    },
+    {
+      "id": "forest.fringe.sapling.06",
+      "kind": "sprite",
+      "file": "fringe/saplings/sapling_06.png",
+      "size_px": [
+        24,
+        32
+      ],
+      "size_tiles": [
+        2,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "forest_fringe",
+        "sapling",
+        "small_tree",
+        "inner_edge"
+      ]
+    },
+    {
+      "id": "forest.fringe.sapling.07",
+      "kind": "sprite",
+      "file": "fringe/saplings/sapling_07.png",
+      "size_px": [
+        16,
+        24
+      ],
+      "size_tiles": [
+        1,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "forest_fringe",
+        "sapling",
+        "small_tree",
+        "inner_edge"
+      ]
+    },
+    {
+      "id": "forest.fringe.sapling.08",
+      "kind": "sprite",
+      "file": "fringe/saplings/sapling_08.png",
+      "size_px": [
+        16,
+        24
+      ],
+      "size_tiles": [
+        1,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "tall_object",
+      "tags": [
+        "forest_fringe",
+        "sapling",
+        "small_tree",
+        "inner_edge"
+      ]
+    },
+    {
+      "id": "forest.fringe.stump.01",
+      "kind": "sprite",
+      "file": "fringe/wood/stump_fringe_01.png",
+      "size_px": [
+        18,
+        18
+      ],
+      "size_tiles": [
+        2,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "stump",
+        "wood"
+      ]
+    },
+    {
+      "id": "forest.fringe.stump.02",
+      "kind": "sprite",
+      "file": "fringe/wood/stump_fringe_02.png",
+      "size_px": [
+        20,
+        18
+      ],
+      "size_tiles": [
+        2,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "stump",
+        "wood"
+      ]
+    },
+    {
+      "id": "forest.fringe.stump.03",
+      "kind": "sprite",
+      "file": "fringe/wood/stump_fringe_03.png",
+      "size_px": [
+        18,
+        18
+      ],
+      "size_tiles": [
+        2,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "stump",
+        "wood"
+      ]
+    },
+    {
+      "id": "forest.fringe.stump.04",
+      "kind": "sprite",
+      "file": "fringe/wood/stump_fringe_04.png",
+      "size_px": [
+        20,
+        18
+      ],
+      "size_tiles": [
+        2,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "stump",
+        "wood"
+      ]
+    },
+    {
+      "id": "forest.fringe.branch.01",
+      "kind": "sprite",
+      "file": "fringe/wood/branch_fringe_01.png",
+      "size_px": [
+        28,
+        16
+      ],
+      "size_tiles": [
+        2,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "branch",
+        "wood",
+        "debris"
+      ]
+    },
+    {
+      "id": "forest.fringe.branch.02",
+      "kind": "sprite",
+      "file": "fringe/wood/branch_fringe_02.png",
+      "size_px": [
+        24,
+        16
+      ],
+      "size_tiles": [
+        2,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "branch",
+        "wood",
+        "debris"
+      ]
+    },
+    {
+      "id": "forest.fringe.branch.03",
+      "kind": "sprite",
+      "file": "fringe/wood/branch_fringe_03.png",
+      "size_px": [
+        20,
+        14
+      ],
+      "size_tiles": [
+        2,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "branch",
+        "wood",
+        "debris"
+      ]
+    },
+    {
+      "id": "forest.fringe.branch.04",
+      "kind": "sprite",
+      "file": "fringe/wood/branch_fringe_04.png",
+      "size_px": [
+        16,
+        12
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "branch",
+        "wood",
+        "debris"
+      ]
+    },
+    {
+      "id": "forest.fringe.branch.05",
+      "kind": "sprite",
+      "file": "fringe/wood/branch_fringe_05.png",
+      "size_px": [
+        24,
+        16
+      ],
+      "size_tiles": [
+        2,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "branch",
+        "wood",
+        "debris"
+      ]
+    },
+    {
+      "id": "forest.fringe.branch.06",
+      "kind": "sprite",
+      "file": "fringe/wood/branch_fringe_06.png",
+      "size_px": [
+        24,
+        16
+      ],
+      "size_tiles": [
+        2,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "branch",
+        "wood",
+        "debris"
+      ]
+    },
+    {
+      "id": "forest.fringe.log_small.01",
+      "kind": "sprite",
+      "file": "fringe/wood/fallen_log_small_01.png",
+      "size_px": [
+        28,
+        16
+      ],
+      "size_tiles": [
+        2,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "log",
+        "wood",
+        "debris"
+      ]
+    },
+    {
+      "id": "forest.fringe.log_small.02",
+      "kind": "sprite",
+      "file": "fringe/wood/fallen_log_small_02.png",
+      "size_px": [
+        32,
+        16
+      ],
+      "size_tiles": [
+        2,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "log",
+        "wood",
+        "debris"
+      ]
+    },
+    {
+      "id": "forest.fringe.log_small.03",
+      "kind": "sprite",
+      "file": "fringe/wood/fallen_log_small_03.png",
+      "size_px": [
+        24,
+        14
+      ],
+      "size_tiles": [
+        2,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "log",
+        "wood",
+        "debris"
+      ]
+    },
+    {
+      "id": "forest.fringe.log_small.04",
+      "kind": "sprite",
+      "file": "fringe/wood/fallen_log_small_04.png",
+      "size_px": [
+        24,
+        14
+      ],
+      "size_tiles": [
+        2,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "log",
+        "wood",
+        "debris"
+      ]
+    },
+    {
+      "id": "forest.fringe.roots.01",
+      "kind": "sprite",
+      "file": "fringe/wood/roots_01.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "roots",
+        "wood",
+        "debris"
+      ]
+    },
+    {
+      "id": "forest.fringe.roots.02",
+      "kind": "sprite",
+      "file": "fringe/wood/roots_02.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "roots",
+        "wood",
+        "debris"
+      ]
+    },
+    {
+      "id": "forest.fringe.roots.03",
+      "kind": "sprite",
+      "file": "fringe/wood/roots_03.png",
+      "size_px": [
+        20,
+        16
+      ],
+      "size_tiles": [
+        2,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "roots",
+        "wood",
+        "debris"
+      ]
+    },
+    {
+      "id": "forest.fringe.roots.04",
+      "kind": "sprite",
+      "file": "fringe/wood/roots_04.png",
+      "size_px": [
+        24,
+        18
+      ],
+      "size_tiles": [
+        2,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "roots",
+        "wood",
+        "debris"
+      ]
+    },
+    {
+      "id": "forest.fringe.roots.05",
+      "kind": "sprite",
+      "file": "fringe/wood/roots_05.png",
+      "size_px": [
+        24,
+        18
+      ],
+      "size_tiles": [
+        2,
+        2
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "roots",
+        "wood",
+        "debris"
+      ]
+    },
+    {
+      "id": "forest.fringe.rock_moss.01",
+      "kind": "sprite",
+      "file": "fringe/rocks/rock_moss_01.png",
+      "size_px": [
+        18,
+        16
+      ],
+      "size_tiles": [
+        2,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "rock",
+        "moss",
+        "debris"
+      ]
+    },
+    {
+      "id": "forest.fringe.rock_moss.02",
+      "kind": "sprite",
+      "file": "fringe/rocks/rock_moss_02.png",
+      "size_px": [
+        18,
+        16
+      ],
+      "size_tiles": [
+        2,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "rock",
+        "moss",
+        "debris"
+      ]
+    },
+    {
+      "id": "forest.fringe.rock_moss.03",
+      "kind": "sprite",
+      "file": "fringe/rocks/rock_moss_03.png",
+      "size_px": [
+        16,
+        14
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "rock",
+        "moss",
+        "debris"
+      ]
+    },
+    {
+      "id": "forest.fringe.rock_moss.04",
+      "kind": "sprite",
+      "file": "fringe/rocks/rock_moss_04.png",
+      "size_px": [
+        18,
+        16
+      ],
+      "size_tiles": [
+        2,
+        1
+      ],
+      "anchor": "bottom_center",
+      "layer": "object",
+      "tags": [
+        "forest_fringe",
+        "rock",
+        "moss",
+        "debris"
+      ]
+    },
+    {
+      "id": "forest.fringe.edge_shadow.01",
+      "kind": "overlay",
+      "file": "fringe/shadows/edge_shadow_blob_01.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "center",
+      "layer": "terrain_overlay",
+      "tags": [
+        "forest_fringe",
+        "shadow",
+        "edge_softening"
+      ]
+    },
+    {
+      "id": "forest.fringe.edge_shadow.02",
+      "kind": "overlay",
+      "file": "fringe/shadows/edge_shadow_blob_02.png",
+      "size_px": [
+        24,
+        16
+      ],
+      "size_tiles": [
+        2,
+        1
+      ],
+      "anchor": "center",
+      "layer": "terrain_overlay",
+      "tags": [
+        "forest_fringe",
+        "shadow",
+        "edge_softening"
+      ]
+    },
+    {
+      "id": "forest.fringe.edge_shadow.03",
+      "kind": "overlay",
+      "file": "fringe/shadows/edge_shadow_blob_03.png",
+      "size_px": [
+        48,
+        24
+      ],
+      "size_tiles": [
+        3,
+        2
+      ],
+      "anchor": "center",
+      "layer": "terrain_overlay",
+      "tags": [
+        "forest_fringe",
+        "shadow",
+        "edge_softening"
+      ]
+    },
+    {
+      "id": "forest.fringe.edge_shadow.04",
+      "kind": "overlay",
+      "file": "fringe/shadows/edge_shadow_blob_04.png",
+      "size_px": [
+        32,
+        16
+      ],
+      "size_tiles": [
+        2,
+        1
+      ],
+      "anchor": "center",
+      "layer": "terrain_overlay",
+      "tags": [
+        "forest_fringe",
+        "shadow",
+        "edge_softening"
+      ]
+    },
+    {
+      "id": "forest.fringe.edge_shadow.05",
+      "kind": "overlay",
+      "file": "fringe/shadows/edge_shadow_blob_05.png",
+      "size_px": [
+        24,
+        16
+      ],
+      "size_tiles": [
+        2,
+        1
+      ],
+      "anchor": "center",
+      "layer": "terrain_overlay",
+      "tags": [
+        "forest_fringe",
+        "shadow",
+        "edge_softening"
+      ]
+    },
+    {
+      "id": "forest.fringe.edge_shadow.06",
+      "kind": "overlay",
+      "file": "fringe/shadows/edge_shadow_blob_06.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "center",
+      "layer": "terrain_overlay",
+      "tags": [
+        "forest_fringe",
+        "shadow",
+        "edge_softening"
+      ]
+    },
+    {
+      "id": "forest.fringe.edge_shadow.07",
+      "kind": "overlay",
+      "file": "fringe/shadows/edge_shadow_blob_07.png",
+      "size_px": [
+        24,
+        16
+      ],
+      "size_tiles": [
+        2,
+        1
+      ],
+      "anchor": "center",
+      "layer": "terrain_overlay",
+      "tags": [
+        "forest_fringe",
+        "shadow",
+        "edge_softening"
+      ]
+    },
+    {
+      "id": "forest.fringe.edge_shadow.08",
+      "kind": "overlay",
+      "file": "fringe/shadows/edge_shadow_blob_08.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_tiles": [
+        1,
+        1
+      ],
+      "anchor": "center",
+      "layer": "terrain_overlay",
+      "tags": [
+        "forest_fringe",
+        "shadow",
+        "edge_softening"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "schema_version": "shootandrun-forest-fringe-rules-v1",
+  "uses_manifest": "forest_fringe_assets_manifest.json",
+  "purpose": "Soften visual-only forest borders without changing collision, routes or gameplay grids.",
+  "bands": {
+    "outer_fringe": {
+      "description": "1-3 tiles outside forest edge, on open grass near forest.",
+      "assets": [
+        "forest.fringe.dark_grass.*",
+        "forest.fringe.moss.*",
+        "forest.fringe.small_bush.*",
+        "forest.fringe.fern.*",
+        "forest.fringe.branch.*",
+        "forest.fringe.leaf_litter.*",
+        "forest.fringe.needle_litter.*"
+      ],
+      "density_per_100_tiles": {
+        "ground_patch": 45,
+        "bush": 10,
+        "fern": 8,
+        "wood_debris": 4,
+        "rock_moss": 2
+      }
+    },
+    "inner_edge": {
+      "description": "1-2 tiles inside forest edge, used before larger trees.",
+      "assets": [
+        "forest.fringe.sapling.*",
+        "forest.fringe.small_bush.*",
+        "forest.fringe.edge_shadow.*",
+        "forest.fringe.roots.*"
+      ],
+      "density_per_100_tiles": {
+        "shadow": 30,
+        "sapling": 12,
+        "bush": 14,
+        "roots": 3
+      }
+    },
+    "transition_gap_fill": {
+      "description": "Sparse details for ugly square gaps between forest mass and open grass.",
+      "assets": [
+        "forest.fringe.edge_shadow.*",
+        "forest.fringe.moss.*",
+        "forest.fringe.dark_grass.*",
+        "forest.fringe.fern.*"
+      ],
+      "density_per_100_tiles": {
+        "shadow": 20,
+        "ground_patch": 35,
+        "fern": 5
+      }
+    }
+  },
+  "avoid_masks": [
+    "main_route_center",
+    "water_core",
+    "ruin_floor",
+    "ruin_wall",
+    "start_goal_clearance",
+    "marker_clearance"
+  ],
+  "placement": {
+    "variant_policy": "stable_hash_xy",
+    "jitter_px": [
+      -5,
+      5
+    ],
+    "object_sort": "bottom_center_y",
+    "do_not_modify": [
+      "collision_grid",
+      "movement_grid",
+      "projectile_block_grid",
+      "vision_block_grid",
+      "routes",
+      "markers"
+    ]
+  }
+}

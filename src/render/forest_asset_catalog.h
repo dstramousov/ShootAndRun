@@ -22,6 +22,16 @@ enum class ForestSpriteBand {
   kCanopy,
 };
 
+enum class ForestFringeAssetKind {
+  kGround,
+  kBush,
+  kFern,
+  kSapling,
+  kWood,
+  kRock,
+  kShadow,
+};
+
 struct ForestAssetTexture {
   std::string id;
   std::filesystem::path relative_path;
@@ -117,11 +127,26 @@ class ForestAssetCatalog {
    */
   const ForestAssetTexture* PickShadow(int x, int y) const;
 
+  /**
+   * @brief Selects a deterministic forest fringe asset.
+   *
+   * @param kind Fringe asset kind.
+   * @param x Tile X coordinate.
+   * @param y Tile Y coordinate.
+   * @return Selected texture entry or nullptr when unavailable.
+   */
+  const ForestAssetTexture* PickFringe(ForestFringeAssetKind kind, int x,
+                                       int y) const;
+
  private:
   bool LoadTextureList(const std::filesystem::path& root,
                        const std::vector<std::filesystem::path>& paths,
                        std::vector<ForestAssetTexture>* textures,
                        std::string* error);
+  void LoadOptionalTextureList(
+      const std::filesystem::path& root,
+      const std::vector<std::filesystem::path>& paths,
+      std::vector<ForestAssetTexture>* textures);
   const ForestAssetTexture* PickFrom(const std::vector<ForestAssetTexture>& list,
                                      int x, int y, int salt) const;
 
@@ -145,6 +170,13 @@ class ForestAssetCatalog {
   std::vector<ForestAssetTexture> clusters_;
   std::vector<ForestAssetTexture> canopies_;
   std::vector<ForestAssetTexture> shadows_;
+  std::vector<ForestAssetTexture> fringe_ground_;
+  std::vector<ForestAssetTexture> fringe_bushes_;
+  std::vector<ForestAssetTexture> fringe_ferns_;
+  std::vector<ForestAssetTexture> fringe_saplings_;
+  std::vector<ForestAssetTexture> fringe_wood_;
+  std::vector<ForestAssetTexture> fringe_rocks_;
+  std::vector<ForestAssetTexture> fringe_shadows_;
 };
 
 }  // namespace sar
