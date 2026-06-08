@@ -487,6 +487,11 @@ std::string ProjectConfig::Dump() const {
          std::to_string(player3d_movement.jump_air_control_multiplier) +
          ", jump_run_min: " +
          std::to_string(player3d_movement.jump_min_running_speed_tiles_per_sec) +
+         " }, player3d_health: { initial_hp: " +
+         std::to_string(player3d_health.initial_hp) +
+         ", max_hp: " + std::to_string(player3d_health.max_hp) +
+         ", fall_damage_per_level: " +
+         std::to_string(player3d_health.fall_damage_per_level) +
          " }, visual_pipeline: { mode: " +
          visual_pipeline::VisualPipelineModeName(visual_pipeline_config.mode) +
          ", prepared_visual_map_path: \"" +
@@ -1102,6 +1107,48 @@ ProjectConfigResult LoadProjectConfig(
     }
     config.player3d_movement.jump_min_running_speed_tiles_per_sec =
         player3d_jump_run_min.value;
+  }
+
+  ParseIntResult player3d_max_hp =
+      ExtractOptionalJsonIntField(content, "player3d_max_hp");
+  if (!player3d_max_hp.ok) {
+    return {false, {}, player3d_max_hp.error};
+  }
+  if (player3d_max_hp.found) {
+    if (player3d_max_hp.value <= 0) {
+      return {false, {}, "player3d_max_hp must be positive"};
+    }
+    config.player3d_health.max_hp = player3d_max_hp.value;
+  }
+
+  ParseIntResult player3d_initial_hp =
+      ExtractOptionalJsonIntField(content, "player3d_initial_hp");
+  if (!player3d_initial_hp.ok) {
+    return {false, {}, player3d_initial_hp.error};
+  }
+  if (player3d_initial_hp.found) {
+    if (player3d_initial_hp.value <= 0) {
+      return {false, {}, "player3d_initial_hp must be positive"};
+    }
+    config.player3d_health.initial_hp = player3d_initial_hp.value;
+  }
+
+  if (config.player3d_health.initial_hp > config.player3d_health.max_hp) {
+    return {false, {}, "player3d_initial_hp must be <= player3d_max_hp"};
+  }
+
+  ParseIntResult player3d_fall_damage_per_level =
+      ExtractOptionalJsonIntField(content, "player3d_fall_damage_per_level");
+  if (!player3d_fall_damage_per_level.ok) {
+    return {false, {}, player3d_fall_damage_per_level.error};
+  }
+  if (player3d_fall_damage_per_level.found) {
+    if (player3d_fall_damage_per_level.value < 0) {
+      return {false, {},
+              "player3d_fall_damage_per_level must be non-negative"};
+    }
+    config.player3d_health.fall_damage_per_level =
+        player3d_fall_damage_per_level.value;
   }
 
   ParseStringResult visual_pipeline_mode =

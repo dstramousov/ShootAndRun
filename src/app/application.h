@@ -157,6 +157,10 @@ class Application {
    */
   void DrawGameOverlay() const;
   /**
+   * @brief Draws the compact 3D player health HUD near the FPS counter.
+   */
+  void Draw3DPlayerHud() const;
+  /**
    * @brief Releases the prepared final render texture when it is no longer needed.
    */
   void UnloadFinalRenderTexture();
@@ -241,6 +245,8 @@ class Application {
   unsigned int last_logged_3d_block_sequence_ = 0;
   unsigned int last_logged_3d_jump_sequence_ = 0;
   unsigned int last_logged_3d_transition_sequence_ = 0;
+  unsigned int last_logged_3d_fall_sequence_ = 0;
+  unsigned int last_logged_3d_health_sequence_ = 0;
   unsigned int last_logged_3d_intro_sequence_ = 0;
   float accumulated_mouse_dx_since_tile_ = 0.0F;
   float accumulated_mouse_dy_since_tile_ = 0.0F;

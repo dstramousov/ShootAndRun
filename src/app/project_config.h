@@ -137,6 +137,20 @@ struct Player3DMovementConfig {
   float jump_min_running_speed_tiles_per_sec = 1.00F;  ///< Time value for jump min running speed tiles per seconds.
 };
 
+
+/**
+ * @brief Configures 3D player health and fall-damage tuning.
+ *
+ * The health model is intentionally minimal. It provides a stable runtime
+ * contract for fall damage without introducing inventory, healing, death UI,
+ * or broader combat systems.
+ */
+struct Player3DHealthConfig {
+  int max_hp = 100;  ///< Maximum health points available to the 3D player.
+  int initial_hp = 100;  ///< Health points assigned when a new 3D game starts.
+  int fall_damage_per_level = 5;  ///< Damage per unsafe fall level after the first safe level.
+};
+
 /**
  * @brief Fully resolved runtime configuration for the application.
  */
@@ -153,6 +167,7 @@ struct ProjectConfig {
   Render3DAssetRegistryConfig render3d_assets;  ///< Render 3d assets value carried by this data structure.
   Render3DIntroCameraConfig render3d_intro_camera;  ///< Render 3d intro camera value carried by this data structure.
   Player3DMovementConfig player3d_movement;  ///< Player 3d movement value carried by this data structure.
+  Player3DHealthConfig player3d_health;  ///< Player health and fall-damage settings for 3D sessions.
   visual_pipeline::VisualPipelineConfig visual_pipeline_config;  ///< Visual pipeline config value carried by this data structure.
 
   /**

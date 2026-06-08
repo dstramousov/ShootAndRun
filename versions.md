@@ -512,3 +512,12 @@
 - Added file-level comments for C++ source files and headers.
 - Documented private application methods, internal helper functions, and public data contracts without changing runtime behavior.
 - Added member comments to data-oriented structs where fields are part of the project data contract.
+
+## v0.1.60 -> v0.1.61
+
+- Bumped CMake project and runtime application version to `0.1.61`.
+- Added minimal 3D player HP state with configurable initial HP, max HP, and fall damage per unsafe elevation level.
+- Allowed downward movement over larger surface elevation drops while keeping collision and surface/underground hatch rules intact.
+- Applied fall damage as `(drop_levels - 1) * player3d_fall_damage_per_level`, so a one-level drop is safe and a two-level drop costs 5 HP by default.
+- Added compact HP HUD text under the FPS counter in 3D mode.
+- Added event logs for unsafe falls and health changes when 3D player logging is enabled.

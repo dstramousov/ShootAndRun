@@ -103,6 +103,7 @@ Esc            - вернуться в главное меню
 WASD / Arrows  - W/S вперёд/назад, A/D стрейф относительно взгляда
 Mouse X        - поворот взгляда / прицела игрока
 Space + move   - заскок на соседний elevation +1
+Fall down      - падение вниз на 2+ elevation levels с уроном
 Mouse wheel    - zoom in/out
 F1             - terrain colors
 F2             - elevation debug
@@ -128,6 +129,20 @@ Esc            - вернуться в главное меню
 circle   - классический радиус видимости без LoS-блокеров
 raycast  - радиус видимости плюс raycast по vision blockers
 ```
+
+Здоровье 3D-игрока и урон от падения задаются в `config/app_config.json`:
+
+```json
+"player3d_health": {
+  "player3d_initial_hp": 100,
+  "player3d_max_hp": 100,
+  "player3d_fall_damage_per_level": 5
+}
+```
+
+Падение на один elevation level считается безопасным. Для большего перепада урон
+считается как `(drop_levels - 1) * player3d_fall_damage_per_level`. Например,
+падение на два уровня даёт 5 HP урона при значении по умолчанию.
 
 ## 3D asset registry
 

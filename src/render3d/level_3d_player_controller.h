@@ -73,7 +73,21 @@ struct Level3DPlayerState {
   float acceleration_tiles_per_sec2 = 28.0F;  ///< Acceleration tiles per sec2 value carried by this data structure.
   float deceleration_tiles_per_sec2 = 34.0F;  ///< Deceleration tiles per sec2 value carried by this data structure.
   float mouse_turn_sensitivity_rad = 0.0031F;  ///< Mouse turn sensitivity rad value carried by this data structure.
-  int allowed_step_down_height = 1;  ///< Size component for allowed step down height.
+  int max_hp = 100;  ///< Maximum health points for the current 3D player session.
+  int current_hp = 100;  ///< Current health points clamped to the range [0, max_hp].
+  int fall_damage_per_level = 5;  ///< Damage per unsafe fall level after the first safe level.
+  int allowed_step_down_height = 1;  ///< Height drop that can be walked down without fall damage.
+  unsigned int health_event_sequence = 0;  ///< Incremented whenever player health changes.
+  int last_health_before_hp = 100;  ///< Health value before the last damage event.
+  int last_health_after_hp = 100;  ///< Health value after the last damage event.
+  int last_health_damage = 0;  ///< Damage value applied by the last health event.
+  unsigned int fall_event_sequence = 0;  ///< Incremented whenever an unsafe downward fall is resolved.
+  int last_fall_from_tile_x = -1;  ///< Source tile X for the last fall event.
+  int last_fall_from_tile_y = -1;  ///< Source tile Y for the last fall event.
+  int last_fall_to_tile_x = -1;  ///< Destination tile X for the last fall event.
+  int last_fall_to_tile_y = -1;  ///< Destination tile Y for the last fall event.
+  int last_fall_drop_levels = 0;  ///< Number of elevation levels dropped by the last fall event.
+  int last_fall_damage = 0;  ///< Damage applied by the last fall event.
   bool jump_active = false;  ///< Jump active value carried by this data structure.
   Level3DJumpKind jump_kind = Level3DJumpKind::kNone;  ///< Jump kind value carried by this data structure.
   float jump_elapsed_sec = 0.0F;  ///< Time value for jump elapsed seconds.
@@ -175,6 +189,22 @@ std::string Level3DJumpEventToString(const Level3DPlayerState& state);
  * @return String representation for event logs.
  */
 std::string Level3DTransitionEventToString(const Level3DPlayerState& state);
+
+/**
+ * @brief Returns a compact readable dump of the last fall event.
+ *
+ * @param state Current player state containing the last fall event.
+ * @return String representation for event logs.
+ */
+std::string Level3DFallEventToString(const Level3DPlayerState& state);
+
+/**
+ * @brief Returns a compact readable dump of the last health change event.
+ *
+ * @param state Current player state containing the last health change event.
+ * @return String representation for event logs.
+ */
+std::string Level3DHealthEventToString(const Level3DPlayerState& state);
 
 /**
  * @brief Finds a spawn point and initializes the 3D player state.

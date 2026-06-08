@@ -424,10 +424,6 @@ EnterTileResult CheckEnterTile(const LevelData& level,
                           : Level3DMoveBlockReason::kHeightStep;
     return {false, x, y, height_delta, reason};
   }
-  if (-height_delta > state.allowed_step_down_height) {
-    return {false, x, y, height_delta, Level3DMoveBlockReason::kHeightStep};
-  }
-
   return {true, x, y, height_delta, Level3DMoveBlockReason::kNone};
 }
 
@@ -464,6 +460,47 @@ void RecordJumpEvent(Level3DJumpEventType event_type,
   }
   state->last_jump_block_reason = block_reason;
   ++state->jump_event_sequence;
+}
+
+/**
+ * @brief Records fall and health events for unsafe downward elevation drops.
+ */
+void ApplyFallDamageIfNeeded(const Level3DPlayerState& previous_state,
+                             int target_tile_x, int target_tile_y,
+                             std::int8_t target_elevation,
+                             Level3DPlayerState* state) {
+  if (state == nullptr || previous_state.elevation < 0 ||
+      target_elevation < 0) {
+    return;
+  }
+
+  const int drop_levels = static_cast<int>(previous_state.elevation) -
+                          static_cast<int>(target_elevation);
+  if (drop_levels <= state->allowed_step_down_height) {
+    return;
+  }
+
+  const int unsafe_levels = std::max(0, drop_levels -
+                                           state->allowed_step_down_height);
+  const int damage = unsafe_levels * std::max(0, state->fall_damage_per_level);
+  state->last_fall_from_tile_x = TileIndexFromPosition(previous_state.tile_x);
+  state->last_fall_from_tile_y = TileIndexFromPosition(previous_state.tile_y);
+  state->last_fall_to_tile_x = target_tile_x;
+  state->last_fall_to_tile_y = target_tile_y;
+  state->last_fall_drop_levels = drop_levels;
+  state->last_fall_damage = damage;
+  ++state->fall_event_sequence;
+
+  if (damage <= 0) {
+    return;
+  }
+
+  state->last_health_before_hp = state->current_hp;
+  state->last_health_damage = damage;
+  state->current_hp = std::clamp(state->current_hp - damage, 0,
+                                 std::max(0, state->max_hp));
+  state->last_health_after_hp = state->current_hp;
+  ++state->health_event_sequence;
 }
 
 /**
@@ -786,11 +823,17 @@ bool UpdateRunningJump(const LevelData& level, float safe_dt,
     return true;
   }
 
+  Level3DPlayerState jump_start_state = *state;
+  jump_start_state.tile_x = state->jump_start_tile_x;
+  jump_start_state.tile_y = state->jump_start_tile_y;
+  jump_start_state.elevation = state->step_jump_from_elevation;
   state->elevation = HeightAtOrZero(level, landing_x, landing_y);
   state->step_jump_to_tile_x = landing_x;
   state->step_jump_to_tile_y = landing_y;
   state->step_jump_to_elevation = state->elevation;
   state->visual_elevation_offset = 0.0F;
+  ApplyFallDamageIfNeeded(jump_start_state, landing_x, landing_y,
+                          state->elevation, state);
   RecordJumpEvent(Level3DJumpEventType::kLanded,
                   Level3DMoveBlockReason::kNone, state);
   ResetJumpState(state);
@@ -833,6 +876,8 @@ void ApplyMovementAxis(const LevelData& level, float dx, float dy,
     state->step_jump_to_elevation = target_elevation;
   } else {
     state->elevation = target_elevation;
+    ApplyFallDamageIfNeeded(previous_state, enter_result.tile_x,
+                            enter_result.tile_y, target_elevation, state);
   }
   RefreshEffectiveMovementSpeed(level, state);
   RecordTransitionEvent(enter_result, previous_state, state);
@@ -1066,6 +1111,19 @@ void InitializeLevel3DPlayer(const LevelData& level,
   SetInitialFacingTowardMapCenter(level, state);
   state->velocity_x_tiles_per_sec = 0.0F;
   state->velocity_y_tiles_per_sec = 0.0F;
+  state->current_hp = std::clamp(state->current_hp, 0,
+                                  std::max(0, state->max_hp));
+  state->last_health_before_hp = state->current_hp;
+  state->last_health_after_hp = state->current_hp;
+  state->last_health_damage = 0;
+  state->health_event_sequence = 0;
+  state->fall_event_sequence = 0;
+  state->last_fall_from_tile_x = -1;
+  state->last_fall_from_tile_y = -1;
+  state->last_fall_to_tile_x = -1;
+  state->last_fall_to_tile_y = -1;
+  state->last_fall_drop_levels = 0;
+  state->last_fall_damage = 0;
   state->last_blocked_tile_x = -1;
   state->last_blocked_tile_y = -1;
   state->last_block_reason = Level3DMoveBlockReason::kNone;
@@ -1234,6 +1292,34 @@ std::string Level3DTransitionEventToString(
 }
 
 /**
+ * @brief Returns level 3D fall event to string.
+ */
+std::string Level3DFallEventToString(const Level3DPlayerState& state) {
+  std::ostringstream stream;
+  stream << "fall_land from=" << state.last_fall_from_tile_x << ','
+         << state.last_fall_from_tile_y << " to=" << state.last_fall_to_tile_x
+         << ',' << state.last_fall_to_tile_y
+         << " drop=" << state.last_fall_drop_levels
+         << " damage=" << state.last_fall_damage
+         << " hp=" << state.current_hp << '/' << state.max_hp;
+  return stream.str();
+}
+
+/**
+ * @brief Returns level 3D health event to string.
+ */
+std::string Level3DHealthEventToString(const Level3DPlayerState& state) {
+  std::ostringstream stream;
+  stream << "hp_change damage=" << state.last_health_damage
+         << " hp=" << state.last_health_before_hp << "->"
+         << state.last_health_after_hp << '/' << state.max_hp;
+  if (state.last_health_after_hp <= 0) {
+    stream << " status=down";
+  }
+  return stream.str();
+}
+
+/**
  * @brief Returns level 3D player tile diagnostics to string.
  */
 std::string Level3DPlayerTileDiagnosticsToString(
@@ -1263,6 +1349,7 @@ std::string Level3DPlayerStateToString(const Level3DPlayerState& state) {
   std::ostringstream stream;
   stream << "player3d: tile=" << state.tile_x << ',' << state.tile_y
          << " elevation=" << static_cast<int>(state.elevation)
+         << " hp=" << state.current_hp << '/' << state.max_hp
          << " facing=" << state.facing_x << ',' << state.facing_y
          << " velocity=" << state.velocity_x_tiles_per_sec << ','
          << state.velocity_y_tiles_per_sec

@@ -68,5 +68,10 @@
     "render3d_asset_registry_enabled": true,
     "render3d_asset_library_path": "config/render3d/asset_library.json",
     "render3d_tileset_path": "config/render3d/tileset_dark_forest.json"
+  },
+  "player3d_health": {
+    "player3d_initial_hp": 100,
+    "player3d_max_hp": 100,
+    "player3d_fall_damage_per_level": 5
   }
 }

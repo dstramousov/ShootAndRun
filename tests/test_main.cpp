@@ -114,6 +114,11 @@ void TestProjectConfigLoader() {
                 "    \"show_memory\": false,\n"
                 "    \"update_interval_ms\": 2000\n"
                 "  },\n"
+                "  \"player3d_health\": {\n"
+                "    \"player3d_initial_hp\": 80,\n"
+                "    \"player3d_max_hp\": 120,\n"
+                "    \"player3d_fall_damage_per_level\": 7\n"
+                "  },\n"
                 "  \"visual_pipeline\": {\n"
                 "    \"visual_pipeline_mode\": \"compare\",\n"
                 "    \"prepared_visual_map_path\": \"../visual_map/visual_map.json\",\n"
@@ -150,6 +155,12 @@ void TestProjectConfigLoader() {
          "service info memory flag should be read from project config");
   Expect(result.config.service_info.update_interval_ms == 2000,
          "service info update interval should be read from project config");
+  Expect(result.config.player3d_health.initial_hp == 80,
+         "3D player initial HP should be read from project config");
+  Expect(result.config.player3d_health.max_hp == 120,
+         "3D player max HP should be read from project config");
+  Expect(result.config.player3d_health.fall_damage_per_level == 7,
+         "3D player fall damage should be read from project config");
   Expect(result.config.visual_pipeline_config.mode ==
              sar::visual_pipeline::VisualPipelineMode::kCompare,
          "visual pipeline mode should be read from project config");

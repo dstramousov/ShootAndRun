@@ -120,6 +120,24 @@ void ApplyPlayer3DMovementConfig(
 }
 
 /**
+ * @brief Applies player 3D health config.
+ */
+void ApplyPlayer3DHealthConfig(const Player3DHealthConfig& config,
+                               render3d::Level3DPlayerState* player) {
+  if (player == nullptr) {
+    return;
+  }
+
+  player->max_hp = std::max(1, config.max_hp);
+  player->current_hp = std::clamp(config.initial_hp, 0, player->max_hp);
+  player->fall_damage_per_level = std::max(0, config.fall_damage_per_level);
+  player->last_health_before_hp = player->current_hp;
+  player->last_health_after_hp = player->current_hp;
+  player->last_health_damage = 0;
+  player->health_event_sequence = 0;
+}
+
+/**
  * @brief Applies render 3D intro camera config.
  */
 void ApplyRender3DIntroCameraConfig(
@@ -1110,6 +1128,16 @@ void Application::Log3DMovementEvents(const InputState& input) {
     last_logged_3d_transition_sequence_ = player.transition_event_sequence;
   }
 
+  if (player.fall_event_sequence != last_logged_3d_fall_sequence_) {
+    logger_.Info("p3d", render3d::Level3DFallEventToString(player));
+    last_logged_3d_fall_sequence_ = player.fall_event_sequence;
+  }
+
+  if (player.health_event_sequence != last_logged_3d_health_sequence_) {
+    logger_.Info("p3d", render3d::Level3DHealthEventToString(player));
+    last_logged_3d_health_sequence_ = player.health_event_sequence;
+  }
+
   if (player.blocked_event_sequence != last_logged_3d_block_sequence_ &&
       IsIntervalElapsed(now, last_3d_block_log_time_,
                         log_config.blocked_log_min_interval_ms)) {
@@ -1211,6 +1239,7 @@ void Application::DrawMapPreparingScreen() const {
  */
 void Application::DrawGameOverlay() const {
   if (config_.renderer_mode == RuntimeRendererMode::kRenderer3D) {
+    Draw3DPlayerHud();
     return;
   }
   if (!loaded_level_summary_.has_value()) {
@@ -1228,27 +1257,42 @@ void Application::DrawGameOverlay() const {
   ui_font_.DrawTextLine(loaded_level_summary_->Dump(), x, y, font_size,
                         color);
   y += line_step;
-  if (config_.renderer_mode == RuntimeRendererMode::kRenderer3D) {
-    ui_font_.DrawTextLine(render3d::Level3DViewStateToString(level_3d_view_),
-                          x, y, font_size, color);
-    y += line_step;
-    ui_font_.DrawTextLine(
-        "view: 3d  Mouse X aim/facing  WASD move  Space step-up  Wheel zoom  F1/F2/F3 debug",
-        x, y, font_size, color);
-  } else {
-    ui_font_.DrawTextLine(LevelViewStateToString(level_view_), x, y,
-                          font_size, color);
-    y += line_step;
-    ui_font_.DrawTextLine(std::string("view: ") +
-                              LevelRenderModeName(level_render_mode_) +
-                              "  F1 raw  F2 forest  F3 preview  F4 final",
-                          x, y, font_size, color);
-  }
+  ui_font_.DrawTextLine(LevelViewStateToString(level_view_), x, y,
+                        font_size, color);
+  y += line_step;
+  ui_font_.DrawTextLine(std::string("view: ") +
+                            LevelRenderModeName(level_render_mode_) +
+                            "  F1 raw  F2 forest  F3 preview  F4 final",
+                        x, y, font_size, color);
   if (prepared_level_.has_value()) {
     y += line_step;
     ui_font_.DrawTextLine(PreparedLevelOverlayLine(*prepared_level_), x, y,
                           font_size, color);
   }
+}
+
+
+/**
+ * @brief Draws the compact 3D player health HUD near the FPS counter.
+ */
+void Application::Draw3DPlayerHud() const {
+  if (config_.renderer_mode != RuntimeRendererMode::kRenderer3D ||
+      !level_3d_view_.initialized) {
+    return;
+  }
+
+  const int font_size = ScaledFontSize(ui_font_, window_state_, 0.8F);
+  const int padding = static_cast<int>(16.0F * window_state_.ui_scale);
+  const int line_step = font_size +
+                        static_cast<int>(6.0F * window_state_.ui_scale);
+  const render3d::Level3DPlayerState& player = level_3d_view_.player;
+  const std::string text = "HP: " + std::to_string(player.current_hp) + "/" +
+                           std::to_string(player.max_hp);
+  const int text_width = ui_font_.MeasureTextWidth(text, font_size);
+  const Color color = player.current_hp <= 0 ? Color{235, 70, 58, 255}
+                                             : Color{226, 232, 214, 255};
+  ui_font_.DrawTextLine(text, window_state_.width - text_width - padding,
+                        padding + line_step, font_size, color);
 }
 
 /**
@@ -1397,6 +1441,8 @@ bool Application::StartNewGameFromConfig() {
     last_logged_3d_block_sequence_ = 0;
     last_logged_3d_jump_sequence_ = 0;
     last_logged_3d_transition_sequence_ = 0;
+    last_logged_3d_fall_sequence_ = 0;
+    last_logged_3d_health_sequence_ = 0;
     last_logged_3d_intro_sequence_ = 0;
     accumulated_mouse_dx_since_tile_ = 0.0F;
     accumulated_mouse_dy_since_tile_ = 0.0F;
@@ -1412,6 +1458,8 @@ bool Application::StartNewGameFromConfig() {
     if (project_config_.has_value()) {
       ApplyPlayer3DMovementConfig(project_config_->player3d_movement,
                                   &level_3d_view_.player);
+      ApplyPlayer3DHealthConfig(project_config_->player3d_health,
+                                &level_3d_view_.player);
       level_3d_view_.visible_radius_tiles =
           project_config_->render3d_perf.visible_radius_tiles;
       level_3d_view_.culling_deadzone_tiles =
