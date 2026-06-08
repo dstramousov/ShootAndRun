@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_RENDER_LEVEL_RENDERER_H_
 #define SHOOT_AND_RUN_CPP_SRC_RENDER_LEVEL_RENDERER_H_
 
+/**
+ * @file src/render/level_renderer.h
+ * @brief 2D/debug rendering helpers retained by the application shell. Contains public
+ * declarations for level_renderer.h.
+ */
+
 #include <string>
 
 #include <raylib.h>
@@ -11,15 +17,21 @@
 
 namespace sar {
 
+/**
+ * @brief Stores level view state data shared between runtime systems.
+ */
 struct LevelViewState {
-  float target_x = 0.0F;
-  float target_y = 0.0F;
-  float zoom = 1.0F;
-  float min_zoom = 0.5F;
-  float max_zoom = 4.0F;
-  float pan_speed_px_per_sec = 720.0F;
+  float target_x = 0.0F;  ///< Tile, screen, or world coordinate for target x.
+  float target_y = 0.0F;  ///< Tile, screen, or world coordinate for target y.
+  float zoom = 1.0F;  ///< Zoom value carried by this data structure.
+  float min_zoom = 0.5F;  ///< Min zoom value carried by this data structure.
+  float max_zoom = 4.0F;  ///< Max zoom value carried by this data structure.
+  float pan_speed_px_per_sec = 720.0F;  ///< Time value for pan speed px per seconds.
 };
 
+/**
+ * @brief Defines the supported level render mode values.
+ */
 enum class LevelRenderMode {
   kRawTerrain,
   kCppAnalysis,
@@ -63,6 +75,9 @@ void ClampLevelViewToMap(const LevelData& level, const WindowState& window,
  */
 std::string LevelViewStateToString(const LevelViewState& view);
 
+/**
+ * @brief Owns the level renderer behavior and its runtime state.
+ */
 class LevelRenderer {
  public:
   /**

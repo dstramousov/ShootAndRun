@@ -1,11 +1,20 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_LOGGING_LOG_LEVEL_H_
 #define SHOOT_AND_RUN_CPP_SRC_LOGGING_LOG_LEVEL_H_
 
+/**
+ * @file src/logging/log_level.h
+ * @brief Terminal logging, log levels, and thread context. Contains public declarations for
+ * log_level.h.
+ */
+
 #include <optional>
 #include <string_view>
 
 namespace sar {
 
+/**
+ * @brief Defines the supported log level values.
+ */
 enum class LogLevel {
   kTrace = 0,
   kDebug = 1,

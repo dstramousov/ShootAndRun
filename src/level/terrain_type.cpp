@@ -1,7 +1,16 @@
+/**
+ * @file src/level/terrain_type.cpp
+ * @brief Generated map package data contracts and loading logic. Contains implementation for
+ * terrain_type.cpp.
+ */
+
 #include "level/terrain_type.h"
 
 namespace sar {
 
+/**
+ * @brief Returns terrain type from string.
+ */
 TerrainType TerrainTypeFromString(std::string_view value) {
   if (value == "open_ground" || value == "grass" || value == "clearing" ||
       value == "ground" || value == "dirt") {
@@ -32,6 +41,9 @@ TerrainType TerrainTypeFromString(std::string_view value) {
   return TerrainType::kUnknown;
 }
 
+/**
+ * @brief Returns terrain type to string.
+ */
 std::string_view TerrainTypeToString(TerrainType terrain) {
   switch (terrain) {
     case TerrainType::kOpenGround:

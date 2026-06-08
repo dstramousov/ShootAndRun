@@ -1,9 +1,18 @@
+/**
+ * @file src/visual_pipeline/steps/build_micro_scene_visual_plan_step.cpp
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains
+ * implementation for build_micro_scene_visual_plan_step.cpp.
+ */
+
 #include "visual_pipeline/steps/build_micro_scene_visual_plan_step.h"
 
 #include "visual_pipeline/micro_scene_visual_plan.h"
 
 namespace sar::visual_pipeline {
 
+/**
+ * @brief Runs build micro scene visual plan step.
+ */
 bool RunBuildMicroSceneVisualPlanStep(const LevelData& level,
                                       PreparedLevel* prepared_level,
                                       std::string* error) {

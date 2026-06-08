@@ -1,3 +1,9 @@
+/**
+ * @file src/render3d/model_registry.cpp
+ * @brief 3D renderer, camera, player movement, fog, and asset registry. Contains implementation
+ * for model_registry.cpp.
+ */
+
 #include "render3d/model_registry.h"
 
 #include <algorithm>
@@ -12,6 +18,9 @@
 namespace sar::render3d {
 namespace {
 
+/**
+ * @brief Defines the supported JSON type 3D values.
+ */
 enum class JsonType3D {
   kNull,
   kBool,
@@ -21,6 +30,9 @@ enum class JsonType3D {
   kArray,
 };
 
+/**
+ * @brief Stores JSON value 3D data shared between runtime systems.
+ */
 struct JsonValue3D {
   JsonType3D type = JsonType3D::kNull;
   bool bool_value = false;
@@ -30,12 +42,18 @@ struct JsonValue3D {
   std::vector<JsonValue3D> array_value;
 };
 
+/**
+ * @brief Stores JSON parse result 3D data shared between runtime systems.
+ */
 struct JsonParseResult3D {
   bool ok = false;
   JsonValue3D value;
   std::string error;
 };
 
+/**
+ * @brief Owns the JSON parser 3D behavior and its runtime state.
+ */
 class JsonParser3D {
  public:
   explicit JsonParser3D(std::string_view text) : text_(text) {}
@@ -300,6 +318,9 @@ class JsonParser3D {
   std::string error_;
 };
 
+/**
+ * @brief Reads text file.
+ */
 std::string ReadTextFile(const std::filesystem::path& path,
                          std::string* error) {
   std::ifstream input(path);
@@ -313,6 +334,9 @@ std::string ReadTextFile(const std::filesystem::path& path,
   return stream.str();
 }
 
+/**
+ * @brief Executes the object field operation.
+ */
 const JsonValue3D* ObjectField(const JsonValue3D& object,
                                std::string_view name) {
   if (object.type != JsonType3D::kObject) {
@@ -325,6 +349,9 @@ const JsonValue3D* ObjectField(const JsonValue3D& object,
   return &found->second;
 }
 
+/**
+ * @brief Executes the string field operation.
+ */
 std::string StringField(const JsonValue3D& object, std::string_view name,
                         std::string fallback) {
   const JsonValue3D* value = ObjectField(object, name);
@@ -334,6 +361,9 @@ std::string StringField(const JsonValue3D& object, std::string_view name,
   return value->string_value;
 }
 
+/**
+ * @brief Executes the float field operation.
+ */
 float FloatField(const JsonValue3D& object, std::string_view name,
                  float fallback) {
   const JsonValue3D* value = ObjectField(object, name);
@@ -343,6 +373,9 @@ float FloatField(const JsonValue3D& object, std::string_view name,
   return static_cast<float>(value->number_value);
 }
 
+/**
+ * @brief Executes the int field operation.
+ */
 int IntField(const JsonValue3D& object, std::string_view name, int fallback) {
   const JsonValue3D* value = ObjectField(object, name);
   if (value == nullptr || value->type != JsonType3D::kNumber) {
@@ -351,6 +384,9 @@ int IntField(const JsonValue3D& object, std::string_view name, int fallback) {
   return static_cast<int>(value->number_value);
 }
 
+/**
+ * @brief Executes the bool field operation.
+ */
 bool BoolField(const JsonValue3D& object, std::string_view name,
                bool fallback) {
   const JsonValue3D* value = ObjectField(object, name);
@@ -360,6 +396,9 @@ bool BoolField(const JsonValue3D& object, std::string_view name,
   return value->bool_value;
 }
 
+/**
+ * @brief Executes the string array field operation.
+ */
 std::vector<std::string> StringArrayField(const JsonValue3D& object,
                                           std::string_view name) {
   std::vector<std::string> result;
@@ -375,6 +414,9 @@ std::vector<std::string> StringArrayField(const JsonValue3D& object,
   return result;
 }
 
+/**
+ * @brief Executes the float range field operation.
+ */
 std::pair<float, float> FloatRangeField(const JsonValue3D& object,
                                         std::string_view name,
                                         float fallback_min,
@@ -395,6 +437,9 @@ std::pair<float, float> FloatRangeField(const JsonValue3D& object,
   return {first, second};
 }
 
+/**
+ * @brief Executes the int range field operation.
+ */
 std::pair<int, int> IntRangeField(const JsonValue3D& object,
                                   std::string_view name,
                                   int fallback_min,
@@ -415,6 +460,9 @@ std::pair<int, int> IntRangeField(const JsonValue3D& object,
   return {first, second};
 }
 
+/**
+ * @brief Parses selector mode from external data.
+ */
 std::optional<ModelSelectorMode3D> ParseSelectorMode(std::string_view value) {
   if (value == "fixed") {
     return ModelSelectorMode3D::kFixed;
@@ -434,6 +482,9 @@ std::optional<ModelSelectorMode3D> ParseSelectorMode(std::string_view value) {
   return std::nullopt;
 }
 
+/**
+ * @brief Parses placement mode from external data.
+ */
 std::optional<ModelPlacementMode3D> ParsePlacementMode(std::string_view value) {
   if (value == "single") {
     return ModelPlacementMode3D::kSingle;
@@ -444,6 +495,9 @@ std::optional<ModelPlacementMode3D> ParsePlacementMode(std::string_view value) {
   return std::nullopt;
 }
 
+/**
+ * @brief Checks whether all tags is present.
+ */
 bool HasAllTags(const ModelAsset3D& asset,
                 const std::vector<std::string>& required_tags) {
   for (const std::string& required : required_tags) {
@@ -455,6 +509,9 @@ bool HasAllTags(const ModelAsset3D& asset,
   return true;
 }
 
+/**
+ * @brief Executes the mix seed operation.
+ */
 std::uint64_t MixSeed(std::uint64_t value) {
   value ^= value >> 33U;
   value *= 0xff51afd7ed558ccdULL;
@@ -464,6 +521,9 @@ std::uint64_t MixSeed(std::uint64_t value) {
   return value;
 }
 
+/**
+ * @brief Checks whether hash string is present.
+ */
 std::uint64_t HashString(std::string_view text) {
   std::uint64_t hash = 1469598103934665603ULL;
   for (char character : text) {
@@ -473,6 +533,9 @@ std::uint64_t HashString(std::string_view text) {
   return hash;
 }
 
+/**
+ * @brief Parses JSON file from external data.
+ */
 JsonParseResult3D ParseJsonFile(const std::filesystem::path& path) {
   std::string error;
   const std::string text = ReadTextFile(path, &error);
@@ -482,6 +545,9 @@ JsonParseResult3D ParseJsonFile(const std::filesystem::path& path) {
   return JsonParser3D(text).Parse();
 }
 
+/**
+ * @brief Loads asset library.
+ */
 bool LoadAssetLibrary(const std::filesystem::path& path,
                       ModelRegistry3D* registry,
                       std::vector<std::string>* warnings,
@@ -520,6 +586,9 @@ bool LoadAssetLibrary(const std::filesystem::path& path,
   return true;
 }
 
+/**
+ * @brief Parses variants from external data.
+ */
 std::vector<ModelVariant3D> ParseVariants(const JsonValue3D& binding_json) {
   std::vector<ModelVariant3D> variants;
   const JsonValue3D* variants_json = ObjectField(binding_json, "variants");
@@ -543,6 +612,9 @@ std::vector<ModelVariant3D> ParseVariants(const JsonValue3D& binding_json) {
   return variants;
 }
 
+/**
+ * @brief Loads tileset.
+ */
 bool LoadTileset(const std::filesystem::path& path,
                  ModelRegistry3D* registry,
                  std::vector<std::string>* warnings,
@@ -628,6 +700,9 @@ bool LoadTileset(const std::filesystem::path& path,
   return true;
 }
 
+/**
+ * @brief Validates registry references and reports failures.
+ */
 void ValidateRegistryReferences(ModelRegistry3D* registry,
                                 std::vector<std::string>* warnings) {
   for (auto& [semantic_key, binding] : registry->tileset.bindings) {
@@ -648,6 +723,9 @@ void ValidateRegistryReferences(ModelRegistry3D* registry,
 
 }  // namespace
 
+/**
+ * @brief Returns model selector mode 3D name.
+ */
 const char* ModelSelectorMode3DName(ModelSelectorMode3D mode) {
   switch (mode) {
     case ModelSelectorMode3D::kFixed:
@@ -664,6 +742,9 @@ const char* ModelSelectorMode3DName(ModelSelectorMode3D mode) {
   return "weighted_random";
 }
 
+/**
+ * @brief Returns model placement mode 3D name.
+ */
 const char* ModelPlacementMode3DName(ModelPlacementMode3D mode) {
   switch (mode) {
     case ModelPlacementMode3D::kSingle:
@@ -674,6 +755,9 @@ const char* ModelPlacementMode3DName(ModelPlacementMode3D mode) {
   return "single";
 }
 
+/**
+ * @brief Finds asset.
+ */
 const ModelAsset3D* ModelRegistry3D::FindAsset(
     std::string_view model_id) const {
   const auto found = assets.find(std::string(model_id));
@@ -683,6 +767,9 @@ const ModelAsset3D* ModelRegistry3D::FindAsset(
   return &found->second;
 }
 
+/**
+ * @brief Finds binding.
+ */
 const ModelBinding3D* ModelRegistry3D::FindBinding(
     std::string_view semantic_key) const {
   const auto found = tileset.bindings.find(std::string(semantic_key));
@@ -692,6 +779,9 @@ const ModelBinding3D* ModelRegistry3D::FindBinding(
   return &found->second;
 }
 
+/**
+ * @brief Selects model ID.
+ */
 std::string ModelRegistry3D::SelectModelId(std::string_view semantic_key,
                                            std::uint64_t base_seed,
                                            int tile_x,
@@ -752,6 +842,9 @@ std::string ModelRegistry3D::SelectModelId(std::string_view semantic_key,
   return available_variants.back().model_id;
 }
 
+/**
+ * @brief Implements ModelRegistry3D::Summary.
+ */
 ModelRegistry3DSummary ModelRegistry3D::Summary() const {
   ModelRegistry3DSummary summary;
   summary.model_count = static_cast<int>(assets.size());
@@ -771,6 +864,9 @@ ModelRegistry3DSummary ModelRegistry3D::Summary() const {
   return summary;
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string ModelRegistry3D::Dump() const {
   const ModelRegistry3DSummary summary = Summary();
   std::ostringstream stream;
@@ -782,6 +878,9 @@ std::string ModelRegistry3D::Dump() const {
   return stream.str();
 }
 
+/**
+ * @brief Loads model registry 3D.
+ */
 LoadModelRegistry3DResult LoadModelRegistry3D(
     const std::filesystem::path& asset_library_path,
     const std::filesystem::path& tileset_path) {
@@ -815,6 +914,9 @@ LoadModelRegistry3DResult LoadModelRegistry3D(
   return result;
 }
 
+/**
+ * @brief Executes the deterministic asset seed operation.
+ */
 std::uint64_t DeterministicAssetSeed(std::uint64_t base_seed,
                                      std::string_view semantic_key,
                                      int tile_x,

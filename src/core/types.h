@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_CORE_TYPES_H_
 #define SHOOT_AND_RUN_CPP_SRC_CORE_TYPES_H_
 
+/**
+ * @file src/core/types.h
+ * @brief Small shared value types used across independent subsystems. Contains public
+ * declarations for types.h.
+ */
+
 namespace sar {
 
 /**
@@ -10,8 +16,8 @@ namespace sar {
  * dependency on raylib types in public headers.
  */
 struct Vec2 {
-  float x = 0.0F;
-  float y = 0.0F;
+  float x = 0.0F;  ///< Tile, screen, or world coordinate for x.
+  float y = 0.0F;  ///< Tile, screen, or world coordinate for y.
 };
 
 /**
@@ -21,10 +27,10 @@ struct Vec2 {
  * layout code for hit testing and drawing bounds.
  */
 struct Rect {
-  float x = 0.0F;
-  float y = 0.0F;
-  float width = 0.0F;
-  float height = 0.0F;
+  float x = 0.0F;  ///< Tile, screen, or world coordinate for x.
+  float y = 0.0F;  ///< Tile, screen, or world coordinate for y.
+  float width = 0.0F;  ///< Size component for width.
+  float height = 0.0F;  ///< Signed elevation level for this tile or object.
 };
 
 }  // namespace sar

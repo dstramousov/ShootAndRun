@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_FOREST_VISUAL_PLAN_H_
 #define SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_FOREST_VISUAL_PLAN_H_
 
+/**
+ * @file src/visual_pipeline/forest_visual_plan.h
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains public
+ * declarations for forest_visual_plan.h.
+ */
+
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -72,22 +78,22 @@ const char* ClearingSceneRoleName(ClearingSceneRole role);
  * @brief Counters produced by the forest visual planning pass.
  */
 struct ForestVisualSummary {
-  int forest_tiles = 0;
-  int forest_edge_tiles = 0;
-  int forest_mid_tiles = 0;
-  int forest_deep_tiles = 0;
-  int suppressed_tiny_forest_tiles = 0;
-  int forest_mass_group_count = 0;
-  int route_influenced_tiles = 0;
-  int main_clearing_tiles = 0;
-  int side_clearing_tiles = 0;
-  int connector_corridor_tiles = 0;
-  int micro_clearing_tiles = 0;
-  int scene_space_tiles = 0;
-  int ruins_scene_tiles = 0;
-  int road_approach_scene_tiles = 0;
-  int object_scene_tiles = 0;
-  int generic_scene_tiles = 0;
+  int forest_tiles = 0;  ///< Forest tiles value carried by this data structure.
+  int forest_edge_tiles = 0;  ///< Forest edge tiles value carried by this data structure.
+  int forest_mid_tiles = 0;  ///< Forest mid tiles value carried by this data structure.
+  int forest_deep_tiles = 0;  ///< Forest deep tiles value carried by this data structure.
+  int suppressed_tiny_forest_tiles = 0;  ///< Suppressed tiny forest tiles value carried by this data structure.
+  int forest_mass_group_count = 0;  ///< Count of forest mass group count entries or events.
+  int route_influenced_tiles = 0;  ///< Route influenced tiles value carried by this data structure.
+  int main_clearing_tiles = 0;  ///< Main clearing tiles value carried by this data structure.
+  int side_clearing_tiles = 0;  ///< Side clearing tiles value carried by this data structure.
+  int connector_corridor_tiles = 0;  ///< Connector corridor tiles value carried by this data structure.
+  int micro_clearing_tiles = 0;  ///< Micro clearing tiles value carried by this data structure.
+  int scene_space_tiles = 0;  ///< Scene space tiles value carried by this data structure.
+  int ruins_scene_tiles = 0;  ///< Ruins scene tiles value carried by this data structure.
+  int road_approach_scene_tiles = 0;  ///< Road approach scene tiles value carried by this data structure.
+  int object_scene_tiles = 0;  ///< Object scene tiles value carried by this data structure.
+  int generic_scene_tiles = 0;  ///< Generic scene tiles value carried by this data structure.
 
   /**
    * @brief Returns a readable dump of forest visual counters.
@@ -101,14 +107,14 @@ struct ForestVisualSummary {
  * @brief Planned forest depth, edge and clearing-role masks.
  */
 struct ForestVisualPlan {
-  LevelSize size;
-  std::vector<std::uint8_t> forest_depth;
-  std::vector<std::uint8_t> forest_edges;
-  std::vector<std::uint16_t> forest_mass_groups;
-  std::vector<std::uint8_t> clearing_roles;
-  std::vector<std::uint8_t> clearing_scene_roles;
-  std::vector<std::uint8_t> route_influence;
-  ForestVisualSummary summary;
+  LevelSize size;  ///< Size value carried by this data structure.
+  std::vector<std::uint8_t> forest_depth;  ///< Forest depth value carried by this data structure.
+  std::vector<std::uint8_t> forest_edges;  ///< Forest edges value carried by this data structure.
+  std::vector<std::uint16_t> forest_mass_groups;  ///< Forest mass groups value carried by this data structure.
+  std::vector<std::uint8_t> clearing_roles;  ///< Clearing roles value carried by this data structure.
+  std::vector<std::uint8_t> clearing_scene_roles;  ///< Clearing scene roles value carried by this data structure.
+  std::vector<std::uint8_t> route_influence;  ///< Route influence value carried by this data structure.
+  ForestVisualSummary summary;  ///< Summary value carried by this data structure.
 
   /**
    * @brief Returns true when the plan matches the level dimensions.

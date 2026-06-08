@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_WATER_VISUAL_PLAN_H_
 #define SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_WATER_VISUAL_PLAN_H_
 
+/**
+ * @file src/visual_pipeline/water_visual_plan.h
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains public
+ * declarations for water_visual_plan.h.
+ */
+
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -27,17 +33,17 @@ enum class WaterVisualTile : std::uint8_t {
  * @brief Counters produced by the water visual planning pass.
  */
 struct WaterVisualSummary {
-  int source_water_tiles = 0;
-  int source_swamp_tiles = 0;
-  int water_like_tiles = 0;
-  int water_region_count = 0;
-  int water_core_tiles = 0;
-  int water_edge_tiles = 0;
-  int mud_ring_tiles = 0;
-  int wet_grass_tiles = 0;
-  int reed_zone_tiles = 0;
-  int crossing_tiles = 0;
-  int visual_tiles = 0;
+  int source_water_tiles = 0;  ///< Source water tiles value carried by this data structure.
+  int source_swamp_tiles = 0;  ///< Source swamp tiles value carried by this data structure.
+  int water_like_tiles = 0;  ///< Water like tiles value carried by this data structure.
+  int water_region_count = 0;  ///< Count of water region count entries or events.
+  int water_core_tiles = 0;  ///< Water core tiles value carried by this data structure.
+  int water_edge_tiles = 0;  ///< Water edge tiles value carried by this data structure.
+  int mud_ring_tiles = 0;  ///< Mud ring tiles value carried by this data structure.
+  int wet_grass_tiles = 0;  ///< Wet grass tiles value carried by this data structure.
+  int reed_zone_tiles = 0;  ///< Reed zone tiles value carried by this data structure.
+  int crossing_tiles = 0;  ///< Crossing tiles value carried by this data structure.
+  int visual_tiles = 0;  ///< Visual tiles value carried by this data structure.
 
   /**
    * @brief Returns a readable dump of water visual counters.
@@ -51,10 +57,10 @@ struct WaterVisualSummary {
  * @brief Planned water core, shore and reed-zone masks.
  */
 struct WaterVisualPlan {
-  LevelSize size;
-  std::vector<std::uint8_t> tiles;
-  std::vector<std::uint16_t> region_ids;
-  WaterVisualSummary summary;
+  LevelSize size;  ///< Size value carried by this data structure.
+  std::vector<std::uint8_t> tiles;  ///< Tiles value carried by this data structure.
+  std::vector<std::uint16_t> region_ids;  ///< Region ids value carried by this data structure.
+  WaterVisualSummary summary;  ///< Summary value carried by this data structure.
 
   /**
    * @brief Returns true when the plan matches the level dimensions.

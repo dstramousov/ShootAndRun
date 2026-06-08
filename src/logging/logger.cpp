@@ -1,3 +1,9 @@
+/**
+ * @file src/logging/logger.cpp
+ * @brief Terminal logging, log levels, and thread context. Contains implementation for
+ * logger.cpp.
+ */
+
 #include "logging/logger.h"
 
 #include <charconv>
@@ -16,6 +22,9 @@
 namespace sar {
 namespace {
 
+/**
+ * @brief Executes the format timestamp operation.
+ */
 std::string FormatTimestamp() {
   const auto now = std::chrono::system_clock::now();
   const auto time = std::chrono::system_clock::to_time_t(now);
@@ -36,6 +45,9 @@ std::string FormatTimestamp() {
   return stream.str();
 }
 
+/**
+ * @brief Returns the color used for level.
+ */
 std::string_view LevelColor(LogLevel level) {
   switch (level) {
     case LogLevel::kTrace:
@@ -55,6 +67,9 @@ std::string_view LevelColor(LogLevel level) {
   return "\033[0m";
 }
 
+/**
+ * @brief Executes the hex digit value operation.
+ */
 int HexDigitValue(char value) {
   if (value >= '0' && value <= '9') {
     return value - '0';
@@ -68,6 +83,9 @@ int HexDigitValue(char value) {
   return -1;
 }
 
+/**
+ * @brief Parses hex byte from external data.
+ */
 bool ParseHexByte(std::string_view text, std::size_t position, int* value) {
   if (position + 1 >= text.size()) {
     return false;
@@ -81,6 +99,9 @@ bool ParseHexByte(std::string_view text, std::size_t position, int* value) {
   return true;
 }
 
+/**
+ * @brief Parses ansi color index from external data.
+ */
 bool ParseAnsiColorIndex(std::string_view text, int* value) {
   constexpr std::string_view kPrefix = "ansi";
   if (!text.starts_with(kPrefix)) {
@@ -100,6 +121,9 @@ bool ParseAnsiColorIndex(std::string_view text, int* value) {
   return true;
 }
 
+/**
+ * @brief Executes the color to ansi operation.
+ */
 std::string ColorToAnsi(std::string_view color) {
   if (color == "red") {
     return "\033[31m";
@@ -145,6 +169,9 @@ std::string ColorToAnsi(std::string_view color) {
   return {};
 }
 
+/**
+ * @brief Applies single highlight rule.
+ */
 std::string ApplySingleHighlightRule(const std::string& text,
                                      const LogHighlightRule& rule,
                                      std::string_view base_color) {
@@ -169,6 +196,9 @@ std::string ApplySingleHighlightRule(const std::string& text,
   }
 }
 
+/**
+ * @brief Applies highlight rules.
+ */
 std::string ApplyHighlightRules(const std::string& text,
                                 const std::vector<LogHighlightRule>& rules,
                                 LogHighlightScope scope,
@@ -185,8 +215,14 @@ std::string ApplyHighlightRules(const std::string& text,
 
 }  // namespace
 
+/**
+ * @brief Writes diagnostics for ger.
+ */
 Logger::Logger(LoggerConfig config) : config_(std::move(config)) {}
 
+/**
+ * @brief Writes diagnostics for runtime state.
+ */
 void Logger::Log(LogLevel level, std::string_view module,
                  std::string_view message) {
   if (!ShouldLog(level)) {
@@ -232,44 +268,74 @@ void Logger::Log(LogLevel level, std::string_view module,
   std::cerr << '\n';
 }
 
+/**
+ * @brief Implements Logger::Trace.
+ */
 void Logger::Trace(std::string_view module, std::string_view message) {
   Log(LogLevel::kTrace, module, message);
 }
 
+/**
+ * @brief Implements Logger::Debug.
+ */
 void Logger::Debug(std::string_view module, std::string_view message) {
   Log(LogLevel::kDebug, module, message);
 }
 
+/**
+ * @brief Implements Logger::Info.
+ */
 void Logger::Info(std::string_view module, std::string_view message) {
   Log(LogLevel::kInfo, module, message);
 }
 
+/**
+ * @brief Implements Logger::Warn.
+ */
 void Logger::Warn(std::string_view module, std::string_view message) {
   Log(LogLevel::kWarn, module, message);
 }
 
+/**
+ * @brief Implements Logger::Error.
+ */
 void Logger::Error(std::string_view module, std::string_view message) {
   Log(LogLevel::kError, module, message);
 }
 
+/**
+ * @brief Implements Logger::Fatal.
+ */
 void Logger::Fatal(std::string_view module, std::string_view message) {
   Log(LogLevel::kFatal, module, message);
 }
 
+/**
+ * @brief Implements Logger::ShouldLog.
+ */
 bool Logger::ShouldLog(LogLevel level) const {
   return static_cast<int>(level) >= static_cast<int>(config_.min_level);
 }
 
+/**
+ * @brief Sets show execution context.
+ */
 void Logger::set_show_execution_context(bool show_execution_context) {
   config_.show_execution_context = show_execution_context;
 }
 
+/**
+ * @brief Sets color enabled.
+ */
 void Logger::set_color_enabled(bool color_enabled) {
   config_.color_enabled = color_enabled;
 }
 
 void Logger::set_min_level(LogLevel level) { config_.min_level = level; }
 
+/**
+ * @brief Sets highlight rules.
+ */
 void Logger::set_highlight_rules(
     std::vector<LogHighlightRule> highlight_rules) {
   config_.highlight_rules = std::move(highlight_rules);

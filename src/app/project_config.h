@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_APP_PROJECT_CONFIG_H_
 #define SHOOT_AND_RUN_CPP_SRC_APP_PROJECT_CONFIG_H_
 
+/**
+ * @file src/app/project_config.h
+ * @brief Application configuration, lifecycle, startup, and runtime orchestration. Contains
+ * public declarations for project_config.h.
+ */
+
 #include <filesystem>
 #include <string>
 
@@ -50,9 +56,9 @@ const char* Render3DFogModeName(Render3DFogMode mode);
  * @brief Controls the small service-information overlay.
  */
 struct ServiceInfoConfig {
-  bool enabled = true;
-  bool show_memory = true;
-  int update_interval_ms = 1000;
+  bool enabled = true;  ///< true when this configuration block or feature is enabled.
+  bool show_memory = true;  ///< Boolean flag controlling show memory.
+  int update_interval_ms = 1000;  ///< Time value for update interval milliseconds.
 };
 
 /**
@@ -62,92 +68,92 @@ struct ServiceInfoConfig {
  * frame because that would distort runtime performance measurements.
  */
 struct Player3DLogConfig {
-  bool enabled = true;
-  bool include_mouse = true;
-  int tile_log_min_interval_ms = 250;
-  int blocked_log_min_interval_ms = 600;
+  bool enabled = true;  ///< true when this configuration block or feature is enabled.
+  bool include_mouse = true;  ///< Boolean flag controlling include mouse.
+  int tile_log_min_interval_ms = 250;  ///< Time value for tile log min interval milliseconds.
+  int blocked_log_min_interval_ms = 600;  ///< Time value for blocked log min interval milliseconds.
 };
 
 /**
  * @brief Configures 3D culling, chunk iteration and visible render radius.
  */
 struct Render3DPerfConfig {
-  int visible_radius_tiles = 48;
-  int culling_deadzone_tiles = 4;
-  int chunk_size_tiles = 16;
-  int active_chunk_radius = 3;
+  int visible_radius_tiles = 48;  ///< Visible radius tiles value carried by this data structure.
+  int culling_deadzone_tiles = 4;  ///< Culling deadzone tiles value carried by this data structure.
+  int chunk_size_tiles = 16;  ///< Chunk size tiles value carried by this data structure.
+  int active_chunk_radius = 3;  ///< Active chunk radius value carried by this data structure.
 };
 
 /**
  * @brief Configures 3D visibility radius, fog mode and fog-of-war memory.
  */
 struct Render3DVisibilityConfig {
-  bool enabled = true;
-  int radius_tiles = 22;
-  bool memory_enabled = true;
-  Render3DFogMode fog_mode = Render3DFogMode::kCircle;
-  float seen_tile_dim_factor = 0.32F;
+  bool enabled = true;  ///< true when this configuration block or feature is enabled.
+  int radius_tiles = 22;  ///< Radius tiles value carried by this data structure.
+  bool memory_enabled = true;  ///< Memory enabled value carried by this data structure.
+  Render3DFogMode fog_mode = Render3DFogMode::kCircle;  ///< Fog mode value carried by this data structure.
+  float seen_tile_dim_factor = 0.32F;  ///< Scaling factor for seen tile dim factor.
 };
 
 /**
  * @brief Configures 3D model registry metadata files.
  */
 struct Render3DAssetRegistryConfig {
-  bool enabled = true;
+  bool enabled = true;  ///< true when this configuration block or feature is enabled.
   std::filesystem::path asset_library_path =
-      "config/render3d/asset_library.json";
+      "config/render3d/asset_library.json";  ///< Json value carried by this data structure.
   std::filesystem::path tileset_path =
-      "config/render3d/tileset_dark_forest.json";
+      "config/render3d/tileset_dark_forest.json";  ///< Json value carried by this data structure.
 };
 
 /**
  * @brief Configures the 3D new-game camera intro fly-in.
  */
 struct Render3DIntroCameraConfig {
-  bool enabled = true;
-  int duration_ms = 1800;
-  float start_distance = 42.0F;
-  float end_distance = 18.0F;
-  float start_height = 20.0F;
-  float end_height = 10.0F;
-  float start_yaw_offset_deg = 35.0F;
-  bool lock_player_input = true;
-  bool skip_enabled = true;
+  bool enabled = true;  ///< true when this configuration block or feature is enabled.
+  int duration_ms = 1800;  ///< Time value for duration milliseconds.
+  float start_distance = 42.0F;  ///< Start distance value carried by this data structure.
+  float end_distance = 18.0F;  ///< End distance value carried by this data structure.
+  float start_height = 20.0F;  ///< Size component for start height.
+  float end_height = 10.0F;  ///< Size component for end height.
+  float start_yaw_offset_deg = 35.0F;  ///< Start yaw offset deg value carried by this data structure.
+  bool lock_player_input = true;  ///< Boolean flag controlling lock player input.
+  bool skip_enabled = true;  ///< Boolean flag controlling skip enabled.
 };
 
 /**
  * @brief Configures 3D player movement, mouse-facing and jump tuning.
  */
 struct Player3DMovementConfig {
-  float move_speed_tiles_per_sec = 4.25F;
-  float acceleration_tiles_per_sec2 = 28.0F;
-  float deceleration_tiles_per_sec2 = 34.0F;
-  float mouse_turn_sensitivity_rad = 0.0031F;
-  float movement_multiplier_smooth_speed = 14.0F;
-  float jump_duration_sec = 0.30F;
-  float jump_arc_elevation_units = 0.62F;
-  float jump_horizontal_speed_multiplier = 1.05F;
-  float jump_air_control_multiplier = 0.82F;
-  float jump_min_running_speed_tiles_per_sec = 1.00F;
+  float move_speed_tiles_per_sec = 4.25F;  ///< Time value for move speed tiles per seconds.
+  float acceleration_tiles_per_sec2 = 28.0F;  ///< Acceleration tiles per sec2 value carried by this data structure.
+  float deceleration_tiles_per_sec2 = 34.0F;  ///< Deceleration tiles per sec2 value carried by this data structure.
+  float mouse_turn_sensitivity_rad = 0.0031F;  ///< Mouse turn sensitivity rad value carried by this data structure.
+  float movement_multiplier_smooth_speed = 14.0F;  ///< Scaling factor for movement multiplier smooth speed.
+  float jump_duration_sec = 0.30F;  ///< Time value for jump duration seconds.
+  float jump_arc_elevation_units = 0.62F;  ///< Jump arc elevation units value carried by this data structure.
+  float jump_horizontal_speed_multiplier = 1.05F;  ///< Scaling factor for jump horizontal speed multiplier.
+  float jump_air_control_multiplier = 0.82F;  ///< Scaling factor for jump air control multiplier.
+  float jump_min_running_speed_tiles_per_sec = 1.00F;  ///< Time value for jump min running speed tiles per seconds.
 };
 
 /**
  * @brief Fully resolved runtime configuration for the application.
  */
 struct ProjectConfig {
-  std::filesystem::path map_package_path;
-  std::filesystem::path ui_font_path = "data/fonts/PressStart2P-Regular.ttf";
-  int ui_font_size = 24;
-  RaylibLogLevel raylib_log_level = RaylibLogLevel::kWarning;
-  WindowConfig window_config;
-  ServiceInfoConfig service_info;
-  Player3DLogConfig player3d_log;
-  Render3DPerfConfig render3d_perf;
-  Render3DVisibilityConfig render3d_visibility;
-  Render3DAssetRegistryConfig render3d_assets;
-  Render3DIntroCameraConfig render3d_intro_camera;
-  Player3DMovementConfig player3d_movement;
-  visual_pipeline::VisualPipelineConfig visual_pipeline_config;
+  std::filesystem::path map_package_path;  ///< Filesystem path used by this configuration or data object.
+  std::filesystem::path ui_font_path = "data/fonts/PressStart2P-Regular.ttf";  ///< Filesystem path used by this configuration or data object.
+  int ui_font_size = 24;  ///< Ui font size value carried by this data structure.
+  RaylibLogLevel raylib_log_level = RaylibLogLevel::kWarning;  ///< Raylib log level value carried by this data structure.
+  WindowConfig window_config;  ///< Window config value carried by this data structure.
+  ServiceInfoConfig service_info;  ///< Service info value carried by this data structure.
+  Player3DLogConfig player3d_log;  ///< Player 3d log value carried by this data structure.
+  Render3DPerfConfig render3d_perf;  ///< Render 3d perf value carried by this data structure.
+  Render3DVisibilityConfig render3d_visibility;  ///< Render 3d visibility value carried by this data structure.
+  Render3DAssetRegistryConfig render3d_assets;  ///< Render 3d assets value carried by this data structure.
+  Render3DIntroCameraConfig render3d_intro_camera;  ///< Render 3d intro camera value carried by this data structure.
+  Player3DMovementConfig player3d_movement;  ///< Player 3d movement value carried by this data structure.
+  visual_pipeline::VisualPipelineConfig visual_pipeline_config;  ///< Visual pipeline config value carried by this data structure.
 
   /**
    * @brief Returns a readable dump of the project configuration.
@@ -161,9 +167,9 @@ struct ProjectConfig {
  * @brief Result of loading and validating project configuration.
  */
 struct ProjectConfigResult {
-  bool ok = false;
-  ProjectConfig config;
-  std::string error;
+  bool ok = false;  ///< true when the operation completed successfully.
+  ProjectConfig config;  ///< Config value carried by this data structure.
+  std::string error;  ///< Human-readable error message when loading or validation fails.
 };
 
 /**

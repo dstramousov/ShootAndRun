@@ -1,3 +1,9 @@
+/**
+ * @file src/render/debug_overlay.cpp
+ * @brief 2D/debug rendering helpers retained by the application shell. Contains implementation
+ * for debug_overlay.cpp.
+ */
+
 #include "render/debug_overlay.h"
 
 #include <raylib.h>
@@ -11,6 +17,9 @@
 namespace sar {
 namespace {
 
+/**
+ * @brief Returns screen name.
+ */
 const char* ScreenName(AppScreen screen) {
   switch (screen) {
     case AppScreen::kMainMenu:
@@ -26,6 +35,9 @@ const char* ScreenName(AppScreen screen) {
   return "unknown";
 }
 
+/**
+ * @brief Executes the scaled font size operation.
+ */
 int ScaledFontSize(const UiFont& font, const WindowState& window,
                    float multiplier) {
   const float size = static_cast<float>(font.base_size()) * multiplier *
@@ -35,6 +47,9 @@ int ScaledFontSize(const UiFont& font, const WindowState& window,
 
 }  // namespace
 
+/**
+ * @brief Draws runtime visuals.
+ */
 void DebugOverlay::Draw(std::string_view version, AppScreen screen,
                         const WindowState& window, const UiFont& font,
                         const ServiceInfoOverlayData& service_info) const {

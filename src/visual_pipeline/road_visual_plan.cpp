@@ -1,3 +1,9 @@
+/**
+ * @file src/visual_pipeline/road_visual_plan.cpp
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains
+ * implementation for road_visual_plan.cpp.
+ */
+
 #include "visual_pipeline/road_visual_plan.h"
 
 #include <algorithm>
@@ -12,6 +18,9 @@
 namespace sar::visual_pipeline {
 namespace {
 
+/**
+ * @brief Returns the total number of cells for a valid level size.
+ */
 int CellCount(const LevelSize& size) {
   if (size.width <= 0 || size.height <= 0) {
     return 0;
@@ -19,18 +28,30 @@ int CellCount(const LevelSize& size) {
   return size.width * size.height;
 }
 
+/**
+ * @brief Checks whether tile coordinates are inside the level bounds.
+ */
 bool IsInside(const LevelSize& size, int x, int y) {
   return x >= 0 && y >= 0 && x < size.width && y < size.height;
 }
 
+/**
+ * @brief Converts tile coordinates to a linear grid index.
+ */
 int ToIndex(const LevelSize& size, int x, int y) {
   return y * size.width + x;
 }
 
+/**
+ * @brief Checks whether a string contains a requested substring.
+ */
 bool TextContains(std::string_view text, std::string_view needle) {
   return text.find(needle) != std::string_view::npos;
 }
 
+/**
+ * @brief Checks whether tag is present.
+ */
 bool HasTag(const Route& route, std::string_view tag_name) {
   for (const std::string& tag : route.tags) {
     if (tag == tag_name) {
@@ -40,11 +61,17 @@ bool HasTag(const Route& route, std::string_view tag_name) {
   return false;
 }
 
+/**
+ * @brief Checks whether a route belongs to the main path.
+ */
 bool RouteIsMain(const Route& route) {
   return TextContains(route.type, "main") || HasTag(route, "primary") ||
          HasTag(route, "main_road") || HasTag(route, "critical");
 }
 
+/**
+ * @brief Checks whether route is hidden is true.
+ */
 bool RouteIsHidden(const Route& route) {
   if (TextContains(route.type, "hidden") || TextContains(route.type, "secret")) {
     return true;
@@ -57,6 +84,9 @@ bool RouteIsHidden(const Route& route) {
   return false;
 }
 
+/**
+ * @brief Returns band priority.
+ */
 std::uint8_t BandPriority(RoadVisualBand band) {
   switch (band) {
     case RoadVisualBand::kRuinApproach:
@@ -75,6 +105,9 @@ std::uint8_t BandPriority(RoadVisualBand band) {
   return 0;
 }
 
+/**
+ * @brief Sets road band.
+ */
 void SetRoadBand(int x, int y, RoadVisualBand band, const LevelSize& size,
                  std::vector<std::uint8_t>* road_bands) {
   if (road_bands == nullptr || !IsInside(size, x, y)) {
@@ -88,6 +121,9 @@ void SetRoadBand(int x, int y, RoadVisualBand band, const LevelSize& size,
   }
 }
 
+/**
+ * @brief Sets influence.
+ */
 void SetInfluence(int x, int y, std::uint8_t value, const LevelSize& size,
                   std::vector<std::uint8_t>* road_influence) {
   if (road_influence == nullptr || !IsInside(size, x, y)) {
@@ -98,10 +134,16 @@ void SetInfluence(int x, int y, std::uint8_t value, const LevelSize& size,
   target = std::max(target, value);
 }
 
+/**
+ * @brief Checks whether road dressing terrain is true.
+ */
 bool IsRoadDressingTerrain(TerrainType terrain) {
   return terrain == TerrainType::kOpenGround || terrain == TerrainType::kForest;
 }
 
+/**
+ * @brief Checks whether mud candidate is true.
+ */
 bool IsMudCandidate(int x, int y) {
   const std::size_t hash = (static_cast<std::size_t>(x) * 73856093U) ^
                            (static_cast<std::size_t>(y) * 19349663U) ^
@@ -109,6 +151,9 @@ bool IsMudCandidate(int x, int y) {
   return hash % 19U == 0U;
 }
 
+/**
+ * @brief Checks whether road cell is true.
+ */
 bool IsRoadCell(const LevelData& level, int x, int y) {
   if (!IsInside(level.size, x, y)) {
     return false;
@@ -118,6 +163,9 @@ bool IsRoadCell(const LevelData& level, int x, int y) {
          level.cells[item].terrain == TerrainType::kRoad;
 }
 
+/**
+ * @brief Paints road terrain cell.
+ */
 void PaintRoadTerrainCell(int x, int y, const LevelData& level,
                           RoadVisualPlan* plan) {
   if (plan == nullptr || !IsInside(level.size, x, y)) {
@@ -163,6 +211,9 @@ void PaintRoadTerrainCell(int x, int y, const LevelData& level,
   }
 }
 
+/**
+ * @brief Builds ruin influence.
+ */
 std::vector<std::uint8_t> BuildRuinInfluence(const SemanticMasks& masks) {
   std::vector<std::uint8_t> influence(
       static_cast<std::size_t>(CellCount(masks.size)), 0);
@@ -190,6 +241,9 @@ std::vector<std::uint8_t> BuildRuinInfluence(const SemanticMasks& masks) {
   return influence;
 }
 
+/**
+ * @brief Checks whether adjacent road is present.
+ */
 bool HasAdjacentRoad(const LevelData& level, int x, int y) {
   for (int dy = -1; dy <= 1; ++dy) {
     for (int dx = -1; dx <= 1; ++dx) {
@@ -204,6 +258,9 @@ bool HasAdjacentRoad(const LevelData& level, int x, int y) {
   return false;
 }
 
+/**
+ * @brief Applies ruin approaches.
+ */
 void ApplyRuinApproaches(const LevelData& level,
                          const std::vector<std::uint8_t>& ruin_influence,
                          RoadVisualPlan* plan) {
@@ -233,6 +290,9 @@ void ApplyRuinApproaches(const LevelData& level,
   }
 }
 
+/**
+ * @brief Counts road band.
+ */
 void CountRoadBand(std::uint8_t value, RoadVisualSummary* summary) {
   if (summary == nullptr) {
     return;
@@ -258,6 +318,9 @@ void CountRoadBand(std::uint8_t value, RoadVisualSummary* summary) {
   }
 }
 
+/**
+ * @brief Counts routes.
+ */
 void CountRoutes(const LevelData& level, RoadVisualSummary* summary) {
   if (summary == nullptr) {
     return;
@@ -274,6 +337,9 @@ void CountRoutes(const LevelData& level, RoadVisualSummary* summary) {
   }
 }
 
+/**
+ * @brief Executes the recount summary operation.
+ */
 void RecountSummary(const LevelData& level, RoadVisualPlan* plan) {
   if (plan == nullptr) {
     return;
@@ -306,6 +372,9 @@ void RecountSummary(const LevelData& level, RoadVisualPlan* plan) {
 
 }  // namespace
 
+/**
+ * @brief Returns road visual band name.
+ */
 const char* RoadVisualBandName(RoadVisualBand band) {
   switch (band) {
     case RoadVisualBand::kNone:
@@ -324,6 +393,9 @@ const char* RoadVisualBandName(RoadVisualBand band) {
   return "none";
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string RoadVisualSummary::Dump() const {
   return "RoadVisualSummary { routes=" + std::to_string(route_count) +
          ", routes_used_for_visual_roads=" +
@@ -341,6 +413,9 @@ std::string RoadVisualSummary::Dump() const {
          ", influenced=" + std::to_string(route_influenced_tiles) + " }";
 }
 
+/**
+ * @brief Checks whether valid is true.
+ */
 bool RoadVisualPlan::IsValid() const {
   const int expected_size = CellCount(size);
   if (expected_size <= 0) {
@@ -350,11 +425,17 @@ bool RoadVisualPlan::IsValid() const {
   return road_bands.size() == expected && route_influence.size() == expected;
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string RoadVisualPlan::Dump() const {
   return "RoadVisualPlan { size=" + std::to_string(size.width) + "x" +
          std::to_string(size.height) + ", " + summary.Dump() + " }";
 }
 
+/**
+ * @brief Builds road visual plan.
+ */
 RoadVisualPlan BuildRoadVisualPlan(const LevelData& level,
                                    const SemanticMasks& masks,
                                    std::string* error) {

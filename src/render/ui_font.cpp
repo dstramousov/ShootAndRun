@@ -1,3 +1,9 @@
+/**
+ * @file src/render/ui_font.cpp
+ * @brief 2D/debug rendering helpers retained by the application shell. Contains implementation
+ * for ui_font.cpp.
+ */
+
 #include "render/ui_font.h"
 
 #include <raylib.h>
@@ -13,18 +19,27 @@ namespace {
 
 constexpr float kFontSpacing = 1.0F;
 
+/**
+ * @brief Executes the copy text operation.
+ */
 std::string CopyText(std::string_view text) {
   return std::string(text.data(), text.size());
 }
 
 }  // namespace
 
+/**
+ * @brief Implements UiFont::UiFont.
+ */
 UiFont::UiFont(UiFont&& other) noexcept
     : font_(other.font_), loaded_(other.loaded_), base_size_(other.base_size_) {
   other.font_ = Font{};
   other.loaded_ = false;
 }
 
+/**
+ * @brief Executes the operator operation.
+ */
 UiFont& UiFont::operator=(UiFont&& other) noexcept {
   if (this == &other) {
     return *this;
@@ -41,6 +56,9 @@ UiFont& UiFont::operator=(UiFont&& other) noexcept {
 
 UiFont::~UiFont() { Reset(); }
 
+/**
+ * @brief Loads runtime data.
+ */
 bool UiFont::Load(const std::filesystem::path& font_path, int base_font_size,
                   std::string* error) {
   Reset();
@@ -74,6 +92,9 @@ bool UiFont::Load(const std::filesystem::path& font_path, int base_font_size,
   return true;
 }
 
+/**
+ * @brief Resets runtime state to defaults.
+ */
 void UiFont::Reset() {
   if (loaded_) {
     UnloadFont(font_);
@@ -86,6 +107,9 @@ bool UiFont::is_loaded() const { return loaded_; }
 
 int UiFont::base_size() const { return base_size_; }
 
+/**
+ * @brief Implements UiFont::MeasureTextWidth.
+ */
 int UiFont::MeasureTextWidth(std::string_view text, int font_size) const {
   const std::string copied_text = CopyText(text);
   if (!loaded_) {
@@ -98,6 +122,9 @@ int UiFont::MeasureTextWidth(std::string_view text, int font_size) const {
   return static_cast<int>(size.x);
 }
 
+/**
+ * @brief Draws text line.
+ */
 void UiFont::DrawTextLine(std::string_view text, int x, int y, int font_size,
                           Color color) const {
   const std::string copied_text = CopyText(text);

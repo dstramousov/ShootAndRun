@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_LEVEL_LEVEL_LOADER_H_
 #define SHOOT_AND_RUN_CPP_SRC_LEVEL_LEVEL_LOADER_H_
 
+/**
+ * @file src/level/level_loader.h
+ * @brief Generated map package data contracts and loading logic. Contains public declarations
+ * for level_loader.h.
+ */
+
 #include <filesystem>
 #include <string>
 #include <utility>
@@ -13,17 +19,17 @@ namespace sar {
  * @brief Compact statistics collected while loading a map package.
  */
 struct LevelPackageSummary {
-  std::filesystem::path package_path;
-  LevelSize size;
-  int validated_runtime_grid_count = 0;
-  int marker_count = 0;
-  int object_count = 0;
-  int place_count = 0;
-  int route_count = 0;
-  int elevation_transition_count = 0;
-  int gameplay_zone_count = 0;
-  int graph_node_count = 0;
-  int graph_edge_count = 0;
+  std::filesystem::path package_path;  ///< Filesystem path used by this configuration or data object.
+  LevelSize size;  ///< Size value carried by this data structure.
+  int validated_runtime_grid_count = 0;  ///< Count of validated runtime grid count entries or events.
+  int marker_count = 0;  ///< Count of marker count entries or events.
+  int object_count = 0;  ///< Count of object count entries or events.
+  int place_count = 0;  ///< Count of place count entries or events.
+  int route_count = 0;  ///< Count of route count entries or events.
+  int elevation_transition_count = 0;  ///< Count of elevation transition count entries or events.
+  int gameplay_zone_count = 0;  ///< Count of gameplay zone count entries or events.
+  int graph_node_count = 0;  ///< Count of graph node count entries or events.
+  int graph_edge_count = 0;  ///< Count of graph edge count entries or events.
 
   /**
    * @brief Returns a readable dump of the loaded level package summary.
@@ -70,10 +76,10 @@ struct LevelLoadResult {
         error(std::move(error_value)),
         level(std::move(level_value)) {}
 
-  bool ok = false;
-  LevelPackageSummary summary;
-  std::string error;
-  LevelData level;
+  bool ok = false;  ///< true when the operation completed successfully.
+  LevelPackageSummary summary;  ///< Summary value carried by this data structure.
+  std::string error;  ///< Human-readable error message when loading or validation fails.
+  LevelData level;  ///< Level value carried by this data structure.
 };
 
 /**

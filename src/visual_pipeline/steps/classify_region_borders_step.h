@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_STEPS_CLASSIFY_REGION_BORDERS_STEP_H_
 #define SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_STEPS_CLASSIFY_REGION_BORDERS_STEP_H_
 
+/**
+ * @file src/visual_pipeline/steps/classify_region_borders_step.h
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains public
+ * declarations for classify_region_borders_step.h.
+ */
+
 #include <string>
 
 #include "visual_pipeline/prepared_level.h"

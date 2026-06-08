@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_VISUAL_MAP_LOADER_H_
 #define SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_VISUAL_MAP_LOADER_H_
 
+/**
+ * @file src/visual_pipeline/visual_map_loader.h
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains public
+ * declarations for visual_map_loader.h.
+ */
+
 #include <filesystem>
 #include <string>
 
@@ -9,13 +15,19 @@
 
 namespace sar::visual_pipeline {
 
+/**
+ * @brief Stores visual map load result data shared between runtime systems.
+ */
 struct VisualMapLoadResult {
-  bool ok = false;
-  bool found = false;
-  VisualMapData data;
-  std::string error;
+  bool ok = false;  ///< true when the operation completed successfully.
+  bool found = false;  ///< true when the optional source file was present.
+  VisualMapData data;  ///< Data value carried by this data structure.
+  std::string error;  ///< Human-readable error message when loading or validation fails.
 };
 
+/**
+ * @brief Owns the visual map loader behavior and its runtime state.
+ */
 class VisualMapLoader {
  public:
   /**

@@ -1,3 +1,9 @@
+/**
+ * @file src/visual_pipeline/final_visual_package_writer.cpp
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains
+ * implementation for final_visual_package_writer.cpp.
+ */
+
 #include "visual_pipeline/final_visual_package_writer.h"
 
 #include <raylib.h>
@@ -28,6 +34,9 @@ namespace {
 
 constexpr int kChunkSizeTiles = 16;
 
+/**
+ * @brief Stores rgba color data shared between runtime systems.
+ */
 struct RgbaColor {
   std::uint8_t r = 0;
   std::uint8_t g = 0;
@@ -35,12 +44,18 @@ struct RgbaColor {
   std::uint8_t a = 255;
 };
 
+/**
+ * @brief Stores visual layer data data shared between runtime systems.
+ */
 struct VisualLayerData {
   std::string id;
   std::string role;
   std::vector<std::string> tile_ids;
 };
 
+/**
+ * @brief Escapes JSON escape for serialized output.
+ */
 std::string JsonEscape(std::string_view text) {
   std::string escaped;
   escaped.reserve(text.size());
@@ -75,10 +90,16 @@ std::string JsonEscape(std::string_view text) {
   return escaped;
 }
 
+/**
+ * @brief Returns JSON string.
+ */
 std::string JsonString(std::string_view text) {
   return "\"" + JsonEscape(text) + "\"";
 }
 
+/**
+ * @brief Ensures directory.
+ */
 bool EnsureDirectory(const std::filesystem::path& path, std::string* error) {
   std::error_code code;
   std::filesystem::create_directories(path, code);
@@ -92,6 +113,9 @@ bool EnsureDirectory(const std::filesystem::path& path, std::string* error) {
   return true;
 }
 
+/**
+ * @brief Writes text file.
+ */
 bool WriteTextFile(const std::filesystem::path& path, const std::string& text,
                    std::string* error) {
   if (!EnsureDirectory(path.parent_path(), error)) {
@@ -116,6 +140,9 @@ bool WriteTextFile(const std::filesystem::path& path, const std::string& text,
   return true;
 }
 
+/**
+ * @brief Appends big endian32 to the output buffer.
+ */
 void AppendBigEndian32(std::uint32_t value, std::vector<std::uint8_t>* bytes) {
   bytes->push_back(static_cast<std::uint8_t>((value >> 24U) & 0xFFU));
   bytes->push_back(static_cast<std::uint8_t>((value >> 16U) & 0xFFU));
@@ -123,6 +150,9 @@ void AppendBigEndian32(std::uint32_t value, std::vector<std::uint8_t>* bytes) {
   bytes->push_back(static_cast<std::uint8_t>(value & 0xFFU));
 }
 
+/**
+ * @brief Computes crc32.
+ */
 std::uint32_t Crc32(const std::uint8_t* data, std::size_t size) {
   std::uint32_t crc = 0xFFFFFFFFU;
   for (std::size_t i = 0; i < size; ++i) {
@@ -135,6 +165,9 @@ std::uint32_t Crc32(const std::uint8_t* data, std::size_t size) {
   return crc ^ 0xFFFFFFFFU;
 }
 
+/**
+ * @brief Computes adler32.
+ */
 std::uint32_t Adler32(const std::vector<std::uint8_t>& data) {
   constexpr std::uint32_t kModulo = 65521U;
   std::uint32_t a = 1U;
@@ -146,6 +179,9 @@ std::uint32_t Adler32(const std::vector<std::uint8_t>& data) {
   return (b << 16U) | a;
 }
 
+/**
+ * @brief Appends png chunk to the output buffer.
+ */
 void AppendPngChunk(const std::array<char, 4>& type,
                     const std::vector<std::uint8_t>& data,
                     std::vector<std::uint8_t>* png) {
@@ -160,6 +196,9 @@ void AppendPngChunk(const std::array<char, 4>& type,
   AppendBigEndian32(crc, png);
 }
 
+/**
+ * @brief Builds stored deflate stream.
+ */
 std::vector<std::uint8_t> BuildStoredDeflateStream(
     const std::vector<std::uint8_t>& raw) {
   std::vector<std::uint8_t> stream;
@@ -190,6 +229,9 @@ std::vector<std::uint8_t> BuildStoredDeflateStream(
   return stream;
 }
 
+/**
+ * @brief Writes png rgba.
+ */
 bool WritePngRgba(const std::filesystem::path& path, int width, int height,
                   const std::vector<RgbaColor>& pixels,
                   std::string* error) {
@@ -259,6 +301,9 @@ bool WritePngRgba(const std::filesystem::path& path, int width, int height,
   return true;
 }
 
+/**
+ * @brief Blends blend over.
+ */
 RgbaColor BlendOver(RgbaColor base, RgbaColor overlay) {
   if (overlay.a == 0U) {
     return base;
@@ -281,6 +326,9 @@ RgbaColor BlendOver(RgbaColor base, RgbaColor overlay) {
       255};
 }
 
+/**
+ * @brief Returns the color used for terrain.
+ */
 RgbaColor TerrainColor(TerrainType terrain) {
   switch (terrain) {
     case TerrainType::kOpenGround:
@@ -303,6 +351,9 @@ RgbaColor TerrainColor(TerrainType terrain) {
   return RgbaColor{138, 62, 128, 255};
 }
 
+/**
+ * @brief Returns the color used for forest.
+ */
 RgbaColor ForestColor(std::uint8_t value) {
   switch (static_cast<ForestDepthBand>(value)) {
     case ForestDepthBand::kEdge:
@@ -317,6 +368,9 @@ RgbaColor ForestColor(std::uint8_t value) {
   return RgbaColor{0, 0, 0, 0};
 }
 
+/**
+ * @brief Returns the color used for clearing.
+ */
 RgbaColor ClearingColor(std::uint8_t value) {
   switch (static_cast<ClearingRole>(value)) {
     case ClearingRole::kMainClearing:
@@ -335,6 +389,9 @@ RgbaColor ClearingColor(std::uint8_t value) {
   return RgbaColor{0, 0, 0, 0};
 }
 
+/**
+ * @brief Returns the color used for clearing scene.
+ */
 RgbaColor ClearingSceneColor(std::uint8_t value) {
   switch (static_cast<ClearingSceneRole>(value)) {
     case ClearingSceneRole::kRuinsScene:
@@ -351,6 +408,9 @@ RgbaColor ClearingSceneColor(std::uint8_t value) {
   return RgbaColor{0, 0, 0, 0};
 }
 
+/**
+ * @brief Returns the color used for road.
+ */
 RgbaColor RoadColor(std::uint8_t value) {
   switch (static_cast<RoadVisualBand>(value)) {
     case RoadVisualBand::kRoadCore:
@@ -369,6 +429,9 @@ RgbaColor RoadColor(std::uint8_t value) {
   return RgbaColor{0, 0, 0, 0};
 }
 
+/**
+ * @brief Returns the color used for ruin.
+ */
 RgbaColor RuinColor(std::uint8_t value) {
   switch (static_cast<RuinVisualTile>(value)) {
     case RuinVisualTile::kCrackedFloor:
@@ -393,6 +456,9 @@ RgbaColor RuinColor(std::uint8_t value) {
   return RgbaColor{0, 0, 0, 0};
 }
 
+/**
+ * @brief Returns the color used for water.
+ */
 RgbaColor WaterColor(std::uint8_t value) {
   switch (static_cast<WaterVisualTile>(value)) {
     case WaterVisualTile::kWaterCore:
@@ -413,6 +479,9 @@ RgbaColor WaterColor(std::uint8_t value) {
   return RgbaColor{0, 0, 0, 0};
 }
 
+/**
+ * @brief Returns the color used for micro scene.
+ */
 RgbaColor MicroSceneColor(std::uint8_t value) {
   switch (static_cast<MicroSceneTile>(value)) {
     case MicroSceneTile::kGroundDetail:
@@ -435,6 +504,9 @@ RgbaColor MicroSceneColor(std::uint8_t value) {
   return RgbaColor{0, 0, 0, 0};
 }
 
+/**
+ * @brief Returns the color used for object.
+ */
 RgbaColor ObjectColor(ObjectVisualKind kind) {
   switch (kind) {
     case ObjectVisualKind::kVegetation:
@@ -468,10 +540,16 @@ RgbaColor ObjectColor(ObjectVisualKind kind) {
 }
 
 
+/**
+ * @brief Returns terrain tile ID.
+ */
 std::string TerrainTileId(TerrainType terrain) {
   return "terrain." + std::string(TerrainTypeToString(terrain));
 }
 
+/**
+ * @brief Returns overlay tile ID.
+ */
 std::string OverlayTileId(std::string_view prefix, std::string_view role) {
   if (role.empty() || role == "none") {
     return "none";
@@ -479,6 +557,9 @@ std::string OverlayTileId(std::string_view prefix, std::string_view role) {
   return std::string(prefix) + "." + std::string(role);
 }
 
+/**
+ * @brief Returns forest layer tile ID.
+ */
 std::string ForestLayerTileId(const PreparedLevel& prepared_level,
                               std::size_t index) {
   const ForestVisualPlan& plan = prepared_level.forest_visual_plan;
@@ -505,6 +586,9 @@ std::string ForestLayerTileId(const PreparedLevel& prepared_level,
   return "none";
 }
 
+/**
+ * @brief Returns road layer tile ID.
+ */
 std::string RoadLayerTileId(const PreparedLevel& prepared_level,
                             std::size_t index) {
   const RoadVisualPlan& plan = prepared_level.road_visual_plan;
@@ -517,6 +601,9 @@ std::string RoadLayerTileId(const PreparedLevel& prepared_level,
                                        plan.road_bands[index])));
 }
 
+/**
+ * @brief Returns water layer tile ID.
+ */
 std::string WaterLayerTileId(const PreparedLevel& prepared_level,
                              std::size_t index) {
   const WaterVisualPlan& plan = prepared_level.water_visual_plan;
@@ -528,6 +615,9 @@ std::string WaterLayerTileId(const PreparedLevel& prepared_level,
                                         plan.tiles[index])));
 }
 
+/**
+ * @brief Returns ruin layer tile ID.
+ */
 std::string RuinLayerTileId(const PreparedLevel& prepared_level,
                             std::size_t index) {
   const RuinVisualPlan& plan = prepared_level.ruin_visual_plan;
@@ -539,6 +629,9 @@ std::string RuinLayerTileId(const PreparedLevel& prepared_level,
                                         plan.tiles[index])));
 }
 
+/**
+ * @brief Returns micro scene layer tile ID.
+ */
 std::string MicroSceneLayerTileId(const PreparedLevel& prepared_level,
                                   std::size_t index) {
   const MicroSceneVisualPlan& plan = prepared_level.micro_scene_visual_plan;
@@ -550,6 +643,9 @@ std::string MicroSceneLayerTileId(const PreparedLevel& prepared_level,
                                            plan.tiles[index])));
 }
 
+/**
+ * @brief Builds visual layers.
+ */
 std::vector<VisualLayerData> BuildVisualLayers(
     const LevelData& level,
     const PreparedLevel& prepared_level) {
@@ -576,6 +672,9 @@ std::vector<VisualLayerData> BuildVisualLayers(
   return layers;
 }
 
+/**
+ * @brief Counts unique tile ids.
+ */
 int CountUniqueTileIds(const std::vector<VisualLayerData>& layers) {
   std::set<std::string> ids;
   for (const VisualLayerData& layer : layers) {
@@ -584,6 +683,9 @@ int CountUniqueTileIds(const std::vector<VisualLayerData>& layers) {
   return static_cast<int>(ids.size());
 }
 
+/**
+ * @brief Builds visual map JSON.
+ */
 std::string BuildVisualMapJson(const LevelData& level,
                                const FinalVisualPackageResult& result) {
   std::ostringstream output;
@@ -616,6 +718,9 @@ std::string BuildVisualMapJson(const LevelData& level,
   return output.str();
 }
 
+/**
+ * @brief Builds visual layers JSON.
+ */
 std::string BuildVisualLayersJson(const LevelData& level,
                                   const std::vector<VisualLayerData>& layers,
                                   int unique_tile_id_count) {
@@ -654,6 +759,9 @@ std::string BuildVisualLayersJson(const LevelData& level,
   return output.str();
 }
 
+/**
+ * @brief Builds visual objects JSON.
+ */
 std::string BuildVisualObjectsJson(const ObjectVisualPlan& plan) {
   std::ostringstream output;
   output << "{\n";
@@ -690,12 +798,18 @@ std::string BuildVisualObjectsJson(const ObjectVisualPlan& plan) {
   return output.str();
 }
 
+/**
+ * @brief Counts chunk.
+ */
 int ChunkCount(const LevelSize& size) {
   const int chunks_x = (size.width + kChunkSizeTiles - 1) / kChunkSizeTiles;
   const int chunks_y = (size.height + kChunkSizeTiles - 1) / kChunkSizeTiles;
   return chunks_x * chunks_y;
 }
 
+/**
+ * @brief Builds visual chunks JSON.
+ */
 std::string BuildVisualChunksJson(const LevelSize& size) {
   const int chunks_x = (size.width + kChunkSizeTiles - 1) / kChunkSizeTiles;
   const int chunks_y = (size.height + kChunkSizeTiles - 1) / kChunkSizeTiles;
@@ -728,6 +842,9 @@ std::string BuildVisualChunksJson(const LevelSize& size) {
   return output.str();
 }
 
+/**
+ * @brief Returns the color used for composite tile.
+ */
 RgbaColor CompositeTileColor(const LevelData& level,
                              const PreparedLevel& prepared_level,
                              std::size_t index) {
@@ -769,6 +886,9 @@ RgbaColor CompositeTileColor(const LevelData& level,
   return color;
 }
 
+/**
+ * @brief Builds tile preview image.
+ */
 std::vector<RgbaColor> BuildTilePreviewImage(
     const LevelData& level,
     const PreparedLevel& prepared_level) {
@@ -815,6 +935,9 @@ std::vector<RgbaColor> BuildTilePreviewImage(
   return pixels;
 }
 
+/**
+ * @brief Builds final render report JSON.
+ */
 std::string BuildFinalRenderReportJson(
     const LevelData& level,
     const PreparedLevel& prepared_level,
@@ -861,6 +984,9 @@ std::string BuildFinalRenderReportJson(
   return output.str();
 }
 
+/**
+ * @brief Builds visual density report JSON.
+ */
 std::string BuildVisualDensityReportJson(
     const LevelData& level,
     const PreparedLevel& prepared_level,
@@ -889,6 +1015,9 @@ std::string BuildVisualDensityReportJson(
   return output.str();
 }
 
+/**
+ * @brief Builds quality score JSON.
+ */
 std::string BuildQualityScoreJson(const PreparedLevel& prepared_level) {
   const bool object_mapping_ok =
       prepared_level.object_visual_plan.summary.generic_object_count == 0 &&
@@ -931,6 +1060,9 @@ std::string BuildQualityScoreJson(const PreparedLevel& prepared_level) {
   return output.str();
 }
 
+/**
+ * @brief Writes reports.
+ */
 bool WriteReports(const LevelData& level,
                   const PreparedLevel& prepared_level,
                   const FinalVisualPackageResult& result,
@@ -950,10 +1082,16 @@ bool WriteReports(const LevelData& level,
 
 }  // namespace
 
+/**
+ * @brief Implements FinalVisualPackageWriter::FinalVisualPackageWriter.
+ */
 FinalVisualPackageWriter::FinalVisualPackageWriter(
     std::filesystem::path output_root)
     : output_root_(std::move(output_root)) {}
 
+/**
+ * @brief Writes runtime data.
+ */
 FinalVisualPackageResult FinalVisualPackageWriter::Write(
     const LevelData& level,
     const PreparedLevel& prepared_level,

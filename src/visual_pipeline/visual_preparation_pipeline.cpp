@@ -1,3 +1,9 @@
+/**
+ * @file src/visual_pipeline/visual_preparation_pipeline.cpp
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains
+ * implementation for visual_preparation_pipeline.cpp.
+ */
+
 #include "visual_pipeline/visual_preparation_pipeline.h"
 
 #include <algorithm>
@@ -32,12 +38,18 @@
 namespace sar::visual_pipeline {
 namespace {
 
+/**
+ * @brief Maps uses prepared visual map to its runtime representation.
+ */
 bool UsesPreparedVisualMap(VisualPipelineMode mode) {
   return mode == VisualPipelineMode::kUsePreparedVisualMap ||
          mode == VisualPipelineMode::kHybrid ||
          mode == VisualPipelineMode::kCompare;
 }
 
+/**
+ * @brief Executes the should run C++ analysis operation.
+ */
 bool ShouldRunCppAnalysis(const VisualPreparationOptions& options) {
   if (options.visual_pipeline_config.mode == VisualPipelineMode::kBuildCpp ||
       options.visual_pipeline_config.mode == VisualPipelineMode::kCompare) {
@@ -46,6 +58,9 @@ bool ShouldRunCppAnalysis(const VisualPreparationOptions& options) {
   return options.visual_pipeline_config.run_cpp_analysis;
 }
 
+/**
+ * @brief Builds default steps.
+ */
 std::vector<PipelineStepInfo> BuildDefaultSteps(
     const VisualPreparationOptions& options) {
   std::vector<PipelineStepInfo> steps = {
@@ -73,6 +88,9 @@ std::vector<PipelineStepInfo> BuildDefaultSteps(
   return steps;
 }
 
+/**
+ * @brief Maps resolve prepared visual map path to its runtime representation.
+ */
 std::filesystem::path ResolvePreparedVisualMapPath(
     const VisualPreparationOptions& options) {
   const std::filesystem::path configured =
@@ -87,6 +105,9 @@ std::filesystem::path ResolvePreparedVisualMapPath(
 }
 
 
+/**
+ * @brief Executes the resolve debug output path operation.
+ */
 std::filesystem::path ResolveDebugOutputPath(
     const VisualPreparationOptions& options) {
   const std::filesystem::path configured =
@@ -100,6 +121,9 @@ std::filesystem::path ResolveDebugOutputPath(
   return options.map_package_path / configured;
 }
 
+/**
+ * @brief Adds debug artifact result.
+ */
 void AddDebugArtifactResult(std::string_view artifact_name,
                             bool written,
                             const std::string& error,
@@ -116,10 +140,16 @@ void AddDebugArtifactResult(std::string_view artifact_name,
                              std::string(artifact_name) + ": " + error);
 }
 
+/**
+ * @brief Checks whether prepared visual map is present.
+ */
 bool HasPreparedVisualMap(const PreparedLevel& prepared_level) {
   return prepared_level.prepared_visual_map.loaded;
 }
 
+/**
+ * @brief Executes the source for mode operation.
+ */
 PreparedLevelSource SourceForMode(VisualPipelineMode mode) {
   switch (mode) {
     case VisualPipelineMode::kUsePreparedVisualMap:
@@ -135,6 +165,9 @@ PreparedLevelSource SourceForMode(VisualPipelineMode mode) {
 }
 
 
+/**
+ * @brief Executes the resolve final package output path operation.
+ */
 std::filesystem::path ResolveFinalPackageOutputPath(
     const VisualPreparationOptions& options) {
   const std::filesystem::path debug_path = ResolveDebugOutputPath(options);
@@ -144,6 +177,9 @@ std::filesystem::path ResolveFinalPackageOutputPath(
   return debug_path.parent_path();
 }
 
+/**
+ * @brief Executes the terrain summary line operation.
+ */
 std::string TerrainSummaryLine(const SemanticMaskSummary& summary) {
   return "terrain tiles=" + std::to_string(summary.total_tiles) +
          " open=" + std::to_string(summary.open_ground_tiles) +
@@ -156,6 +192,9 @@ std::string TerrainSummaryLine(const SemanticMaskSummary& summary) {
          " unknown=" + std::to_string(summary.unknown_tiles);
 }
 
+/**
+ * @brief Runs time summary line.
+ */
 std::string RuntimeSummaryLine(const SemanticMaskSummary& summary) {
   return "runtime walkable=" + std::to_string(summary.walkable_tiles) +
          " blocked=" + std::to_string(summary.blocked_tiles) +
@@ -169,6 +208,9 @@ std::string RuntimeSummaryLine(const SemanticMaskSummary& summary) {
          " elevated=" + std::to_string(summary.elevated_tiles);
 }
 
+/**
+ * @brief Counts map line.
+ */
 std::string CountMapLine(const std::string& prefix,
                          const std::map<std::string, int>& counts) {
   std::string line = prefix;
@@ -185,6 +227,9 @@ std::string CountMapLine(const std::string& prefix,
   return line;
 }
 
+/**
+ * @brief Executes the catalog summary line operation.
+ */
 std::string CatalogSummaryLine(const LevelData& level) {
   return "terrain_catalog used=" +
          std::string(level.used_tile_catalog ? "true" : "false") +
@@ -194,6 +239,9 @@ std::string CatalogSummaryLine(const LevelData& level) {
          std::to_string(level.unknown_terrain_type_counts.size());
 }
 
+/**
+ * @brief Adds semantic mask diagnostics.
+ */
 void AddSemanticMaskDiagnostics(const LevelData& level,
                                 const SemanticMaskSummary& summary,
                                 PipelineStepReport* report) {
@@ -216,6 +264,9 @@ void AddSemanticMaskDiagnostics(const LevelData& level,
   }
 }
 
+/**
+ * @brief Executes the region summary line operation.
+ */
 std::string RegionSummaryLine(const TerrainRegionSummary& summary) {
   return "regions total=" + std::to_string(summary.total_regions) +
          " open=" + std::to_string(summary.open_ground_regions) +
@@ -229,6 +280,9 @@ std::string RegionSummaryLine(const TerrainRegionSummary& summary) {
          " tiny=" + std::to_string(summary.tiny_regions);
 }
 
+/**
+ * @brief Executes the region largest line operation.
+ */
 std::string RegionLargestLine(const TerrainRegionSummary& summary) {
   return "region_stats largest=" + std::to_string(summary.largest_region_area) +
          " largest_forest=" + std::to_string(summary.largest_forest_area) +
@@ -236,6 +290,9 @@ std::string RegionLargestLine(const TerrainRegionSummary& summary) {
          std::to_string(summary.largest_open_ground_area);
 }
 
+/**
+ * @brief Adds terrain region diagnostics.
+ */
 void AddTerrainRegionDiagnostics(const TerrainRegionSummary& summary,
                                  PipelineStepReport* report) {
   if (report == nullptr) {
@@ -254,6 +311,9 @@ void AddTerrainRegionDiagnostics(const TerrainRegionSummary& summary,
   }
 }
 
+/**
+ * @brief Executes the border summary line operation.
+ */
 std::string BorderSummaryLine(const RegionBorderSummary& summary) {
   return "region_borders tiles=" + std::to_string(summary.border_tile_count) +
          " edge=" + std::to_string(summary.edge_tile_count) +
@@ -263,6 +323,9 @@ std::string BorderSummaryLine(const RegionBorderSummary& summary) {
          " map_edge=" + std::to_string(summary.map_edge_tile_count);
 }
 
+/**
+ * @brief Executes the border neighbor summary line operation.
+ */
 std::string BorderNeighborSummaryLine(const RegionBorderSummary& summary) {
   return "border_neighbors open=" +
          std::to_string(summary.neighbor_open_ground) +
@@ -276,6 +339,9 @@ std::string BorderNeighborSummaryLine(const RegionBorderSummary& summary) {
          " outside_map=" + std::to_string(summary.neighbor_outside_map);
 }
 
+/**
+ * @brief Adds region border diagnostics.
+ */
 void AddRegionBorderDiagnostics(const RegionBorderSummary& summary,
                                 PipelineStepReport* report) {
   if (report == nullptr) {
@@ -290,6 +356,9 @@ void AddRegionBorderDiagnostics(const RegionBorderSummary& summary,
   }
 }
 
+/**
+ * @brief Executes the forest visual summary line operation.
+ */
 std::string ForestVisualSummaryLine(const ForestVisualSummary& summary) {
   return "forest_visual edge=" + std::to_string(summary.forest_edge_tiles) +
          " mid=" + std::to_string(summary.forest_mid_tiles) +
@@ -302,6 +371,9 @@ std::string ForestVisualSummaryLine(const ForestVisualSummary& summary) {
          std::to_string(summary.route_influenced_tiles);
 }
 
+/**
+ * @brief Executes the clearing role summary line operation.
+ */
 std::string ClearingRoleSummaryLine(const ForestVisualSummary& summary) {
   return "clearing_roles main=" +
          std::to_string(summary.main_clearing_tiles) +
@@ -317,6 +389,9 @@ std::string ClearingRoleSummaryLine(const ForestVisualSummary& summary) {
          " generic_scene=" + std::to_string(summary.generic_scene_tiles);
 }
 
+/**
+ * @brief Adds forest visual diagnostics.
+ */
 void AddForestVisualDiagnostics(const ForestVisualSummary& summary,
                                 PipelineStepReport* report) {
   if (report == nullptr) {
@@ -333,6 +408,9 @@ void AddForestVisualDiagnostics(const ForestVisualSummary& summary,
   }
 }
 
+/**
+ * @brief Executes the road visual summary line operation.
+ */
 std::string RoadVisualSummaryLine(const RoadVisualSummary& summary) {
   return "road_visual source=terrain_road routes_used_for_visual_roads=" +
          std::string(summary.routes_used_for_visual_roads ? "true" : "false") +
@@ -349,6 +427,9 @@ std::string RoadVisualSummaryLine(const RoadVisualSummary& summary) {
          " dressing=" + std::to_string(summary.road_dressing_tiles);
 }
 
+/**
+ * @brief Adds road visual diagnostics.
+ */
 void AddRoadVisualDiagnostics(const RoadVisualSummary& summary,
                               PipelineStepReport* report) {
   if (report == nullptr) {
@@ -364,6 +445,9 @@ void AddRoadVisualDiagnostics(const RoadVisualSummary& summary,
   }
 }
 
+/**
+ * @brief Executes the ruin visual summary line operation.
+ */
 std::string RuinVisualSummaryLine(const RuinVisualSummary& summary) {
   return "ruin_visual sites=" + std::to_string(summary.site_count) +
          " source_ruins=" + std::to_string(summary.source_ruin_tiles) +
@@ -379,6 +463,9 @@ std::string RuinVisualSummaryLine(const RuinVisualSummary& summary) {
          " visual=" + std::to_string(summary.visual_tiles);
 }
 
+/**
+ * @brief Adds ruin visual diagnostics.
+ */
 void AddRuinVisualDiagnostics(const RuinVisualSummary& summary,
                               PipelineStepReport* report) {
   if (report == nullptr) {
@@ -394,6 +481,9 @@ void AddRuinVisualDiagnostics(const RuinVisualSummary& summary,
   }
 }
 
+/**
+ * @brief Executes the water visual summary line operation.
+ */
 std::string WaterVisualSummaryLine(const WaterVisualSummary& summary) {
   return "water_visual regions=" +
          std::to_string(summary.water_region_count) +
@@ -408,6 +498,9 @@ std::string WaterVisualSummaryLine(const WaterVisualSummary& summary) {
          " visual=" + std::to_string(summary.visual_tiles);
 }
 
+/**
+ * @brief Adds water visual diagnostics.
+ */
 void AddWaterVisualDiagnostics(const WaterVisualSummary& summary,
                                PipelineStepReport* report) {
   if (report == nullptr) {
@@ -423,6 +516,9 @@ void AddWaterVisualDiagnostics(const WaterVisualSummary& summary,
   }
 }
 
+/**
+ * @brief Executes the object visual summary line operation.
+ */
 std::string ObjectVisualSummaryLine(const ObjectVisualSummary& summary) {
   return "object_visual source=" +
          std::to_string(summary.source_object_count) +
@@ -436,6 +532,9 @@ std::string ObjectVisualSummaryLine(const ObjectVisualSummary& summary) {
          " skipped_sprites=" + std::to_string(summary.skipped_sprites);
 }
 
+/**
+ * @brief Adds object visual diagnostics.
+ */
 void AddObjectVisualDiagnostics(const ObjectVisualSummary& summary,
                                 PipelineStepReport* report) {
   if (report == nullptr) {
@@ -454,6 +553,9 @@ void AddObjectVisualDiagnostics(const ObjectVisualSummary& summary,
 }
 
 
+/**
+ * @brief Executes the micro scene summary line operation.
+ */
 std::string MicroSceneSummaryLine(const MicroSceneSummary& summary) {
   return "micro_scenes scenes=" + std::to_string(summary.scene_count) +
          " visual=" + std::to_string(summary.visual_tiles) +
@@ -466,6 +568,9 @@ std::string MicroSceneSummaryLine(const MicroSceneSummary& summary) {
          " cache=" + std::to_string(summary.cache_hint_count);
 }
 
+/**
+ * @brief Adds micro scene diagnostics.
+ */
 void AddMicroSceneDiagnostics(const MicroSceneSummary& summary,
                               PipelineStepReport* report) {
   if (report == nullptr) {
@@ -481,6 +586,9 @@ void AddMicroSceneDiagnostics(const MicroSceneSummary& summary,
   }
 }
 
+/**
+ * @brief Adds visual map diagnostics.
+ */
 void AddVisualMapDiagnostics(const VisualMapData& data,
                              PipelineStepReport* report) {
   if (report == nullptr) {
@@ -504,12 +612,18 @@ void AddVisualMapDiagnostics(const VisualMapData& data,
 
 }  // namespace
 
+/**
+ * @brief Starts the requested operation.
+ */
 void VisualPreparationPipeline::Start(const LevelData& level) {
   VisualPreparationOptions options;
   options.visual_pipeline_config.mode = VisualPipelineMode::kBuildCpp;
   Start(level, std::move(options));
 }
 
+/**
+ * @brief Starts the requested operation.
+ */
 void VisualPreparationPipeline::Start(const LevelData& level,
                                       VisualPreparationOptions options) {
   options_ = std::move(options);
@@ -526,6 +640,9 @@ void VisualPreparationPipeline::Start(const LevelData& level,
   progress_.current_step_name = steps_.empty() ? "Done" : steps_.front().name;
 }
 
+/**
+ * @brief Implements VisualPreparationPipeline::AdvanceOneStep.
+ */
 void VisualPreparationPipeline::AdvanceOneStep(const LevelData& level) {
   if (!progress_.running || progress_.failed || progress_.finished) {
     return;
@@ -572,6 +689,9 @@ void VisualPreparationPipeline::AdvanceOneStep(const LevelData& level) {
       steps_[static_cast<std::size_t>(progress_.completed_steps)].name;
 }
 
+/**
+ * @brief Runs current step.
+ */
 void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
                                                const PipelineStepInfo& step,
                                                PipelineStepReport* report) {
@@ -921,6 +1041,9 @@ void VisualPreparationPipeline::RunCurrentStep(const LevelData& level,
   }
 }
 
+/**
+ * @brief Marks the pipeline step result as failed and stores the diagnostic error message.
+ */
 void VisualPreparationPipeline::Fail(std::string error) {
   progress_.running = false;
   progress_.failed = true;

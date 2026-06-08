@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_RENDER3D_LEVEL_3D_RENDERER_H_
 #define SHOOT_AND_RUN_CPP_SRC_RENDER3D_LEVEL_3D_RENDERER_H_
 
+/**
+ * @file src/render3d/level_3d_renderer.h
+ * @brief 3D renderer, camera, player movement, fog, and asset registry. Contains public
+ * declarations for level_3d_renderer.h.
+ */
+
 #include <cstddef>
 #include <string>
 #include <vector>
@@ -35,36 +41,36 @@ enum class Level3DRenderMode {
  * @brief Aggregated 3D renderer, camera, culling and visibility state.
  */
 struct Level3DViewState {
-  Level3DPlayerState player;
-  Level3DCameraState camera;
-  Level3DRenderMode mode = Level3DRenderMode::kTerrain;
-  float tile_world_size = 1.0F;
-  float elevation_step = 0.35F;
-  float elevation_wall_thickness = 0.075F;
-  int visible_radius_tiles = 48;
-  int culling_deadzone_tiles = 4;
-  int chunk_size_tiles = 16;
-  int active_chunk_radius = 3;
-  int culling_center_tile_x = 0;
-  int culling_center_tile_y = 0;
-  bool culling_center_initialized = false;
-  bool visibility_enabled = true;
-  int visibility_radius_tiles = 22;
-  bool visibility_memory_enabled = true;
-  Level3DFogMode fog_mode = Level3DFogMode::kCircle;
-  float seen_tile_dim_factor = 0.32F;
-  int visibility_width = 0;
-  int visibility_height = 0;
-  std::vector<unsigned char> visibility_tiles;
-  std::vector<std::size_t> visibility_current_indices;
-  bool visibility_state_valid = false;
-  int visibility_last_center_x = -1;
-  int visibility_last_center_y = -1;
-  int visibility_last_radius_tiles = -1;
-  bool visibility_last_enabled = false;
-  bool visibility_last_memory_enabled = false;
-  Level3DFogMode visibility_last_fog_mode = Level3DFogMode::kCircle;
-  bool initialized = false;
+  Level3DPlayerState player;  ///< Player value carried by this data structure.
+  Level3DCameraState camera;  ///< Camera value carried by this data structure.
+  Level3DRenderMode mode = Level3DRenderMode::kTerrain;  ///< Mode value carried by this data structure.
+  float tile_world_size = 1.0F;  ///< Tile world size value carried by this data structure.
+  float elevation_step = 0.35F;  ///< Elevation step value carried by this data structure.
+  float elevation_wall_thickness = 0.075F;  ///< Elevation wall thickness value carried by this data structure.
+  int visible_radius_tiles = 48;  ///< Visible radius tiles value carried by this data structure.
+  int culling_deadzone_tiles = 4;  ///< Culling deadzone tiles value carried by this data structure.
+  int chunk_size_tiles = 16;  ///< Chunk size tiles value carried by this data structure.
+  int active_chunk_radius = 3;  ///< Active chunk radius value carried by this data structure.
+  int culling_center_tile_x = 0;  ///< Tile, screen, or world coordinate for culling center tile x.
+  int culling_center_tile_y = 0;  ///< Tile, screen, or world coordinate for culling center tile y.
+  bool culling_center_initialized = false;  ///< Culling center initialized value carried by this data structure.
+  bool visibility_enabled = true;  ///< Visibility enabled value carried by this data structure.
+  int visibility_radius_tiles = 22;  ///< Visibility radius tiles value carried by this data structure.
+  bool visibility_memory_enabled = true;  ///< Visibility memory enabled value carried by this data structure.
+  Level3DFogMode fog_mode = Level3DFogMode::kCircle;  ///< Fog mode value carried by this data structure.
+  float seen_tile_dim_factor = 0.32F;  ///< Scaling factor for seen tile dim factor.
+  int visibility_width = 0;  ///< Size component for visibility width.
+  int visibility_height = 0;  ///< Size component for visibility height.
+  std::vector<unsigned char> visibility_tiles;  ///< Visibility tiles value carried by this data structure.
+  std::vector<std::size_t> visibility_current_indices;  ///< Visibility current indices value carried by this data structure.
+  bool visibility_state_valid = false;  ///< Visibility state valid value carried by this data structure.
+  int visibility_last_center_x = -1;  ///< Tile, screen, or world coordinate for visibility last center x.
+  int visibility_last_center_y = -1;  ///< Tile, screen, or world coordinate for visibility last center y.
+  int visibility_last_radius_tiles = -1;  ///< Visibility last radius tiles value carried by this data structure.
+  bool visibility_last_enabled = false;  ///< Visibility last enabled value carried by this data structure.
+  bool visibility_last_memory_enabled = false;  ///< Visibility last memory enabled value carried by this data structure.
+  Level3DFogMode visibility_last_fog_mode = Level3DFogMode::kCircle;  ///< Visibility last fog mode value carried by this data structure.
+  bool initialized = false;  ///< Initialized value carried by this data structure.
 };
 
 /**

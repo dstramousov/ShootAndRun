@@ -1,9 +1,18 @@
+/**
+ * @file src/visual_pipeline/prepared_level.cpp
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains
+ * implementation for prepared_level.cpp.
+ */
+
 #include "visual_pipeline/prepared_level.h"
 
 #include <string>
 
 namespace sar::visual_pipeline {
 
+/**
+ * @brief Returns prepared level source name.
+ */
 const char* PreparedLevelSourceName(PreparedLevelSource source) {
   switch (source) {
     case PreparedLevelSource::kCppPipeline:
@@ -17,6 +26,9 @@ const char* PreparedLevelSourceName(PreparedLevelSource source) {
   return "cpp_pipeline";
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string PreparedLevel::Dump() const {
   std::string dump =
       "PreparedLevel { ready: " + std::string(ready ? "true" : "false") +

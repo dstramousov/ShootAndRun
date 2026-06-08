@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_RENDER3D_LEVEL_3D_PLAYER_CONTROLLER_H_
 #define SHOOT_AND_RUN_CPP_SRC_RENDER3D_LEVEL_3D_PLAYER_CONTROLLER_H_
 
+/**
+ * @file src/render3d/level_3d_player_controller.h
+ * @brief 3D renderer, camera, player movement, fog, and asset registry. Contains public
+ * declarations for level_3d_player_controller.h.
+ */
+
 #include <cstdint>
 #include <string>
 
@@ -52,81 +58,81 @@ enum class Level3DJumpKind {
  * changing the gameplay cell too early.
  */
 struct Level3DPlayerState {
-  float tile_x = 0.0F;
-  float tile_y = 0.0F;
-  std::int8_t elevation = 0;
-  float facing_x = 0.0F;
-  float facing_y = -1.0F;
-  float velocity_x_tiles_per_sec = 0.0F;
-  float velocity_y_tiles_per_sec = 0.0F;
-  float move_speed_tiles_per_sec = 4.25F;
-  float current_movement_multiplier = 1.0F;
-  float target_movement_multiplier = 1.0F;
-  float movement_multiplier_smooth_speed = 14.0F;
-  float effective_move_speed_tiles_per_sec = 4.25F;
-  float acceleration_tiles_per_sec2 = 28.0F;
-  float deceleration_tiles_per_sec2 = 34.0F;
-  float mouse_turn_sensitivity_rad = 0.0031F;
-  int allowed_step_down_height = 1;
-  bool jump_active = false;
-  Level3DJumpKind jump_kind = Level3DJumpKind::kNone;
-  float jump_elapsed_sec = 0.0F;
-  float jump_duration_sec = 0.32F;
-  float jump_arc_elevation_units = 0.72F;
-  float jump_horizontal_speed_multiplier = 1.08F;
-  float jump_air_control_multiplier = 0.72F;
-  float jump_start_movement_multiplier = 1.0F;
-  float jump_min_running_speed_tiles_per_sec = 1.20F;
-  float jump_start_tile_x = 0.0F;
-  float jump_start_tile_y = 0.0F;
-  bool step_jump_active = false;
-  int step_jump_from_tile_x = -1;
-  int step_jump_from_tile_y = -1;
-  int step_jump_to_tile_x = -1;
-  int step_jump_to_tile_y = -1;
-  std::int8_t step_jump_from_elevation = 0;
-  std::int8_t step_jump_to_elevation = 0;
-  float step_jump_elapsed_sec = 0.0F;
-  float step_jump_duration_sec = 0.22F;
-  float step_jump_arc_elevation_units = 0.85F;
-  float visual_elevation_offset = 0.0F;
-  unsigned int jump_event_sequence = 0;
-  Level3DJumpEventType last_jump_event_type = Level3DJumpEventType::kNone;
-  Level3DJumpKind last_jump_kind = Level3DJumpKind::kNone;
-  Level3DMoveBlockReason last_jump_block_reason = Level3DMoveBlockReason::kNone;
-  unsigned int transition_event_sequence = 0;
-  ElevationTransitionType last_transition_type = ElevationTransitionType::kUnknown;
-  int last_transition_from_tile_x = -1;
-  int last_transition_from_tile_y = -1;
-  int last_transition_to_tile_x = -1;
-  int last_transition_to_tile_y = -1;
-  std::int8_t last_transition_from_elevation = 0;
-  std::int8_t last_transition_to_elevation = 0;
-  int last_blocked_tile_x = -1;
-  int last_blocked_tile_y = -1;
-  Level3DMoveBlockReason last_block_reason = Level3DMoveBlockReason::kNone;
-  unsigned int blocked_event_sequence = 0;
-  bool initialized = false;
+  float tile_x = 0.0F;  ///< Tile, screen, or world coordinate for tile x.
+  float tile_y = 0.0F;  ///< Tile, screen, or world coordinate for tile y.
+  std::int8_t elevation = 0;  ///< Elevation value carried by this data structure.
+  float facing_x = 0.0F;  ///< Tile, screen, or world coordinate for facing x.
+  float facing_y = -1.0F;  ///< Tile, screen, or world coordinate for facing y.
+  float velocity_x_tiles_per_sec = 0.0F;  ///< Time value for velocity x tiles per seconds.
+  float velocity_y_tiles_per_sec = 0.0F;  ///< Time value for velocity y tiles per seconds.
+  float move_speed_tiles_per_sec = 4.25F;  ///< Time value for move speed tiles per seconds.
+  float current_movement_multiplier = 1.0F;  ///< Scaling factor for current movement multiplier.
+  float target_movement_multiplier = 1.0F;  ///< Scaling factor for target movement multiplier.
+  float movement_multiplier_smooth_speed = 14.0F;  ///< Scaling factor for movement multiplier smooth speed.
+  float effective_move_speed_tiles_per_sec = 4.25F;  ///< Time value for effective move speed tiles per seconds.
+  float acceleration_tiles_per_sec2 = 28.0F;  ///< Acceleration tiles per sec2 value carried by this data structure.
+  float deceleration_tiles_per_sec2 = 34.0F;  ///< Deceleration tiles per sec2 value carried by this data structure.
+  float mouse_turn_sensitivity_rad = 0.0031F;  ///< Mouse turn sensitivity rad value carried by this data structure.
+  int allowed_step_down_height = 1;  ///< Size component for allowed step down height.
+  bool jump_active = false;  ///< Jump active value carried by this data structure.
+  Level3DJumpKind jump_kind = Level3DJumpKind::kNone;  ///< Jump kind value carried by this data structure.
+  float jump_elapsed_sec = 0.0F;  ///< Time value for jump elapsed seconds.
+  float jump_duration_sec = 0.32F;  ///< Time value for jump duration seconds.
+  float jump_arc_elevation_units = 0.72F;  ///< Jump arc elevation units value carried by this data structure.
+  float jump_horizontal_speed_multiplier = 1.08F;  ///< Scaling factor for jump horizontal speed multiplier.
+  float jump_air_control_multiplier = 0.72F;  ///< Scaling factor for jump air control multiplier.
+  float jump_start_movement_multiplier = 1.0F;  ///< Scaling factor for jump start movement multiplier.
+  float jump_min_running_speed_tiles_per_sec = 1.20F;  ///< Time value for jump min running speed tiles per seconds.
+  float jump_start_tile_x = 0.0F;  ///< Tile, screen, or world coordinate for jump start tile x.
+  float jump_start_tile_y = 0.0F;  ///< Tile, screen, or world coordinate for jump start tile y.
+  bool step_jump_active = false;  ///< Step jump active value carried by this data structure.
+  int step_jump_from_tile_x = -1;  ///< Tile, screen, or world coordinate for step jump from tile x.
+  int step_jump_from_tile_y = -1;  ///< Tile, screen, or world coordinate for step jump from tile y.
+  int step_jump_to_tile_x = -1;  ///< Tile, screen, or world coordinate for step jump to tile x.
+  int step_jump_to_tile_y = -1;  ///< Tile, screen, or world coordinate for step jump to tile y.
+  std::int8_t step_jump_from_elevation = 0;  ///< Step jump from elevation value carried by this data structure.
+  std::int8_t step_jump_to_elevation = 0;  ///< Step jump to elevation value carried by this data structure.
+  float step_jump_elapsed_sec = 0.0F;  ///< Time value for step jump elapsed seconds.
+  float step_jump_duration_sec = 0.22F;  ///< Time value for step jump duration seconds.
+  float step_jump_arc_elevation_units = 0.85F;  ///< Step jump arc elevation units value carried by this data structure.
+  float visual_elevation_offset = 0.0F;  ///< Visual elevation offset value carried by this data structure.
+  unsigned int jump_event_sequence = 0;  ///< Jump event sequence value carried by this data structure.
+  Level3DJumpEventType last_jump_event_type = Level3DJumpEventType::kNone;  ///< Semantic type for last jump event.
+  Level3DJumpKind last_jump_kind = Level3DJumpKind::kNone;  ///< Last jump kind value carried by this data structure.
+  Level3DMoveBlockReason last_jump_block_reason = Level3DMoveBlockReason::kNone;  ///< Last jump block reason value carried by this data structure.
+  unsigned int transition_event_sequence = 0;  ///< Transition event sequence value carried by this data structure.
+  ElevationTransitionType last_transition_type = ElevationTransitionType::kUnknown;  ///< Semantic type for last transition.
+  int last_transition_from_tile_x = -1;  ///< Tile, screen, or world coordinate for last transition from tile x.
+  int last_transition_from_tile_y = -1;  ///< Tile, screen, or world coordinate for last transition from tile y.
+  int last_transition_to_tile_x = -1;  ///< Tile, screen, or world coordinate for last transition to tile x.
+  int last_transition_to_tile_y = -1;  ///< Tile, screen, or world coordinate for last transition to tile y.
+  std::int8_t last_transition_from_elevation = 0;  ///< Last transition from elevation value carried by this data structure.
+  std::int8_t last_transition_to_elevation = 0;  ///< Last transition to elevation value carried by this data structure.
+  int last_blocked_tile_x = -1;  ///< Tile, screen, or world coordinate for last blocked tile x.
+  int last_blocked_tile_y = -1;  ///< Tile, screen, or world coordinate for last blocked tile y.
+  Level3DMoveBlockReason last_block_reason = Level3DMoveBlockReason::kNone;  ///< Last block reason value carried by this data structure.
+  unsigned int blocked_event_sequence = 0;  ///< Blocked event sequence value carried by this data structure.
+  bool initialized = false;  ///< Initialized value carried by this data structure.
 };
 
 /**
  * @brief Compact diagnostics for the tile currently occupied by the 3D player.
  */
 struct Level3DPlayerTileDiagnostics {
-  int tile_x = -1;
-  int tile_y = -1;
-  TerrainType terrain = TerrainType::kUnknown;
-  bool walkable = false;
-  bool collision = false;
-  std::uint8_t concealment = 0;
-  std::int8_t elevation = 0;
-  float movement_multiplier = 0.0F;
-  float base_speed_tiles_per_sec = 0.0F;
-  float effective_speed_tiles_per_sec = 0.0F;
-  float velocity_x_tiles_per_sec = 0.0F;
-  float velocity_y_tiles_per_sec = 0.0F;
-  float facing_x = 0.0F;
-  float facing_y = -1.0F;
+  int tile_x = -1;  ///< Tile, screen, or world coordinate for tile x.
+  int tile_y = -1;  ///< Tile, screen, or world coordinate for tile y.
+  TerrainType terrain = TerrainType::kUnknown;  ///< Base terrain classification for this runtime cell.
+  bool walkable = false;  ///< true when movement is allowed by the movement grid.
+  bool collision = false;  ///< true when this cell blocks physical movement.
+  std::uint8_t concealment = 0;  ///< Concealment strength encoded by the runtime grid.
+  std::int8_t elevation = 0;  ///< Elevation value carried by this data structure.
+  float movement_multiplier = 0.0F;  ///< Movement speed multiplier applied on this tile.
+  float base_speed_tiles_per_sec = 0.0F;  ///< Time value for base speed tiles per seconds.
+  float effective_speed_tiles_per_sec = 0.0F;  ///< Time value for effective speed tiles per seconds.
+  float velocity_x_tiles_per_sec = 0.0F;  ///< Time value for velocity x tiles per seconds.
+  float velocity_y_tiles_per_sec = 0.0F;  ///< Time value for velocity y tiles per seconds.
+  float facing_x = 0.0F;  ///< Tile, screen, or world coordinate for facing x.
+  float facing_y = -1.0F;  ///< Tile, screen, or world coordinate for facing y.
 };
 
 /**

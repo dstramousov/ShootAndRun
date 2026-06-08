@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_LEVEL_TERRAIN_TYPE_H_
 #define SHOOT_AND_RUN_CPP_SRC_LEVEL_TERRAIN_TYPE_H_
 
+/**
+ * @file src/level/terrain_type.h
+ * @brief Generated map package data contracts and loading logic. Contains public declarations
+ * for terrain_type.h.
+ */
+
 #include <string_view>
 
 namespace sar {

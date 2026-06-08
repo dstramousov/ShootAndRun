@@ -1,3 +1,9 @@
+/**
+ * @file src/developer/developer_config.cpp
+ * @brief Developer-only configuration and diagnostic settings. Contains implementation for
+ * developer_config.cpp.
+ */
+
 #include "developer/developer_config.h"
 
 #include <cctype>
@@ -12,12 +18,18 @@
 namespace sar {
 namespace {
 
+/**
+ * @brief Stores parse string result data shared between runtime systems.
+ */
 struct ParseStringResult {
   bool ok = false;
   std::string value;
   std::string error;
 };
 
+/**
+ * @brief Stores parse bool result data shared between runtime systems.
+ */
 struct ParseBoolResult {
   bool ok = false;
   bool found = false;
@@ -25,6 +37,9 @@ struct ParseBoolResult {
   std::string error;
 };
 
+/**
+ * @brief Reads text file.
+ */
 std::string ReadTextFile(const std::filesystem::path& path,
                          std::string* error) {
   std::ifstream input(path);
@@ -38,6 +53,9 @@ std::string ReadTextFile(const std::filesystem::path& path,
   return stream.str();
 }
 
+/**
+ * @brief Executes the skip whitespace operation.
+ */
 void SkipWhitespace(std::string_view text, std::size_t* position) {
   while (*position < text.size() &&
          std::isspace(static_cast<unsigned char>(text[*position])) != 0) {
@@ -45,6 +63,9 @@ void SkipWhitespace(std::string_view text, std::size_t* position) {
   }
 }
 
+/**
+ * @brief Parses JSON string from external data.
+ */
 ParseStringResult ParseJsonString(std::string_view text,
                                   std::size_t position) {
   if (position >= text.size() || text[position] != '"') {
@@ -99,6 +120,9 @@ ParseStringResult ParseJsonString(std::string_view text,
   return {false, {}, "unterminated string value"};
 }
 
+/**
+ * @brief Finds field value start.
+ */
 std::optional<std::size_t> FindFieldValueStart(std::string_view text,
                                                std::string_view field_name,
                                                std::string* error) {
@@ -120,6 +144,9 @@ std::optional<std::size_t> FindFieldValueStart(std::string_view text,
   return position;
 }
 
+/**
+ * @brief Executes the extract optional JSON string field operation.
+ */
 ParseStringResult ExtractOptionalJsonStringField(
     std::string_view text, std::string_view field_name) {
   std::string error;
@@ -135,6 +162,9 @@ ParseStringResult ExtractOptionalJsonStringField(
   return ParseJsonString(text, *value_start);
 }
 
+/**
+ * @brief Executes the extract optional JSON bool field operation.
+ */
 ParseBoolResult ExtractOptionalJsonBoolField(std::string_view text,
                                              std::string_view field_name) {
   std::string error;
@@ -158,6 +188,9 @@ ParseBoolResult ExtractOptionalJsonBoolField(std::string_view text,
           "expected boolean value for field: " + std::string(field_name)};
 }
 
+/**
+ * @brief Executes the extract JSON array operation.
+ */
 std::optional<std::string_view> ExtractJsonArray(
     std::string_view text, std::string_view field_name, std::string* error) {
   const std::optional<std::size_t> value_start =
@@ -205,6 +238,9 @@ std::optional<std::string_view> ExtractJsonArray(
   return std::nullopt;
 }
 
+/**
+ * @brief Executes the extract JSON objects from array operation.
+ */
 std::vector<std::string_view> ExtractJsonObjectsFromArray(
     std::string_view array_text) {
   std::vector<std::string_view> objects;
@@ -248,6 +284,9 @@ std::vector<std::string_view> ExtractJsonObjectsFromArray(
   return objects;
 }
 
+/**
+ * @brief Applies optional bool field.
+ */
 bool ApplyOptionalBoolField(std::string_view text, std::string_view field_name,
                             bool* value, std::string* error) {
   const ParseBoolResult parsed = ExtractOptionalJsonBoolField(text, field_name);
@@ -261,6 +300,9 @@ bool ApplyOptionalBoolField(std::string_view text, std::string_view field_name,
   return true;
 }
 
+/**
+ * @brief Applies optional string field.
+ */
 bool ApplyOptionalStringField(std::string_view text, std::string_view field_name,
                               std::string* value, std::string* error) {
   const ParseStringResult parsed = ExtractOptionalJsonStringField(text,
@@ -277,6 +319,9 @@ bool ApplyOptionalStringField(std::string_view text, std::string_view field_name
 
 }  // namespace
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string DeveloperConfig::Dump() const {
   return "DeveloperConfig { log: { enabled: " +
          std::string(log.enabled ? "true" : "false") +
@@ -294,6 +339,9 @@ std::string DeveloperConfig::Dump() const {
          " } }";
 }
 
+/**
+ * @brief Loads developer config.
+ */
 DeveloperConfigResult LoadDeveloperConfig(
     const std::filesystem::path& config_path) {
   std::error_code file_error;

@@ -1,3 +1,9 @@
+/**
+ * @file src/platform/process_info.cpp
+ * @brief Platform-specific process, terminal, and memory utilities. Contains implementation for
+ * process_info.cpp.
+ */
+
 #include "platform/process_info.h"
 
 #include <functional>
@@ -17,6 +23,9 @@
 
 namespace sar {
 
+/**
+ * @brief Returns current process ID.
+ */
 std::uint64_t CurrentProcessId() {
 #if defined(_WIN32)
   return static_cast<std::uint64_t>(GetCurrentProcessId());
@@ -25,6 +34,9 @@ std::uint64_t CurrentProcessId() {
 #endif
 }
 
+/**
+ * @brief Returns current thread ID.
+ */
 std::uint64_t CurrentThreadId() {
 #if defined(_WIN32)
   return static_cast<std::uint64_t>(GetCurrentThreadId());

@@ -1,3 +1,9 @@
+/**
+ * @file src/game/game_session.cpp
+ * @brief Game session state and high-level game lifecycle. Contains implementation for
+ * game_session.cpp.
+ */
+
 #include "game/game_session.h"
 
 namespace sar {

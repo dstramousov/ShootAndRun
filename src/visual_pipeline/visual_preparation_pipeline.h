@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_VISUAL_PREPARATION_PIPELINE_H_
 #define SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_VISUAL_PREPARATION_PIPELINE_H_
 
+/**
+ * @file src/visual_pipeline/visual_preparation_pipeline.h
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains public
+ * declarations for visual_preparation_pipeline.h.
+ */
+
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -16,28 +22,28 @@ namespace sar::visual_pipeline {
  * @brief Static metadata for one visual preparation pipeline step.
  */
 struct PipelineStepInfo {
-  std::string name;
+  std::string name;  ///< Human-readable name or configuration key.
 };
 
 /**
  * @brief Input options used by the visual preparation pipeline.
  */
 struct VisualPreparationOptions {
-  std::filesystem::path map_package_path;
-  VisualPipelineConfig visual_pipeline_config;
+  std::filesystem::path map_package_path;  ///< Filesystem path used by this configuration or data object.
+  VisualPipelineConfig visual_pipeline_config;  ///< Visual pipeline config value carried by this data structure.
 };
 
 /**
  * @brief Runtime report emitted after one pipeline step finishes.
  */
 struct PipelineStepReport {
-  int step_index = 0;
-  int total_steps = 0;
-  std::string step_name;
-  double duration_ms = 0.0;
-  bool success = false;
-  std::vector<std::string> summaries;
-  std::vector<std::string> warnings;
+  int step_index = 0;  ///< Step index value carried by this data structure.
+  int total_steps = 0;  ///< Total steps value carried by this data structure.
+  std::string step_name;  ///< Step name value carried by this data structure.
+  double duration_ms = 0.0;  ///< Time value for duration milliseconds.
+  bool success = false;  ///< Success value carried by this data structure.
+  std::vector<std::string> summaries;  ///< Summaries value carried by this data structure.
+  std::vector<std::string> warnings;  ///< Recoverable validation warnings collected during loading.
 };
 
 /**
@@ -105,8 +111,20 @@ class VisualPreparationPipeline {
   bool running() const { return progress_.running; }
 
  private:
+  /**
+   * @brief Runs current step.
+   *
+   * @param level Loaded level data used as the source of truth.
+   * @param step Input value required by the operation.
+   * @param report Input value required by the operation.
+   */
   void RunCurrentStep(const LevelData& level, const PipelineStepInfo& step,
                       PipelineStepReport* report);
+  /**
+   * @brief Marks the pipeline step result as failed and stores the diagnostic error message.
+   *
+   * @param error Input value required by the operation.
+   */
   void Fail(std::string error);
 
   std::vector<PipelineStepInfo> steps_;

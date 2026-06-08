@@ -1,9 +1,18 @@
+/**
+ * @file src/input/input_system.cpp
+ * @brief Normalized frame input snapshots and polling. Contains implementation for
+ * input_system.cpp.
+ */
+
 #include "input/input_system.h"
 
 #include <raylib.h>
 
 namespace sar {
 
+/**
+ * @brief Implements InputSystem::Poll.
+ */
 InputState InputSystem::Poll() {
   InputState input;
   input.up_pressed = IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W);

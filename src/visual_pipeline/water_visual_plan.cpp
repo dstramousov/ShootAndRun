@@ -1,3 +1,9 @@
+/**
+ * @file src/visual_pipeline/water_visual_plan.cpp
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains
+ * implementation for water_visual_plan.cpp.
+ */
+
 #include "visual_pipeline/water_visual_plan.h"
 
 #include <algorithm>
@@ -10,6 +16,9 @@
 namespace sar::visual_pipeline {
 namespace {
 
+/**
+ * @brief Returns the total number of cells for a valid level size.
+ */
 int CellCount(const LevelSize& size) {
   if (size.width <= 0 || size.height <= 0) {
     return 0;
@@ -17,18 +26,30 @@ int CellCount(const LevelSize& size) {
   return size.width * size.height;
 }
 
+/**
+ * @brief Checks whether tile coordinates are inside the level bounds.
+ */
 bool IsInside(const LevelSize& size, int x, int y) {
   return x >= 0 && y >= 0 && x < size.width && y < size.height;
 }
 
+/**
+ * @brief Converts tile coordinates to a linear grid index.
+ */
 int ToIndex(const LevelSize& size, int x, int y) {
   return y * size.width + x;
 }
 
+/**
+ * @brief Converts to item.
+ */
 std::size_t ToItem(const LevelSize& size, int x, int y) {
   return static_cast<std::size_t>(ToIndex(size, x, y));
 }
 
+/**
+ * @brief Checks whether water like is true.
+ */
 bool IsWaterLike(const SemanticMasks& masks, int x, int y) {
   if (!IsInside(masks.size, x, y)) {
     return false;
@@ -37,11 +58,17 @@ bool IsWaterLike(const SemanticMasks& masks, int x, int y) {
   return masks.water[item] != 0 || masks.swamp[item] != 0;
 }
 
+/**
+ * @brief Checks whether open dressing terrain is true.
+ */
 bool IsOpenDressingTerrain(TerrainType terrain) {
   return terrain == TerrainType::kOpenGround || terrain == TerrainType::kForest ||
          terrain == TerrainType::kRoad || terrain == TerrainType::kRuins;
 }
 
+/**
+ * @brief Checks whether road terrain is true.
+ */
 bool IsRoadTerrain(const LevelData& level, int x, int y) {
   if (!IsInside(level.size, x, y)) {
     return false;
@@ -49,6 +76,9 @@ bool IsRoadTerrain(const LevelData& level, int x, int y) {
   return level.cells[ToItem(level.size, x, y)].terrain == TerrainType::kRoad;
 }
 
+/**
+ * @brief Checks whether adjacent water like is present.
+ */
 bool HasAdjacentWaterLike(const SemanticMasks& masks, int x, int y) {
   for (int dy = -1; dy <= 1; ++dy) {
     for (int dx = -1; dx <= 1; ++dx) {
@@ -63,6 +93,9 @@ bool HasAdjacentWaterLike(const SemanticMasks& masks, int x, int y) {
   return false;
 }
 
+/**
+ * @brief Checks whether water interior is true.
+ */
 bool IsWaterInterior(const SemanticMasks& masks, int x, int y) {
   if (!IsWaterLike(masks, x, y)) {
     return false;
@@ -80,19 +113,31 @@ bool IsWaterInterior(const SemanticMasks& masks, int x, int y) {
   return true;
 }
 
+/**
+ * @brief Computes tile hash.
+ */
 std::uint32_t TileHash(int x, int y, std::uint32_t salt) {
   return (static_cast<std::uint32_t>(x) * 1103515245U) ^
          (static_cast<std::uint32_t>(y) * 2654435761U) ^ salt;
 }
 
+/**
+ * @brief Executes the wants reed operation.
+ */
 bool WantsReed(int x, int y) {
   return TileHash(x, y, 0xA24BAED5U) % 4U == 0U;
 }
 
+/**
+ * @brief Executes the wants wet grass operation.
+ */
 bool WantsWetGrass(int x, int y) {
   return TileHash(x, y, 0x7F4A7C15U) % 3U != 0U;
 }
 
+/**
+ * @brief Returns tile priority.
+ */
 std::uint8_t TilePriority(WaterVisualTile tile) {
   switch (tile) {
     case WaterVisualTile::kWaterCore:
@@ -113,6 +158,9 @@ std::uint8_t TilePriority(WaterVisualTile tile) {
   return 0;
 }
 
+/**
+ * @brief Sets tile.
+ */
 void SetTile(const LevelSize& size, int x, int y, WaterVisualTile tile,
              std::vector<std::uint8_t>* tiles) {
   if (tiles == nullptr || !IsInside(size, x, y)) {
@@ -125,6 +173,9 @@ void SetTile(const LevelSize& size, int x, int y, WaterVisualTile tile,
   }
 }
 
+/**
+ * @brief Builds region ids.
+ */
 void BuildRegionIds(const SemanticMasks& masks, WaterVisualPlan* plan) {
   if (plan == nullptr) {
     return;
@@ -175,6 +226,9 @@ void BuildRegionIds(const SemanticMasks& masks, WaterVisualPlan* plan) {
   plan->summary.water_region_count = static_cast<int>(next_region_id) - 1;
 }
 
+/**
+ * @brief Paints water sources.
+ */
 void PaintWaterSources(const SemanticMasks& masks, WaterVisualPlan* plan) {
   if (plan == nullptr) {
     return;
@@ -201,6 +255,9 @@ void PaintWaterSources(const SemanticMasks& masks, WaterVisualPlan* plan) {
   }
 }
 
+/**
+ * @brief Paints water dressing.
+ */
 void PaintWaterDressing(const LevelData& level, const SemanticMasks& masks,
                         WaterVisualPlan* plan) {
   if (plan == nullptr) {
@@ -262,6 +319,9 @@ void PaintWaterDressing(const LevelData& level, const SemanticMasks& masks,
   }
 }
 
+/**
+ * @brief Counts tile.
+ */
 void CountTile(std::uint8_t value, WaterVisualSummary* summary) {
   if (summary == nullptr || value == 0) {
     return;
@@ -291,6 +351,9 @@ void CountTile(std::uint8_t value, WaterVisualSummary* summary) {
   }
 }
 
+/**
+ * @brief Executes the recount summary operation.
+ */
 void RecountSummary(WaterVisualPlan* plan) {
   if (plan == nullptr) {
     return;
@@ -311,6 +374,9 @@ void RecountSummary(WaterVisualPlan* plan) {
 
 }  // namespace
 
+/**
+ * @brief Returns water visual tile name.
+ */
 const char* WaterVisualTileName(WaterVisualTile tile) {
   switch (tile) {
     case WaterVisualTile::kNone:
@@ -331,6 +397,9 @@ const char* WaterVisualTileName(WaterVisualTile tile) {
   return "none";
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string WaterVisualSummary::Dump() const {
   return "WaterVisualSummary { source_water=" +
          std::to_string(source_water_tiles) +
@@ -346,6 +415,9 @@ std::string WaterVisualSummary::Dump() const {
          ", visual=" + std::to_string(visual_tiles) + " }";
 }
 
+/**
+ * @brief Checks whether valid is true.
+ */
 bool WaterVisualPlan::IsValid() const {
   const int expected_size = CellCount(size);
   if (expected_size <= 0) {
@@ -355,11 +427,17 @@ bool WaterVisualPlan::IsValid() const {
   return tiles.size() == expected && region_ids.size() == expected;
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string WaterVisualPlan::Dump() const {
   return "WaterVisualPlan { size=" + std::to_string(size.width) + "x" +
          std::to_string(size.height) + ", " + summary.Dump() + " }";
 }
 
+/**
+ * @brief Builds water visual plan.
+ */
 WaterVisualPlan BuildWaterVisualPlan(const LevelData& level,
                                      const SemanticMasks& masks,
                                      std::string* error) {

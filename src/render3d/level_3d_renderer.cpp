@@ -1,3 +1,9 @@
+/**
+ * @file src/render3d/level_3d_renderer.cpp
+ * @brief 3D renderer, camera, player movement, fog, and asset registry. Contains implementation
+ * for level_3d_renderer.cpp.
+ */
+
 #include "render3d/level_3d_renderer.h"
 
 #include <algorithm>
@@ -15,6 +21,9 @@ constexpr unsigned char kVisibilityUnknown = 0;
 constexpr unsigned char kVisibilitySeen = 1;
 constexpr unsigned char kVisibilityVisible = 2;
 
+/**
+ * @brief Stores tile range 3D data shared between runtime systems.
+ */
 struct TileRange3D {
   int min_x = 0;
   int max_x = 0;
@@ -22,6 +31,9 @@ struct TileRange3D {
   int max_y = 0;
 };
 
+/**
+ * @brief Stores chunk range 3D data shared between runtime systems.
+ */
 struct ChunkRange3D {
   int min_x = 0;
   int max_x = 0;
@@ -29,20 +41,35 @@ struct ChunkRange3D {
   int max_y = 0;
 };
 
+/**
+ * @brief Executes the scale color rgb operation.
+ */
 Color ScaleColorRgb(Color color, float scale, unsigned char alpha);
 
+/**
+ * @brief Converts a floating tile position to an integer tile index.
+ */
 int TileIndexFromPosition(float value) {
   return static_cast<int>(std::floor(value));
 }
 
+/**
+ * @brief Converts tile coordinates to a level cell index.
+ */
 int TileIndex(const LevelData& level, int x, int y) {
   return y * level.size.width + x;
 }
 
+/**
+ * @brief Checks whether tile coordinates are inside the loaded map.
+ */
 bool IsInsideMap(const LevelData& level, int x, int y) {
   return x >= 0 && y >= 0 && x < level.size.width && y < level.size.height;
 }
 
+/**
+ * @brief Returns the runtime cell at tile coordinates or nullptr when outside the map.
+ */
 const RuntimeCell* CellAt(const LevelData& level, int x, int y) {
   if (!IsInsideMap(level, x, y)) {
     return nullptr;
@@ -54,20 +81,32 @@ const RuntimeCell* CellAt(const LevelData& level, int x, int y) {
   return &level.cells[static_cast<std::size_t>(index)];
 }
 
+/**
+ * @brief Clamps the configured chunk size to the supported runtime range.
+ */
 int SafeChunkSize(const Level3DViewState& state) {
   return std::clamp(state.chunk_size_tiles, 4, 64);
 }
 
+/**
+ * @brief Returns chunk index from tile.
+ */
 int ChunkIndexFromTile(int tile, int chunk_size) {
   return tile / std::max(1, chunk_size);
 }
 
+/**
+ * @brief Returns minimum chunk radius for tile radius.
+ */
 int MinimumChunkRadiusForTileRadius(int radius_tiles, int chunk_size) {
   const int safe_chunk_size = std::max(1, chunk_size);
   return std::max(0, (std::max(0, radius_tiles) + safe_chunk_size - 1) /
                          safe_chunk_size + 1);
 }
 
+/**
+ * @brief Computes the active chunk range around the current 3D culling center.
+ */
 ChunkRange3D ActiveChunkRange(const LevelData& level,
                               const Level3DViewState& state) {
   const int chunk_size = SafeChunkSize(state);
@@ -96,6 +135,9 @@ ChunkRange3D ActiveChunkRange(const LevelData& level,
                       std::clamp(center_chunk_y + active_radius, 0, max_chunk_y)};
 }
 
+/**
+ * @brief Converts an active chunk range to an inclusive tile range.
+ */
 TileRange3D TileRangeFromChunks(const LevelData& level,
                                 const Level3DViewState& state,
                                 const ChunkRange3D& chunks) {
@@ -108,6 +150,9 @@ TileRange3D TileRangeFromChunks(const LevelData& level,
                                 level.size.height - 1)};
 }
 
+/**
+ * @brief Updates culling center for the current frame.
+ */
 void UpdateCullingCenter(const LevelData& level, Level3DViewState* state) {
   if (state == nullptr || level.size.width <= 0 || level.size.height <= 0) {
     return;
@@ -135,6 +180,9 @@ void UpdateCullingCenter(const LevelData& level, Level3DViewState* state) {
   state->culling_center_tile_y = player_tile_y;
 }
 
+/**
+ * @brief Ensures visibility buffer.
+ */
 void EnsureVisibilityBuffer(const LevelData& level, Level3DViewState* state) {
   if (state == nullptr) {
     return;
@@ -154,11 +202,17 @@ void EnsureVisibilityBuffer(const LevelData& level, Level3DViewState* state) {
   state->visibility_state_valid = false;
 }
 
+/**
+ * @brief Checks whether vision blocker is true.
+ */
 bool IsVisionBlocker(const LevelData& level, int x, int y) {
   const RuntimeCell* cell = CellAt(level, x, y);
   return cell != nullptr && cell->blocks_vision;
 }
 
+/**
+ * @brief Checks whether line of sight is present.
+ */
 bool HasLineOfSight(const LevelData& level, int from_x, int from_y,
                     int to_x, int to_y) {
   if (from_x == to_x && from_y == to_y) {
@@ -198,12 +252,18 @@ bool HasLineOfSight(const LevelData& level, int from_x, int from_y,
   return true;
 }
 
+/**
+ * @brief Executes the visibility index operation.
+ */
 std::size_t VisibilityIndex(const Level3DViewState& state, int x, int y) {
   return static_cast<std::size_t>(y) *
              static_cast<std::size_t>(state.visibility_width) +
          static_cast<std::size_t>(x);
 }
 
+/**
+ * @brief Executes the visibility at operation.
+ */
 unsigned char VisibilityAt(const Level3DViewState& state, int x, int y) {
   if (!state.visibility_enabled) {
     return kVisibilityVisible;
@@ -219,12 +279,18 @@ unsigned char VisibilityAt(const Level3DViewState& state, int x, int y) {
   return state.visibility_tiles[index];
 }
 
+/**
+ * @brief Checks whether tile renderable is true.
+ */
 bool IsTileRenderable(const Level3DViewState& state, int x, int y) {
   const unsigned char visibility = VisibilityAt(state, x, y);
   return visibility == kVisibilityVisible ||
          (state.visibility_memory_enabled && visibility == kVisibilitySeen);
 }
 
+/**
+ * @brief Applies visibility color.
+ */
 Color ApplyVisibilityColor(Color color, const Level3DViewState& state,
                            int x, int y) {
   if (!state.visibility_enabled) {
@@ -245,6 +311,9 @@ Color ApplyVisibilityColor(Color color, const Level3DViewState& state,
   return Color{0, 0, 0, 0};
 }
 
+/**
+ * @brief Updates visibility state for the current frame.
+ */
 void UpdateVisibilityState(const LevelData& level, Level3DViewState* state) {
   if (state == nullptr || level.size.width <= 0 || level.size.height <= 0) {
     return;
@@ -332,6 +401,9 @@ void UpdateVisibilityState(const LevelData& level, Level3DViewState* state) {
   state->visibility_last_fog_mode = state->fog_mode;
 }
 
+/**
+ * @brief Executes the tile world center operation.
+ */
 Vector3 TileWorldCenter(const LevelData& level, int x, int y,
                         std::int8_t elevation, float tile_world_size,
                         float elevation_step) {
@@ -344,6 +416,9 @@ Vector3 TileWorldCenter(const LevelData& level, int x, int y,
                  (static_cast<float>(y) + 0.5F) * tile_world_size - origin_z};
 }
 
+/**
+ * @brief Executes the terrain color 3D operation.
+ */
 Color TerrainColor3D(TerrainType terrain) {
   switch (terrain) {
     case TerrainType::kOpenGround:
@@ -366,6 +441,9 @@ Color TerrainColor3D(TerrainType terrain) {
   return Color{190, 65, 172, 255};
 }
 
+/**
+ * @brief Returns the color used for elevation.
+ */
 Color ElevationColor(std::int8_t elevation) {
   switch (elevation) {
     case -1:
@@ -385,6 +463,9 @@ Color ElevationColor(std::int8_t elevation) {
   }
 }
 
+/**
+ * @brief Returns the color used for collision.
+ */
 Color CollisionColor(const RuntimeCell& cell) {
   if (cell.collision) {
     return Color{82, 62, 47, 255};
@@ -398,6 +479,9 @@ Color CollisionColor(const RuntimeCell& cell) {
   return Color{33, 175, 58, 255};
 }
 
+/**
+ * @brief Executes the scale color rgb operation.
+ */
 Color ScaleColorRgb(Color color, float scale, unsigned char alpha) {
   return Color{
       static_cast<unsigned char>(std::clamp(
@@ -412,6 +496,9 @@ Color ScaleColorRgb(Color color, float scale, unsigned char alpha) {
       alpha};
 }
 
+/**
+ * @brief Returns the color used for elevation wall.
+ */
 Color ElevationWallColor(const RuntimeCell& cell, Level3DRenderMode mode) {
   if (mode == Level3DRenderMode::kElevation) {
     return ScaleColorRgb(ElevationColor(cell.height), 0.58F, 255);
@@ -422,11 +509,17 @@ Color ElevationWallColor(const RuntimeCell& cell, Level3DRenderMode mode) {
   return ScaleColorRgb(TerrainColor3D(cell.terrain), 0.52F, 255);
 }
 
+/**
+ * @brief Checks whether passable forest boundary is true.
+ */
 bool IsPassableForestBoundary(const RuntimeCell& cell) {
   return cell.terrain == TerrainType::kForest && cell.walkable &&
          !cell.collision && cell.movement_multiplier > 0.0F;
 }
 
+/**
+ * @brief Returns the color used for tile.
+ */
 Color TileColor(const RuntimeCell& cell, Level3DRenderMode mode) {
   switch (mode) {
     case Level3DRenderMode::kTerrain:
@@ -442,10 +535,16 @@ Color TileColor(const RuntimeCell& cell, Level3DRenderMode mode) {
   return TerrainColor3D(cell.terrain);
 }
 
+/**
+ * @brief Checks whether surface visible is true.
+ */
 bool IsSurfaceVisible(const RuntimeCell& cell) {
   return cell.height >= 0;
 }
 
+/**
+ * @brief Returns the color used for transition.
+ */
 Color TransitionColor(ElevationTransitionType type) {
   switch (type) {
     case ElevationTransitionType::kRamp:
@@ -462,6 +561,9 @@ Color TransitionColor(ElevationTransitionType type) {
   return Color{190, 190, 118, 210};
 }
 
+/**
+ * @brief Checks whether transition visible in range is true.
+ */
 bool IsTransitionVisibleInRange(const ElevationTransition& transition,
                                 const TileRange3D& range) {
   const bool from_visible = transition.from_x >= range.min_x &&
@@ -475,6 +577,9 @@ bool IsTransitionVisibleInRange(const ElevationTransition& transition,
   return from_visible || to_visible;
 }
 
+/**
+ * @brief Draws transition primitive.
+ */
 void DrawTransitionPrimitive(const LevelData& level,
                              const ElevationTransition& transition,
                              const Level3DViewState& state) {
@@ -522,6 +627,9 @@ void DrawTransitionPrimitive(const LevelData& level,
   DrawCubeWires(center, width, height, depth, ScaleColorRgb(color, 0.75F, 210));
 }
 
+/**
+ * @brief Draws elevation transitions.
+ */
 void DrawElevationTransitions(const LevelData& level,
                               const Level3DViewState& state,
                               const TileRange3D& range) {
@@ -537,6 +645,9 @@ void DrawElevationTransitions(const LevelData& level,
   }
 }
 
+/**
+ * @brief Executes the blocking volume height operation.
+ */
 float BlockingVolumeHeight(const RuntimeCell& cell) {
   if (cell.terrain == TerrainType::kForest) {
     return 1.2F;
@@ -550,6 +661,9 @@ float BlockingVolumeHeight(const RuntimeCell& cell) {
   return 0.0F;
 }
 
+/**
+ * @brief Draws ground tile.
+ */
 void DrawGroundTile(const LevelData& level, int x, int y,
                     const RuntimeCell& cell, const Level3DViewState& state) {
   if (!IsSurfaceVisible(cell)) {
@@ -568,6 +682,9 @@ void DrawGroundTile(const LevelData& level, int x, int y,
            ApplyVisibilityColor(TileColor(cell, state.mode), state, x, y));
 }
 
+/**
+ * @brief Draws elevation wall to neighbor.
+ */
 void DrawElevationWallToNeighbor(const LevelData& level, int x, int y,
                                  int neighbor_x, int neighbor_y,
                                  const RuntimeCell& cell,
@@ -622,6 +739,9 @@ void DrawElevationWallToNeighbor(const LevelData& level, int x, int y,
                                 state, x, y));
 }
 
+/**
+ * @brief Draws elevation walls.
+ */
 void DrawElevationWalls(const LevelData& level, int x, int y,
                         const RuntimeCell& cell,
                         const Level3DViewState& state) {
@@ -631,6 +751,9 @@ void DrawElevationWalls(const LevelData& level, int x, int y,
   DrawElevationWallToNeighbor(level, x, y, x, y + 1, cell, state);
 }
 
+/**
+ * @brief Draws blocking volume.
+ */
 void DrawBlockingVolume(const LevelData& level, int x, int y,
                         const RuntimeCell& cell,
                         const Level3DViewState& state) {
@@ -659,6 +782,9 @@ void DrawBlockingVolume(const LevelData& level, int x, int y,
            ApplyVisibilityColor(color, state, x, y));
 }
 
+/**
+ * @brief Draws passable forest boundary volume.
+ */
 void DrawPassableForestBoundaryVolume(const LevelData& level, int x, int y,
                                       const RuntimeCell& cell,
                                       const Level3DViewState& state) {
@@ -685,6 +811,9 @@ void DrawPassableForestBoundaryVolume(const LevelData& level, int x, int y,
                 ApplyVisibilityColor(Color{118, 166, 95, 112}, state, x, y));
 }
 
+/**
+ * @brief Draws level bounds.
+ */
 void DrawLevelBounds(const LevelData& level, const Level3DViewState& state) {
   if (state.visibility_enabled) {
     return;
@@ -697,7 +826,13 @@ void DrawLevelBounds(const LevelData& level, const Level3DViewState& state) {
   DrawCubeWires(center, width, 0.04F, height, Color{150, 155, 170, 180});
 }
 
+/**
+ * @brief Returns for each active renderable tile.
+ */
 template <typename DrawFunction>
+/**
+ * @brief Returns for each active renderable tile.
+ */
 void ForEachActiveRenderableTile(const LevelData& level,
                                  const Level3DViewState& state,
                                  DrawFunction draw_function) {
@@ -728,6 +863,9 @@ void ForEachActiveRenderableTile(const LevelData& level,
   }
 }
 
+/**
+ * @brief Draws player.
+ */
 void DrawPlayer(const LevelData& level, const Level3DViewState& state) {
   Vector3 position = Level3DPlayerWorldPosition(level, state.player,
                                                 state.tile_world_size,
@@ -747,6 +885,9 @@ void DrawPlayer(const LevelData& level, const Level3DViewState& state) {
   DrawCube(facing_end, 0.18F, 0.18F, 0.18F, Color{255, 146, 28, 255});
 }
 
+/**
+ * @brief Draws tiles.
+ */
 void DrawTiles(const LevelData& level, const Level3DViewState& state) {
   const ChunkRange3D chunks = ActiveChunkRange(level, state);
   const TileRange3D range = TileRangeFromChunks(level, state, chunks);
@@ -778,6 +919,9 @@ void DrawTiles(const LevelData& level, const Level3DViewState& state) {
 
 }  // namespace
 
+/**
+ * @brief Returns level 3D fog mode name.
+ */
 const char* Level3DFogModeName(Level3DFogMode mode) {
   switch (mode) {
     case Level3DFogMode::kCircle:
@@ -789,6 +933,9 @@ const char* Level3DFogModeName(Level3DFogMode mode) {
   return "circle";
 }
 
+/**
+ * @brief Returns level 3D render mode name.
+ */
 const char* Level3DRenderModeName(Level3DRenderMode mode) {
   switch (mode) {
     case Level3DRenderMode::kTerrain:
@@ -801,6 +948,9 @@ const char* Level3DRenderModeName(Level3DRenderMode mode) {
   return "terrain";
 }
 
+/**
+ * @brief Initializes level 3D view.
+ */
 void InitializeLevel3DView(const LevelData& level, Level3DViewState* state) {
   if (state == nullptr) {
     return;
@@ -814,6 +964,9 @@ void InitializeLevel3DView(const LevelData& level, Level3DViewState* state) {
   state->initialized = true;
 }
 
+/**
+ * @brief Updates level 3D view for the current frame.
+ */
 void UpdateLevel3DView(const LevelData& level, const InputState& input,
                        float dt, Level3DViewState* state) {
   if (state == nullptr || !state->initialized) {
@@ -846,6 +999,9 @@ void UpdateLevel3DView(const LevelData& level, const InputState& input,
                       state->elevation_step, &state->camera);
 }
 
+/**
+ * @brief Returns level 3D view state to string.
+ */
 std::string Level3DViewStateToString(const Level3DViewState& state) {
   std::ostringstream stream;
   stream << "renderer3d: mode=" << Level3DRenderModeName(state.mode)
@@ -864,6 +1020,9 @@ std::string Level3DViewStateToString(const Level3DViewState& state) {
   return stream.str();
 }
 
+/**
+ * @brief Draws runtime visuals.
+ */
 void Level3DRenderer::Draw(const LevelData& level,
                            const Level3DViewState& state,
                            const WindowState& window) const {

@@ -1,3 +1,9 @@
+/**
+ * @file src/platform/memory_info.cpp
+ * @brief Platform-specific process, terminal, and memory utilities. Contains implementation for
+ * memory_info.cpp.
+ */
+
 #include "platform/memory_info.h"
 
 #include <iomanip>
@@ -11,6 +17,9 @@
 
 namespace sar {
 
+/**
+ * @brief Reads current process memory info.
+ */
 ProcessMemoryInfo ReadCurrentProcessMemoryInfo() {
 #if defined(__linux__)
   std::ifstream statm("/proc/self/statm");
@@ -43,6 +52,9 @@ ProcessMemoryInfo ReadCurrentProcessMemoryInfo() {
 #endif
 }
 
+/**
+ * @brief Executes the format megabytes operation.
+ */
 std::string FormatMegabytes(std::uint64_t bytes) {
   constexpr double kBytesPerMegabyte = 1024.0 * 1024.0;
   const double megabytes = static_cast<double>(bytes) / kBytesPerMegabyte;

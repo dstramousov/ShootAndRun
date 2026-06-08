@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_RENDER3D_LEVEL_3D_CAMERA_H_
 #define SHOOT_AND_RUN_CPP_SRC_RENDER3D_LEVEL_3D_CAMERA_H_
 
+/**
+ * @file src/render3d/level_3d_camera.h
+ * @brief 3D renderer, camera, player movement, fog, and asset registry. Contains public
+ * declarations for level_3d_camera.h.
+ */
+
 #include <string>
 
 #include <raylib.h>
@@ -26,45 +32,45 @@ enum class Level3DCameraIntroEvent {
  * @brief Smoothed 3D follow camera state derived from player facing.
  */
 struct Level3DCameraState {
-  Vector3 position{0.0F, 0.0F, 0.0F};
-  Vector3 target{0.0F, 0.0F, 0.0F};
-  Vector3 lookahead{0.0F, 0.0F, 0.0F};
-  Vector3 last_forward{0.0F, 0.0F, -1.0F};
-  float yaw_deg = 270.0F;
-  float height = 18.0F;
-  float distance = 42.0F;
-  float distance_target = 42.0F;
-  float min_distance = 12.0F;
-  float max_distance = 96.0F;
-  float zoom_step = 1.5F;
-  float zoom_smooth_speed = 12.0F;
-  float follow_smooth_speed = 9.0F;
-  float lookahead_smooth_speed = 8.0F;
-  float forward_smooth_speed = 12.0F;
-  float movement_lookahead_tiles = 2.5F;
-  float target_lookahead_tiles = 2.5F;
-  float bounds_margin_factor = 0.35F;
-  float min_bounds_margin_tiles = 1.0F;
-  float max_bounds_margin_tiles = 8.0F;
-  bool intro_enabled = true;
-  bool intro_active = false;
-  bool intro_finished = false;
-  bool intro_lock_player_input = true;
-  bool intro_skip_enabled = true;
-  float intro_elapsed_sec = 0.0F;
-  float intro_duration_sec = 1.8F;
-  float intro_start_distance = 42.0F;
-  float intro_end_distance = 18.0F;
-  float intro_start_height = 20.0F;
-  float intro_end_height = 10.0F;
-  float intro_start_yaw_offset_deg = 35.0F;
-  Vector3 intro_start_position{0.0F, 0.0F, 0.0F};
-  Vector3 intro_start_target{0.0F, 0.0F, 0.0F};
-  Vector3 intro_end_position{0.0F, 0.0F, 0.0F};
-  Vector3 intro_end_target{0.0F, 0.0F, 0.0F};
-  Level3DCameraIntroEvent last_intro_event = Level3DCameraIntroEvent::kNone;
-  unsigned int intro_event_sequence = 0;
-  bool initialized = false;
+  Vector3 position{0.0F, 0.0F, 0.0F};  ///< Position value for position.
+  Vector3 target{0.0F, 0.0F, 0.0F};  ///< Target value carried by this data structure.
+  Vector3 lookahead{0.0F, 0.0F, 0.0F};  ///< Lookahead value carried by this data structure.
+  Vector3 last_forward{0.0F, 0.0F, -1.0F};  ///< Last forward value carried by this data structure.
+  float yaw_deg = 270.0F;  ///< Yaw deg value carried by this data structure.
+  float height = 18.0F;  ///< Signed elevation level for this tile or object.
+  float distance = 42.0F;  ///< Distance value carried by this data structure.
+  float distance_target = 42.0F;  ///< Distance target value carried by this data structure.
+  float min_distance = 12.0F;  ///< Min distance value carried by this data structure.
+  float max_distance = 96.0F;  ///< Max distance value carried by this data structure.
+  float zoom_step = 1.5F;  ///< Zoom step value carried by this data structure.
+  float zoom_smooth_speed = 12.0F;  ///< Zoom smooth speed value carried by this data structure.
+  float follow_smooth_speed = 9.0F;  ///< Follow smooth speed value carried by this data structure.
+  float lookahead_smooth_speed = 8.0F;  ///< Lookahead smooth speed value carried by this data structure.
+  float forward_smooth_speed = 12.0F;  ///< Forward smooth speed value carried by this data structure.
+  float movement_lookahead_tiles = 2.5F;  ///< Movement lookahead tiles value carried by this data structure.
+  float target_lookahead_tiles = 2.5F;  ///< Target lookahead tiles value carried by this data structure.
+  float bounds_margin_factor = 0.35F;  ///< Scaling factor for bounds margin factor.
+  float min_bounds_margin_tiles = 1.0F;  ///< Min bounds margin tiles value carried by this data structure.
+  float max_bounds_margin_tiles = 8.0F;  ///< Max bounds margin tiles value carried by this data structure.
+  bool intro_enabled = true;  ///< Intro enabled value carried by this data structure.
+  bool intro_active = false;  ///< Intro active value carried by this data structure.
+  bool intro_finished = false;  ///< Intro finished value carried by this data structure.
+  bool intro_lock_player_input = true;  ///< Intro lock player input value carried by this data structure.
+  bool intro_skip_enabled = true;  ///< Intro skip enabled value carried by this data structure.
+  float intro_elapsed_sec = 0.0F;  ///< Time value for intro elapsed seconds.
+  float intro_duration_sec = 1.8F;  ///< Time value for intro duration seconds.
+  float intro_start_distance = 42.0F;  ///< Intro start distance value carried by this data structure.
+  float intro_end_distance = 18.0F;  ///< Intro end distance value carried by this data structure.
+  float intro_start_height = 20.0F;  ///< Size component for intro start height.
+  float intro_end_height = 10.0F;  ///< Size component for intro end height.
+  float intro_start_yaw_offset_deg = 35.0F;  ///< Intro start yaw offset deg value carried by this data structure.
+  Vector3 intro_start_position{0.0F, 0.0F, 0.0F};  ///< Position value for intro start position.
+  Vector3 intro_start_target{0.0F, 0.0F, 0.0F};  ///< Intro start target value carried by this data structure.
+  Vector3 intro_end_position{0.0F, 0.0F, 0.0F};  ///< Position value for intro end position.
+  Vector3 intro_end_target{0.0F, 0.0F, 0.0F};  ///< Intro end target value carried by this data structure.
+  Level3DCameraIntroEvent last_intro_event = Level3DCameraIntroEvent::kNone;  ///< Last intro event value carried by this data structure.
+  unsigned int intro_event_sequence = 0;  ///< Intro event sequence value carried by this data structure.
+  bool initialized = false;  ///< Initialized value carried by this data structure.
 };
 
 /**

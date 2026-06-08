@@ -1,3 +1,9 @@
+/**
+ * @file src/visual_pipeline/object_visual_plan.cpp
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains
+ * implementation for object_visual_plan.cpp.
+ */
+
 #include "visual_pipeline/object_visual_plan.h"
 
 #include <algorithm>
@@ -11,19 +17,31 @@
 namespace sar::visual_pipeline {
 namespace {
 
+/**
+ * @brief Checks whether the container includes contains.
+ */
 bool Contains(std::string_view text, std::string_view needle) {
   return text.find(needle) != std::string_view::npos;
 }
 
+/**
+ * @brief Starts s with.
+ */
 bool StartsWith(std::string_view text, std::string_view prefix) {
   return text.size() >= prefix.size() && text.substr(0, prefix.size()) == prefix;
 }
 
+/**
+ * @brief Checks whether tag is present.
+ */
 bool HasTag(const RuntimeObject& object, std::string_view tag) {
   return std::find(object.tags.begin(), object.tags.end(), tag) !=
          object.tags.end();
 }
 
+/**
+ * @brief Checks whether any tag is present.
+ */
 bool HasAnyTag(const RuntimeObject& object,
                const std::vector<std::string_view>& tags) {
   for (const std::string_view tag : tags) {
@@ -34,6 +52,9 @@ bool HasAnyTag(const RuntimeObject& object,
   return false;
 }
 
+/**
+ * @brief Returns variant suffix.
+ */
 std::string VariantSuffix(const RuntimeObject& object, int variant_count) {
   if (variant_count <= 0) {
     return "01";
@@ -53,6 +74,9 @@ std::string VariantSuffix(const RuntimeObject& object, int variant_count) {
   return std::to_string(variant);
 }
 
+/**
+ * @brief Stores mapping result data shared between runtime systems.
+ */
 struct MappingResult {
   std::string sprite_family;
   ObjectVisualKind kind = ObjectVisualKind::kTypedFallback;
@@ -60,6 +84,9 @@ struct MappingResult {
   bool typed_fallback = false;
 };
 
+/**
+ * @brief Returns exact type mapping.
+ */
 MappingResult ExactTypeMapping(const RuntimeObject& object) {
   const std::string& type = object.type;
 
@@ -150,6 +177,9 @@ MappingResult ExactTypeMapping(const RuntimeObject& object) {
   return {};
 }
 
+/**
+ * @brief Returns fallback mapping.
+ */
 MappingResult FallbackMapping(const RuntimeObject& object) {
   const std::string key = object.type + " " + object.family;
 
@@ -202,6 +232,9 @@ MappingResult FallbackMapping(const RuntimeObject& object) {
           true};
 }
 
+/**
+ * @brief Executes the map object operation.
+ */
 MappingResult MapObject(const RuntimeObject& object) {
   MappingResult result = ExactTypeMapping(object);
   if (!result.sprite_family.empty()) {
@@ -210,6 +243,9 @@ MappingResult MapObject(const RuntimeObject& object) {
   return FallbackMapping(object);
 }
 
+/**
+ * @brief Draws layer for object.
+ */
 std::string DrawLayerForObject(const RuntimeObject& object,
                                ObjectVisualKind kind) {
   if (StartsWith(object.type, "big_dead_tree") ||
@@ -227,6 +263,9 @@ std::string DrawLayerForObject(const RuntimeObject& object,
   return "object";
 }
 
+/**
+ * @brief Checks whether object inside is true.
+ */
 bool IsObjectInside(const RuntimeObject& object, const LevelSize& size) {
   return object.x >= 0 && object.y >= 0 && object.width > 0 &&
          object.height > 0 && object.x + object.width <= size.width &&
@@ -235,6 +274,9 @@ bool IsObjectInside(const RuntimeObject& object, const LevelSize& size) {
 
 }  // namespace
 
+/**
+ * @brief Returns object visual kind name.
+ */
 const char* ObjectVisualKindName(ObjectVisualKind kind) {
   switch (kind) {
     case ObjectVisualKind::kUnknown:
@@ -267,6 +309,9 @@ const char* ObjectVisualKindName(ObjectVisualKind kind) {
   return "unknown";
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string ObjectVisualSummary::Dump() const {
   std::ostringstream stream;
   stream << "ObjectVisualSummary { source_object_count: "
@@ -279,12 +324,18 @@ std::string ObjectVisualSummary::Dump() const {
   return stream.str();
 }
 
+/**
+ * @brief Checks whether valid is true.
+ */
 bool ObjectVisualPlan::IsValid() const {
   const int expected_size = size.width * size.height;
   return size.width > 0 && size.height > 0 && size.tile_size > 0 &&
          expected_size > 0;
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string ObjectVisualPlan::Dump() const {
   std::ostringstream stream;
   stream << "ObjectVisualPlan { size: " << size.width << 'x' << size.height
@@ -293,6 +344,9 @@ std::string ObjectVisualPlan::Dump() const {
   return stream.str();
 }
 
+/**
+ * @brief Builds object visual plan.
+ */
 ObjectVisualPlan BuildObjectVisualPlan(const LevelData& level,
                                        std::string* error) {
   ObjectVisualPlan plan;

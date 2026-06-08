@@ -1,3 +1,9 @@
+/**
+ * @file src/visual_pipeline/ruin_visual_plan.cpp
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains
+ * implementation for ruin_visual_plan.cpp.
+ */
+
 #include "visual_pipeline/ruin_visual_plan.h"
 
 #include <algorithm>
@@ -11,6 +17,9 @@
 namespace sar::visual_pipeline {
 namespace {
 
+/**
+ * @brief Returns the total number of cells for a valid level size.
+ */
 int CellCount(const LevelSize& size) {
   if (size.width <= 0 || size.height <= 0) {
     return 0;
@@ -18,18 +27,30 @@ int CellCount(const LevelSize& size) {
   return size.width * size.height;
 }
 
+/**
+ * @brief Checks whether tile coordinates are inside the level bounds.
+ */
 bool IsInside(const LevelSize& size, int x, int y) {
   return x >= 0 && y >= 0 && x < size.width && y < size.height;
 }
 
+/**
+ * @brief Converts tile coordinates to a linear grid index.
+ */
 int ToIndex(const LevelSize& size, int x, int y) {
   return y * size.width + x;
 }
 
+/**
+ * @brief Converts to item.
+ */
 std::size_t ToItem(const LevelSize& size, int x, int y) {
   return static_cast<std::size_t>(ToIndex(size, x, y));
 }
 
+/**
+ * @brief Checks whether wall is true.
+ */
 bool IsWall(const SemanticMasks& masks, int x, int y) {
   if (!IsInside(masks.size, x, y)) {
     return false;
@@ -37,6 +58,9 @@ bool IsWall(const SemanticMasks& masks, int x, int y) {
   return masks.wall[ToItem(masks.size, x, y)] != 0;
 }
 
+/**
+ * @brief Checks whether ruin floor is true.
+ */
 bool IsRuinFloor(const SemanticMasks& masks, int x, int y) {
   if (!IsInside(masks.size, x, y)) {
     return false;
@@ -44,10 +68,16 @@ bool IsRuinFloor(const SemanticMasks& masks, int x, int y) {
   return masks.ruins[ToItem(masks.size, x, y)] != 0;
 }
 
+/**
+ * @brief Checks whether ruin seed is true.
+ */
 bool IsRuinSeed(const SemanticMasks& masks, int x, int y) {
   return IsWall(masks, x, y) || IsRuinFloor(masks, x, y);
 }
 
+/**
+ * @brief Checks whether open for ruin dressing is true.
+ */
 bool IsOpenForRuinDressing(const LevelData& level, int x, int y) {
   if (!IsInside(level.size, x, y)) {
     return false;
@@ -58,6 +88,9 @@ bool IsOpenForRuinDressing(const LevelData& level, int x, int y) {
          cell.terrain == TerrainType::kRuins;
 }
 
+/**
+ * @brief Checks whether road is true.
+ */
 bool IsRoad(const LevelData& level, int x, int y) {
   if (!IsInside(level.size, x, y)) {
     return false;
@@ -65,23 +98,38 @@ bool IsRoad(const LevelData& level, int x, int y) {
   return level.cells[ToItem(level.size, x, y)].terrain == TerrainType::kRoad;
 }
 
+/**
+ * @brief Computes tile hash.
+ */
 std::uint32_t TileHash(int x, int y, std::uint32_t salt) {
   return (static_cast<std::uint32_t>(x) * 1103515245U) ^
          (static_cast<std::uint32_t>(y) * 2654435761U) ^ salt;
 }
 
+/**
+ * @brief Executes the looks broken operation.
+ */
 bool LooksBroken(int x, int y) {
   return TileHash(x, y, 0x7F4A7C15U) % 9U == 0U;
 }
 
+/**
+ * @brief Executes the looks overgrown operation.
+ */
 bool LooksOvergrown(int x, int y) {
   return TileHash(x, y, 0x9E3779B9U) % 6U == 0U;
 }
 
+/**
+ * @brief Executes the looks rubble operation.
+ */
 bool LooksRubble(int x, int y) {
   return TileHash(x, y, 0xA24BAED5U) % 4U == 0U;
 }
 
+/**
+ * @brief Sets tile.
+ */
 void SetTile(const LevelSize& size, int x, int y, RuinVisualTile tile,
              std::vector<std::uint8_t>* tiles) {
   if (tiles == nullptr || !IsInside(size, x, y)) {
@@ -94,6 +142,9 @@ void SetTile(const LevelSize& size, int x, int y, RuinVisualTile tile,
   }
 }
 
+/**
+ * @brief Returns classify wall tile.
+ */
 RuinVisualTile ClassifyWallTile(const SemanticMasks& masks, int x, int y) {
   const bool north = IsWall(masks, x, y - 1);
   const bool south = IsWall(masks, x, y + 1);
@@ -116,6 +167,9 @@ RuinVisualTile ClassifyWallTile(const SemanticMasks& masks, int x, int y) {
   return RuinVisualTile::kWallIntact;
 }
 
+/**
+ * @brief Builds site ids.
+ */
 void BuildSiteIds(const SemanticMasks& masks, RuinVisualPlan* plan) {
   if (plan == nullptr) {
     return;
@@ -164,6 +218,9 @@ void BuildSiteIds(const SemanticMasks& masks, RuinVisualPlan* plan) {
   plan->summary.site_count = static_cast<int>(next_site_id) - 1;
 }
 
+/**
+ * @brief Paints source ruin tiles.
+ */
 void PaintSourceRuinTiles(const LevelData& level, const SemanticMasks& masks,
                           RuinVisualPlan* plan) {
   if (plan == nullptr) {
@@ -190,6 +247,9 @@ void PaintSourceRuinTiles(const LevelData& level, const SemanticMasks& masks,
   }
 }
 
+/**
+ * @brief Paints ruin dressing.
+ */
 void PaintRuinDressing(const LevelData& level, const SemanticMasks& masks,
                        RuinVisualPlan* plan) {
   if (plan == nullptr) {
@@ -245,6 +305,9 @@ void PaintRuinDressing(const LevelData& level, const SemanticMasks& masks,
   }
 }
 
+/**
+ * @brief Counts tile.
+ */
 void CountTile(std::uint8_t value, RuinVisualSummary* summary) {
   if (summary == nullptr || value == 0) {
     return;
@@ -280,6 +343,9 @@ void CountTile(std::uint8_t value, RuinVisualSummary* summary) {
   }
 }
 
+/**
+ * @brief Executes the recount summary operation.
+ */
 void RecountSummary(RuinVisualPlan* plan) {
   if (plan == nullptr) {
     return;
@@ -298,6 +364,9 @@ void RecountSummary(RuinVisualPlan* plan) {
 
 }  // namespace
 
+/**
+ * @brief Returns ruin visual tile name.
+ */
 const char* RuinVisualTileName(RuinVisualTile tile) {
   switch (tile) {
     case RuinVisualTile::kNone:
@@ -322,6 +391,9 @@ const char* RuinVisualTileName(RuinVisualTile tile) {
   return "none";
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string RuinVisualSummary::Dump() const {
   return "RuinVisualSummary { sites=" + std::to_string(site_count) +
          ", source_ruins=" + std::to_string(source_ruin_tiles) +
@@ -337,6 +409,9 @@ std::string RuinVisualSummary::Dump() const {
          ", visual=" + std::to_string(visual_tiles) + " }";
 }
 
+/**
+ * @brief Checks whether valid is true.
+ */
 bool RuinVisualPlan::IsValid() const {
   const int expected_size = CellCount(size);
   if (expected_size <= 0) {
@@ -346,11 +421,17 @@ bool RuinVisualPlan::IsValid() const {
   return tiles.size() == expected && site_ids.size() == expected;
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string RuinVisualPlan::Dump() const {
   return "RuinVisualPlan { size=" + std::to_string(size.width) + "x" +
          std::to_string(size.height) + ", " + summary.Dump() + " }";
 }
 
+/**
+ * @brief Builds ruin visual plan.
+ */
 RuinVisualPlan BuildRuinVisualPlan(const LevelData& level,
                                    const SemanticMasks& masks,
                                    std::string* error) {

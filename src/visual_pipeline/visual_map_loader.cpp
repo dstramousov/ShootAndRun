@@ -1,3 +1,9 @@
+/**
+ * @file src/visual_pipeline/visual_map_loader.cpp
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains
+ * implementation for visual_map_loader.cpp.
+ */
+
 #include "visual_pipeline/visual_map_loader.h"
 
 #include <cctype>
@@ -13,12 +19,18 @@
 namespace sar::visual_pipeline {
 namespace {
 
+/**
+ * @brief Stores read file result data shared between runtime systems.
+ */
 struct ReadFileResult {
   bool ok = false;
   std::string text;
   std::string error;
 };
 
+/**
+ * @brief Stores parse string result data shared between runtime systems.
+ */
 struct ParseStringResult {
   bool ok = false;
   bool found = false;
@@ -26,6 +38,9 @@ struct ParseStringResult {
   std::string error;
 };
 
+/**
+ * @brief Stores parse int result data shared between runtime systems.
+ */
 struct ParseIntResult {
   bool ok = false;
   bool found = false;
@@ -33,6 +48,9 @@ struct ParseIntResult {
   std::string error;
 };
 
+/**
+ * @brief Stores parse bool result data shared between runtime systems.
+ */
 struct ParseBoolResult {
   bool ok = false;
   bool found = false;
@@ -40,6 +58,9 @@ struct ParseBoolResult {
   std::string error;
 };
 
+/**
+ * @brief Reads text file.
+ */
 ReadFileResult ReadTextFile(const std::filesystem::path& path) {
   std::ifstream input(path);
   if (!input.is_open()) {
@@ -51,6 +72,9 @@ ReadFileResult ReadTextFile(const std::filesystem::path& path) {
   return {true, stream.str(), {}};
 }
 
+/**
+ * @brief Executes the skip whitespace operation.
+ */
 void SkipWhitespace(std::string_view text, std::size_t* position) {
   while (*position < text.size() &&
          std::isspace(static_cast<unsigned char>(text[*position])) != 0) {
@@ -58,6 +82,9 @@ void SkipWhitespace(std::string_view text, std::size_t* position) {
   }
 }
 
+/**
+ * @brief Finds field value start.
+ */
 std::optional<std::size_t> FindFieldValueStart(std::string_view text,
                                                std::string_view field_name,
                                                std::string* error) {
@@ -79,6 +106,9 @@ std::optional<std::size_t> FindFieldValueStart(std::string_view text,
   return position;
 }
 
+/**
+ * @brief Parses JSON string from external data.
+ */
 ParseStringResult ParseJsonString(std::string_view text,
                                   std::size_t position) {
   if (position >= text.size() || text[position] != '"') {
@@ -132,6 +162,9 @@ ParseStringResult ParseJsonString(std::string_view text,
   return {false, true, {}, "unterminated string value"};
 }
 
+/**
+ * @brief Executes the extract optional JSON string field operation.
+ */
 ParseStringResult ExtractOptionalJsonStringField(
     std::string_view text, std::string_view field_name) {
   std::string error;
@@ -147,6 +180,9 @@ ParseStringResult ExtractOptionalJsonStringField(
   return ParseJsonString(text, *value_start);
 }
 
+/**
+ * @brief Executes the extract optional JSON int field operation.
+ */
 ParseIntResult ExtractOptionalJsonIntField(std::string_view text,
                                            std::string_view field_name) {
   std::string error;
@@ -188,6 +224,9 @@ ParseIntResult ExtractOptionalJsonIntField(std::string_view text,
   return {true, true, value, {}};
 }
 
+/**
+ * @brief Executes the extract optional JSON bool field operation.
+ */
 ParseBoolResult ExtractOptionalJsonBoolField(std::string_view text,
                                              std::string_view field_name) {
   std::string error;
@@ -211,6 +250,9 @@ ParseBoolResult ExtractOptionalJsonBoolField(std::string_view text,
           "expected boolean value for field: " + std::string(field_name)};
 }
 
+/**
+ * @brief Executes the extract JSON composite operation.
+ */
 std::optional<std::string_view> ExtractJsonComposite(
     std::string_view text, std::string_view field_name, char open_char,
     char close_char, std::string* error) {
@@ -259,16 +301,25 @@ std::optional<std::string_view> ExtractJsonComposite(
   return std::nullopt;
 }
 
+/**
+ * @brief Executes the extract JSON object operation.
+ */
 std::optional<std::string_view> ExtractJsonObject(
     std::string_view text, std::string_view field_name, std::string* error) {
   return ExtractJsonComposite(text, field_name, '{', '}', error);
 }
 
+/**
+ * @brief Executes the extract JSON array operation.
+ */
 std::optional<std::string_view> ExtractJsonArray(
     std::string_view text, std::string_view field_name, std::string* error) {
   return ExtractJsonComposite(text, field_name, '[', ']', error);
 }
 
+/**
+ * @brief Counts top level objects.
+ */
 int CountTopLevelObjects(std::string_view array_text) {
   int count = 0;
   int depth = 0;
@@ -303,6 +354,9 @@ int CountTopLevelObjects(std::string_view array_text) {
 }
 
 
+/**
+ * @brief Executes the extract top level objects from array operation.
+ */
 std::vector<std::string_view> ExtractTopLevelObjectsFromArray(
     std::string_view array_text) {
   std::vector<std::string_view> objects;
@@ -346,6 +400,9 @@ std::vector<std::string_view> ExtractTopLevelObjectsFromArray(
   return objects;
 }
 
+/**
+ * @brief Executes the extract JSON string values operation.
+ */
 std::vector<std::string> ExtractJsonStringValues(std::string_view text,
                                                  std::string* error) {
   std::vector<std::string> values;
@@ -414,6 +471,9 @@ std::vector<std::string> ExtractJsonStringValues(std::string_view text,
   return values;
 }
 
+/**
+ * @brief Executes the resolve sibling file operation.
+ */
 std::filesystem::path ResolveSiblingFile(const std::filesystem::path& base_path,
                                          const std::string& relative_path) {
   const std::filesystem::path path(relative_path);
@@ -423,6 +483,9 @@ std::filesystem::path ResolveSiblingFile(const std::filesystem::path& base_path,
   return base_path / path;
 }
 
+/**
+ * @brief Applies optional string.
+ */
 bool ApplyOptionalString(std::string_view text, std::string_view field_name,
                          std::string* value, std::string* error) {
   const ParseStringResult parsed = ExtractOptionalJsonStringField(text,
@@ -437,6 +500,9 @@ bool ApplyOptionalString(std::string_view text, std::string_view field_name,
   return true;
 }
 
+/**
+ * @brief Applies optional int.
+ */
 bool ApplyOptionalInt(std::string_view text, std::string_view field_name,
                       int* value, std::string* error) {
   const ParseIntResult parsed = ExtractOptionalJsonIntField(text, field_name);
@@ -450,6 +516,9 @@ bool ApplyOptionalInt(std::string_view text, std::string_view field_name,
   return true;
 }
 
+/**
+ * @brief Applies optional bool.
+ */
 bool ApplyOptionalBool(std::string_view text, std::string_view field_name,
                        bool* value, std::string* error) {
   const ParseBoolResult parsed = ExtractOptionalJsonBoolField(text,
@@ -464,6 +533,9 @@ bool ApplyOptionalBool(std::string_view text, std::string_view field_name,
   return true;
 }
 
+/**
+ * @brief Loads visual layers.
+ */
 VisualMapLoadResult LoadVisualLayers(const std::filesystem::path& path,
                                      VisualMapData* data) {
   const ReadFileResult file = ReadTextFile(path);
@@ -533,6 +605,9 @@ VisualMapLoadResult LoadVisualLayers(const std::filesystem::path& path,
   return {true, true, {}, {}};
 }
 
+/**
+ * @brief Loads visual objects.
+ */
 VisualMapLoadResult LoadVisualObjects(const std::filesystem::path& path,
                                       VisualMapData* data) {
   const ReadFileResult file = ReadTextFile(path);
@@ -616,6 +691,9 @@ VisualMapLoadResult LoadVisualObjects(const std::filesystem::path& path,
   return {true, true, {}, {}};
 }
 
+/**
+ * @brief Loads visual chunks.
+ */
 VisualMapLoadResult LoadVisualChunks(const std::filesystem::path& path,
                                      VisualMapData* data) {
   const ReadFileResult file = ReadTextFile(path);
@@ -645,6 +723,9 @@ VisualMapLoadResult LoadVisualChunks(const std::filesystem::path& path,
 
 }  // namespace
 
+/**
+ * @brief Loads runtime data.
+ */
 VisualMapLoadResult VisualMapLoader::Load(
     const std::filesystem::path& manifest_path,
     const LevelSize& raw_size) const {

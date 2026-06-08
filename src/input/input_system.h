@@ -1,10 +1,19 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_INPUT_INPUT_SYSTEM_H_
 #define SHOOT_AND_RUN_CPP_SRC_INPUT_INPUT_SYSTEM_H_
 
+/**
+ * @file src/input/input_system.h
+ * @brief Normalized frame input snapshots and polling. Contains public declarations for
+ * input_system.h.
+ */
+
 #include "input/input_state.h"
 
 namespace sar {
 
+/**
+ * @brief Owns the input system behavior and its runtime state.
+ */
 class InputSystem {
  public:
   /**

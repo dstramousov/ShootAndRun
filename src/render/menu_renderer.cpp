@@ -1,3 +1,9 @@
+/**
+ * @file src/render/menu_renderer.cpp
+ * @brief 2D/debug rendering helpers retained by the application shell. Contains implementation
+ * for menu_renderer.cpp.
+ */
+
 #include "render/menu_renderer.h"
 
 #include <raylib.h>
@@ -11,10 +17,16 @@
 namespace sar {
 namespace {
 
+/**
+ * @brief Converts to raylib rect.
+ */
 Rectangle ToRaylibRect(const Rect& rect) {
   return Rectangle{rect.x, rect.y, rect.width, rect.height};
 }
 
+/**
+ * @brief Executes the scaled font size operation.
+ */
 int ScaledFontSize(const UiFont& font, const WindowState& window,
                    float multiplier) {
   const float size = static_cast<float>(font.base_size()) * multiplier *
@@ -24,6 +36,9 @@ int ScaledFontSize(const UiFont& font, const WindowState& window,
 
 }  // namespace
 
+/**
+ * @brief Draws main menu.
+ */
 void MenuRenderer::DrawMainMenu(const MainMenu& menu,
                                 const WindowState& window,
                                 const UiFont& font) const {
@@ -54,6 +69,9 @@ void MenuRenderer::DrawMainMenu(const MainMenu& menu,
   }
 }
 
+/**
+ * @brief Draws confirm dialog.
+ */
 void MenuRenderer::DrawConfirmDialog(const ConfirmDialog& dialog,
                                      const WindowState& window,
                                      const UiFont& font) const {

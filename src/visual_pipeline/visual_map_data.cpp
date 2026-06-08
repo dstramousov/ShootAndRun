@@ -1,9 +1,18 @@
+/**
+ * @file src/visual_pipeline/visual_map_data.cpp
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains
+ * implementation for visual_map_data.cpp.
+ */
+
 #include "visual_pipeline/visual_map_data.h"
 
 #include <string>
 
 namespace sar::visual_pipeline {
 
+/**
+ * @brief Checks whether renderable is true.
+ */
 bool VisualLayerGrid::IsRenderable() const {
   if (width <= 0 || height <= 0) {
     return false;
@@ -11,6 +20,9 @@ bool VisualLayerGrid::IsRenderable() const {
   return static_cast<int>(tile_ids.size()) == width * height;
 }
 
+/**
+ * @brief Validates against raw size and reports failures.
+ */
 bool VisualMapData::ValidateAgainstRawSize(const LevelSize& raw_size,
                                            std::string* error) const {
   if (size.width != raw_size.width || size.height != raw_size.height) {
@@ -36,6 +48,9 @@ bool VisualMapData::ValidateAgainstRawSize(const LevelSize& raw_size,
   return true;
 }
 
+/**
+ * @brief Checks whether renderable layer is present.
+ */
 bool VisualMapData::HasRenderableLayer() const {
   for (const VisualLayerGrid& layer : layers) {
     if (layer.IsRenderable()) {
@@ -45,6 +60,9 @@ bool VisualMapData::HasRenderableLayer() const {
   return false;
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string VisualMapData::Dump() const {
   return "VisualMapData { loaded: " + std::string(loaded ? "true" : "false") +
          ", schema: " + schema_version + ", generator: " +

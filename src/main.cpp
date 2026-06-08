@@ -1,3 +1,8 @@
+/**
+ * @file src/main.cpp
+ * @brief ShootAndRun runtime helpers. Contains implementation for main.cpp.
+ */
+
 #include <iostream>
 #include <string_view>
 
@@ -7,11 +12,17 @@
 
 namespace {
 
+/**
+ * @brief Stores cli options data shared between runtime systems.
+ */
 struct CliOptions {
   sar::AppConfig config;
   bool print_version = false;
 };
 
+/**
+ * @brief Parses command-line arguments into application startup options.
+ */
 CliOptions ParseArguments(int argc, char** argv) {
   CliOptions options;
 
@@ -51,6 +62,9 @@ CliOptions ParseArguments(int argc, char** argv) {
 
 }  // namespace
 
+/**
+ * @brief Creates the application and returns its process exit code.
+ */
 int main(int argc, char** argv) {
   const CliOptions options = ParseArguments(argc, argv);
   if (options.print_version) {

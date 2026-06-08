@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_RUIN_VISUAL_PLAN_H_
 #define SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_RUIN_VISUAL_PLAN_H_
 
+/**
+ * @file src/visual_pipeline/ruin_visual_plan.h
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains public
+ * declarations for ruin_visual_plan.h.
+ */
+
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -29,18 +35,18 @@ enum class RuinVisualTile : std::uint8_t {
  * @brief Counters produced by the ruin visual planning pass.
  */
 struct RuinVisualSummary {
-  int site_count = 0;
-  int source_ruin_tiles = 0;
-  int source_wall_tiles = 0;
-  int cracked_floor_tiles = 0;
-  int overgrown_floor_tiles = 0;
-  int wall_intact_tiles = 0;
-  int wall_broken_tiles = 0;
-  int wall_corner_tiles = 0;
-  int wall_endcap_tiles = 0;
-  int rubble_tiles = 0;
-  int entrance_tiles = 0;
-  int visual_tiles = 0;
+  int site_count = 0;  ///< Count of site count entries or events.
+  int source_ruin_tiles = 0;  ///< Source ruin tiles value carried by this data structure.
+  int source_wall_tiles = 0;  ///< Source wall tiles value carried by this data structure.
+  int cracked_floor_tiles = 0;  ///< Cracked floor tiles value carried by this data structure.
+  int overgrown_floor_tiles = 0;  ///< Overgrown floor tiles value carried by this data structure.
+  int wall_intact_tiles = 0;  ///< Wall intact tiles value carried by this data structure.
+  int wall_broken_tiles = 0;  ///< Wall broken tiles value carried by this data structure.
+  int wall_corner_tiles = 0;  ///< Wall corner tiles value carried by this data structure.
+  int wall_endcap_tiles = 0;  ///< Wall endcap tiles value carried by this data structure.
+  int rubble_tiles = 0;  ///< Rubble tiles value carried by this data structure.
+  int entrance_tiles = 0;  ///< Entrance tiles value carried by this data structure.
+  int visual_tiles = 0;  ///< Visual tiles value carried by this data structure.
 
   /**
    * @brief Returns a readable dump of ruin visual counters.
@@ -54,10 +60,10 @@ struct RuinVisualSummary {
  * @brief Planned ruin floor, wall and debris masks.
  */
 struct RuinVisualPlan {
-  LevelSize size;
-  std::vector<std::uint8_t> tiles;
-  std::vector<std::uint16_t> site_ids;
-  RuinVisualSummary summary;
+  LevelSize size;  ///< Size value carried by this data structure.
+  std::vector<std::uint8_t> tiles;  ///< Tiles value carried by this data structure.
+  std::vector<std::uint16_t> site_ids;  ///< Site ids value carried by this data structure.
+  RuinVisualSummary summary;  ///< Summary value carried by this data structure.
 
   /**
    * @brief Returns true when the plan matches the level dimensions.

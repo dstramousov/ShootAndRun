@@ -1,3 +1,9 @@
+/**
+ * @file src/visual_pipeline/semantic_masks.cpp
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains
+ * implementation for semantic_masks.cpp.
+ */
+
 #include "visual_pipeline/semantic_masks.h"
 
 #include <cstddef>
@@ -6,11 +12,17 @@
 namespace sar::visual_pipeline {
 namespace {
 
+/**
+ * @brief Checks whether expected size is present.
+ */
 bool HasExpectedSize(const std::vector<std::uint8_t>& mask,
                      std::size_t expected_size) {
   return mask.size() == expected_size;
 }
 
+/**
+ * @brief Executes the resize bool mask operation.
+ */
 void ResizeBoolMask(std::vector<std::uint8_t>* mask, std::size_t size) {
   if (mask == nullptr) {
     return;
@@ -21,6 +33,9 @@ void ResizeBoolMask(std::vector<std::uint8_t>* mask, std::size_t size) {
 
 }  // namespace
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string SemanticMaskSummary::Dump() const {
   return "SemanticMaskSummary { total: " + std::to_string(total_tiles) +
          ", open: " + std::to_string(open_ground_tiles) +
@@ -42,6 +57,9 @@ std::string SemanticMaskSummary::Dump() const {
          ", elevated: " + std::to_string(elevated_tiles) + " }";
 }
 
+/**
+ * @brief Checks whether valid is true.
+ */
 bool SemanticMasks::IsValid() const {
   if (size.width <= 0 || size.height <= 0) {
     return false;
@@ -66,10 +84,16 @@ bool SemanticMasks::IsValid() const {
          height.size() == expected_size;
 }
 
+/**
+ * @brief Counts bool mask.
+ */
 int SemanticMasks::BoolMaskCount() const {
   return 14;
 }
 
+/**
+ * @brief Builds semantic masks.
+ */
 SemanticMasks BuildSemanticMasks(const LevelData& level, std::string* error) {
   SemanticMasks masks;
   masks.size = level.size;

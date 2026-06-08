@@ -1,3 +1,9 @@
+/**
+ * @file src/logging/log_level.cpp
+ * @brief Terminal logging, log levels, and thread context. Contains implementation for
+ * log_level.cpp.
+ */
+
 #include "logging/log_level.h"
 
 #include <algorithm>
@@ -5,6 +11,9 @@
 
 namespace sar {
 
+/**
+ * @brief Writes diagnostics for level name.
+ */
 std::string_view LogLevelName(LogLevel level) {
   switch (level) {
     case LogLevel::kTrace:
@@ -24,6 +33,9 @@ std::string_view LogLevelName(LogLevel level) {
   return "UNKNOWN";
 }
 
+/**
+ * @brief Parses log level from external data.
+ */
 std::optional<LogLevel> ParseLogLevel(std::string_view value) {
   std::string normalized(value);
   std::transform(normalized.begin(), normalized.end(), normalized.begin(),

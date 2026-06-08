@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_WINDOW_WINDOW_LAYOUT_H_
 #define SHOOT_AND_RUN_CPP_SRC_WINDOW_WINDOW_LAYOUT_H_
 
+/**
+ * @file src/window/window_layout.h
+ * @brief Window configuration, runtime state, and layout calculation. Contains public
+ * declarations for window_layout.h.
+ */
+
 #include "window/window_config.h"
 #include "window/window_state.h"
 

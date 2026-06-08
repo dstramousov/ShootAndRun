@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_RENDER_RENDERER_H_
 #define SHOOT_AND_RUN_CPP_SRC_RENDER_RENDERER_H_
 
+/**
+ * @file src/render/renderer.h
+ * @brief 2D/debug rendering helpers retained by the application shell. Contains public
+ * declarations for renderer.h.
+ */
+
 #include <string_view>
 
 #include "app/app_config.h"
@@ -9,6 +15,9 @@
 
 namespace sar {
 
+/**
+ * @brief Owns the renderer behavior and its runtime state.
+ */
 class Renderer {
  public:
   /**

@@ -1,3 +1,9 @@
+/**
+ * @file src/visual_pipeline/steps/build_semantic_masks_step.cpp
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains
+ * implementation for build_semantic_masks_step.cpp.
+ */
+
 #include "visual_pipeline/steps/build_semantic_masks_step.h"
 
 #include <string>
@@ -7,6 +13,9 @@
 
 namespace sar::visual_pipeline {
 
+/**
+ * @brief Runs build semantic masks step.
+ */
 bool RunBuildSemanticMasksStep(const LevelData& level,
                                PreparedLevel* prepared_level,
                                std::string* error) {

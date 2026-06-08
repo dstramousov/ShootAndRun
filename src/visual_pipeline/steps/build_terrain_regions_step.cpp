@@ -1,3 +1,9 @@
+/**
+ * @file src/visual_pipeline/steps/build_terrain_regions_step.cpp
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains
+ * implementation for build_terrain_regions_step.cpp.
+ */
+
 #include "visual_pipeline/steps/build_terrain_regions_step.h"
 
 #include <string>
@@ -7,6 +13,9 @@
 
 namespace sar::visual_pipeline {
 
+/**
+ * @brief Runs build terrain regions step.
+ */
 bool RunBuildTerrainRegionsStep(PreparedLevel* prepared_level,
                                 std::string* error) {
   if (prepared_level == nullptr) {

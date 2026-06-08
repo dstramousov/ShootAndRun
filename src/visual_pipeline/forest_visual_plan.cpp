@@ -1,3 +1,9 @@
+/**
+ * @file src/visual_pipeline/forest_visual_plan.cpp
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains
+ * implementation for forest_visual_plan.cpp.
+ */
+
 #include "visual_pipeline/forest_visual_plan.h"
 
 #include <algorithm>
@@ -23,6 +29,9 @@ constexpr int kForestMassMergeGapTiles = 3;
 constexpr int kForestEdgeMaxDistance = 2;
 constexpr int kForestMidMaxDistance = 3;
 
+/**
+ * @brief Returns the total number of cells for a valid level size.
+ */
 int CellCount(const LevelSize& size) {
   if (size.width <= 0 || size.height <= 0) {
     return 0;
@@ -30,18 +39,30 @@ int CellCount(const LevelSize& size) {
   return size.width * size.height;
 }
 
+/**
+ * @brief Checks whether tile coordinates are inside the level bounds.
+ */
 bool IsInside(const LevelSize& size, int x, int y) {
   return x >= 0 && y >= 0 && x < size.width && y < size.height;
 }
 
+/**
+ * @brief Converts tile coordinates to a linear grid index.
+ */
 int ToIndex(const LevelSize& size, int x, int y) {
   return y * size.width + x;
 }
 
+/**
+ * @brief Checks whether a string contains a requested substring.
+ */
 bool TextContains(std::string_view text, std::string_view needle) {
   return text.find(needle) != std::string_view::npos;
 }
 
+/**
+ * @brief Stores disjoint set data shared between runtime systems.
+ */
 struct DisjointSet {
   std::vector<int> parent;
 
@@ -69,6 +90,9 @@ struct DisjointSet {
   }
 };
 
+/**
+ * @brief Computes the tile gap between two terrain regions.
+ */
 int RegionGap(const TerrainRegion& a, const TerrainRegion& b) {
   const int gap_x = std::max({0, a.min_x - b.max_x - 1,
                               b.min_x - a.max_x - 1});
@@ -77,6 +101,9 @@ int RegionGap(const TerrainRegion& a, const TerrainRegion& b) {
   return std::max(gap_x, gap_y);
 }
 
+/**
+ * @brief Checks whether a route belongs to the main path.
+ */
 bool RouteIsMain(const Route& route) {
   if (TextContains(route.type, "main")) {
     return true;
@@ -89,6 +116,9 @@ bool RouteIsMain(const Route& route) {
   return false;
 }
 
+/**
+ * @brief Marks a circular influence area in a byte mask.
+ */
 void SetInfluencePoint(int x, int y, int radius, std::uint8_t value,
                        const LevelSize& size,
                        std::vector<std::uint8_t>* influence) {
@@ -112,6 +142,9 @@ void SetInfluencePoint(int x, int y, int radius, std::uint8_t value,
   }
 }
 
+/**
+ * @brief Draws influence line.
+ */
 void DrawInfluenceLine(int x0, int y0, int x1, int y1, int radius,
                        std::uint8_t value, const LevelSize& size,
                        std::vector<std::uint8_t>* influence) {
@@ -140,6 +173,9 @@ void DrawInfluenceLine(int x0, int y0, int x1, int y1, int radius,
   }
 }
 
+/**
+ * @brief Builds route influence.
+ */
 std::vector<std::uint8_t> BuildRouteInfluence(const LevelData& level) {
   std::vector<std::uint8_t> influence(
       static_cast<std::size_t>(CellCount(level.size)), 0);
@@ -164,6 +200,9 @@ std::vector<std::uint8_t> BuildRouteInfluence(const LevelData& level) {
   return influence;
 }
 
+/**
+ * @brief Builds forest region area lookup.
+ */
 void BuildForestRegionAreaLookup(const TerrainRegions& regions,
                                  std::vector<int>* forest_region_area) {
   if (forest_region_area == nullptr) {
@@ -182,6 +221,9 @@ void BuildForestRegionAreaLookup(const TerrainRegions& regions,
   }
 }
 
+/**
+ * @brief Builds forest mass groups.
+ */
 int BuildForestMassGroups(const TerrainRegions& regions, const LevelSize& size,
                           std::vector<std::uint16_t>* forest_mass_groups) {
   if (forest_mass_groups == nullptr) {
@@ -232,6 +274,9 @@ int BuildForestMassGroups(const TerrainRegions& regions, const LevelSize& size,
   return next_group - 1;
 }
 
+/**
+ * @brief Builds open region area lookup.
+ */
 void BuildOpenRegionAreaLookup(const TerrainRegions& regions,
                                std::vector<int>* open_region_area) {
   if (open_region_area == nullptr) {
@@ -250,6 +295,9 @@ void BuildOpenRegionAreaLookup(const TerrainRegions& regions,
   }
 }
 
+/**
+ * @brief Returns mark radius.
+ */
 void MarkRadius(int center_x, int center_y, int radius, const LevelSize& size,
                 std::vector<std::uint8_t>* mask) {
   if (mask == nullptr) {
@@ -270,6 +318,9 @@ void MarkRadius(int center_x, int center_y, int radius, const LevelSize& size,
   }
 }
 
+/**
+ * @brief Marks object influence.
+ */
 void MarkObjectInfluence(const RuntimeObject& object, const LevelSize& size,
                          std::vector<std::uint8_t>* mask) {
   if (mask == nullptr || object.width <= 0 || object.height <= 0) {
@@ -286,6 +337,9 @@ void MarkObjectInfluence(const RuntimeObject& object, const LevelSize& size,
   }
 }
 
+/**
+ * @brief Builds place influence.
+ */
 std::vector<std::uint8_t> BuildPlaceInfluence(const LevelData& level) {
   std::vector<std::uint8_t> influence(
       static_cast<std::size_t>(CellCount(level.size)), 0);
@@ -296,6 +350,9 @@ std::vector<std::uint8_t> BuildPlaceInfluence(const LevelData& level) {
   return influence;
 }
 
+/**
+ * @brief Builds object influence.
+ */
 std::vector<std::uint8_t> BuildObjectInfluence(const LevelData& level) {
   std::vector<std::uint8_t> influence(
       static_cast<std::size_t>(CellCount(level.size)), 0);
@@ -305,6 +362,9 @@ std::vector<std::uint8_t> BuildObjectInfluence(const LevelData& level) {
   return influence;
 }
 
+/**
+ * @brief Builds ruin influence.
+ */
 std::vector<std::uint8_t> BuildRuinInfluence(const LevelData& level,
                                              const SemanticMasks& masks) {
   std::vector<std::uint8_t> influence(
@@ -323,6 +383,9 @@ std::vector<std::uint8_t> BuildRuinInfluence(const LevelData& level,
   return influence;
 }
 
+/**
+ * @brief Combines scene influence.
+ */
 std::vector<std::uint8_t> CombineSceneInfluence(
     const std::vector<std::uint8_t>& place_influence,
     const std::vector<std::uint8_t>& object_influence,
@@ -337,6 +400,9 @@ std::vector<std::uint8_t> CombineSceneInfluence(
   return influence;
 }
 
+/**
+ * @brief Builds forest distance.
+ */
 std::vector<int> BuildForestDistance(const SemanticMasks& masks) {
   const int cell_count = CellCount(masks.size);
   constexpr int kMaxDistance = std::numeric_limits<int>::max() / 4;
@@ -386,6 +452,9 @@ std::vector<int> BuildForestDistance(const SemanticMasks& masks) {
   return distance;
 }
 
+/**
+ * @brief Counts forest depth.
+ */
 void CountForestDepth(ForestDepthBand band, ForestVisualSummary* summary) {
   if (summary == nullptr) {
     return;
@@ -405,6 +474,9 @@ void CountForestDepth(ForestDepthBand band, ForestVisualSummary* summary) {
   }
 }
 
+/**
+ * @brief Counts clearing role.
+ */
 void CountClearingRole(ClearingRole role, ForestVisualSummary* summary) {
   if (summary == nullptr) {
     return;
@@ -430,6 +502,9 @@ void CountClearingRole(ClearingRole role, ForestVisualSummary* summary) {
   }
 }
 
+/**
+ * @brief Counts clearing scene role.
+ */
 void CountClearingSceneRole(ClearingSceneRole role,
                             ForestVisualSummary* summary) {
   if (summary == nullptr) {
@@ -453,6 +528,9 @@ void CountClearingSceneRole(ClearingSceneRole role,
   }
 }
 
+/**
+ * @brief Classifies forest depth.
+ */
 ForestDepthBand ClassifyForestDepth(int distance) {
   if (distance <= 0) {
     return ForestDepthBand::kNone;
@@ -466,6 +544,9 @@ ForestDepthBand ClassifyForestDepth(int distance) {
   return ForestDepthBand::kDeep;
 }
 
+/**
+ * @brief Classifies clearing role.
+ */
 ClearingRole ClassifyClearingRole(std::uint8_t route_influence,
                                   std::uint8_t scene_influence,
                                   int open_region_area) {
@@ -485,6 +566,9 @@ ClearingRole ClassifyClearingRole(std::uint8_t route_influence,
   return ClearingRole::kSideClearing;
 }
 
+/**
+ * @brief Classifies clearing scene role.
+ */
 ClearingSceneRole ClassifyClearingSceneRole(std::uint8_t route_influence,
                                             std::uint8_t scene_influence,
                                             std::uint8_t ruin_influence,
@@ -508,6 +592,9 @@ ClearingSceneRole ClassifyClearingSceneRole(std::uint8_t route_influence,
 
 }  // namespace
 
+/**
+ * @brief Returns forest depth band name.
+ */
 const char* ForestDepthBandName(ForestDepthBand band) {
   switch (band) {
     case ForestDepthBand::kNone:
@@ -522,6 +609,9 @@ const char* ForestDepthBandName(ForestDepthBand band) {
   return "none";
 }
 
+/**
+ * @brief Returns clearing role name.
+ */
 const char* ClearingRoleName(ClearingRole role) {
   switch (role) {
     case ClearingRole::kNone:
@@ -540,6 +630,9 @@ const char* ClearingRoleName(ClearingRole role) {
   return "none";
 }
 
+/**
+ * @brief Returns clearing scene role name.
+ */
 const char* ClearingSceneRoleName(ClearingSceneRole role) {
   switch (role) {
     case ClearingSceneRole::kNone:
@@ -556,6 +649,9 @@ const char* ClearingSceneRoleName(ClearingSceneRole role) {
   return "none";
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string ForestVisualSummary::Dump() const {
   return "ForestVisualSummary { forest=" + std::to_string(forest_tiles) +
          ", edge=" + std::to_string(forest_edge_tiles) +
@@ -576,6 +672,9 @@ std::string ForestVisualSummary::Dump() const {
          ", generic_scene=" + std::to_string(generic_scene_tiles) + " }";
 }
 
+/**
+ * @brief Checks whether valid is true.
+ */
 bool ForestVisualPlan::IsValid() const {
   const int expected_size = CellCount(size);
   if (expected_size <= 0) {
@@ -589,11 +688,17 @@ bool ForestVisualPlan::IsValid() const {
          route_influence.size() == expected;
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string ForestVisualPlan::Dump() const {
   return "ForestVisualPlan { size=" + std::to_string(size.width) + "x" +
          std::to_string(size.height) + ", " + summary.Dump() + " }";
 }
 
+/**
+ * @brief Builds forest visual plan.
+ */
 ForestVisualPlan BuildForestVisualPlan(const LevelData& level,
                                        const SemanticMasks& masks,
                                        const TerrainRegions& regions,

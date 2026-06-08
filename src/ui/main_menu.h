@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_UI_MAIN_MENU_H_
 #define SHOOT_AND_RUN_CPP_SRC_UI_MAIN_MENU_H_
 
+/**
+ * @file src/ui/main_menu.h
+ * @brief Main menu, confirmation dialog, and UI layout. Contains public declarations for
+ * main_menu.h.
+ */
+
 #include <string>
 #include <vector>
 
@@ -72,7 +78,19 @@ class MainMenu {
   std::string Dump() const;
 
  private:
+  /**
+   * @brief Finds first enabled index.
+   *
+   * @return Result produced by the operation, when applicable.
+   */
   int FindFirstEnabledIndex() const;
+  /**
+   * @brief Finds the next enabled menu item index in the requested navigation direction.
+   *
+   * @param start_index Input value required by the operation.
+   * @param direction Input value required by the operation.
+   * @return Result produced by the operation, when applicable.
+   */
   int FindNextEnabledIndex(int start_index, int direction) const;
 
   std::vector<MenuItem> items_;

@@ -1,9 +1,18 @@
+/**
+ * @file src/visual_pipeline/steps/build_forest_visual_plan_step.cpp
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains
+ * implementation for build_forest_visual_plan_step.cpp.
+ */
+
 #include "visual_pipeline/steps/build_forest_visual_plan_step.h"
 
 #include "visual_pipeline/forest_visual_plan.h"
 
 namespace sar::visual_pipeline {
 
+/**
+ * @brief Runs build forest visual plan step.
+ */
 bool RunBuildForestVisualPlanStep(const LevelData& level,
                                   PreparedLevel* prepared_level,
                                   std::string* error) {

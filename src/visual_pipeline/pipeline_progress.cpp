@@ -1,3 +1,9 @@
+/**
+ * @file src/visual_pipeline/pipeline_progress.cpp
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains
+ * implementation for pipeline_progress.cpp.
+ */
+
 #include "visual_pipeline/pipeline_progress.h"
 
 #include <algorithm>
@@ -5,6 +11,9 @@
 
 namespace sar::visual_pipeline {
 
+/**
+ * @brief Implements PipelineProgress::Normalized.
+ */
 float PipelineProgress::Normalized() const {
   if (total_steps <= 0) {
     return finished ? 1.0F : 0.0F;
@@ -15,6 +24,9 @@ float PipelineProgress::Normalized() const {
   return std::clamp(value, 0.0F, 1.0F);
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string PipelineProgress::Dump() const {
   return "PipelineProgress { completed: " +
          std::to_string(completed_steps) + "/" +

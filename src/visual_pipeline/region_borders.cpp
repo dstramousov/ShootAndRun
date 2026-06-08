@@ -1,3 +1,9 @@
+/**
+ * @file src/visual_pipeline/region_borders.cpp
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains
+ * implementation for region_borders.cpp.
+ */
+
 #include "visual_pipeline/region_borders.h"
 
 #include <cstddef>
@@ -7,26 +13,44 @@
 namespace sar::visual_pipeline {
 namespace {
 
+/**
+ * @brief Converts tile coordinates to a linear grid index.
+ */
 int ToIndex(int x, int y, int width) {
   return y * width + x;
 }
 
+/**
+ * @brief Executes the tile x operation.
+ */
 int TileX(int index, int width) {
   return index % width;
 }
 
+/**
+ * @brief Executes the tile y operation.
+ */
 int TileY(int index, int width) {
   return index / width;
 }
 
+/**
+ * @brief Checks whether tile coordinates are inside the level bounds.
+ */
 bool IsInside(int x, int y, const LevelSize& size) {
   return x >= 0 && y >= 0 && x < size.width && y < size.height;
 }
 
+/**
+ * @brief Executes the mask value at operation.
+ */
 bool MaskValueAt(const std::vector<std::uint8_t>& mask, int index) {
   return mask[static_cast<std::size_t>(index)] != 0;
 }
 
+/**
+ * @brief Executes the terrain at index operation.
+ */
 TerrainType TerrainAtIndex(const SemanticMasks& masks, int index) {
   if (MaskValueAt(masks.open_ground, index)) {
     return TerrainType::kOpenGround;
@@ -52,6 +76,9 @@ TerrainType TerrainAtIndex(const SemanticMasks& masks, int index) {
   return TerrainType::kUnknown;
 }
 
+/**
+ * @brief Executes the neighbor terrain or unknown operation.
+ */
 TerrainType NeighborTerrainOrUnknown(const SemanticMasks& masks, int x, int y) {
   if (!IsInside(x, y, masks.size)) {
     return TerrainType::kUnknown;
@@ -60,6 +87,9 @@ TerrainType NeighborTerrainOrUnknown(const SemanticMasks& masks, int x, int y) {
   return TerrainAtIndex(masks, ToIndex(x, y, masks.size.width));
 }
 
+/**
+ * @brief Increments terrain counter.
+ */
 void IncrementTerrainCounter(TerrainType type, RegionBorderInfo* info) {
   if (info == nullptr) {
     return;
@@ -93,6 +123,9 @@ void IncrementTerrainCounter(TerrainType type, RegionBorderInfo* info) {
   }
 }
 
+/**
+ * @brief Adds neighbor.
+ */
 void AddNeighbor(bool differs, bool outside_map, TerrainType terrain,
                  BorderTile* tile, RegionBorderInfo* info) {
   if (tile == nullptr || info == nullptr || !differs) {
@@ -109,6 +142,9 @@ void AddNeighbor(bool differs, bool outside_map, TerrainType terrain,
   IncrementTerrainCounter(terrain, info);
 }
 
+/**
+ * @brief Classifies tile shape.
+ */
 void ClassifyTileShape(const BorderTile& tile, RegionBorderInfo* info) {
   if (info == nullptr) {
     return;
@@ -131,6 +167,9 @@ void ClassifyTileShape(const BorderTile& tile, RegionBorderInfo* info) {
   ++info->complex_tile_count;
 }
 
+/**
+ * @brief Returns classify border tile.
+ */
 BorderTile ClassifyBorderTile(const SemanticMasks& masks,
                               const TerrainRegion& region, int tile_index,
                               RegionBorderInfo* info) {
@@ -174,6 +213,9 @@ BorderTile ClassifyBorderTile(const SemanticMasks& masks,
   return tile;
 }
 
+/**
+ * @brief Classifies region border.
+ */
 RegionBorderInfo ClassifyRegionBorder(const SemanticMasks& masks,
                                        const TerrainRegion& region) {
   RegionBorderInfo info;
@@ -190,6 +232,9 @@ RegionBorderInfo ClassifyRegionBorder(const SemanticMasks& masks,
   return info;
 }
 
+/**
+ * @brief Updates summary for region for the current frame.
+ */
 void UpdateSummaryForRegion(const RegionBorderInfo& info,
                             RegionBorderSummary* summary) {
   if (summary == nullptr) {
@@ -216,11 +261,17 @@ void UpdateSummaryForRegion(const RegionBorderInfo& info,
 
 }  // namespace
 
+/**
+ * @brief Checks whether corner is true.
+ */
 bool BorderTile::IsCorner() const {
   return (north_differs && east_differs) || (east_differs && south_differs) ||
          (south_differs && west_differs) || (west_differs && north_differs);
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string BorderTile::Dump() const {
   return "BorderTile { region_id: " + std::to_string(region_id) +
          ", type: " + std::string(TerrainTypeToString(region_type)) +
@@ -230,6 +281,9 @@ std::string BorderTile::Dump() const {
          " }";
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string RegionBorderInfo::Dump() const {
   return "RegionBorderInfo { region_id: " + std::to_string(region_id) +
          ", type: " + std::string(TerrainTypeToString(type)) +
@@ -241,6 +295,9 @@ std::string RegionBorderInfo::Dump() const {
          ", map_edge: " + std::to_string(map_edge_tile_count) + " }";
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string RegionBorderSummary::Dump() const {
   return "RegionBorderSummary { regions: " + std::to_string(region_count) +
          ", border_tiles: " + std::to_string(border_tile_count) +
@@ -261,6 +318,9 @@ std::string RegionBorderSummary::Dump() const {
          " }";
 }
 
+/**
+ * @brief Checks whether valid is true.
+ */
 bool RegionBorders::IsValid() const {
   if (size.width <= 0 || size.height <= 0) {
     return false;
@@ -269,11 +329,17 @@ bool RegionBorders::IsValid() const {
   return summary.region_count == static_cast<int>(regions.size());
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string RegionBorders::Dump() const {
   return "RegionBorders { size: " + std::to_string(size.width) + "x" +
          std::to_string(size.height) + ", " + summary.Dump() + " }";
 }
 
+/**
+ * @brief Classifies region borders.
+ */
 RegionBorders ClassifyRegionBorders(const SemanticMasks& masks,
                                      const TerrainRegions& terrain_regions,
                                      std::string* error) {

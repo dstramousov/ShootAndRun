@@ -1,3 +1,9 @@
+/**
+ * @file src/app/project_config.cpp
+ * @brief Application configuration, lifecycle, startup, and runtime orchestration. Contains
+ * implementation for project_config.cpp.
+ */
+
 #include "app/project_config.h"
 
 #include <utility>
@@ -13,12 +19,18 @@
 namespace sar {
 namespace {
 
+/**
+ * @brief Stores parse string result data shared between runtime systems.
+ */
 struct ParseStringResult {
   bool ok = false;
   std::string value;
   std::string error;
 };
 
+/**
+ * @brief Stores parse int result data shared between runtime systems.
+ */
 struct ParseIntResult {
   bool ok = false;
   bool found = false;
@@ -26,6 +38,9 @@ struct ParseIntResult {
   std::string error;
 };
 
+/**
+ * @brief Stores parse float result data shared between runtime systems.
+ */
 struct ParseFloatResult {
   bool ok = false;
   bool found = false;
@@ -33,6 +48,9 @@ struct ParseFloatResult {
   std::string error;
 };
 
+/**
+ * @brief Stores parse bool result data shared between runtime systems.
+ */
 struct ParseBoolResult {
   bool ok = false;
   bool found = false;
@@ -40,6 +58,9 @@ struct ParseBoolResult {
   std::string error;
 };
 
+/**
+ * @brief Reads text file.
+ */
 std::string ReadTextFile(const std::filesystem::path& path,
                          std::string* error) {
   std::ifstream input(path);
@@ -53,6 +74,9 @@ std::string ReadTextFile(const std::filesystem::path& path,
   return stream.str();
 }
 
+/**
+ * @brief Executes the skip whitespace operation.
+ */
 void SkipWhitespace(std::string_view text, std::size_t* position) {
   while (*position < text.size() &&
          std::isspace(static_cast<unsigned char>(text[*position])) != 0) {
@@ -60,6 +84,9 @@ void SkipWhitespace(std::string_view text, std::size_t* position) {
   }
 }
 
+/**
+ * @brief Finds field value start.
+ */
 std::optional<std::size_t> FindFieldValueStart(std::string_view text,
                                                std::string_view field_name,
                                                std::string* error) {
@@ -82,6 +109,9 @@ std::optional<std::size_t> FindFieldValueStart(std::string_view text,
   return position;
 }
 
+/**
+ * @brief Parses JSON string from external data.
+ */
 ParseStringResult ParseJsonString(std::string_view text,
                                   std::size_t position) {
   if (position >= text.size() || text[position] != '"') {
@@ -136,6 +166,9 @@ ParseStringResult ParseJsonString(std::string_view text,
   return {false, {}, "unterminated string value"};
 }
 
+/**
+ * @brief Executes the extract required JSON string field operation.
+ */
 ParseStringResult ExtractRequiredJsonStringField(
     std::string_view text, std::string_view field_name) {
   std::string error;
@@ -151,6 +184,9 @@ ParseStringResult ExtractRequiredJsonStringField(
   return ParseJsonString(text, *value_start);
 }
 
+/**
+ * @brief Executes the extract optional JSON string field operation.
+ */
 ParseStringResult ExtractOptionalJsonStringField(
     std::string_view text, std::string_view field_name) {
   std::string error;
@@ -166,6 +202,9 @@ ParseStringResult ExtractOptionalJsonStringField(
   return ParseJsonString(text, *value_start);
 }
 
+/**
+ * @brief Executes the extract optional JSON int field operation.
+ */
 ParseIntResult ExtractOptionalJsonIntField(std::string_view text,
                                            std::string_view field_name) {
   std::string error;
@@ -205,6 +244,9 @@ ParseIntResult ExtractOptionalJsonIntField(std::string_view text,
   return {true, true, value, {}};
 }
 
+/**
+ * @brief Executes the extract optional JSON float field operation.
+ */
 ParseFloatResult ExtractOptionalJsonFloatField(std::string_view text,
                                                std::string_view field_name) {
   std::string error;
@@ -246,6 +288,9 @@ ParseFloatResult ExtractOptionalJsonFloatField(std::string_view text,
   return {true, true, value, {}};
 }
 
+/**
+ * @brief Executes the extract optional JSON bool field operation.
+ */
 ParseBoolResult ExtractOptionalJsonBoolField(std::string_view text,
                                              std::string_view field_name) {
   std::string error;
@@ -269,6 +314,9 @@ ParseBoolResult ExtractOptionalJsonBoolField(std::string_view text,
           "expected boolean value for field: " + std::string(field_name)};
 }
 
+/**
+ * @brief Parses raylib log level from external data.
+ */
 std::optional<RaylibLogLevel> ParseRaylibLogLevel(std::string_view value) {
   if (value == "trace") {
     return RaylibLogLevel::kTrace;
@@ -295,6 +343,9 @@ std::optional<RaylibLogLevel> ParseRaylibLogLevel(std::string_view value) {
   return std::nullopt;
 }
 
+/**
+ * @brief Parses render 3D fog mode from external data.
+ */
 std::optional<Render3DFogMode> ParseRender3DFogMode(std::string_view value) {
   if (value == "circle" || value == "classic" || value == "radius") {
     return Render3DFogMode::kCircle;
@@ -308,6 +359,9 @@ std::optional<Render3DFogMode> ParseRender3DFogMode(std::string_view value) {
 
 }  // namespace
 
+/**
+ * @brief Returns raylib log level name.
+ */
 const char* RaylibLogLevelName(RaylibLogLevel level) {
   switch (level) {
     case RaylibLogLevel::kTrace:
@@ -329,6 +383,9 @@ const char* RaylibLogLevelName(RaylibLogLevel level) {
   return "warning";
 }
 
+/**
+ * @brief Renders 3D fog mode name.
+ */
 const char* Render3DFogModeName(Render3DFogMode mode) {
   switch (mode) {
     case Render3DFogMode::kCircle:
@@ -340,6 +397,9 @@ const char* Render3DFogModeName(Render3DFogMode mode) {
   return "circle";
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string ProjectConfig::Dump() const {
   return "ProjectConfig { map_package_path: \"" +
          map_package_path.string() + "\", ui_font_path: \"" +
@@ -444,6 +504,9 @@ std::string ProjectConfig::Dump() const {
          visual_pipeline_config.debug_output_path.string() + "\" } }";
 }
 
+/**
+ * @brief Loads project config.
+ */
 ProjectConfigResult LoadProjectConfig(
     const std::filesystem::path& config_path) {
   std::string error;

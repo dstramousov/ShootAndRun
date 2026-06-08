@@ -1,3 +1,9 @@
+/**
+ * @file src/level/level_loader.cpp
+ * @brief Generated map package data contracts and loading logic. Contains implementation for
+ * level_loader.cpp.
+ */
+
 #include "level/level_loader.h"
 
 #include <algorithm>
@@ -19,12 +25,18 @@ namespace {
 
 constexpr int kDefaultTileSize = 16;
 
+/**
+ * @brief Stores read file result data shared between runtime systems.
+ */
 struct ReadFileResult {
   bool ok = false;
   std::string content;
   std::string error;
 };
 
+/**
+ * @brief Stores int field result data shared between runtime systems.
+ */
 struct IntFieldResult {
   bool ok = false;
   bool found = false;
@@ -32,6 +44,9 @@ struct IntFieldResult {
   std::string error;
 };
 
+/**
+ * @brief Stores string field result data shared between runtime systems.
+ */
 struct StringFieldResult {
   bool ok = false;
   bool found = false;
@@ -39,6 +54,9 @@ struct StringFieldResult {
   std::string error;
 };
 
+/**
+ * @brief Stores grid shape result data shared between runtime systems.
+ */
 struct GridShapeResult {
   bool ok = false;
   int rows = 0;
@@ -47,6 +65,9 @@ struct GridShapeResult {
   std::string error;
 };
 
+/**
+ * @brief Stores terrain grid result data shared between runtime systems.
+ */
 struct TerrainGridResult {
   TerrainGridResult() = default;
 
@@ -72,6 +93,9 @@ struct TerrainGridResult {
   bool used_catalog = false;
 };
 
+/**
+ * @brief Stores numeric grid result data shared between runtime systems.
+ */
 struct NumericGridResult {
   bool ok = false;
   int rows = 0;
@@ -82,58 +106,88 @@ struct NumericGridResult {
   std::string error;
 };
 
+/**
+ * @brief Stores tile catalog entry data shared between runtime systems.
+ */
 struct TileCatalogEntry {
   TerrainType terrain = TerrainType::kUnknown;
 };
 
+/**
+ * @brief Stores tile catalog data shared between runtime systems.
+ */
 struct TileCatalog {
   std::map<std::string, TileCatalogEntry> entries;
 
   bool empty() const { return entries.empty(); }
 };
 
+/**
+ * @brief Stores marker load result data shared between runtime systems.
+ */
 struct MarkerLoadResult {
   bool ok = false;
   std::vector<Marker> markers;
   std::string error;
 };
 
+/**
+ * @brief Stores runtime object load result data shared between runtime systems.
+ */
 struct RuntimeObjectLoadResult {
   bool ok = false;
   std::vector<RuntimeObject> objects;
   std::string error;
 };
 
+/**
+ * @brief Stores place load result data shared between runtime systems.
+ */
 struct PlaceLoadResult {
   bool ok = false;
   std::vector<Place> places;
   std::string error;
 };
 
+/**
+ * @brief Stores route load result data shared between runtime systems.
+ */
 struct RouteLoadResult {
   bool ok = false;
   std::vector<Route> routes;
   std::string error;
 };
 
+/**
+ * @brief Stores gameplay zone load result data shared between runtime systems.
+ */
 struct GameplayZoneLoadResult {
   bool ok = false;
   std::vector<GameplayZone> zones;
   std::string error;
 };
 
+/**
+ * @brief Stores elevation transition load result data shared between runtime systems.
+ */
 struct ElevationTransitionLoadResult {
   bool ok = false;
   std::vector<ElevationTransition> transitions;
   std::string error;
 };
 
+/**
+ * @brief Stores world graph load result data shared between runtime systems.
+ */
 struct WorldGraphLoadResult {
   bool ok = false;
   WorldGraph graph;
   std::string error;
 };
 
+/**
+ * @brief Stores package layout data shared between runtime systems.
+ */
 struct PackageLayout {
   std::filesystem::path package_path;
   std::filesystem::path terrain_path;
@@ -153,6 +207,9 @@ struct PackageLayout {
 };
 
 
+/**
+ * @brief Executes the fallback movement multiplier operation.
+ */
 float FallbackMovementMultiplier(TerrainType terrain) {
   switch (terrain) {
     case TerrainType::kRoad:
@@ -174,6 +231,9 @@ float FallbackMovementMultiplier(TerrainType terrain) {
   return 1.0F;
 }
 
+/**
+ * @brief Executes the normalize movement multiplier operation.
+ */
 float NormalizeMovementMultiplier(double grid_value, TerrainType terrain,
                                   bool walkable, bool collision) {
   if (collision || !walkable) {
@@ -193,6 +253,9 @@ float NormalizeMovementMultiplier(double grid_value, TerrainType terrain,
   return fallback;
 }
 
+/**
+ * @brief Reads text file.
+ */
 ReadFileResult ReadTextFile(const std::filesystem::path& path) {
   std::ifstream input(path);
   if (!input.is_open()) {
@@ -204,6 +267,9 @@ ReadFileResult ReadTextFile(const std::filesystem::path& path) {
   return {true, stream.str(), {}};
 }
 
+/**
+ * @brief Executes the skip whitespace operation.
+ */
 void SkipWhitespace(std::string_view text, std::size_t* position) {
   while (*position < text.size() &&
          std::isspace(static_cast<unsigned char>(text[*position])) != 0) {
@@ -211,6 +277,9 @@ void SkipWhitespace(std::string_view text, std::size_t* position) {
   }
 }
 
+/**
+ * @brief Finds field value start.
+ */
 std::optional<std::size_t> FindFieldValueStart(std::string_view text,
                                                std::string_view field_name,
                                                std::string* /*error*/) {
@@ -237,6 +306,9 @@ std::optional<std::size_t> FindFieldValueStart(std::string_view text,
   return std::nullopt;
 }
 
+/**
+ * @brief Executes the extract optional int field operation.
+ */
 IntFieldResult ExtractOptionalIntField(std::string_view text,
                                        std::string_view field_name) {
   std::string error;
@@ -276,6 +348,9 @@ IntFieldResult ExtractOptionalIntField(std::string_view text,
   return {true, true, value, {}};
 }
 
+/**
+ * @brief Executes the extract required int field operation.
+ */
 IntFieldResult ExtractRequiredIntField(std::string_view text,
                                        std::string_view field_name) {
   IntFieldResult result = ExtractOptionalIntField(text, field_name);
@@ -291,6 +366,9 @@ IntFieldResult ExtractRequiredIntField(std::string_view text,
   return result;
 }
 
+/**
+ * @brief Returns skip JSON string.
+ */
 bool SkipJsonString(std::string_view text, std::size_t* position,
                     std::string* error) {
   if (*position >= text.size() || text[*position] != '"') {
@@ -321,6 +399,9 @@ bool SkipJsonString(std::string_view text, std::size_t* position,
   return false;
 }
 
+/**
+ * @brief Parses JSON string at from external data.
+ */
 StringFieldResult ParseJsonStringAt(std::string_view text,
                                     std::size_t position,
                                     std::string_view field_name) {
@@ -376,6 +457,9 @@ StringFieldResult ParseJsonStringAt(std::string_view text,
   return {false, true, {}, "unterminated JSON string"};
 }
 
+/**
+ * @brief Executes the extract optional string field operation.
+ */
 StringFieldResult ExtractOptionalStringField(std::string_view text,
                                              std::string_view field_name) {
   std::string error;
@@ -391,6 +475,9 @@ StringFieldResult ExtractOptionalStringField(std::string_view text,
   return ParseJsonStringAt(text, *value_start, field_name);
 }
 
+/**
+ * @brief Executes the extract required string field operation.
+ */
 StringFieldResult ExtractRequiredStringField(std::string_view text,
                                              std::string_view field_name) {
   StringFieldResult result = ExtractOptionalStringField(text, field_name);
@@ -411,9 +498,15 @@ StringFieldResult ExtractRequiredStringField(std::string_view text,
   return result;
 }
 
+/**
+ * @brief Executes the skip JSON value operation.
+ */
 bool SkipJsonValue(std::string_view text, std::size_t* position,
                    std::string* error);
 
+/**
+ * @brief Executes the skip JSON array operation.
+ */
 bool SkipJsonArray(std::string_view text, std::size_t* position,
                    std::string* error) {
   if (*position >= text.size() || text[*position] != '[') {
@@ -458,6 +551,9 @@ bool SkipJsonArray(std::string_view text, std::size_t* position,
   return false;
 }
 
+/**
+ * @brief Executes the skip JSON object operation.
+ */
 bool SkipJsonObject(std::string_view text, std::size_t* position,
                     std::string* error) {
   if (*position >= text.size() || text[*position] != '{') {
@@ -514,6 +610,9 @@ bool SkipJsonObject(std::string_view text, std::size_t* position,
   return false;
 }
 
+/**
+ * @brief Executes the skip JSON primitive operation.
+ */
 bool SkipJsonPrimitive(std::string_view text, std::size_t* position,
                        std::string* error) {
   const std::size_t start = *position;
@@ -534,6 +633,9 @@ bool SkipJsonPrimitive(std::string_view text, std::size_t* position,
   return true;
 }
 
+/**
+ * @brief Executes the skip JSON value operation.
+ */
 bool SkipJsonValue(std::string_view text, std::size_t* position,
                    std::string* error) {
   SkipWhitespace(text, position);
@@ -554,6 +656,9 @@ bool SkipJsonValue(std::string_view text, std::size_t* position,
   }
 }
 
+/**
+ * @brief Executes the extract JSON object slice operation.
+ */
 std::optional<std::string_view> ExtractJsonObjectSlice(std::string_view text,
                                                        std::size_t position,
                                                        std::string* error) {
@@ -570,6 +675,9 @@ std::optional<std::string_view> ExtractJsonObjectSlice(std::string_view text,
   return text.substr(position, end - position);
 }
 
+/**
+ * @brief Parses grid shape at from external data.
+ */
 GridShapeResult ParseGridShapeAt(std::string_view text, std::size_t position,
                                  std::string_view field_name) {
   if (position >= text.size() || text[position] != '[') {
@@ -691,6 +799,9 @@ GridShapeResult ParseGridShapeAt(std::string_view text, std::size_t position,
           "unterminated grid array: " + std::string(field_name)};
 }
 
+/**
+ * @brief Parses grid shape from value from external data.
+ */
 GridShapeResult ParseGridShapeFromValue(std::string_view text,
                                         std::size_t value_start,
                                         std::string_view field_name) {
@@ -729,6 +840,9 @@ GridShapeResult ParseGridShapeFromValue(std::string_view text,
   return ParseGridShapeAt(*object, *rows_start, field_name);
 }
 
+/**
+ * @brief Executes the terrain type from symbol operation.
+ */
 TerrainType TerrainTypeFromSymbol(char value) {
   switch (value) {
     case '.':
@@ -760,6 +874,9 @@ TerrainType TerrainTypeFromSymbol(char value) {
 }
 
 
+/**
+ * @brief Executes the JSON object string array contains operation.
+ */
 bool JsonObjectStringArrayContains(std::string_view object,
                                    std::string_view field_name,
                                    std::string_view expected) {
@@ -800,6 +917,9 @@ bool JsonObjectStringArrayContains(std::string_view object,
   return false;
 }
 
+/**
+ * @brief Executes the terrain type from catalog object operation.
+ */
 TerrainType TerrainTypeFromCatalogObject(std::string_view tile_id,
                                          std::string_view object) {
   const bool is_road = JsonObjectStringArrayContains(object, "tags", "road");
@@ -843,6 +963,9 @@ TerrainType TerrainTypeFromCatalogObject(std::string_view tile_id,
   return TerrainTypeFromString(tile_id);
 }
 
+/**
+ * @brief Parses tile catalog from external data.
+ */
 TileCatalog ParseTileCatalog(std::string_view text) {
   TileCatalog catalog;
   std::string error;
@@ -896,6 +1019,9 @@ TileCatalog ParseTileCatalog(std::string_view text) {
   return catalog;
 }
 
+/**
+ * @brief Loads tile catalog if present.
+ */
 TileCatalog LoadTileCatalogIfPresent(const PackageLayout& layout) {
   if (!layout.has_tile_types_catalog) {
     return {};
@@ -915,6 +1041,9 @@ TileCatalog LoadTileCatalogIfPresent(const PackageLayout& layout) {
   return ParseTileCatalog(file.content);
 }
 
+/**
+ * @brief Executes the terrain type from raw value operation.
+ */
 TerrainType TerrainTypeFromRawValue(std::string_view value,
                                     const TileCatalog* catalog) {
   if (catalog != nullptr) {
@@ -927,6 +1056,9 @@ TerrainType TerrainTypeFromRawValue(std::string_view value,
   return TerrainTypeFromString(value);
 }
 
+/**
+ * @brief Executes the record terrain value operation.
+ */
 void RecordTerrainValue(std::string_view raw_value, TerrainType terrain,
                         std::map<std::string, int>* counts,
                         std::map<std::string, int>* unknown_counts) {
@@ -938,6 +1070,9 @@ void RecordTerrainValue(std::string_view raw_value, TerrainType terrain,
   }
 }
 
+/**
+ * @brief Parses terrain grid array at from external data.
+ */
 TerrainGridResult ParseTerrainGridArrayAt(std::string_view text,
                                           std::size_t position,
                                           std::string_view field_name,
@@ -1104,6 +1239,9 @@ TerrainGridResult ParseTerrainGridArrayAt(std::string_view text,
           "unterminated terrain grid array: " + std::string(field_name)};
 }
 
+/**
+ * @brief Parses terrain grid from value from external data.
+ */
 TerrainGridResult ParseTerrainGridFromValue(std::string_view text,
                                             std::size_t value_start,
                                             std::string_view field_name,
@@ -1145,6 +1283,9 @@ TerrainGridResult ParseTerrainGridFromValue(std::string_view text,
   return ParseTerrainGridArrayAt(*object, *rows_start, field_name, catalog);
 }
 
+/**
+ * @brief Returns extract terrain grid.
+ */
 TerrainGridResult ExtractTerrainGrid(
     std::string_view text, const std::vector<std::string_view>& field_names,
     const TileCatalog* catalog) {
@@ -1165,6 +1306,9 @@ TerrainGridResult ExtractTerrainGrid(
   return {false, 0, 0, {}, {}, "missing required terrain grid field"};
 }
 
+/**
+ * @brief Validates terrain grid and reports failures.
+ */
 bool ValidateTerrainGrid(const TerrainGridResult& grid, int expected_width,
                          int expected_height, std::string* error) {
   if (!grid.ok) {
@@ -1184,6 +1328,9 @@ bool ValidateTerrainGrid(const TerrainGridResult& grid, int expected_width,
 }
 
 
+/**
+ * @brief Executes the extract grid shape operation.
+ */
 GridShapeResult ExtractGridShape(
     std::string_view text, const std::vector<std::string_view>& field_names) {
   std::string field_error;
@@ -1203,6 +1350,9 @@ GridShapeResult ExtractGridShape(
   return {false, 0, 0, {}, "missing required grid field"};
 }
 
+/**
+ * @brief Validates grid shape and reports failures.
+ */
 bool ValidateGridShape(const GridShapeResult& grid, int expected_width,
                        int expected_height, std::string* error) {
   if (!grid.ok) {
@@ -1222,6 +1372,9 @@ bool ValidateGridShape(const GridShapeResult& grid, int expected_width,
 }
 
 
+/**
+ * @brief Parses numeric value at from external data.
+ */
 bool ParseNumericValueAt(std::string_view text, std::size_t* position,
                          double* value, bool* present,
                          std::string* error) {
@@ -1312,6 +1465,9 @@ bool ParseNumericValueAt(std::string_view text, std::size_t* position,
   return true;
 }
 
+/**
+ * @brief Parses numeric grid array at from external data.
+ */
 NumericGridResult ParseNumericGridArrayAt(std::string_view text,
                                           std::size_t position,
                                           std::string_view field_name) {
@@ -1445,6 +1601,9 @@ NumericGridResult ParseNumericGridArrayAt(std::string_view text,
           "unterminated numeric grid array: " + std::string(field_name)};
 }
 
+/**
+ * @brief Parses numeric grid from value from external data.
+ */
 NumericGridResult ParseNumericGridFromValue(std::string_view text,
                                             std::size_t value_start,
                                             std::string_view field_name) {
@@ -1482,6 +1641,9 @@ NumericGridResult ParseNumericGridFromValue(std::string_view text,
   return ParseNumericGridArrayAt(*object, *rows_start, field_name);
 }
 
+/**
+ * @brief Returns extract numeric grid.
+ */
 NumericGridResult ExtractNumericGrid(
     std::string_view text, const std::vector<std::string_view>& field_names) {
   std::string field_error;
@@ -1501,6 +1663,9 @@ NumericGridResult ExtractNumericGrid(
   return {false, 0, 0, {}, {}, {}, "missing required numeric grid field"};
 }
 
+/**
+ * @brief Validates numeric grid and reports failures.
+ */
 bool ValidateNumericGrid(const NumericGridResult& grid, int expected_width,
                          int expected_height, std::string* error) {
   if (!grid.ok) {
@@ -1518,6 +1683,9 @@ bool ValidateNumericGrid(const NumericGridResult& grid, int expected_width,
   return true;
 }
 
+/**
+ * @brief Executes the extract object array at operation.
+ */
 std::optional<std::vector<std::string_view>> ExtractObjectArrayAt(
     std::string_view text, std::size_t position, std::string_view field_name,
     std::string* error) {
@@ -1572,6 +1740,9 @@ std::optional<std::vector<std::string_view>> ExtractObjectArrayAt(
 }
 
 
+/**
+ * @brief Executes the extract object field operation.
+ */
 std::optional<std::string_view> ExtractObjectField(
     std::string_view object, std::string_view field_name,
     std::string* error) {
@@ -1583,6 +1754,9 @@ std::optional<std::string_view> ExtractObjectField(
   return ExtractJsonObjectSlice(object, *value_start, error);
 }
 
+/**
+ * @brief Executes the extract named object array operation.
+ */
 std::optional<std::vector<std::string_view>> ExtractNamedObjectArray(
     std::string_view text, const std::vector<std::string_view>& field_names,
     std::string* error) {
@@ -1606,6 +1780,9 @@ std::optional<std::vector<std::string_view>> ExtractNamedObjectArray(
   return std::vector<std::string_view>{};
 }
 
+/**
+ * @brief Executes the extract string array field operation.
+ */
 std::optional<std::vector<std::string>> ExtractStringArrayField(
     std::string_view object, std::string_view field_name) {
   std::string error;
@@ -1645,6 +1822,9 @@ std::optional<std::vector<std::string>> ExtractStringArrayField(
   return values;
 }
 
+/**
+ * @brief Stores bool field result data shared between runtime systems.
+ */
 struct BoolFieldResult {
   bool ok = false;
   bool found = false;
@@ -1652,6 +1832,9 @@ struct BoolFieldResult {
   std::string error;
 };
 
+/**
+ * @brief Executes the extract optional bool field operation.
+ */
 BoolFieldResult ExtractOptionalBoolField(std::string_view text,
                                          std::string_view field_name) {
   std::string error;
@@ -1674,6 +1857,9 @@ BoolFieldResult ExtractOptionalBoolField(std::string_view text,
           "expected boolean value for field: " + std::string(field_name)};
 }
 
+/**
+ * @brief Executes the extract coordinate operation.
+ */
 bool ExtractCoordinate(std::string_view object, int* x, int* y,
                        std::string* error) {
   IntFieldResult x_value = ExtractOptionalIntField(object, "x");
@@ -1714,16 +1900,25 @@ bool ExtractCoordinate(std::string_view object, int* x, int* y,
   return false;
 }
 
+/**
+ * @brief Checks whether coordinate inside is true.
+ */
 bool IsCoordinateInside(int x, int y, int width, int height) {
   return x >= 0 && y >= 0 && x < width && y < height;
 }
 
+/**
+ * @brief Checks whether footprint inside is true.
+ */
 bool IsFootprintInside(int x, int y, int footprint_width,
                        int footprint_height, int map_width, int map_height) {
   return x >= 0 && y >= 0 && footprint_width > 0 && footprint_height > 0 &&
          x + footprint_width <= map_width && y + footprint_height <= map_height;
 }
 
+/**
+ * @brief Loads optional file.
+ */
 bool LoadOptionalFile(const std::filesystem::path& path,
                       ReadFileResult* file, std::string* error) {
   std::error_code error_code;
@@ -1753,6 +1948,9 @@ bool LoadOptionalFile(const std::filesystem::path& path,
   return true;
 }
 
+/**
+ * @brief Parses runtime objects from external data.
+ */
 RuntimeObjectLoadResult ParseRuntimeObjects(std::string_view text, int width,
                                             int height) {
   std::string error;
@@ -1874,6 +2072,9 @@ RuntimeObjectLoadResult ParseRuntimeObjects(std::string_view text, int width,
   return {true, std::move(objects), {}};
 }
 
+/**
+ * @brief Loads runtime objects if present.
+ */
 RuntimeObjectLoadResult LoadRuntimeObjectsIfPresent(
     const std::filesystem::path& path, int width, int height) {
   ReadFileResult file;
@@ -1887,6 +2088,9 @@ RuntimeObjectLoadResult LoadRuntimeObjectsIfPresent(
   return ParseRuntimeObjects(file.content, width, height);
 }
 
+/**
+ * @brief Parses places from external data.
+ */
 PlaceLoadResult ParsePlaces(std::string_view text, int width, int height) {
   std::string error;
   const std::optional<std::vector<std::string_view>> place_values =
@@ -1945,6 +2149,9 @@ PlaceLoadResult ParsePlaces(std::string_view text, int width, int height) {
   return {true, std::move(places), {}};
 }
 
+/**
+ * @brief Loads places if present.
+ */
 PlaceLoadResult LoadPlacesIfPresent(const std::filesystem::path& path,
                                     int width, int height) {
   ReadFileResult file;
@@ -1958,6 +2165,9 @@ PlaceLoadResult LoadPlacesIfPresent(const std::filesystem::path& path,
   return ParsePlaces(file.content, width, height);
 }
 
+/**
+ * @brief Parses routes from external data.
+ */
 RouteLoadResult ParseRoutes(std::string_view text, int width, int height) {
   std::string error;
   const std::optional<std::vector<std::string_view>> route_values =
@@ -2009,6 +2219,9 @@ RouteLoadResult ParseRoutes(std::string_view text, int width, int height) {
   return {true, std::move(routes), {}};
 }
 
+/**
+ * @brief Loads routes if present.
+ */
 RouteLoadResult LoadRoutesIfPresent(const std::filesystem::path& path,
                                     int width, int height) {
   ReadFileResult file;
@@ -2022,6 +2235,9 @@ RouteLoadResult LoadRoutesIfPresent(const std::filesystem::path& path,
   return ParseRoutes(file.content, width, height);
 }
 
+/**
+ * @brief Parses world graph from external data.
+ */
 WorldGraphLoadResult ParseWorldGraph(std::string_view text, int width,
                                      int height) {
   std::string error;
@@ -2102,6 +2318,9 @@ WorldGraphLoadResult ParseWorldGraph(std::string_view text, int width,
   return {true, std::move(graph), {}};
 }
 
+/**
+ * @brief Loads world graph if present.
+ */
 WorldGraphLoadResult LoadWorldGraphIfPresent(const std::filesystem::path& path,
                                              int width, int height) {
   ReadFileResult file;
@@ -2115,6 +2334,9 @@ WorldGraphLoadResult LoadWorldGraphIfPresent(const std::filesystem::path& path,
   return ParseWorldGraph(file.content, width, height);
 }
 
+/**
+ * @brief Parses gameplay zones from external data.
+ */
 GameplayZoneLoadResult ParseGameplayZones(std::string_view text, int width,
                                           int height) {
   std::string error;
@@ -2200,6 +2422,9 @@ GameplayZoneLoadResult ParseGameplayZones(std::string_view text, int width,
   return {true, std::move(zones), {}};
 }
 
+/**
+ * @brief Loads gameplay zones if present.
+ */
 GameplayZoneLoadResult LoadGameplayZonesIfPresent(
     const std::filesystem::path& path, int width, int height) {
   ReadFileResult file;
@@ -2214,6 +2439,9 @@ GameplayZoneLoadResult LoadGameplayZonesIfPresent(
 }
 
 
+/**
+ * @brief Executes the extract nested coordinate operation.
+ */
 bool ExtractNestedCoordinate(std::string_view object,
                              std::string_view field_name,
                              int* x, int* y, std::string* error) {
@@ -2229,6 +2457,9 @@ bool ExtractNestedCoordinate(std::string_view object,
   return ExtractCoordinate(*nested, x, y, error);
 }
 
+/**
+ * @brief Executes the extract endpoint coordinate operation.
+ */
 bool ExtractEndpointCoordinate(std::string_view object,
                                std::string_view object_field,
                                std::string_view prefix,
@@ -2249,6 +2480,9 @@ bool ExtractEndpointCoordinate(std::string_view object,
   return ExtractNestedCoordinate(object, object_field, x, y, error);
 }
 
+/**
+ * @brief Executes the extract optional elevation operation.
+ */
 std::int8_t ExtractOptionalElevation(std::string_view object,
                                      std::string_view field_name,
                                      std::int8_t fallback) {
@@ -2259,6 +2493,9 @@ std::int8_t ExtractOptionalElevation(std::string_view object,
   return static_cast<std::int8_t>(std::clamp(elevation.value, -8, 8));
 }
 
+/**
+ * @brief Parses elevation transitions from external data.
+ */
 ElevationTransitionLoadResult ParseElevationTransitions(std::string_view text,
                                                         int width,
                                                         int height) {
@@ -2330,6 +2567,9 @@ ElevationTransitionLoadResult ParseElevationTransitions(std::string_view text,
   return {true, std::move(transitions), {}};
 }
 
+/**
+ * @brief Loads elevation transitions if present.
+ */
 ElevationTransitionLoadResult LoadElevationTransitionsIfPresent(
     const std::filesystem::path& path, int width, int height) {
   ReadFileResult file;
@@ -2343,6 +2583,9 @@ ElevationTransitionLoadResult LoadElevationTransitionsIfPresent(
   return ParseElevationTransitions(file.content, width, height);
 }
 
+/**
+ * @brief Parses markers from external data.
+ */
 MarkerLoadResult ParseMarkers(std::string_view text, int width, int height) {
   std::string error;
   std::string_view array_field_name = "markers";
@@ -2426,6 +2669,9 @@ MarkerLoadResult ParseMarkers(std::string_view text, int width, int height) {
   return {true, std::move(markers), {}};
 }
 
+/**
+ * @brief Loads markers if present.
+ */
 MarkerLoadResult LoadMarkersIfPresent(const std::filesystem::path& path,
                                       int width, int height) {
   std::error_code error_code;
@@ -2454,12 +2700,18 @@ MarkerLoadResult LoadMarkersIfPresent(const std::filesystem::path& path,
   return ParseMarkers(file.content, width, height);
 }
 
+/**
+ * @brief Executes the resolve package file operation.
+ */
 std::filesystem::path ResolvePackageFile(
     const std::filesystem::path& package_path,
     const std::string& relative_path) {
   return (package_path / std::filesystem::path(relative_path)).lexically_normal();
 }
 
+/**
+ * @brief Executes the resolve package layout operation.
+ */
 LevelLoadResult ResolvePackageLayout(const std::filesystem::path& package_path,
                                      PackageLayout* layout) {
   layout->package_path = package_path;
@@ -2627,6 +2879,9 @@ LevelLoadResult ResolvePackageLayout(const std::filesystem::path& package_path,
 
 }  // namespace
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string LevelPackageSummary::Dump() const {
   return "LevelPackageSummary { path: \"" + package_path.string() +
          "\", width: " + std::to_string(size.width) +
@@ -2645,6 +2900,9 @@ std::string LevelPackageSummary::Dump() const {
          ", graph_edges: " + std::to_string(graph_edge_count) + " }";
 }
 
+/**
+ * @brief Loads basic package.
+ */
 LevelLoadResult LevelLoader::LoadBasicPackage(
     const std::filesystem::path& package_path) const {
   std::error_code error_code;

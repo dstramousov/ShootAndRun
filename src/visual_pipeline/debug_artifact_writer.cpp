@@ -1,3 +1,9 @@
+/**
+ * @file src/visual_pipeline/debug_artifact_writer.cpp
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains
+ * implementation for debug_artifact_writer.cpp.
+ */
+
 #include "visual_pipeline/debug_artifact_writer.h"
 
 #include <algorithm>
@@ -25,6 +31,9 @@
 namespace sar::visual_pipeline {
 namespace {
 
+/**
+ * @brief Stores rgba color data shared between runtime systems.
+ */
 struct RgbaColor {
   std::uint8_t r = 0;
   std::uint8_t g = 0;
@@ -43,6 +52,9 @@ constexpr RgbaColor kRuins{128, 126, 116, 255};
 constexpr RgbaColor kWall{83, 79, 74, 255};
 constexpr RgbaColor kUnknown{190, 42, 160, 255};
 
+/**
+ * @brief Escapes JSON escape for serialized output.
+ */
 std::string JsonEscape(std::string_view text) {
   std::string escaped;
   escaped.reserve(text.size());
@@ -77,14 +89,23 @@ std::string JsonEscape(std::string_view text) {
   return escaped;
 }
 
+/**
+ * @brief Returns JSON string.
+ */
 std::string JsonString(std::string_view text) {
   return "\"" + JsonEscape(text) + "\"";
 }
 
+/**
+ * @brief Starts s with.
+ */
 bool StartsWith(std::string_view text, std::string_view prefix) {
   return text.size() >= prefix.size() && text.substr(0, prefix.size()) == prefix;
 }
 
+/**
+ * @brief Ensures directory.
+ */
 bool EnsureDirectory(const std::filesystem::path& path, std::string* error) {
   std::error_code code;
   std::filesystem::create_directories(path, code);
@@ -98,6 +119,9 @@ bool EnsureDirectory(const std::filesystem::path& path, std::string* error) {
   return true;
 }
 
+/**
+ * @brief Writes text file.
+ */
 bool WriteTextFile(const std::filesystem::path& path, const std::string& text,
                    std::string* error) {
   if (!EnsureDirectory(path.parent_path(), error)) {
@@ -123,6 +147,9 @@ bool WriteTextFile(const std::filesystem::path& path, const std::string& text,
   return true;
 }
 
+/**
+ * @brief Appends big endian32 to the output buffer.
+ */
 void AppendBigEndian32(std::uint32_t value, std::vector<std::uint8_t>* bytes) {
   bytes->push_back(static_cast<std::uint8_t>((value >> 24U) & 0xFFU));
   bytes->push_back(static_cast<std::uint8_t>((value >> 16U) & 0xFFU));
@@ -130,6 +157,9 @@ void AppendBigEndian32(std::uint32_t value, std::vector<std::uint8_t>* bytes) {
   bytes->push_back(static_cast<std::uint8_t>(value & 0xFFU));
 }
 
+/**
+ * @brief Computes crc32.
+ */
 std::uint32_t Crc32(const std::uint8_t* data, std::size_t size) {
   std::uint32_t crc = 0xFFFFFFFFU;
   for (std::size_t i = 0; i < size; ++i) {
@@ -142,6 +172,9 @@ std::uint32_t Crc32(const std::uint8_t* data, std::size_t size) {
   return crc ^ 0xFFFFFFFFU;
 }
 
+/**
+ * @brief Computes adler32.
+ */
 std::uint32_t Adler32(const std::vector<std::uint8_t>& data) {
   constexpr std::uint32_t kModulo = 65521U;
   std::uint32_t a = 1U;
@@ -153,6 +186,9 @@ std::uint32_t Adler32(const std::vector<std::uint8_t>& data) {
   return (b << 16U) | a;
 }
 
+/**
+ * @brief Appends png chunk to the output buffer.
+ */
 void AppendPngChunk(const std::array<char, 4>& type,
                     const std::vector<std::uint8_t>& data,
                     std::vector<std::uint8_t>* png) {
@@ -167,6 +203,9 @@ void AppendPngChunk(const std::array<char, 4>& type,
   AppendBigEndian32(crc, png);
 }
 
+/**
+ * @brief Builds stored deflate stream.
+ */
 std::vector<std::uint8_t> BuildStoredDeflateStream(
     const std::vector<std::uint8_t>& raw) {
   std::vector<std::uint8_t> stream;
@@ -197,6 +236,9 @@ std::vector<std::uint8_t> BuildStoredDeflateStream(
   return stream;
 }
 
+/**
+ * @brief Writes png rgba.
+ */
 bool WritePngRgba(const std::filesystem::path& path, int width, int height,
                   const std::vector<RgbaColor>& pixels,
                   std::string* error) {
@@ -268,6 +310,9 @@ bool WritePngRgba(const std::filesystem::path& path, int width, int height,
   return true;
 }
 
+/**
+ * @brief Builds binary mask image.
+ */
 std::vector<RgbaColor> BuildBinaryMaskImage(
     const std::vector<std::uint8_t>& mask, const LevelSize& size,
     RgbaColor on_color) {
@@ -282,6 +327,9 @@ std::vector<RgbaColor> BuildBinaryMaskImage(
   return pixels;
 }
 
+/**
+ * @brief Builds composite mask image.
+ */
 std::vector<RgbaColor> BuildCompositeMaskImage(const SemanticMasks& masks) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(masks.size.width) *
                                 static_cast<std::size_t>(masks.size.height),
@@ -315,6 +363,9 @@ std::vector<RgbaColor> BuildCompositeMaskImage(const SemanticMasks& masks) {
   return pixels;
 }
 
+/**
+ * @brief Returns the color used for region.
+ */
 RgbaColor RegionColor(TerrainType type, int region_id) {
   const std::uint8_t variation = static_cast<std::uint8_t>(
       32 + ((region_id * 37) % 96));
@@ -346,6 +397,9 @@ RgbaColor RegionColor(TerrainType type, int region_id) {
   return kUnknown;
 }
 
+/**
+ * @brief Builds region image.
+ */
 std::vector<RgbaColor> BuildRegionImage(const TerrainRegions& regions,
                                         TerrainType type) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(regions.size.width) *
@@ -367,6 +421,9 @@ std::vector<RgbaColor> BuildRegionImage(const TerrainRegions& regions,
 }
 
 
+/**
+ * @brief Sets pixel.
+ */
 void SetPixel(int x, int y, const LevelSize& size, RgbaColor color,
               std::vector<RgbaColor>* pixels) {
   if (x < 0 || y < 0 || x >= size.width || y >= size.height) {
@@ -375,6 +432,9 @@ void SetPixel(int x, int y, const LevelSize& size, RgbaColor color,
   (*pixels)[static_cast<std::size_t>(y * size.width + x)] = color;
 }
 
+/**
+ * @brief Draws point.
+ */
 void DrawPoint(int x, int y, int radius, const LevelSize& size,
                RgbaColor color, std::vector<RgbaColor>* pixels) {
   for (int dy = -radius; dy <= radius; ++dy) {
@@ -386,6 +446,9 @@ void DrawPoint(int x, int y, int radius, const LevelSize& size,
   }
 }
 
+/**
+ * @brief Draws line.
+ */
 void DrawLine(int x0, int y0, int x1, int y1, int thickness,
               const LevelSize& size, RgbaColor color,
               std::vector<RgbaColor>* pixels) {
@@ -414,6 +477,9 @@ void DrawLine(int x0, int y0, int x1, int y1, int thickness,
   }
 }
 
+/**
+ * @brief Checks whether a route belongs to the main path.
+ */
 bool RouteIsMain(const Route& route) {
   if (route.type.find("main") != std::string::npos) {
     return true;
@@ -426,6 +492,9 @@ bool RouteIsMain(const Route& route) {
   return false;
 }
 
+/**
+ * @brief Builds route image.
+ */
 std::vector<RgbaColor> BuildRouteImage(const LevelData& level,
                                        bool influence_mode) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(level.size.width) *
@@ -453,6 +522,9 @@ std::vector<RgbaColor> BuildRouteImage(const LevelData& level,
   return pixels;
 }
 
+/**
+ * @brief Builds places image.
+ */
 std::vector<RgbaColor> BuildPlacesImage(const LevelData& level) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(level.size.width) *
                                 static_cast<std::size_t>(level.size.height),
@@ -466,6 +538,9 @@ std::vector<RgbaColor> BuildPlacesImage(const LevelData& level) {
   return pixels;
 }
 
+/**
+ * @brief Builds object footprint image.
+ */
 std::vector<RgbaColor> BuildObjectFootprintImage(const LevelData& level) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(level.size.width) *
                                 static_cast<std::size_t>(level.size.height),
@@ -483,6 +558,9 @@ std::vector<RgbaColor> BuildObjectFootprintImage(const LevelData& level) {
   return pixels;
 }
 
+/**
+ * @brief Returns the color used for road band.
+ */
 RgbaColor RoadBandColor(std::uint8_t value) {
   const RoadVisualBand band = static_cast<RoadVisualBand>(value);
   switch (band) {
@@ -502,6 +580,9 @@ RgbaColor RoadBandColor(std::uint8_t value) {
   return kBlack;
 }
 
+/**
+ * @brief Builds road band image.
+ */
 std::vector<RgbaColor> BuildRoadBandImage(const RoadVisualPlan& plan) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
                                 static_cast<std::size_t>(plan.size.height),
@@ -512,6 +593,9 @@ std::vector<RgbaColor> BuildRoadBandImage(const RoadVisualPlan& plan) {
   return pixels;
 }
 
+/**
+ * @brief Builds road dressing influence image.
+ */
 std::vector<RgbaColor> BuildRoadDressingInfluenceImage(const RoadVisualPlan& plan) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
                                 static_cast<std::size_t>(plan.size.height),
@@ -534,6 +618,9 @@ std::vector<RgbaColor> BuildRoadDressingInfluenceImage(const RoadVisualPlan& pla
   return pixels;
 }
 
+/**
+ * @brief Returns the color used for ruin visual.
+ */
 RgbaColor RuinVisualColor(std::uint8_t value) {
   const RuinVisualTile tile = static_cast<RuinVisualTile>(value);
   switch (tile) {
@@ -559,6 +646,9 @@ RgbaColor RuinVisualColor(std::uint8_t value) {
   return kBlack;
 }
 
+/**
+ * @brief Builds ruin composition image.
+ */
 std::vector<RgbaColor> BuildRuinCompositionImage(const RuinVisualPlan& plan) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
                                 static_cast<std::size_t>(plan.size.height),
@@ -569,6 +659,9 @@ std::vector<RgbaColor> BuildRuinCompositionImage(const RuinVisualPlan& plan) {
   return pixels;
 }
 
+/**
+ * @brief Builds ruin site image.
+ */
 std::vector<RgbaColor> BuildRuinSiteImage(const RuinVisualPlan& plan) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
                                 static_cast<std::size_t>(plan.size.height),
@@ -586,6 +679,9 @@ std::vector<RgbaColor> BuildRuinSiteImage(const RuinVisualPlan& plan) {
   return pixels;
 }
 
+/**
+ * @brief Returns the color used for water visual.
+ */
 RgbaColor WaterVisualColor(std::uint8_t value) {
   const WaterVisualTile tile = static_cast<WaterVisualTile>(value);
   switch (tile) {
@@ -607,6 +703,9 @@ RgbaColor WaterVisualColor(std::uint8_t value) {
   return kBlack;
 }
 
+/**
+ * @brief Builds water visual image.
+ */
 std::vector<RgbaColor> BuildWaterVisualImage(const WaterVisualPlan& plan) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
                                 static_cast<std::size_t>(plan.size.height),
@@ -617,6 +716,9 @@ std::vector<RgbaColor> BuildWaterVisualImage(const WaterVisualPlan& plan) {
   return pixels;
 }
 
+/**
+ * @brief Builds water region image.
+ */
 std::vector<RgbaColor> BuildWaterRegionImage(const WaterVisualPlan& plan) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
                                 static_cast<std::size_t>(plan.size.height),
@@ -634,6 +736,9 @@ std::vector<RgbaColor> BuildWaterRegionImage(const WaterVisualPlan& plan) {
   return pixels;
 }
 
+/**
+ * @brief Returns the color used for object visual.
+ */
 RgbaColor ObjectVisualColor(ObjectVisualKind kind) {
   switch (kind) {
     case ObjectVisualKind::kVegetation:
@@ -666,6 +771,9 @@ RgbaColor ObjectVisualColor(ObjectVisualKind kind) {
   return RgbaColor{206, 46, 180, 255};
 }
 
+/**
+ * @brief Draws object footprint.
+ */
 void DrawObjectFootprint(const ObjectVisualItem& item, const LevelSize& size,
                          RgbaColor color, std::vector<RgbaColor>* pixels) {
   if (pixels == nullptr) {
@@ -680,6 +788,9 @@ void DrawObjectFootprint(const ObjectVisualItem& item, const LevelSize& size,
   SetPixel(item.x, item.y, size, kWhite, pixels);
 }
 
+/**
+ * @brief Builds object mapping image.
+ */
 std::vector<RgbaColor> BuildObjectMappingImage(const ObjectVisualPlan& plan) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
                                 static_cast<std::size_t>(plan.size.height),
@@ -690,6 +801,9 @@ std::vector<RgbaColor> BuildObjectMappingImage(const ObjectVisualPlan& plan) {
   return pixels;
 }
 
+/**
+ * @brief Builds object fallback image.
+ */
 std::vector<RgbaColor> BuildObjectFallbackImage(const ObjectVisualPlan& plan) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
                                 static_cast<std::size_t>(plan.size.height),
@@ -704,6 +818,9 @@ std::vector<RgbaColor> BuildObjectFallbackImage(const ObjectVisualPlan& plan) {
   return pixels;
 }
 
+/**
+ * @brief Returns the color used for micro scene kind.
+ */
 RgbaColor MicroSceneKindColor(MicroSceneKind kind) {
   switch (kind) {
     case MicroSceneKind::kCampScene:
@@ -726,6 +843,9 @@ RgbaColor MicroSceneKindColor(MicroSceneKind kind) {
   return kBlack;
 }
 
+/**
+ * @brief Returns the color used for micro scene tile.
+ */
 RgbaColor MicroSceneTileColor(MicroSceneTile tile) {
   switch (tile) {
     case MicroSceneTile::kGroundDetail:
@@ -748,6 +868,9 @@ RgbaColor MicroSceneTileColor(MicroSceneTile tile) {
   return kBlack;
 }
 
+/**
+ * @brief Builds micro scene tile image.
+ */
 std::vector<RgbaColor> BuildMicroSceneTileImage(
     const MicroSceneVisualPlan& plan) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
@@ -759,6 +882,9 @@ std::vector<RgbaColor> BuildMicroSceneTileImage(
   return pixels;
 }
 
+/**
+ * @brief Builds micro scene kind image.
+ */
 std::vector<RgbaColor> BuildMicroSceneKindImage(
     const MicroSceneVisualPlan& plan) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
@@ -772,6 +898,9 @@ std::vector<RgbaColor> BuildMicroSceneKindImage(
   return pixels;
 }
 
+/**
+ * @brief Returns the color used for forest depth.
+ */
 RgbaColor ForestDepthColor(std::uint8_t value) {
   const ForestDepthBand band = static_cast<ForestDepthBand>(value);
   switch (band) {
@@ -787,6 +916,9 @@ RgbaColor ForestDepthColor(std::uint8_t value) {
   return kBlack;
 }
 
+/**
+ * @brief Returns the color used for clearing role.
+ */
 RgbaColor ClearingRoleColor(std::uint8_t value) {
   const ClearingRole role = static_cast<ClearingRole>(value);
   switch (role) {
@@ -806,6 +938,9 @@ RgbaColor ClearingRoleColor(std::uint8_t value) {
   return kBlack;
 }
 
+/**
+ * @brief Returns the color used for clearing scene role.
+ */
 RgbaColor ClearingSceneRoleColor(std::uint8_t value) {
   const ClearingSceneRole role = static_cast<ClearingSceneRole>(value);
   switch (role) {
@@ -823,6 +958,9 @@ RgbaColor ClearingSceneRoleColor(std::uint8_t value) {
   return kBlack;
 }
 
+/**
+ * @brief Builds forest depth image.
+ */
 std::vector<RgbaColor> BuildForestDepthImage(const ForestVisualPlan& plan) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
                                 static_cast<std::size_t>(plan.size.height),
@@ -833,6 +971,9 @@ std::vector<RgbaColor> BuildForestDepthImage(const ForestVisualPlan& plan) {
   return pixels;
 }
 
+/**
+ * @brief Builds forest edge image.
+ */
 std::vector<RgbaColor> BuildForestEdgeImage(const ForestVisualPlan& plan) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
                                 static_cast<std::size_t>(plan.size.height),
@@ -845,6 +986,9 @@ std::vector<RgbaColor> BuildForestEdgeImage(const ForestVisualPlan& plan) {
   return pixels;
 }
 
+/**
+ * @brief Builds forest mass group image.
+ */
 std::vector<RgbaColor> BuildForestMassGroupImage(
     const ForestVisualPlan& plan) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
@@ -863,6 +1007,9 @@ std::vector<RgbaColor> BuildForestMassGroupImage(
   return pixels;
 }
 
+/**
+ * @brief Builds forest mass image.
+ */
 std::vector<RgbaColor> BuildForestMassImage(const ForestVisualPlan& plan) {
   std::vector<RgbaColor> pixels = BuildForestDepthImage(plan);
   for (std::size_t i = 0; i < plan.route_influence.size(); ++i) {
@@ -873,6 +1020,9 @@ std::vector<RgbaColor> BuildForestMassImage(const ForestVisualPlan& plan) {
   return pixels;
 }
 
+/**
+ * @brief Builds clearing role image.
+ */
 std::vector<RgbaColor> BuildClearingRoleImage(const ForestVisualPlan& plan) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
                                 static_cast<std::size_t>(plan.size.height),
@@ -883,6 +1033,9 @@ std::vector<RgbaColor> BuildClearingRoleImage(const ForestVisualPlan& plan) {
   return pixels;
 }
 
+/**
+ * @brief Builds clearing scene role image.
+ */
 std::vector<RgbaColor> BuildClearingSceneRoleImage(
     const ForestVisualPlan& plan) {
   std::vector<RgbaColor> pixels(static_cast<std::size_t>(plan.size.width) *
@@ -894,6 +1047,9 @@ std::vector<RgbaColor> BuildClearingSceneRoleImage(
   return pixels;
 }
 
+/**
+ * @brief Counts objects by type.
+ */
 std::map<std::string, int> CountObjectsByType(const LevelData& level) {
   std::map<std::string, int> counts;
   for (const RuntimeObject& object : level.objects) {
@@ -902,6 +1058,9 @@ std::map<std::string, int> CountObjectsByType(const LevelData& level) {
   return counts;
 }
 
+/**
+ * @brief Counts places by type.
+ */
 std::map<std::string, int> CountPlacesByType(const LevelData& level) {
   std::map<std::string, int> counts;
   for (const Place& place : level.places) {
@@ -910,6 +1069,9 @@ std::map<std::string, int> CountPlacesByType(const LevelData& level) {
   return counts;
 }
 
+/**
+ * @brief Counts routes by type.
+ */
 std::map<std::string, int> CountRoutesByType(const LevelData& level) {
   std::map<std::string, int> counts;
   for (const Route& route : level.routes) {
@@ -918,6 +1080,9 @@ std::map<std::string, int> CountRoutesByType(const LevelData& level) {
   return counts;
 }
 
+/**
+ * @brief Counts zones by type.
+ */
 std::map<std::string, int> CountZonesByType(const LevelData& level) {
   std::map<std::string, int> counts;
   for (const GameplayZone& zone : level.zones) {
@@ -926,6 +1091,9 @@ std::map<std::string, int> CountZonesByType(const LevelData& level) {
   return counts;
 }
 
+/**
+ * @brief Appends JSON int map to the output buffer.
+ */
 void AppendJsonIntMap(std::ostringstream* json,
                       const std::map<std::string, int>& counts,
                       int indent_spaces) {
@@ -938,6 +1106,9 @@ void AppendJsonIntMap(std::ostringstream* json,
   }
 }
 
+/**
+ * @brief Returns percent string.
+ */
 std::string PercentString(int count, int total) {
   const double percent = total > 0 ? static_cast<double>(count) * 100.0 /
                                         static_cast<double>(total)
@@ -947,6 +1118,9 @@ std::string PercentString(int count, int total) {
   return stream.str();
 }
 
+/**
+ * @brief Appends JSON count field to the output buffer.
+ */
 void AppendJsonCountField(std::ostringstream* json, std::string_view name,
                           int count, int total, bool comma) {
   *json << "    \"" << name << "\": {\"count\": " << count
@@ -957,22 +1131,34 @@ void AppendJsonCountField(std::ostringstream* json, std::string_view name,
   *json << "\n";
 }
 
+/**
+ * @brief Checks whether object inside is true.
+ */
 bool IsObjectInside(const RuntimeObject& object, const LevelSize& size) {
   return object.x >= 0 && object.y >= 0 && object.width > 0 &&
          object.height > 0 && object.x + object.width <= size.width &&
          object.y + object.height <= size.height;
 }
 
+/**
+ * @brief Checks whether marker inside is true.
+ */
 bool IsMarkerInside(const Marker& marker, const LevelSize& size) {
   return marker.x >= 0 && marker.y >= 0 && marker.x < size.width &&
          marker.y < size.height;
 }
 
+/**
+ * @brief Checks whether place inside is true.
+ */
 bool IsPlaceInside(const Place& place, const LevelSize& size) {
   return place.x >= 0 && place.y >= 0 && place.x < size.width &&
          place.y < size.height;
 }
 
+/**
+ * @brief Counts regions by type.
+ */
 std::map<std::string, int> CountRegionsByType(const TerrainRegions& regions) {
   std::map<std::string, int> counts;
   for (const TerrainRegion& region : regions.regions) {
@@ -983,9 +1169,15 @@ std::map<std::string, int> CountRegionsByType(const TerrainRegions& regions) {
 
 }  // namespace
 
+/**
+ * @brief Implements DebugArtifactWriter::DebugArtifactWriter.
+ */
 DebugArtifactWriter::DebugArtifactWriter(std::filesystem::path output_root)
     : output_root_(std::move(output_root)) {}
 
+/**
+ * @brief Writes input validation report.
+ */
 bool DebugArtifactWriter::WriteInputValidationReport(
     const LevelData& level, std::string* error) const {
   const int expected_cells = level.size.width * level.size.height;
@@ -1059,6 +1251,9 @@ bool DebugArtifactWriter::WriteInputValidationReport(
                        json.str(), error);
 }
 
+/**
+ * @brief Writes semantic mask artifacts.
+ */
 bool DebugArtifactWriter::WriteSemanticMaskArtifacts(
     const SemanticMasks& masks, std::string* error) const {
   if (!masks.IsValid()) {
@@ -1136,6 +1331,9 @@ bool DebugArtifactWriter::WriteSemanticMaskArtifacts(
 }
 
 
+/**
+ * @brief Writes semantic link artifacts.
+ */
 bool DebugArtifactWriter::WriteSemanticLinkArtifacts(
     const LevelData& level, std::string* error) const {
   const std::filesystem::path directory = output_root_ / "semantic_masks";
@@ -1196,6 +1394,9 @@ bool DebugArtifactWriter::WriteSemanticLinkArtifacts(
                        json.str(), error);
 }
 
+/**
+ * @brief Writes ruin visual artifacts.
+ */
 bool DebugArtifactWriter::WriteRuinVisualArtifacts(
     const RuinVisualPlan& plan, std::string* error) const {
   if (!plan.IsValid()) {
@@ -1259,6 +1460,9 @@ bool DebugArtifactWriter::WriteRuinVisualArtifacts(
                        json.str(), error);
 }
 
+/**
+ * @brief Writes water visual artifacts.
+ */
 bool DebugArtifactWriter::WriteWaterVisualArtifacts(
     const WaterVisualPlan& plan, std::string* error) const {
   if (!plan.IsValid()) {
@@ -1322,6 +1526,9 @@ bool DebugArtifactWriter::WriteWaterVisualArtifacts(
                        json.str(), error);
 }
 
+/**
+ * @brief Writes object visual artifacts.
+ */
 bool DebugArtifactWriter::WriteObjectVisualArtifacts(
     const ObjectVisualPlan& plan, std::string* error) const {
   if (!plan.IsValid()) {
@@ -1387,6 +1594,9 @@ bool DebugArtifactWriter::WriteObjectVisualArtifacts(
                        json.str(), error);
 }
 
+/**
+ * @brief Writes micro scene visual artifacts.
+ */
 bool DebugArtifactWriter::WriteMicroSceneVisualArtifacts(
     const MicroSceneVisualPlan& plan, std::string* error) const {
   if (!plan.IsValid()) {
@@ -1458,6 +1668,9 @@ bool DebugArtifactWriter::WriteMicroSceneVisualArtifacts(
                        json.str(), error);
 }
 
+/**
+ * @brief Writes road visual artifacts.
+ */
 bool DebugArtifactWriter::WriteRoadVisualArtifacts(
     const RoadVisualPlan& plan, std::string* error) const {
   if (!plan.IsValid()) {
@@ -1526,6 +1739,9 @@ bool DebugArtifactWriter::WriteRoadVisualArtifacts(
                        json.str(), error);
 }
 
+/**
+ * @brief Writes forest visual artifacts.
+ */
 bool DebugArtifactWriter::WriteForestVisualArtifacts(
     const ForestVisualPlan& plan, std::string* error) const {
   if (!plan.IsValid()) {
@@ -1652,6 +1868,9 @@ bool DebugArtifactWriter::WriteForestVisualArtifacts(
                        detailed_json.str(), error);
 }
 
+/**
+ * @brief Writes terrain region artifacts.
+ */
 bool DebugArtifactWriter::WriteTerrainRegionArtifacts(
     const TerrainRegions& regions, std::string* error) const {
   if (!regions.IsValid()) {

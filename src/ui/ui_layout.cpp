@@ -1,9 +1,18 @@
+/**
+ * @file src/ui/ui_layout.cpp
+ * @brief Main menu, confirmation dialog, and UI layout. Contains implementation for
+ * ui_layout.cpp.
+ */
+
 #include "ui/ui_layout.h"
 
 #include <algorithm>
 
 namespace sar {
 
+/**
+ * @brief Executes the calculate main menu layout operation.
+ */
 std::vector<MenuItemLayout> CalculateMainMenuLayout(int item_count,
                                                     const WindowState& window) {
   std::vector<MenuItemLayout> layouts;
@@ -29,6 +38,9 @@ std::vector<MenuItemLayout> CalculateMainMenuLayout(int item_count,
   return layouts;
 }
 
+/**
+ * @brief Executes the calculate confirm dialog layout operation.
+ */
 ConfirmDialogLayout CalculateConfirmDialogLayout(const WindowState& window) {
   const float dialog_width = 520.0F * window.ui_scale;
   const float dialog_height = 240.0F * window.ui_scale;
@@ -48,6 +60,9 @@ ConfirmDialogLayout CalculateConfirmDialogLayout(const WindowState& window) {
       Rect{no_x, buttons_y, button_width, button_height}};
 }
 
+/**
+ * @brief Executes the hit test menu item operation.
+ */
 int HitTestMenuItem(const std::vector<MenuItemLayout>& layouts,
                     const Vec2& position) {
   for (const MenuItemLayout& layout : layouts) {
@@ -59,6 +74,9 @@ int HitTestMenuItem(const std::vector<MenuItemLayout>& layouts,
   return -1;
 }
 
+/**
+ * @brief Checks whether the container includes point.
+ */
 bool ContainsPoint(const Rect& rect, const Vec2& position) {
   return position.x >= rect.x && position.x <= rect.x + rect.width &&
          position.y >= rect.y && position.y <= rect.y + rect.height;

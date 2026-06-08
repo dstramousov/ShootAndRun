@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_UI_UI_LAYOUT_H_
 #define SHOOT_AND_RUN_CPP_SRC_UI_UI_LAYOUT_H_
 
+/**
+ * @file src/ui/ui_layout.h
+ * @brief Main menu, confirmation dialog, and UI layout. Contains public declarations for
+ * ui_layout.h.
+ */
+
 #include <vector>
 
 #include "core/types.h"
@@ -8,15 +14,21 @@
 
 namespace sar {
 
+/**
+ * @brief Stores menu item layout data shared between runtime systems.
+ */
 struct MenuItemLayout {
-  int index = -1;
-  Rect bounds;
+  int index = -1;  ///< Index value carried by this data structure.
+  Rect bounds;  ///< Bounds value carried by this data structure.
 };
 
+/**
+ * @brief Stores confirm dialog layout data shared between runtime systems.
+ */
 struct ConfirmDialogLayout {
-  Rect dialog_bounds;
-  Rect yes_bounds;
-  Rect no_bounds;
+  Rect dialog_bounds;  ///< Dialog bounds value carried by this data structure.
+  Rect yes_bounds;  ///< Yes bounds value carried by this data structure.
+  Rect no_bounds;  ///< No bounds value carried by this data structure.
 };
 
 /**

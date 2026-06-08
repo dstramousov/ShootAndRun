@@ -50,7 +50,7 @@
     "render3d_visibility_enabled": true,
     "render3d_visibility_radius_tiles": 22,
     "render3d_visibility_memory_enabled": true,
-    "render3d_fog_mode": "raycast",
+    "render3d_fog_mode": "circle",
     "render3d_seen_tile_dim_factor": 0.32
   },
   "render3d_intro_camera": {

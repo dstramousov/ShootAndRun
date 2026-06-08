@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_LOGGING_LOGGER_H_
 #define SHOOT_AND_RUN_CPP_SRC_LOGGING_LOGGER_H_
 
+/**
+ * @file src/logging/logger.h
+ * @brief Terminal logging, log levels, and thread context. Contains public declarations for
+ * logger.h.
+ */
+
 #include <mutex>
 #include <string>
 #include <string_view>
@@ -10,26 +16,38 @@
 
 namespace sar {
 
+/**
+ * @brief Defines the supported log highlight scope values.
+ */
 enum class LogHighlightScope {
   kMessage,
   kFullLine,
 };
 
+/**
+ * @brief Stores log highlight rule data shared between runtime systems.
+ */
 struct LogHighlightRule {
-  std::string name;
-  std::string regex_pattern;
-  std::string color;
-  LogHighlightScope scope = LogHighlightScope::kMessage;
-  bool case_sensitive = true;
+  std::string name;  ///< Human-readable name or configuration key.
+  std::string regex_pattern;  ///< Regular expression used to match log text.
+  std::string color;  ///< Configured color name or value.
+  LogHighlightScope scope = LogHighlightScope::kMessage;  ///< Scope value carried by this data structure.
+  bool case_sensitive = true;  ///< true when matching keeps case-sensitive behavior.
 };
 
+/**
+ * @brief Stores logger config data shared between runtime systems.
+ */
 struct LoggerConfig {
-  LogLevel min_level = LogLevel::kInfo;
-  bool color_enabled = true;
-  bool show_execution_context = true;
-  std::vector<LogHighlightRule> highlight_rules;
+  LogLevel min_level = LogLevel::kInfo;  ///< Min level value carried by this data structure.
+  bool color_enabled = true;  ///< Color enabled value carried by this data structure.
+  bool show_execution_context = true;  ///< Boolean flag controlling show execution context.
+  std::vector<LogHighlightRule> highlight_rules;  ///< Highlight rules value carried by this data structure.
 };
 
+/**
+ * @brief Owns the logger behavior and its runtime state.
+ */
 class Logger {
  public:
   /**

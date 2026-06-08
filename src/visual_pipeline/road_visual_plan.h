@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_ROAD_VISUAL_PLAN_H_
 #define SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_ROAD_VISUAL_PLAN_H_
 
+/**
+ * @file src/visual_pipeline/road_visual_plan.h
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains public
+ * declarations for road_visual_plan.h.
+ */
+
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -26,19 +32,19 @@ enum class RoadVisualBand : std::uint8_t {
  * @brief Counters produced by the road visual planning pass.
  */
 struct RoadVisualSummary {
-  int route_count = 0;
-  int main_route_count = 0;
-  int side_route_count = 0;
-  int hidden_route_count = 0;
-  int terrain_road_tiles = 0;
-  int road_dressing_tiles = 0;
-  int road_core_tiles = 0;
-  int road_side_tiles = 0;
-  int trampled_grass_tiles = 0;
-  int mud_patch_tiles = 0;
-  int ruin_approach_tiles = 0;
-  int route_influenced_tiles = 0;
-  bool routes_used_for_visual_roads = false;
+  int route_count = 0;  ///< Count of route count entries or events.
+  int main_route_count = 0;  ///< Count of main route count entries or events.
+  int side_route_count = 0;  ///< Count of side route count entries or events.
+  int hidden_route_count = 0;  ///< Count of hidden route count entries or events.
+  int terrain_road_tiles = 0;  ///< Terrain road tiles value carried by this data structure.
+  int road_dressing_tiles = 0;  ///< Road dressing tiles value carried by this data structure.
+  int road_core_tiles = 0;  ///< Road core tiles value carried by this data structure.
+  int road_side_tiles = 0;  ///< Road side tiles value carried by this data structure.
+  int trampled_grass_tiles = 0;  ///< Trampled grass tiles value carried by this data structure.
+  int mud_patch_tiles = 0;  ///< Mud patch tiles value carried by this data structure.
+  int ruin_approach_tiles = 0;  ///< Ruin approach tiles value carried by this data structure.
+  int route_influenced_tiles = 0;  ///< Route influenced tiles value carried by this data structure.
+  bool routes_used_for_visual_roads = false;  ///< Routes used for visual roads value carried by this data structure.
 
   /**
    * @brief Returns a readable dump of road visual counters.
@@ -52,10 +58,10 @@ struct RoadVisualSummary {
  * @brief Planned road influence and visual band masks.
  */
 struct RoadVisualPlan {
-  LevelSize size;
-  std::vector<std::uint8_t> road_bands;
-  std::vector<std::uint8_t> route_influence;
-  RoadVisualSummary summary;
+  LevelSize size;  ///< Size value carried by this data structure.
+  std::vector<std::uint8_t> road_bands;  ///< Road bands value carried by this data structure.
+  std::vector<std::uint8_t> route_influence;  ///< Route influence value carried by this data structure.
+  RoadVisualSummary summary;  ///< Summary value carried by this data structure.
 
   /**
    * @brief Returns true when the plan matches the level dimensions.

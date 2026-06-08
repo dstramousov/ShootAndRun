@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_SEMANTIC_MASKS_H_
 #define SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_SEMANTIC_MASKS_H_
 
+/**
+ * @file src/visual_pipeline/semantic_masks.h
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains public
+ * declarations for semantic_masks.h.
+ */
+
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -13,23 +19,23 @@ namespace sar::visual_pipeline {
  * @brief Counters describing semantic mask coverage for one level.
  */
 struct SemanticMaskSummary {
-  int total_tiles = 0;
-  int open_ground_tiles = 0;
-  int forest_tiles = 0;
-  int road_tiles = 0;
-  int swamp_tiles = 0;
-  int water_tiles = 0;
-  int ruins_tiles = 0;
-  int wall_tiles = 0;
-  int unknown_tiles = 0;
-  int walkable_tiles = 0;
-  int blocked_tiles = 0;
-  int vision_blocked_tiles = 0;
-  int projectile_blocked_tiles = 0;
-  int cover_tiles = 0;
-  int concealment_tiles = 0;
-  int low_ground_tiles = 0;
-  int elevated_tiles = 0;
+  int total_tiles = 0;  ///< Total tiles value carried by this data structure.
+  int open_ground_tiles = 0;  ///< Open ground tiles value carried by this data structure.
+  int forest_tiles = 0;  ///< Forest tiles value carried by this data structure.
+  int road_tiles = 0;  ///< Road tiles value carried by this data structure.
+  int swamp_tiles = 0;  ///< Swamp tiles value carried by this data structure.
+  int water_tiles = 0;  ///< Water tiles value carried by this data structure.
+  int ruins_tiles = 0;  ///< Ruins tiles value carried by this data structure.
+  int wall_tiles = 0;  ///< Wall tiles value carried by this data structure.
+  int unknown_tiles = 0;  ///< Unknown tiles value carried by this data structure.
+  int walkable_tiles = 0;  ///< Walkable tiles value carried by this data structure.
+  int blocked_tiles = 0;  ///< Blocked tiles value carried by this data structure.
+  int vision_blocked_tiles = 0;  ///< Vision blocked tiles value carried by this data structure.
+  int projectile_blocked_tiles = 0;  ///< Projectile blocked tiles value carried by this data structure.
+  int cover_tiles = 0;  ///< Cover tiles value carried by this data structure.
+  int concealment_tiles = 0;  ///< Concealment tiles value carried by this data structure.
+  int low_ground_tiles = 0;  ///< Low ground tiles value carried by this data structure.
+  int elevated_tiles = 0;  ///< Elevated tiles value carried by this data structure.
 
   /**
    * @brief Returns a readable summary of semantic mask counters.
@@ -43,23 +49,23 @@ struct SemanticMaskSummary {
  * @brief Boolean and height masks derived from loaded runtime level data.
  */
 struct SemanticMasks {
-  LevelSize size;
-  std::vector<std::uint8_t> open_ground;
-  std::vector<std::uint8_t> forest;
-  std::vector<std::uint8_t> road;
-  std::vector<std::uint8_t> swamp;
-  std::vector<std::uint8_t> water;
-  std::vector<std::uint8_t> ruins;
-  std::vector<std::uint8_t> wall;
-  std::vector<std::uint8_t> unknown;
-  std::vector<std::uint8_t> walkable;
-  std::vector<std::uint8_t> blocked;
-  std::vector<std::uint8_t> vision_blocked;
-  std::vector<std::uint8_t> projectile_blocked;
-  std::vector<std::uint8_t> cover;
-  std::vector<std::uint8_t> concealment;
-  std::vector<std::int8_t> height;
-  SemanticMaskSummary summary;
+  LevelSize size;  ///< Size value carried by this data structure.
+  std::vector<std::uint8_t> open_ground;  ///< Open ground value carried by this data structure.
+  std::vector<std::uint8_t> forest;  ///< Forest value carried by this data structure.
+  std::vector<std::uint8_t> road;  ///< Road value carried by this data structure.
+  std::vector<std::uint8_t> swamp;  ///< Swamp value carried by this data structure.
+  std::vector<std::uint8_t> water;  ///< Water value carried by this data structure.
+  std::vector<std::uint8_t> ruins;  ///< Ruins value carried by this data structure.
+  std::vector<std::uint8_t> wall;  ///< Wall value carried by this data structure.
+  std::vector<std::uint8_t> unknown;  ///< Unknown value carried by this data structure.
+  std::vector<std::uint8_t> walkable;  ///< true when movement is allowed by the movement grid.
+  std::vector<std::uint8_t> blocked;  ///< Blocked value carried by this data structure.
+  std::vector<std::uint8_t> vision_blocked;  ///< Vision blocked value carried by this data structure.
+  std::vector<std::uint8_t> projectile_blocked;  ///< Projectile blocked value carried by this data structure.
+  std::vector<std::uint8_t> cover;  ///< Cover strength encoded by the runtime grid.
+  std::vector<std::uint8_t> concealment;  ///< Concealment strength encoded by the runtime grid.
+  std::vector<std::int8_t> height;  ///< Signed elevation level for this tile or object.
+  SemanticMaskSummary summary;  ///< Summary value carried by this data structure.
 
   /**
    * @brief Returns true when all semantic masks match the level dimensions.

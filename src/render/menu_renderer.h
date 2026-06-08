@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_RENDER_MENU_RENDERER_H_
 #define SHOOT_AND_RUN_CPP_SRC_RENDER_MENU_RENDERER_H_
 
+/**
+ * @file src/render/menu_renderer.h
+ * @brief 2D/debug rendering helpers retained by the application shell. Contains public
+ * declarations for menu_renderer.h.
+ */
+
 #include "render/ui_font.h"
 #include "ui/confirm_dialog.h"
 #include "ui/main_menu.h"
@@ -8,6 +14,9 @@
 
 namespace sar {
 
+/**
+ * @brief Owns the menu renderer behavior and its runtime state.
+ */
 class MenuRenderer {
  public:
   /**

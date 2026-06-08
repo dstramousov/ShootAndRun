@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_PLATFORM_TERMINAL_H_
 #define SHOOT_AND_RUN_CPP_SRC_PLATFORM_TERMINAL_H_
 
+/**
+ * @file src/platform/terminal.h
+ * @brief Platform-specific process, terminal, and memory utilities. Contains public
+ * declarations for terminal.h.
+ */
+
 namespace sar {
 
 /**

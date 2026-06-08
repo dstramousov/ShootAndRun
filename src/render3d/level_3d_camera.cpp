@@ -1,3 +1,9 @@
+/**
+ * @file src/render3d/level_3d_camera.cpp
+ * @brief 3D renderer, camera, player movement, fog, and asset registry. Contains implementation
+ * for level_3d_camera.cpp.
+ */
+
 #include "render3d/level_3d_camera.h"
 
 #include <algorithm>
@@ -11,10 +17,16 @@ constexpr float kPi = 3.14159265358979323846F;
 constexpr float kTargetEyeHeight = 0.35F;
 constexpr float kVectorEpsilon = 0.0001F;
 
+/**
+ * @brief Executes the radians to degrees operation.
+ */
 float RadiansToDegrees(float radians) {
   return radians * 180.0F / kPi;
 }
 
+/**
+ * @brief Executes the exponential alpha operation.
+ */
 float ExponentialAlpha(float speed, float dt) {
   if (speed <= 0.0F || dt <= 0.0F) {
     return 0.0F;
@@ -22,26 +34,44 @@ float ExponentialAlpha(float speed, float dt) {
   return std::clamp(1.0F - std::exp(-speed * dt), 0.0F, 1.0F);
 }
 
+/**
+ * @brief Executes the smooth float operation.
+ */
 float SmoothFloat(float current, float target, float speed, float dt) {
   return current + (target - current) * ExponentialAlpha(speed, dt);
 }
 
+/**
+ * @brief Adds vector3.
+ */
 Vector3 AddVector3(Vector3 lhs, Vector3 rhs) {
   return Vector3{lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z};
 }
 
+/**
+ * @brief Executes the subtract vector3 operation.
+ */
 Vector3 SubtractVector3(Vector3 lhs, Vector3 rhs) {
   return Vector3{lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z};
 }
 
+/**
+ * @brief Executes the scale vector3 operation.
+ */
 Vector3 ScaleVector3(Vector3 value, float scale) {
   return Vector3{value.x * scale, value.y * scale, value.z * scale};
 }
 
+/**
+ * @brief Executes the length squared xz operation.
+ */
 float LengthSquaredXZ(Vector3 value) {
   return value.x * value.x + value.z * value.z;
 }
 
+/**
+ * @brief Executes the normalize xz or fallback operation.
+ */
 Vector3 NormalizeXZOrFallback(Vector3 value, Vector3 fallback) {
   const float length_squared = LengthSquaredXZ(value);
   if (length_squared <= kVectorEpsilon) {
@@ -51,6 +81,9 @@ Vector3 NormalizeXZOrFallback(Vector3 value, Vector3 fallback) {
   return Vector3{value.x * inv_length, 0.0F, value.z * inv_length};
 }
 
+/**
+ * @brief Executes the smooth vector3 operation.
+ */
 Vector3 SmoothVector3(Vector3 current, Vector3 target, float speed, float dt) {
   const float alpha = ExponentialAlpha(speed, dt);
   return Vector3{current.x + (target.x - current.x) * alpha,
@@ -58,17 +91,26 @@ Vector3 SmoothVector3(Vector3 current, Vector3 target, float speed, float dt) {
                  current.z + (target.z - current.z) * alpha};
 }
 
+/**
+ * @brief Executes the lerp vector3 operation.
+ */
 Vector3 LerpVector3(Vector3 current, Vector3 target, float alpha) {
   return Vector3{current.x + (target.x - current.x) * alpha,
                  current.y + (target.y - current.y) * alpha,
                  current.z + (target.z - current.z) * alpha};
 }
 
+/**
+ * @brief Executes the smooth step operation.
+ */
 float SmoothStep(float value) {
   const float t = std::clamp(value, 0.0F, 1.0F);
   return t * t * (3.0F - 2.0F * t);
 }
 
+/**
+ * @brief Executes the rotate xz operation.
+ */
 Vector3 RotateXZ(Vector3 value, float degrees) {
   const float radians = degrees * kPi / 180.0F;
   const float sine = std::sin(radians);
@@ -78,6 +120,9 @@ Vector3 RotateXZ(Vector3 value, float degrees) {
                  value.x * sine + value.z * cosine};
 }
 
+/**
+ * @brief Executes the player target position operation.
+ */
 Vector3 PlayerTargetPosition(const LevelData& level,
                              const Level3DPlayerState& player,
                              float tile_world_size,
@@ -88,12 +133,18 @@ Vector3 PlayerTargetPosition(const LevelData& level,
   return position;
 }
 
+/**
+ * @brief Executes the player facing forward operation.
+ */
 Vector3 PlayerFacingForward(const Level3DPlayerState& player) {
   return NormalizeXZOrFallback(
       Vector3{player.facing_x, 0.0F, player.facing_y},
       Vector3{0.0F, 0.0F, -1.0F});
 }
 
+/**
+ * @brief Clamps xz to map bounds to a safe range.
+ */
 Vector3 ClampXZToMapBounds(const LevelData& level,
                            Vector3 value,
                            float tile_world_size,
@@ -124,6 +175,9 @@ Vector3 ClampXZToMapBounds(const LevelData& level,
   return value;
 }
 
+/**
+ * @brief Builds desired camera position.
+ */
 Vector3 BuildDesiredCameraPosition(Vector3 anchor,
                                    Vector3 forward,
                                    const Level3DCameraState& state) {
@@ -132,6 +186,9 @@ Vector3 BuildDesiredCameraPosition(Vector3 anchor,
   return position;
 }
 
+/**
+ * @brief Stores camera pose 3D data shared between runtime systems.
+ */
 struct CameraPose3D {
   Vector3 position{0.0F, 0.0F, 0.0F};
   Vector3 target{0.0F, 0.0F, 0.0F};
@@ -139,6 +196,9 @@ struct CameraPose3D {
   Vector3 forward{0.0F, 0.0F, -1.0F};
 };
 
+/**
+ * @brief Builds camera pose.
+ */
 CameraPose3D BuildCameraPose(const LevelData& level,
                              const Level3DPlayerState& player,
                              float tile_world_size,
@@ -165,6 +225,9 @@ CameraPose3D BuildCameraPose(const LevelData& level,
   return CameraPose3D{position, target, lookahead, forward};
 }
 
+/**
+ * @brief Executes the emit intro event operation.
+ */
 void EmitIntroEvent(Level3DCameraIntroEvent event,
                     Level3DCameraState* state) {
   if (state == nullptr) {
@@ -174,6 +237,9 @@ void EmitIntroEvent(Level3DCameraIntroEvent event,
   ++state->intro_event_sequence;
 }
 
+/**
+ * @brief Executes the finish intro operation.
+ */
 void FinishIntro(Level3DCameraIntroEvent event, Level3DCameraState* state) {
   if (state == nullptr) {
     return;
@@ -192,6 +258,9 @@ void FinishIntro(Level3DCameraIntroEvent event, Level3DCameraState* state) {
 
 }  // namespace
 
+/**
+ * @brief Initializes level 3D camera.
+ */
 void InitializeLevel3DCamera(const LevelData& level,
                              Level3DCameraState* state) {
   if (state == nullptr) {
@@ -221,6 +290,9 @@ void InitializeLevel3DCamera(const LevelData& level,
   state->initialized = false;
 }
 
+/**
+ * @brief Starts level 3D camera intro.
+ */
 void StartLevel3DCameraIntro(const LevelData& level,
                              const Level3DPlayerState& player,
                              float tile_world_size,
@@ -259,14 +331,23 @@ void StartLevel3DCameraIntro(const LevelData& level,
   EmitIntroEvent(Level3DCameraIntroEvent::kStarted, state);
 }
 
+/**
+ * @brief Checks whether level 3D camera intro active is true.
+ */
 bool IsLevel3DCameraIntroActive(const Level3DCameraState& state) {
   return state.intro_active;
 }
 
+/**
+ * @brief Executes the level 3D camera intro locks player operation.
+ */
 bool Level3DCameraIntroLocksPlayer(const Level3DCameraState& state) {
   return state.intro_active && state.intro_lock_player_input;
 }
 
+/**
+ * @brief Executes the level 3D camera intro skip requested operation.
+ */
 bool Level3DCameraIntroSkipRequested(const Level3DCameraState& state,
                                       const InputState& input) {
   return state.intro_active && state.intro_skip_enabled &&
@@ -274,6 +355,9 @@ bool Level3DCameraIntroSkipRequested(const Level3DCameraState& state,
           input.left_mouse_pressed);
 }
 
+/**
+ * @brief Executes the skip level 3D camera intro operation.
+ */
 void SkipLevel3DCameraIntro(Level3DCameraState* state) {
   if (state == nullptr || !state->intro_active) {
     return;
@@ -281,6 +365,9 @@ void SkipLevel3DCameraIntro(Level3DCameraState* state) {
   FinishIntro(Level3DCameraIntroEvent::kSkipped, state);
 }
 
+/**
+ * @brief Updates level 3D camera for the current frame.
+ */
 void UpdateLevel3DCamera(const LevelData& level,
                          const Level3DPlayerState& player,
                          const InputState& input,
@@ -373,6 +460,9 @@ void UpdateLevel3DCamera(const LevelData& level,
                                                state->last_forward.x));
 }
 
+/**
+ * @brief Builds level 3D camera.
+ */
 Camera3D BuildLevel3DCamera(const LevelData& level,
                             const Level3DPlayerState& player,
                             const Level3DCameraState& state,
@@ -395,6 +485,9 @@ Camera3D BuildLevel3DCamera(const LevelData& level,
   return camera;
 }
 
+/**
+ * @brief Returns level 3D camera intro event to string.
+ */
 std::string Level3DCameraIntroEventToString(
     const Level3DCameraState& state) {
   std::ostringstream stream;
@@ -421,6 +514,9 @@ std::string Level3DCameraIntroEventToString(
   return stream.str();
 }
 
+/**
+ * @brief Returns level 3D camera state to string.
+ */
 std::string Level3DCameraStateToString(const Level3DCameraState& state) {
   std::ostringstream stream;
   stream << "camera3d: yaw=" << state.yaw_deg

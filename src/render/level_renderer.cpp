@@ -1,3 +1,9 @@
+/**
+ * @file src/render/level_renderer.cpp
+ * @brief 2D/debug rendering helpers retained by the application shell. Contains implementation
+ * for level_renderer.cpp.
+ */
+
 #include "render/level_renderer.h"
 
 #include <raylib.h>
@@ -24,6 +30,9 @@
 namespace sar {
 namespace {
 
+/**
+ * @brief Stores visible tile range data shared between runtime systems.
+ */
 struct VisibleTileRange {
   int min_x = 0;
   int max_x = 0;
@@ -31,6 +40,9 @@ struct VisibleTileRange {
   int max_y = 0;
 };
 
+/**
+ * @brief Returns the color used for terrain.
+ */
 Color TerrainColor(TerrainType terrain) {
   switch (terrain) {
     case TerrainType::kOpenGround:
@@ -54,6 +66,9 @@ Color TerrainColor(TerrainType terrain) {
   return Color{138, 62, 128, 255};
 }
 
+/**
+ * @brief Returns the color used for road band.
+ */
 Color RoadBandColor(std::uint8_t value) {
   const auto band = static_cast<visual_pipeline::RoadVisualBand>(value);
   switch (band) {
@@ -73,6 +88,9 @@ Color RoadBandColor(std::uint8_t value) {
   return Color{78, 104, 58, 255};
 }
 
+/**
+ * @brief Returns the color used for forest depth.
+ */
 Color ForestDepthColor(std::uint8_t value) {
   const auto band =
       static_cast<visual_pipeline::ForestDepthBand>(value);
@@ -89,6 +107,9 @@ Color ForestDepthColor(std::uint8_t value) {
   return Color{22, 64, 40, 255};
 }
 
+/**
+ * @brief Returns the color used for clearing role.
+ */
 Color ClearingRoleColor(std::uint8_t value) {
   const auto role = static_cast<visual_pipeline::ClearingRole>(value);
   switch (role) {
@@ -108,6 +129,9 @@ Color ClearingRoleColor(std::uint8_t value) {
   return Color{78, 104, 58, 255};
 }
 
+/**
+ * @brief Returns the color used for clearing scene role.
+ */
 Color ClearingSceneRoleColor(std::uint8_t value) {
   const auto role = static_cast<visual_pipeline::ClearingSceneRole>(value);
   switch (role) {
@@ -125,6 +149,9 @@ Color ClearingSceneRoleColor(std::uint8_t value) {
   return Color{106, 101, 70, 255};
 }
 
+/**
+ * @brief Returns the color used for ruin visual tile.
+ */
 Color RuinVisualTileColor(std::uint8_t value) {
   const auto tile = static_cast<visual_pipeline::RuinVisualTile>(value);
   switch (tile) {
@@ -150,6 +177,9 @@ Color RuinVisualTileColor(std::uint8_t value) {
   return Color{78, 104, 58, 255};
 }
 
+/**
+ * @brief Returns the color used for water visual tile.
+ */
 Color WaterVisualTileColor(std::uint8_t value) {
   const auto tile = static_cast<visual_pipeline::WaterVisualTile>(value);
   switch (tile) {
@@ -171,6 +201,9 @@ Color WaterVisualTileColor(std::uint8_t value) {
   return Color{78, 104, 58, 255};
 }
 
+/**
+ * @brief Adds tile variation.
+ */
 Color AddTileVariation(Color base, std::string_view key) {
   const std::size_t hash = std::hash<std::string_view>{}(key);
   const int delta = static_cast<int>(hash % 15U) - 7;
@@ -181,10 +214,16 @@ Color AddTileVariation(Color base, std::string_view key) {
   return Color{apply(base.r), apply(base.g), apply(base.b), base.a};
 }
 
+/**
+ * @brief Starts s with.
+ */
 bool StartsWith(std::string_view text, std::string_view prefix) {
   return text.size() >= prefix.size() && text.substr(0, prefix.size()) == prefix;
 }
 
+/**
+ * @brief Returns the color used for visual tile.
+ */
 Color VisualTileColor(std::string_view tile_id) {
   Color base{138, 62, 128, 255};
   if (StartsWith(tile_id, "grass")) {
@@ -208,6 +247,9 @@ Color VisualTileColor(std::string_view tile_id) {
   return AddTileVariation(base, tile_id);
 }
 
+/**
+ * @brief Returns the color used for visual object.
+ */
 Color VisualObjectColor(const visual_pipeline::VisualObjectData& object) {
   if (StartsWith(object.sprite_id, "boundary")) {
     return Color{18, 38, 28, 220};
@@ -236,33 +278,54 @@ Color VisualObjectColor(const visual_pipeline::VisualObjectData& object) {
   return Color{190, 165, 105, 190};
 }
 
+/**
+ * @brief Executes the map width px operation.
+ */
 float MapWidthPx(const LevelData& level) {
   return static_cast<float>(level.size.width * level.size.tile_size);
 }
 
+/**
+ * @brief Executes the map height px operation.
+ */
 float MapHeightPx(const LevelData& level) {
   return static_cast<float>(level.size.height * level.size.tile_size);
 }
 
+/**
+ * @brief Clamps tile index to a safe range.
+ */
 int ClampTileIndex(int value, int min_value, int max_value) {
   return std::clamp(value, min_value, max_value);
 }
 
+/**
+ * @brief Checks whether a string contains a requested substring.
+ */
 bool TextContains(std::string_view text, std::string_view needle) {
   return text.find(needle) != std::string_view::npos;
 }
 
+/**
+ * @brief Checks whether preferred spawn marker is true.
+ */
 bool IsPreferredSpawnMarker(const Marker& marker) {
   return marker.type == "player_spawn" || marker.id == "player_spawn" ||
          TextContains(marker.type, "player_spawn") ||
          TextContains(marker.id, "player_spawn");
 }
 
+/**
+ * @brief Checks whether fallback spawn marker is true.
+ */
 bool IsFallbackSpawnMarker(const Marker& marker) {
   return marker.type == "start" || marker.id == "start" ||
          TextContains(marker.type, "spawn") || TextContains(marker.id, "spawn");
 }
 
+/**
+ * @brief Finds initial camera marker.
+ */
 const Marker* FindInitialCameraMarker(const LevelData& level) {
   for (const Marker& marker : level.markers) {
     if (IsPreferredSpawnMarker(marker)) {
@@ -279,6 +342,9 @@ const Marker* FindInitialCameraMarker(const LevelData& level) {
   return nullptr;
 }
 
+/**
+ * @brief Returns the color used for marker.
+ */
 Color MarkerColor(const Marker& marker) {
   if (IsPreferredSpawnMarker(marker) || IsFallbackSpawnMarker(marker)) {
     return Color{90, 230, 120, 230};
@@ -292,12 +358,18 @@ Color MarkerColor(const Marker& marker) {
   return Color{170, 150, 240, 220};
 }
 
+/**
+ * @brief Marks er world center.
+ */
 Vector2 MarkerWorldCenter(const Marker& marker, int tile_size) {
   const float size = static_cast<float>(tile_size);
   return Vector2{(static_cast<float>(marker.x) + 0.5F) * size,
                  (static_cast<float>(marker.y) + 0.5F) * size};
 }
 
+/**
+ * @brief Draws debug markers.
+ */
 void DrawDebugMarkers(const LevelData& level, float zoom) {
   const float radius = std::max(3.0F, 5.0F / std::max(zoom, 0.1F));
   const float line_length = radius * 2.0F;
@@ -315,6 +387,9 @@ void DrawDebugMarkers(const LevelData& level, float zoom) {
   }
 }
 
+/**
+ * @brief Builds camera.
+ */
 Camera2D BuildCamera(const LevelViewState& view, const WindowState& window) {
   Camera2D camera{};
   camera.offset = Vector2{static_cast<float>(window.width) * 0.5F,
@@ -325,6 +400,9 @@ Camera2D BuildCamera(const LevelViewState& view, const WindowState& window) {
   return camera;
 }
 
+/**
+ * @brief Executes the calculate visible tile range operation.
+ */
 VisibleTileRange CalculateVisibleTileRange(const Camera2D& camera,
                                            const WindowState& window,
                                            int width, int height,
@@ -359,11 +437,17 @@ VisibleTileRange CalculateVisibleTileRange(const Camera2D& camera,
 }
 
 
+/**
+ * @brief Checks whether tile visible is true.
+ */
 bool IsTileVisible(int x, int y, const VisibleTileRange& range) {
   return x >= range.min_x && x <= range.max_x && y >= range.min_y &&
          y <= range.max_y;
 }
 
+/**
+ * @brief Draws raw terrain tiles.
+ */
 void DrawRawTerrainTiles(const LevelData& level,
                          const VisibleTileRange& range) {
   for (int y = range.min_y; y <= range.max_y; ++y) {
@@ -381,6 +465,9 @@ void DrawRawTerrainTiles(const LevelData& level,
   }
 }
 
+/**
+ * @brief Returns the color used for C++ analysis tile.
+ */
 Color CppAnalysisTileColor(
     const RuntimeCell& cell,
     const visual_pipeline::ForestVisualPlan* forest_visual_plan,
@@ -429,6 +516,9 @@ Color CppAnalysisTileColor(
   return TerrainColor(cell.terrain);
 }
 
+/**
+ * @brief Returns the color used for forest clearing analysis tile.
+ */
 Color ForestClearingAnalysisTileColor(
     const RuntimeCell& cell,
     const visual_pipeline::ForestVisualPlan* forest_visual_plan,
@@ -453,6 +543,9 @@ Color ForestClearingAnalysisTileColor(
   return TerrainColor(cell.terrain);
 }
 
+/**
+ * @brief Returns the color used for visual intent preview tile.
+ */
 Color VisualIntentPreviewTileColor(
     const RuntimeCell& cell,
     const visual_pipeline::ForestVisualPlan* forest_visual_plan,
@@ -487,6 +580,9 @@ Color VisualIntentPreviewTileColor(
   return TerrainColor(cell.terrain);
 }
 
+/**
+ * @brief Draws C++ analysis tiles.
+ */
 void DrawCppAnalysisTiles(
     const LevelData& level,
     const visual_pipeline::PreparedLevel& prepared_level,
@@ -525,6 +621,9 @@ void DrawCppAnalysisTiles(
   }
 }
 
+/**
+ * @brief Draws forest clearing analysis tiles.
+ */
 void DrawForestClearingAnalysisTiles(
     const LevelData& level,
     const visual_pipeline::PreparedLevel& prepared_level,
@@ -550,6 +649,9 @@ void DrawForestClearingAnalysisTiles(
   }
 }
 
+/**
+ * @brief Draws visual intent preview tiles.
+ */
 void DrawVisualIntentPreviewTiles(
     const LevelData& level,
     const visual_pipeline::PreparedLevel& prepared_level,
@@ -589,6 +691,9 @@ void DrawVisualIntentPreviewTiles(
   }
 }
 
+/**
+ * @brief Draws analysis overlay.
+ */
 void DrawAnalysisOverlay(const visual_pipeline::PreparedLevel& prepared_level,
                          int tile_size, float zoom,
                          const VisibleTileRange& range) {
@@ -623,6 +728,9 @@ void DrawAnalysisOverlay(const visual_pipeline::PreparedLevel& prepared_level,
   }
 }
 
+/**
+ * @brief Finds renderable visual layer.
+ */
 const visual_pipeline::VisualLayerGrid* FindRenderableVisualLayer(
     const visual_pipeline::VisualMapData& visual_map) {
   for (const visual_pipeline::VisualLayerGrid& layer : visual_map.layers) {
@@ -633,6 +741,9 @@ const visual_pipeline::VisualLayerGrid* FindRenderableVisualLayer(
   return nullptr;
 }
 
+/**
+ * @brief Draws prepared visual tiles.
+ */
 void DrawPreparedVisualTiles(const visual_pipeline::VisualLayerGrid& layer,
                              int tile_size,
                              const VisibleTileRange& range) {
@@ -650,6 +761,9 @@ void DrawPreparedVisualTiles(const visual_pipeline::VisualLayerGrid& layer,
 }
 
 
+/**
+ * @brief Draws final render reference.
+ */
 void DrawFinalRenderReference(const Texture2D& texture,
                               const LevelData& level) {
   const Rectangle source{0.0F, 0.0F, static_cast<float>(texture.width),
@@ -660,6 +774,9 @@ void DrawFinalRenderReference(const Texture2D& texture,
                  WHITE);
 }
 
+/**
+ * @brief Returns the color used for micro scene tile.
+ */
 Color MicroSceneTileColor(std::uint8_t value) {
   const auto tile = static_cast<visual_pipeline::MicroSceneTile>(value);
   switch (tile) {
@@ -683,6 +800,9 @@ Color MicroSceneTileColor(std::uint8_t value) {
   return Color{0, 0, 0, 0};
 }
 
+/**
+ * @brief Draws micro scene visual plan for preview.
+ */
 void DrawMicroSceneVisualPlanForPreview(
     const visual_pipeline::MicroSceneVisualPlan& plan,
     int tile_size,
@@ -706,6 +826,9 @@ void DrawMicroSceneVisualPlanForPreview(
   }
 }
 
+/**
+ * @brief Returns the color used for object visual item.
+ */
 Color ObjectVisualItemColor(const visual_pipeline::ObjectVisualItem& item) {
   switch (item.kind) {
     case visual_pipeline::ObjectVisualKind::kVegetation:
@@ -738,6 +861,9 @@ Color ObjectVisualItemColor(const visual_pipeline::ObjectVisualItem& item) {
   return Color{166, 132, 84, 130};
 }
 
+/**
+ * @brief Runs time object preview color.
+ */
 Color RuntimeObjectPreviewColor(const RuntimeObject& object) {
   if (StartsWith(object.type, "tree") || StartsWith(object.family, "forest") ||
       StartsWith(object.family, "vegetation")) {
@@ -758,6 +884,9 @@ Color RuntimeObjectPreviewColor(const RuntimeObject& object) {
   return Color{165, 132, 86, 105};
 }
 
+/**
+ * @brief Draws runtime objects for visual preview.
+ */
 void DrawRuntimeObjectsForVisualPreview(const LevelData& level,
                                         const VisibleTileRange& range) {
   for (const RuntimeObject& object : level.objects) {
@@ -781,6 +910,9 @@ void DrawRuntimeObjectsForVisualPreview(const LevelData& level,
   }
 }
 
+/**
+ * @brief Draws object visual plan for preview.
+ */
 void DrawObjectVisualPlanForPreview(
     const visual_pipeline::ObjectVisualPlan& plan,
     int tile_size,
@@ -801,6 +933,9 @@ void DrawObjectVisualPlanForPreview(
   }
 }
 
+/**
+ * @brief Draws prepared visual objects.
+ */
 void DrawPreparedVisualObjects(const visual_pipeline::VisualMapData& visual_map,
                                int tile_size,
                                const VisibleTileRange& range) {
@@ -824,6 +959,9 @@ void DrawPreparedVisualObjects(const visual_pipeline::VisualMapData& visual_map,
 
 }  // namespace
 
+/**
+ * @brief Returns level render mode name.
+ */
 const char* LevelRenderModeName(LevelRenderMode mode) {
   switch (mode) {
     case LevelRenderMode::kRawTerrain:
@@ -842,6 +980,9 @@ const char* LevelRenderModeName(LevelRenderMode mode) {
   return "raw_terrain";
 }
 
+/**
+ * @brief Initializes level view.
+ */
 void InitializeLevelView(const LevelData& level, LevelViewState* view) {
   if (view == nullptr) {
     return;
@@ -859,6 +1000,9 @@ void InitializeLevelView(const LevelData& level, LevelViewState* view) {
   view->zoom = std::clamp(view->zoom, view->min_zoom, view->max_zoom);
 }
 
+/**
+ * @brief Clamps level view to map to a safe range.
+ */
 void ClampLevelViewToMap(const LevelData& level, const WindowState& window,
                          LevelViewState* view) {
   if (view == nullptr) {
@@ -889,12 +1033,18 @@ void ClampLevelViewToMap(const LevelData& level, const WindowState& window,
   }
 }
 
+/**
+ * @brief Returns level view state to string.
+ */
 std::string LevelViewStateToString(const LevelViewState& view) {
   return TextFormat("camera: %.1f,%.1f zoom=%.2f", view.target_x,
                     view.target_y, view.zoom);
 }
 
 
+/**
+ * @brief Draws runtime visuals.
+ */
 void LevelRenderer::Draw(const LevelData& level,
                          const visual_pipeline::PreparedLevel* prepared_level,
                          const LevelViewState& view,
@@ -971,6 +1121,9 @@ void LevelRenderer::Draw(const LevelData& level,
   EndMode2D();
 }
 
+/**
+ * @brief Draws terrain.
+ */
 void LevelRenderer::DrawTerrain(const LevelData& level,
                                 const LevelViewState& view,
                                 const WindowState& window) const {

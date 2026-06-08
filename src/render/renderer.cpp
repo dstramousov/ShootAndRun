@@ -1,3 +1,9 @@
+/**
+ * @file src/render/renderer.cpp
+ * @brief 2D/debug rendering helpers retained by the application shell. Contains implementation
+ * for renderer.cpp.
+ */
+
 #include "render/renderer.h"
 
 #include <raylib.h>
@@ -9,6 +15,9 @@
 namespace sar {
 namespace {
 
+/**
+ * @brief Executes the scaled font size operation.
+ */
 int ScaledFontSize(const UiFont& font, const WindowState& window,
                    float multiplier) {
   const float size = static_cast<float>(font.base_size()) * multiplier *
@@ -18,6 +27,9 @@ int ScaledFontSize(const UiFont& font, const WindowState& window,
 
 }  // namespace
 
+/**
+ * @brief Implements Renderer::BeginFrame.
+ */
 void Renderer::BeginFrame() const {
   BeginDrawing();
   ClearBackground(Color{18, 18, 24, 255});
@@ -25,6 +37,9 @@ void Renderer::BeginFrame() const {
 
 void Renderer::EndFrame() const { EndDrawing(); }
 
+/**
+ * @brief Draws FPS.
+ */
 void Renderer::DrawFps(const WindowState& window, const UiFont& font) const {
   const int font_size = ScaledFontSize(font, window, 0.8F);
   const int padding = static_cast<int>(16.0F * window.ui_scale);
@@ -34,6 +49,9 @@ void Renderer::DrawFps(const WindowState& window, const UiFont& font) const {
                     font_size, Color{210, 210, 220, 255});
 }
 
+/**
+ * @brief Draws title.
+ */
 void Renderer::DrawTitle(std::string_view title, const WindowState& window,
                          const UiFont& font) const {
   const int font_size = ScaledFontSize(font, window, 2.0F);

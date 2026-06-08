@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_GAME_GAME_STATE_H_
 #define SHOOT_AND_RUN_CPP_SRC_GAME_GAME_STATE_H_
 
+/**
+ * @file src/game/game_state.h
+ * @brief Game session state and high-level game lifecycle. Contains public declarations for
+ * game_state.h.
+ */
+
 namespace sar {
 
 /**

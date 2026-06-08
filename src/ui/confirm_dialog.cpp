@@ -1,3 +1,9 @@
+/**
+ * @file src/ui/confirm_dialog.cpp
+ * @brief Main menu, confirmation dialog, and UI layout. Contains implementation for
+ * confirm_dialog.cpp.
+ */
+
 #include "ui/confirm_dialog.h"
 
 #include <sstream>
@@ -5,6 +11,9 @@
 
 namespace sar {
 
+/**
+ * @brief Implements ConfirmDialog::ConfirmDialog.
+ */
 ConfirmDialog::ConfirmDialog(std::string title, std::string message)
     : title_(std::move(title)), message_(std::move(message)) {}
 
@@ -18,11 +27,17 @@ void ConfirmDialog::SelectYes() { selected_choice_ = DialogChoice::kYes; }
 
 void ConfirmDialog::SelectNo() { selected_choice_ = DialogChoice::kNo; }
 
+/**
+ * @brief Converts to ggle.
+ */
 void ConfirmDialog::Toggle() {
   selected_choice_ = selected_choice_ == DialogChoice::kYes ? DialogChoice::kNo
                                                             : DialogChoice::kYes;
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string ConfirmDialog::Dump() const {
   std::ostringstream stream;
   stream << "ConfirmDialogState { title: \"" << title_ << "\", selected: "

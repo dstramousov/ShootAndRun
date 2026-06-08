@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_RENDER_UI_FONT_H_
 #define SHOOT_AND_RUN_CPP_SRC_RENDER_UI_FONT_H_
 
+/**
+ * @file src/render/ui_font.h
+ * @brief 2D/debug rendering helpers retained by the application shell. Contains public
+ * declarations for ui_font.h.
+ */
+
 #include <raylib.h>
 
 #include <filesystem>
@@ -9,6 +15,9 @@
 
 namespace sar {
 
+/**
+ * @brief Owns the UI font behavior and its runtime state.
+ */
 class UiFont {
  public:
   /**
@@ -16,7 +25,18 @@ class UiFont {
    */
   UiFont() = default;
 
+  /**
+   * @brief Executes the UI font operation.
+   *
+   * @param UiFont Input value required by the operation.
+   */
   UiFont(const UiFont&) = delete;
+  /**
+   * @brief Executes the operator operation.
+   *
+   * @param UiFont Input value required by the operation.
+   * @return Result produced by the operation, when applicable.
+   */
   UiFont& operator=(const UiFont&) = delete;
 
   /**

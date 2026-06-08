@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_PLATFORM_PROCESS_INFO_H_
 #define SHOOT_AND_RUN_CPP_SRC_PLATFORM_PROCESS_INFO_H_
 
+/**
+ * @file src/platform/process_info.h
+ * @brief Platform-specific process, terminal, and memory utilities. Contains public
+ * declarations for process_info.h.
+ */
+
 #include <cstdint>
 
 namespace sar {

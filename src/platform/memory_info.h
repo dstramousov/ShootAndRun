@@ -1,15 +1,24 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_PLATFORM_MEMORY_INFO_H_
 #define SHOOT_AND_RUN_CPP_SRC_PLATFORM_MEMORY_INFO_H_
 
+/**
+ * @file src/platform/memory_info.h
+ * @brief Platform-specific process, terminal, and memory utilities. Contains public
+ * declarations for memory_info.h.
+ */
+
 #include <cstdint>
 #include <string>
 
 namespace sar {
 
+/**
+ * @brief Stores process memory info data shared between runtime systems.
+ */
 struct ProcessMemoryInfo {
-  bool available = false;
-  std::uint64_t resident_bytes = 0;
-  std::string error;
+  bool available = false;  ///< Available value carried by this data structure.
+  std::uint64_t resident_bytes = 0;  ///< Resident bytes value carried by this data structure.
+  std::string error;  ///< Human-readable error message when loading or validation fails.
 };
 
 /**

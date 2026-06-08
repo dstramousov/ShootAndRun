@@ -1,3 +1,9 @@
+/**
+ * @file src/window/window_layout.cpp
+ * @brief Window configuration, runtime state, and layout calculation. Contains implementation
+ * for window_layout.cpp.
+ */
+
 #include "window/window_layout.h"
 
 #include <algorithm>
@@ -5,6 +11,9 @@
 
 namespace sar {
 
+/**
+ * @brief Executes the calculate window state operation.
+ */
 WindowState CalculateWindowState(const MonitorInfo& monitor,
                                  const WindowConfig& config) {
   const int max_width = static_cast<int>(
@@ -49,6 +58,9 @@ WindowState CalculateWindowState(const MonitorInfo& monitor,
   return state;
 }
 
+/**
+ * @brief Executes the calculate UI scale operation.
+ */
 float CalculateUiScale(int window_width, int window_height,
                        const WindowConfig& config) {
   const float scale_x = static_cast<float>(window_width) /

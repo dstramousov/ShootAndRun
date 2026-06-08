@@ -1,15 +1,27 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_UI_CONFIRM_DIALOG_H_
 #define SHOOT_AND_RUN_CPP_SRC_UI_CONFIRM_DIALOG_H_
 
+/**
+ * @file src/ui/confirm_dialog.h
+ * @brief Main menu, confirmation dialog, and UI layout. Contains public declarations for
+ * confirm_dialog.h.
+ */
+
 #include <string>
 
 namespace sar {
 
+/**
+ * @brief Defines the supported dialog choice values.
+ */
 enum class DialogChoice {
   kNo,
   kYes,
 };
 
+/**
+ * @brief Owns the confirm dialog behavior and its runtime state.
+ */
 class ConfirmDialog {
  public:
   /**

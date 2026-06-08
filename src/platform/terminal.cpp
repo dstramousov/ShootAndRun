@@ -1,3 +1,9 @@
+/**
+ * @file src/platform/terminal.cpp
+ * @brief Platform-specific process, terminal, and memory utilities. Contains implementation for
+ * terminal.cpp.
+ */
+
 #include "platform/terminal.h"
 
 #include <cstdio>
@@ -11,6 +17,9 @@
 
 namespace sar {
 
+/**
+ * @brief Checks whether stderr terminal is true.
+ */
 bool IsStderrTerminal() {
 #if defined(_WIN32)
   return _isatty(_fileno(stderr)) != 0;
@@ -21,6 +30,9 @@ bool IsStderrTerminal() {
 
 bool IsNoColorEnvironmentSet() { return std::getenv("NO_COLOR") != nullptr; }
 
+/**
+ * @brief Returns the color used for should use terminal.
+ */
 bool ShouldUseTerminalColor(bool requested) {
   return requested && IsStderrTerminal() && !IsNoColorEnvironmentSet();
 }

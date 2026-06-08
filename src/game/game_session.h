@@ -1,10 +1,19 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_GAME_GAME_SESSION_H_
 #define SHOOT_AND_RUN_CPP_SRC_GAME_GAME_SESSION_H_
 
+/**
+ * @file src/game/game_session.h
+ * @brief Game session state and high-level game lifecycle. Contains public declarations for
+ * game_session.h.
+ */
+
 #include "game/game_state.h"
 
 namespace sar {
 
+/**
+ * @brief Owns the game session behavior and its runtime state.
+ */
 class GameSession {
  public:
   /**

@@ -1,3 +1,9 @@
+/**
+ * @file src/visual_pipeline/terrain_regions.cpp
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains
+ * implementation for terrain_regions.cpp.
+ */
+
 #include "visual_pipeline/terrain_regions.h"
 
 #include <algorithm>
@@ -12,27 +18,45 @@ namespace {
 
 constexpr int kTinyRegionMaxArea = 3;
 
+/**
+ * @brief Stores mask descriptor data shared between runtime systems.
+ */
 struct MaskDescriptor {
   TerrainType type;
   const std::vector<std::uint8_t>* mask;
 };
 
+/**
+ * @brief Converts tile coordinates to a linear grid index.
+ */
 int ToIndex(int x, int y, int width) {
   return y * width + x;
 }
 
+/**
+ * @brief Executes the tile x operation.
+ */
 int TileX(int index, int width) {
   return index % width;
 }
 
+/**
+ * @brief Executes the tile y operation.
+ */
 int TileY(int index, int width) {
   return index / width;
 }
 
+/**
+ * @brief Checks whether tile coordinates are inside the level bounds.
+ */
 bool IsInside(int x, int y, const LevelSize& size) {
   return x >= 0 && y >= 0 && x < size.width && y < size.height;
 }
 
+/**
+ * @brief Checks whether mask set is true.
+ */
 bool IsMaskSet(const std::vector<std::uint8_t>& mask, int x, int y,
                const LevelSize& size) {
   if (!IsInside(x, y, size)) {
@@ -43,6 +67,9 @@ bool IsMaskSet(const std::vector<std::uint8_t>& mask, int x, int y,
   return mask[static_cast<std::size_t>(index)] != 0;
 }
 
+/**
+ * @brief Checks whether border tile is true.
+ */
 bool IsBorderTile(const std::vector<std::uint8_t>& mask, int x, int y,
                   const LevelSize& size) {
   constexpr int kNeighborCount = 4;
@@ -60,6 +87,9 @@ bool IsBorderTile(const std::vector<std::uint8_t>& mask, int x, int y,
   return false;
 }
 
+/**
+ * @brief Updates summary for region for the current frame.
+ */
 void UpdateSummaryForRegion(const TerrainRegion& region,
                             TerrainRegionSummary* summary) {
   if (summary == nullptr) {
@@ -105,6 +135,9 @@ void UpdateSummaryForRegion(const TerrainRegion& region,
   }
 }
 
+/**
+ * @brief Builds region from seed.
+ */
 TerrainRegion BuildRegionFromSeed(const std::vector<std::uint8_t>& mask,
                                    TerrainType type, int seed_index,
                                    int region_id, const LevelSize& size,
@@ -167,6 +200,9 @@ TerrainRegion BuildRegionFromSeed(const std::vector<std::uint8_t>& mask,
   return region;
 }
 
+/**
+ * @brief Builds mask descriptors.
+ */
 std::vector<MaskDescriptor> BuildMaskDescriptors(const SemanticMasks& masks) {
   return {
       {TerrainType::kOpenGround, &masks.open_ground},
@@ -182,6 +218,9 @@ std::vector<MaskDescriptor> BuildMaskDescriptors(const SemanticMasks& masks) {
 
 }  // namespace
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string TerrainRegion::Dump() const {
   return "TerrainRegion { id: " + std::to_string(id) +
          ", type: " + std::string(TerrainTypeToString(type)) +
@@ -192,6 +231,9 @@ std::string TerrainRegion::Dump() const {
          ", border: " + std::to_string(border_tile_count) + " }";
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string TerrainRegionSummary::Dump() const {
   return "TerrainRegionSummary { total: " +
          std::to_string(total_regions) +
@@ -210,6 +252,9 @@ std::string TerrainRegionSummary::Dump() const {
          std::to_string(largest_open_ground_area) + " }";
 }
 
+/**
+ * @brief Checks whether valid is true.
+ */
 bool TerrainRegions::IsValid() const {
   if (size.width <= 0 || size.height <= 0) {
     return false;
@@ -218,11 +263,17 @@ bool TerrainRegions::IsValid() const {
   return summary.total_regions == static_cast<int>(regions.size());
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string TerrainRegions::Dump() const {
   return "TerrainRegions { size: " + std::to_string(size.width) + "x" +
          std::to_string(size.height) + ", " + summary.Dump() + " }";
 }
 
+/**
+ * @brief Builds terrain regions.
+ */
 TerrainRegions BuildTerrainRegions(const SemanticMasks& masks,
                                     std::string* error) {
   TerrainRegions terrain_regions;

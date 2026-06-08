@@ -504,3 +504,11 @@
 - Added deterministic selector support for `fixed`, `random`, `weighted_random`, `named` and `by_tag` model selection.
 - Added startup loading and validation of the 3D registry in renderer=3d mode.
 - Kept current debug primitives as the fallback path; no visual replacement is enabled yet.
+
+## v0.1.59 -> v0.1.60
+
+- Bumped CMake project and runtime application version to `0.1.60`.
+- Added a full Doxygen-oriented documentation pass across headers and implementation files.
+- Added file-level comments for C++ source files and headers.
+- Documented private application methods, internal helper functions, and public data contracts without changing runtime behavior.
+- Added member comments to data-oriented structs where fields are part of the project data contract.

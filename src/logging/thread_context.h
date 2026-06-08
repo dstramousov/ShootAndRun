@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_LOGGING_THREAD_CONTEXT_H_
 #define SHOOT_AND_RUN_CPP_SRC_LOGGING_THREAD_CONTEXT_H_
 
+/**
+ * @file src/logging/thread_context.h
+ * @brief Terminal logging, log levels, and thread context. Contains public declarations for
+ * thread_context.h.
+ */
+
 #include <string_view>
 
 namespace sar {

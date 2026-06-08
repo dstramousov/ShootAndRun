@@ -1,3 +1,9 @@
+/**
+ * @file src/app/application.cpp
+ * @brief Application configuration, lifecycle, startup, and runtime orchestration. Contains
+ * implementation for application.cpp.
+ */
+
 #include "app/application.h"
 
 #include <raylib.h>
@@ -21,6 +27,9 @@
 namespace sar {
 namespace {
 
+/**
+ * @brief Returns current monitor info.
+ */
 MonitorInfo CurrentMonitorInfo() {
   const int monitor = GetCurrentMonitor();
   const Vector2 position = GetMonitorPosition(monitor);
@@ -29,6 +38,9 @@ MonitorInfo CurrentMonitorInfo() {
 }
 
 
+/**
+ * @brief Executes the scaled font size operation.
+ */
 int ScaledFontSize(const UiFont& font, const WindowState& window,
                    float multiplier) {
   const float size = static_cast<float>(font.base_size()) * multiplier *
@@ -36,6 +48,9 @@ int ScaledFontSize(const UiFont& font, const WindowState& window,
   return std::max(1, static_cast<int>(std::lround(size)));
 }
 
+/**
+ * @brief Executes the seconds from milliseconds operation.
+ */
 double SecondsFromMilliseconds(int milliseconds) {
   if (milliseconds <= 0) {
     return 0.0;
@@ -43,11 +58,17 @@ double SecondsFromMilliseconds(int milliseconds) {
   return static_cast<double>(milliseconds) / 1000.0;
 }
 
+/**
+ * @brief Checks whether interval elapsed is true.
+ */
 bool IsIntervalElapsed(double now, double last_time, int interval_ms) {
   return interval_ms <= 0 ||
          now - last_time >= SecondsFromMilliseconds(interval_ms);
 }
 
+/**
+ * @brief Executes the level 3D spawn facing log line operation.
+ */
 std::string Level3DSpawnFacingLogLine(
     const LevelData& level, const render3d::Level3DPlayerState& player) {
   std::ostringstream stream;
@@ -59,6 +80,9 @@ std::string Level3DSpawnFacingLogLine(
   return stream.str();
 }
 
+/**
+ * @brief Converts to level 3D fog mode.
+ */
 render3d::Level3DFogMode ToLevel3DFogMode(Render3DFogMode mode) {
   switch (mode) {
     case Render3DFogMode::kCircle:
@@ -70,6 +94,9 @@ render3d::Level3DFogMode ToLevel3DFogMode(Render3DFogMode mode) {
   return render3d::Level3DFogMode::kCircle;
 }
 
+/**
+ * @brief Applies player 3D movement config.
+ */
 void ApplyPlayer3DMovementConfig(
     const Player3DMovementConfig& config,
     render3d::Level3DPlayerState* player) {
@@ -92,6 +119,9 @@ void ApplyPlayer3DMovementConfig(
       config.jump_min_running_speed_tiles_per_sec;
 }
 
+/**
+ * @brief Applies render 3D intro camera config.
+ */
 void ApplyRender3DIntroCameraConfig(
     const Render3DIntroCameraConfig& config,
     render3d::Level3DCameraState* camera) {
@@ -114,6 +144,9 @@ void ApplyRender3DIntroCameraConfig(
                                            config.end_distance));
 }
 
+/**
+ * @brief Converts to raylib trace log level.
+ */
 int ToRaylibTraceLogLevel(RaylibLogLevel level) {
   switch (level) {
     case RaylibLogLevel::kTrace:
@@ -136,6 +169,9 @@ int ToRaylibTraceLogLevel(RaylibLogLevel level) {
 }
 
 
+/**
+ * @brief Parses highlight scope from external data.
+ */
 LogHighlightScope ParseHighlightScope(const std::string& value) {
   if (value == "full_line") {
     return LogHighlightScope::kFullLine;
@@ -143,6 +179,9 @@ LogHighlightScope ParseHighlightScope(const std::string& value) {
   return LogHighlightScope::kMessage;
 }
 
+/**
+ * @brief Builds logger highlight rules.
+ */
 std::vector<LogHighlightRule> BuildLoggerHighlightRules(
     const DeveloperLogConfig& config) {
   std::vector<LogHighlightRule> rules;
@@ -159,6 +198,9 @@ std::vector<LogHighlightRule> BuildLoggerHighlightRules(
   return rules;
 }
 
+/**
+ * @brief Builds initial logger config.
+ */
 LoggerConfig BuildInitialLoggerConfig(const AppConfig& config) {
   LoggerConfig logger_config;
   logger_config.min_level = config.log_level;
@@ -169,12 +211,18 @@ LoggerConfig BuildInitialLoggerConfig(const AppConfig& config) {
 }
 
 
+/**
+ * @brief Executes the format double operation.
+ */
 std::string FormatDouble(double value, int precision) {
   std::ostringstream stream;
   stream << std::fixed << std::setprecision(precision) << value;
   return stream.str();
 }
 
+/**
+ * @brief Executes the pipeline step label operation.
+ */
 std::string PipelineStepLabel(
     const visual_pipeline::PipelineStepReport& report) {
   return "step " + std::to_string(report.step_index) + "/" +
@@ -183,6 +231,9 @@ std::string PipelineStepLabel(
 }
 
 
+/**
+ * @brief Executes the tile share line operation.
+ */
 std::string TileShareLine(std::string_view label, int count, int total_tiles) {
   const double percent = total_tiles > 0
                              ? static_cast<double>(count) * 100.0 /
@@ -195,6 +246,9 @@ std::string TileShareLine(std::string_view label, int count, int total_tiles) {
   return stream.str();
 }
 
+/**
+ * @brief Counts line.
+ */
 std::string CountLine(std::string_view label, int count) {
   std::ostringstream stream;
   stream << "  " << std::left << std::setw(14) << label << ": "
@@ -202,6 +256,9 @@ std::string CountLine(std::string_view label, int count) {
   return stream.str();
 }
 
+/**
+ * @brief Builds map preparation report.
+ */
 std::string BuildMapPreparationReport(
     const LevelData& level,
     const visual_pipeline::PreparedLevel& prepared_level,
@@ -397,6 +454,9 @@ std::string BuildMapPreparationReport(
   return report.str();
 }
 
+/**
+ * @brief Returns window state to string.
+ */
 std::string WindowStateToString(const WindowState& state) {
   std::ostringstream stream;
   stream << "monitor=" << state.monitor_width << 'x' << state.monitor_height
@@ -406,6 +466,9 @@ std::string WindowStateToString(const WindowState& state) {
 }
 
 
+/**
+ * @brief Executes the prepared level overlay line operation.
+ */
 std::string PreparedLevelOverlayLine(
     const visual_pipeline::PreparedLevel& prepared_level) {
   std::ostringstream stream;
@@ -427,10 +490,16 @@ std::string PreparedLevelOverlayLine(
 
 }  // namespace
 
+/**
+ * @brief Implements Application::Application.
+ */
 Application::Application(AppConfig config)
     : config_(std::move(config)),
       logger_(BuildInitialLoggerConfig(config_)) {}
 
+/**
+ * @brief Runs the pipeline step.
+ */
 int Application::Run() {
   SetCurrentThreadName("main");
   LoadDeveloperConfigAtStartup();
@@ -456,6 +525,9 @@ int Application::Run() {
   return 0;
 }
 
+/**
+ * @brief Loads the project configuration and applies startup-level settings.
+ */
 void Application::LoadProjectConfigAtStartup() {
   const ProjectConfigResult result =
       LoadProjectConfig(config_.project_config_path);
@@ -469,6 +541,9 @@ void Application::LoadProjectConfigAtStartup() {
   logger_.Info("config", project_config_->Dump());
 }
 
+/**
+ * @brief Loads 3D asset registry metadata during application startup.
+ */
 void Application::LoadRender3DAssetRegistryAtStartup() {
   if (config_.renderer_mode != RuntimeRendererMode::kRenderer3D ||
       !project_config_.has_value()) {
@@ -496,6 +571,9 @@ void Application::LoadRender3DAssetRegistryAtStartup() {
   }
 }
 
+/**
+ * @brief Loads optional developer diagnostics configuration.
+ */
 void Application::LoadDeveloperConfigAtStartup() {
   const DeveloperConfigResult result =
       LoadDeveloperConfig(config_.developer_config_path);
@@ -525,6 +603,9 @@ void Application::LoadDeveloperConfigAtStartup() {
   }
 }
 
+/**
+ * @brief Creates and configures the raylib window from resolved window settings.
+ */
 void Application::InitializeWindow() {
   ApplyRaylibLogLevel();
 
@@ -544,6 +625,9 @@ void Application::InitializeWindow() {
   LoadUiFont();
 }
 
+/**
+ * @brief Loads the configured UI font and keeps the default font as a fallback.
+ */
 void Application::LoadUiFont() {
   if (!project_config_.has_value()) {
     logger_.Warn("font", "project config is not loaded; using default font");
@@ -562,6 +646,9 @@ void Application::LoadUiFont() {
                            std::to_string(project_config_->ui_font_size));
 }
 
+/**
+ * @brief Shuts down owned runtime resources in a controlled order.
+ */
 void Application::ShutdownWindow() {
   if (window_initialized_) {
     SetMouseCapture(false);
@@ -572,6 +659,9 @@ void Application::ShutdownWindow() {
   }
 }
 
+/**
+ * @brief Updates window state from raylib for the current frame.
+ */
 void Application::UpdateWindowStateFromRaylib() {
   window_state_.width = GetScreenWidth();
   window_state_.height = GetScreenHeight();
@@ -580,6 +670,9 @@ void Application::UpdateWindowStateFromRaylib() {
                                             config_.window);
 }
 
+/**
+ * @brief Writes diagnostics for startup.
+ */
 void Application::LogStartup() {
   logger_.Info("app", "started version=" + config_.version +
                           " renderer=" +
@@ -591,6 +684,9 @@ void Application::LogStartup() {
   logger_.Debug("menu", main_menu_.Dump());
 }
 
+/**
+ * @brief Applies raylib log level.
+ */
 void Application::ApplyRaylibLogLevel() {
   const RaylibLogLevel level = project_config_.has_value()
                                    ? project_config_->raylib_log_level
@@ -600,6 +696,9 @@ void Application::ApplyRaylibLogLevel() {
                               RaylibLogLevelName(level));
 }
 
+/**
+ * @brief Refreshes throttled service overlay data such as memory usage.
+ */
 void Application::UpdateServiceInfo() {
   if (!project_config_.has_value() ||
       !project_config_->service_info.enabled) {
@@ -632,10 +731,16 @@ void Application::UpdateServiceInfo() {
   }
 }
 
+/**
+ * @brief Applies configured target FPS and frame pacing settings.
+ */
 void Application::ApplyFramePacing() {
   SetTargetFPS(config_.target_fps);
 }
 
+/**
+ * @brief Handles input.
+ */
 void Application::HandleInput(const InputState& input) {
   if (confirm_dialog_.has_value()) {
     HandleDialogInput(input);
@@ -656,6 +761,9 @@ void Application::HandleInput(const InputState& input) {
   }
 }
 
+/**
+ * @brief Handles dialog input.
+ */
 void Application::HandleDialogInput(const InputState& input) {
   ConfirmDialog& dialog = *confirm_dialog_;
 
@@ -690,6 +798,9 @@ void Application::HandleDialogInput(const InputState& input) {
   }
 }
 
+/**
+ * @brief Handles menu input.
+ */
 void Application::HandleMenuInput(const InputState& input) {
   if (input.cancel_pressed) {
     OpenExitDialog();
@@ -728,6 +839,9 @@ void Application::HandleMenuInput(const InputState& input) {
   }
 }
 
+/**
+ * @brief Handles map preparing input.
+ */
 void Application::HandleMapPreparingInput(const InputState& input) {
   if (input.cancel_pressed) {
     visual_pipeline_ = visual_pipeline::VisualPreparationPipeline();
@@ -737,6 +851,9 @@ void Application::HandleMapPreparingInput(const InputState& input) {
   }
 }
 
+/**
+ * @brief Handles game input.
+ */
 void Application::HandleGameInput(const InputState& input) {
   if (input.cancel_pressed || input.cancel_down) {
     SetMouseCapture(false);
@@ -775,6 +892,9 @@ void Application::HandleGameInput(const InputState& input) {
   UpdateGameView(input);
 }
 
+/**
+ * @brief Advances the visual map preparation pipeline when the preparation screen is active.
+ */
 void Application::UpdateMapPreparation() {
   if (screen_ != AppScreen::kMapPreparing || !loaded_level_.has_value()) {
     return;
@@ -866,6 +986,9 @@ void Application::UpdateMapPreparation() {
   logger_.Info("game", "new game session started");
 }
 
+/**
+ * @brief Updates game view for the current frame.
+ */
 void Application::UpdateGameView(const InputState& input) {
   if (!loaded_level_.has_value()) {
     return;
@@ -925,6 +1048,9 @@ void Application::UpdateGameView(const InputState& input) {
   ClampLevelViewToMap(*loaded_level_, window_state_, &level_view_);
 }
 
+/**
+ * @brief Writes throttled 3D movement events without logging every frame.
+ */
 void Application::Log3DMovementEvents(const InputState& input) {
   if (!loaded_level_.has_value() ||
       config_.renderer_mode != RuntimeRendererMode::kRenderer3D ||
@@ -1004,6 +1130,9 @@ void Application::Log3DMovementEvents(const InputState& input) {
   }
 }
 
+/**
+ * @brief Writes lifecycle events for the 3D camera intro sequence.
+ */
 void Application::Log3DCameraIntroEvents() {
   if (config_.renderer_mode != RuntimeRendererMode::kRenderer3D ||
       !level_3d_view_.initialized) {
@@ -1019,6 +1148,9 @@ void Application::Log3DCameraIntroEvents() {
   last_logged_3d_intro_sequence_ = camera.intro_event_sequence;
 }
 
+/**
+ * @brief Draws the map-preparation progress screen.
+ */
 void Application::DrawMapPreparingScreen() const {
   const visual_pipeline::PipelineProgress& progress =
       visual_pipeline_.progress();
@@ -1074,6 +1206,9 @@ void Application::DrawMapPreparingScreen() const {
                         text_size, Color{130, 138, 155, 255});
 }
 
+/**
+ * @brief Draws service and debug overlays above the active game view.
+ */
 void Application::DrawGameOverlay() const {
   if (config_.renderer_mode == RuntimeRendererMode::kRenderer3D) {
     return;
@@ -1116,6 +1251,9 @@ void Application::DrawGameOverlay() const {
   }
 }
 
+/**
+ * @brief Releases the prepared final render texture when it is no longer needed.
+ */
 void Application::UnloadFinalRenderTexture() {
   if (!final_render_texture_loaded_) {
     return;
@@ -1127,6 +1265,9 @@ void Application::UnloadFinalRenderTexture() {
   final_render_texture_from_cpp_package_ = false;
 }
 
+/**
+ * @brief Loads the final prepared preview texture used by the game view.
+ */
 bool Application::LoadFinalRenderTexture() {
   UnloadFinalRenderTexture();
   std::filesystem::path path;
@@ -1184,6 +1325,9 @@ bool Application::LoadFinalRenderTexture() {
   return true;
 }
 
+/**
+ * @brief Returns the loaded final render texture when a prepared preview is available.
+ */
 const Texture2D* Application::FinalRenderTexture() const {
   if (!final_render_texture_loaded_) {
     return nullptr;
@@ -1191,6 +1335,9 @@ const Texture2D* Application::FinalRenderTexture() const {
   return &final_render_texture_;
 }
 
+/**
+ * @brief Activates a main-menu item and runs the associated application action.
+ */
 void Application::ActivateMenuItem(const MenuItem& item) {
   logger_.Info("menu", "item activated id=" + item.id);
 
@@ -1217,6 +1364,9 @@ void Application::ActivateMenuItem(const MenuItem& item) {
   }
 }
 
+/**
+ * @brief Starts a new game session using the loaded project configuration and map package.
+ */
 bool Application::StartNewGameFromConfig() {
   if (!project_config_.has_value()) {
     logger_.Error("config", "project config is not loaded");
@@ -1326,6 +1476,9 @@ bool Application::StartNewGameFromConfig() {
   return true;
 }
 
+/**
+ * @brief Validates map package path and reports failures.
+ */
 bool Application::ValidateMapPackagePath(
     const ProjectConfig& project_config) {
   std::error_code error_code;
@@ -1364,12 +1517,18 @@ bool Application::ValidateMapPackagePath(
   return true;
 }
 
+/**
+ * @brief Opens the exit confirmation dialog with the safe option selected.
+ */
 void Application::OpenExitDialog() {
   confirm_dialog_.emplace("Exit game", "Unsaved progress may be lost.");
   logger_.Debug("dialog", "opened type=exit_confirmation default=no");
 }
 
 
+/**
+ * @brief Enables or disables mouse capture for 3D gameplay input.
+ */
 void Application::SetMouseCapture(bool enabled) {
   if (!window_initialized_ || mouse_capture_active_ == enabled) {
     return;
@@ -1385,6 +1544,9 @@ void Application::SetMouseCapture(bool enabled) {
                             (mouse_capture_active_ ? "enabled" : "disabled"));
 }
 
+/**
+ * @brief Renders one application frame for the active screen.
+ */
 void Application::RenderFrame() {
   renderer_.BeginFrame();
 

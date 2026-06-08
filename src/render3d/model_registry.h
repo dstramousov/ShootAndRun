@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_RENDER3D_MODEL_REGISTRY_H_
 #define SHOOT_AND_RUN_CPP_SRC_RENDER3D_MODEL_REGISTRY_H_
 
+/**
+ * @file src/render3d/model_registry.h
+ * @brief 3D renderer, camera, player movement, fog, and asset registry. Contains public
+ * declarations for model_registry.h.
+ */
+
 #include <cstdint>
 #include <filesystem>
 #include <map>
@@ -52,59 +58,59 @@ const char* ModelPlacementMode3DName(ModelPlacementMode3D mode);
  * It does not contain map-specific placement rules.
  */
 struct ModelAsset3D {
-  std::string id;
-  std::filesystem::path path;
-  std::vector<std::string> tags;
-  float default_scale = 1.0F;
-  float vertical_offset = 0.0F;
-  std::string fallback = "cube_debug";
+  std::string id;  ///< Stable identifier loaded from source data or configuration.
+  std::filesystem::path path;  ///< Filesystem path used by this configuration or data object.
+  std::vector<std::string> tags;  ///< Semantic tags attached to this entity.
+  float default_scale = 1.0F;  ///< Scaling factor for default scale.
+  float vertical_offset = 0.0F;  ///< Vertical offset value carried by this data structure.
+  std::string fallback = "cube_debug";  ///< Fallback value carried by this data structure.
 };
 
 /**
  * @brief Weighted model reference used by random and weighted-random bindings.
  */
 struct ModelVariant3D {
-  std::string model_id;
-  int weight = 1;
+  std::string model_id;  ///< Stable identifier for model ID.
+  int weight = 1;  ///< Weight value carried by this data structure.
 };
 
 /**
  * @brief Tileset rule that binds a semantic map key to one or more models.
  */
 struct ModelBinding3D {
-  std::string semantic_key;
-  ModelPlacementMode3D placement = ModelPlacementMode3D::kSingle;
-  ModelSelectorMode3D selector = ModelSelectorMode3D::kWeightedRandom;
-  std::string fixed_model_id;
-  std::vector<ModelVariant3D> variants;
-  std::vector<std::string> required_tags;
-  int count_min = 1;
-  int count_max = 1;
-  bool random_rotation = false;
-  float scale_min = 1.0F;
-  float scale_max = 1.0F;
-  float offset_min = 0.0F;
-  float offset_max = 0.0F;
-  float vertical_offset = 0.0F;
-  std::string fallback = "cube_debug";
+  std::string semantic_key;  ///< Semantic key value carried by this data structure.
+  ModelPlacementMode3D placement = ModelPlacementMode3D::kSingle;  ///< Placement value carried by this data structure.
+  ModelSelectorMode3D selector = ModelSelectorMode3D::kWeightedRandom;  ///< Selector value carried by this data structure.
+  std::string fixed_model_id;  ///< Stable identifier for fixed model ID.
+  std::vector<ModelVariant3D> variants;  ///< Variants value carried by this data structure.
+  std::vector<std::string> required_tags;  ///< Required tags value carried by this data structure.
+  int count_min = 1;  ///< Count of count min entries or events.
+  int count_max = 1;  ///< Count of count max entries or events.
+  bool random_rotation = false;  ///< Boolean flag controlling random rotation.
+  float scale_min = 1.0F;  ///< Scaling factor for scale min.
+  float scale_max = 1.0F;  ///< Scaling factor for scale max.
+  float offset_min = 0.0F;  ///< Offset min value carried by this data structure.
+  float offset_max = 0.0F;  ///< Offset max value carried by this data structure.
+  float vertical_offset = 0.0F;  ///< Vertical offset value carried by this data structure.
+  std::string fallback = "cube_debug";  ///< Fallback value carried by this data structure.
 };
 
 /**
  * @brief Named 3D tileset with semantic bindings for one visual theme.
  */
 struct Tileset3D {
-  std::string id = "dark_forest_3d";
-  std::map<std::string, ModelBinding3D> bindings;
+  std::string id = "dark_forest_3d";  ///< Stable identifier loaded from source data or configuration.
+  std::map<std::string, ModelBinding3D> bindings;  ///< Bindings value carried by this data structure.
 };
 
 /**
  * @brief Compact summary of a loaded 3D model registry.
  */
 struct ModelRegistry3DSummary {
-  int model_count = 0;
-  int binding_count = 0;
-  int variant_reference_count = 0;
-  int missing_reference_count = 0;
+  int model_count = 0;  ///< Count of model count entries or events.
+  int binding_count = 0;  ///< Count of binding count entries or events.
+  int variant_reference_count = 0;  ///< Count of variant reference count entries or events.
+  int missing_reference_count = 0;  ///< Count of missing reference count entries or events.
 };
 
 /**
@@ -171,11 +177,11 @@ class ModelRegistry3D {
  * @brief Result of loading the 3D model registry configuration files.
  */
 struct LoadModelRegistry3DResult {
-  bool ok = false;
-  bool found = false;
-  ModelRegistry3D registry;
-  std::vector<std::string> warnings;
-  std::string error;
+  bool ok = false;  ///< true when the operation completed successfully.
+  bool found = false;  ///< true when the optional source file was present.
+  ModelRegistry3D registry;  ///< Registry value carried by this data structure.
+  std::vector<std::string> warnings;  ///< Recoverable validation warnings collected during loading.
+  std::string error;  ///< Human-readable error message when loading or validation fails.
 };
 
 /**

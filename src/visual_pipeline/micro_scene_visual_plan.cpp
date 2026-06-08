@@ -1,3 +1,9 @@
+/**
+ * @file src/visual_pipeline/micro_scene_visual_plan.cpp
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains
+ * implementation for micro_scene_visual_plan.cpp.
+ */
+
 #include "visual_pipeline/micro_scene_visual_plan.h"
 
 #include <algorithm>
@@ -11,6 +17,9 @@
 namespace sar::visual_pipeline {
 namespace {
 
+/**
+ * @brief Returns the total number of cells for a valid level size.
+ */
 int CellCount(const LevelSize& size) {
   if (size.width <= 0 || size.height <= 0) {
     return 0;
@@ -18,27 +27,45 @@ int CellCount(const LevelSize& size) {
   return size.width * size.height;
 }
 
+/**
+ * @brief Checks whether tile coordinates are inside the level bounds.
+ */
 bool IsInside(const LevelSize& size, int x, int y) {
   return x >= 0 && y >= 0 && x < size.width && y < size.height;
 }
 
+/**
+ * @brief Converts tile coordinates to a linear grid index.
+ */
 int ToIndex(const LevelSize& size, int x, int y) {
   return y * size.width + x;
 }
 
+/**
+ * @brief Converts to item.
+ */
 std::size_t ToItem(const LevelSize& size, int x, int y) {
   return static_cast<std::size_t>(ToIndex(size, x, y));
 }
 
+/**
+ * @brief Checks whether the container includes contains.
+ */
 bool Contains(std::string_view text, std::string_view needle) {
   return text.find(needle) != std::string_view::npos;
 }
 
+/**
+ * @brief Computes tile hash.
+ */
 std::uint32_t TileHash(int x, int y, std::uint32_t salt) {
   return (static_cast<std::uint32_t>(x) * 1103515245U) ^
          (static_cast<std::uint32_t>(y) * 2654435761U) ^ salt;
 }
 
+/**
+ * @brief Returns tile priority.
+ */
 std::uint8_t TilePriority(MicroSceneTile tile) {
   switch (tile) {
     case MicroSceneTile::kPrimaryProp:
@@ -61,6 +88,9 @@ std::uint8_t TilePriority(MicroSceneTile tile) {
   return 0;
 }
 
+/**
+ * @brief Checks whether blocking for dressing is true.
+ */
 bool IsBlockingForDressing(const SemanticMasks& masks, int x, int y) {
   if (!IsInside(masks.size, x, y)) {
     return true;
@@ -70,6 +100,9 @@ bool IsBlockingForDressing(const SemanticMasks& masks, int x, int y) {
          masks.wall[item] == 0;
 }
 
+/**
+ * @brief Checks whether water core tile is true.
+ */
 bool IsWaterCoreTile(const WaterVisualPlan& plan, int x, int y) {
   if (!plan.IsValid() || !IsInside(plan.size, x, y)) {
     return false;
@@ -79,6 +112,9 @@ bool IsWaterCoreTile(const WaterVisualPlan& plan, int x, int y) {
   return tile == WaterVisualTile::kWaterCore;
 }
 
+/**
+ * @brief Checks whether allowed for scene is true.
+ */
 bool IsAllowedForScene(const SemanticMasks& masks,
                        const WaterVisualPlan& water_plan,
                        MicroSceneKind kind,
@@ -98,6 +134,9 @@ bool IsAllowedForScene(const SemanticMasks& masks,
   return true;
 }
 
+/**
+ * @brief Sets scene tile.
+ */
 void SetSceneTile(const LevelSize& size,
                   int x,
                   int y,
@@ -115,6 +154,9 @@ void SetSceneTile(const LevelSize& size,
   }
 }
 
+/**
+ * @brief Executes the kind for object operation.
+ */
 MicroSceneKind KindForObject(const ObjectVisualItem& item) {
   if (item.kind == ObjectVisualKind::kCamp ||
       Contains(item.source_type, "camp") || Contains(item.source_type, "tent") ||
@@ -138,6 +180,9 @@ MicroSceneKind KindForObject(const ObjectVisualItem& item) {
   return MicroSceneKind::kObjectSceneDressing;
 }
 
+/**
+ * @brief Executes the theme for kind operation.
+ */
 std::string ThemeForKind(MicroSceneKind kind) {
   switch (kind) {
     case MicroSceneKind::kCampScene:
@@ -160,6 +205,9 @@ std::string ThemeForKind(MicroSceneKind kind) {
   return "none";
 }
 
+/**
+ * @brief Executes the primary prop for kind operation.
+ */
 std::string PrimaryPropForKind(MicroSceneKind kind) {
   switch (kind) {
     case MicroSceneKind::kCampScene:
@@ -182,6 +230,9 @@ std::string PrimaryPropForKind(MicroSceneKind kind) {
   return "none";
 }
 
+/**
+ * @brief Executes the priority for kind operation.
+ */
 int PriorityForKind(MicroSceneKind kind) {
   switch (kind) {
     case MicroSceneKind::kCacheHint:
@@ -204,6 +255,9 @@ int PriorityForKind(MicroSceneKind kind) {
   return 0;
 }
 
+/**
+ * @brief Executes the radius for scene operation.
+ */
 int RadiusForScene(MicroSceneKind kind, const ObjectVisualItem* item) {
   if (item != nullptr && (item->width > 1 || item->height > 1)) {
     return 2;
@@ -229,6 +283,9 @@ int RadiusForScene(MicroSceneKind kind, const ObjectVisualItem* item) {
   return 1;
 }
 
+/**
+ * @brief Counts increment kind.
+ */
 void IncrementKindCount(MicroSceneKind kind, MicroSceneSummary* summary) {
   if (summary == nullptr) {
     return;
@@ -260,6 +317,9 @@ void IncrementKindCount(MicroSceneKind kind, MicroSceneSummary* summary) {
   }
 }
 
+/**
+ * @brief Executes the secondary tile for kind operation.
+ */
 MicroSceneTile SecondaryTileForKind(MicroSceneKind kind) {
   switch (kind) {
     case MicroSceneKind::kCampScene:
@@ -282,6 +342,9 @@ MicroSceneTile SecondaryTileForKind(MicroSceneKind kind) {
   return MicroSceneTile::kGroundDetail;
 }
 
+/**
+ * @brief Executes the outer tile for kind operation.
+ */
 MicroSceneTile OuterTileForKind(MicroSceneKind kind) {
   switch (kind) {
     case MicroSceneKind::kSwampCrossingDetail:
@@ -300,6 +363,9 @@ MicroSceneTile OuterTileForKind(MicroSceneKind kind) {
   return MicroSceneTile::kSmallDebris;
 }
 
+/**
+ * @brief Paints scene footprint.
+ */
 void PaintSceneFootprint(const SemanticMasks& masks,
                          const WaterVisualPlan& water_plan,
                          const MicroSceneItem& scene,
@@ -335,6 +401,9 @@ void PaintSceneFootprint(const SemanticMasks& masks,
   }
 }
 
+/**
+ * @brief Adds scene.
+ */
 void AddScene(MicroSceneKind kind,
               int x,
               int y,
@@ -358,6 +427,9 @@ void AddScene(MicroSceneKind kind,
   IncrementKindCount(kind, &plan->summary);
 }
 
+/**
+ * @brief Adds object scenes.
+ */
 void AddObjectScenes(const ObjectVisualPlan& object_plan,
                      MicroSceneVisualPlan* plan) {
   if (plan == nullptr) {
@@ -372,6 +444,9 @@ void AddObjectScenes(const ObjectVisualPlan& object_plan,
   }
 }
 
+/**
+ * @brief Adds roadside scenes.
+ */
 void AddRoadsideScenes(const RoadVisualPlan& road_plan,
                        const SemanticMasks& masks,
                        MicroSceneVisualPlan* plan) {
@@ -398,6 +473,9 @@ void AddRoadsideScenes(const RoadVisualPlan& road_plan,
   }
 }
 
+/**
+ * @brief Adds ruin scenes.
+ */
 void AddRuinScenes(const RuinVisualPlan& ruin_plan,
                    const SemanticMasks& masks,
                    MicroSceneVisualPlan* plan) {
@@ -428,6 +506,9 @@ void AddRuinScenes(const RuinVisualPlan& ruin_plan,
   }
 }
 
+/**
+ * @brief Adds swamp scenes.
+ */
 void AddSwampScenes(const WaterVisualPlan& water_plan,
                     MicroSceneVisualPlan* plan) {
   if (plan == nullptr || !water_plan.IsValid()) {
@@ -454,6 +535,9 @@ void AddSwampScenes(const WaterVisualPlan& water_plan,
   }
 }
 
+/**
+ * @brief Counts tile.
+ */
 void CountTile(MicroSceneTile tile, MicroSceneSummary* summary) {
   if (summary == nullptr) {
     return;
@@ -485,6 +569,9 @@ void CountTile(MicroSceneTile tile, MicroSceneSummary* summary) {
   }
 }
 
+/**
+ * @brief Finalizes summary.
+ */
 void FinalizeSummary(MicroSceneVisualPlan* plan) {
   if (plan == nullptr) {
     return;
@@ -502,6 +589,9 @@ void FinalizeSummary(MicroSceneVisualPlan* plan) {
 
 }  // namespace
 
+/**
+ * @brief Returns micro scene kind name.
+ */
 const char* MicroSceneKindName(MicroSceneKind kind) {
   switch (kind) {
     case MicroSceneKind::kCampScene:
@@ -524,6 +614,9 @@ const char* MicroSceneKindName(MicroSceneKind kind) {
   return "none";
 }
 
+/**
+ * @brief Returns micro scene tile name.
+ */
 const char* MicroSceneTileName(MicroSceneTile tile) {
   switch (tile) {
     case MicroSceneTile::kGroundDetail:
@@ -546,6 +639,9 @@ const char* MicroSceneTileName(MicroSceneTile tile) {
   return "none";
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string MicroSceneSummary::Dump() const {
   std::ostringstream stream;
   stream << "MicroSceneSummary { scenes: " << scene_count
@@ -560,6 +656,9 @@ std::string MicroSceneSummary::Dump() const {
   return stream.str();
 }
 
+/**
+ * @brief Checks whether valid is true.
+ */
 bool MicroSceneVisualPlan::IsValid() const {
   const int expected_size = size.width * size.height;
   return size.width > 0 && size.height > 0 && size.tile_size > 0 &&
@@ -568,6 +667,9 @@ bool MicroSceneVisualPlan::IsValid() const {
          scene_ids.size() == static_cast<std::size_t>(expected_size);
 }
 
+/**
+ * @brief Builds a readable diagnostic dump for dump.
+ */
 std::string MicroSceneVisualPlan::Dump() const {
   std::ostringstream stream;
   stream << "MicroSceneVisualPlan { size: " << size.width << 'x'
@@ -576,6 +678,9 @@ std::string MicroSceneVisualPlan::Dump() const {
   return stream.str();
 }
 
+/**
+ * @brief Builds micro scene visual plan.
+ */
 MicroSceneVisualPlan BuildMicroSceneVisualPlan(
     const LevelData& level,
     const SemanticMasks& masks,

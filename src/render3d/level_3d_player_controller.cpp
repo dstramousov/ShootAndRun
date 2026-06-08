@@ -1,3 +1,9 @@
+/**
+ * @file src/render3d/level_3d_player_controller.cpp
+ * @brief 3D renderer, camera, player movement, fog, and asset registry. Contains implementation
+ * for level_3d_player_controller.cpp.
+ */
+
 #include "render3d/level_3d_player_controller.h"
 
 #include <algorithm>
@@ -13,6 +19,9 @@ namespace {
 constexpr float kVectorEpsilon = 0.0001F;
 constexpr float kPi = 3.14159265358979323846F;
 
+/**
+ * @brief Stores enter tile result data shared between runtime systems.
+ */
 struct EnterTileResult {
   bool can_enter = false;
   int tile_x = -1;
@@ -24,21 +33,33 @@ struct EnterTileResult {
   bool used_running_jump = false;
 };
 
+/**
+ * @brief Checks whether a string contains a requested substring.
+ */
 bool TextContains(std::string_view text, std::string_view needle) {
   return text.find(needle) != std::string_view::npos;
 }
 
+/**
+ * @brief Checks whether preferred spawn marker is true.
+ */
 bool IsPreferredSpawnMarker(const Marker& marker) {
   return marker.type == "player_spawn" || marker.id == "player_spawn" ||
          TextContains(marker.type, "player_spawn") ||
          TextContains(marker.id, "player_spawn");
 }
 
+/**
+ * @brief Checks whether fallback spawn marker is true.
+ */
 bool IsFallbackSpawnMarker(const Marker& marker) {
   return marker.type == "start" || marker.id == "start" ||
          TextContains(marker.type, "spawn") || TextContains(marker.id, "spawn");
 }
 
+/**
+ * @brief Finds spawn marker.
+ */
 const Marker* FindSpawnMarker(const LevelData& level) {
   for (const Marker& marker : level.markers) {
     if (IsPreferredSpawnMarker(marker)) {
@@ -55,10 +76,16 @@ const Marker* FindSpawnMarker(const LevelData& level) {
   return nullptr;
 }
 
+/**
+ * @brief Checks whether tile coordinates are inside the loaded map.
+ */
 bool IsInsideMap(const LevelData& level, int x, int y) {
   return x >= 0 && y >= 0 && x < level.size.width && y < level.size.height;
 }
 
+/**
+ * @brief Returns the runtime cell at tile coordinates or nullptr when outside the map.
+ */
 const RuntimeCell* CellAt(const LevelData& level, int x, int y) {
   if (!IsInsideMap(level, x, y)) {
     return nullptr;
@@ -70,15 +97,24 @@ const RuntimeCell* CellAt(const LevelData& level, int x, int y) {
   return &level.cells[static_cast<std::size_t>(index)];
 }
 
+/**
+ * @brief Executes the height at or zero operation.
+ */
 std::int8_t HeightAtOrZero(const LevelData& level, int x, int y) {
   const RuntimeCell* cell = CellAt(level, x, y);
   return cell != nullptr ? cell->height : 0;
 }
 
+/**
+ * @brief Converts a floating tile position to an integer tile index.
+ */
 int TileIndexFromPosition(float value) {
   return static_cast<int>(std::floor(value));
 }
 
+/**
+ * @brief Sets initial facing toward map center.
+ */
 void SetInitialFacingTowardMapCenter(const LevelData& level,
                                      Level3DPlayerState* state) {
   if (state == nullptr || level.size.width <= 0 || level.size.height <= 0) {
@@ -100,6 +136,9 @@ void SetInitialFacingTowardMapCenter(const LevelData& level,
   state->facing_y = direction_y / length;
 }
 
+/**
+ * @brief Returns terrain short name.
+ */
 std::string_view TerrainShortName(TerrainType terrain) {
   switch (terrain) {
     case TerrainType::kOpenGround:
@@ -122,6 +161,9 @@ std::string_view TerrainShortName(TerrainType terrain) {
   return "unknown";
 }
 
+/**
+ * @brief Returns current tile movement multiplier.
+ */
 float CurrentTileMovementMultiplier(const LevelData& level,
                                     const Level3DPlayerState& state) {
   const RuntimeCell* cell = CellAt(level, TileIndexFromPosition(state.tile_x),
@@ -132,6 +174,9 @@ float CurrentTileMovementMultiplier(const LevelData& level,
   return std::clamp(cell->movement_multiplier, 0.0F, 1.50F);
 }
 
+/**
+ * @brief Executes the movement multiplier for state operation.
+ */
 float MovementMultiplierForState(const LevelData& level,
                                  const Level3DPlayerState& state) {
   if (state.jump_active && state.jump_kind == Level3DJumpKind::kRun) {
@@ -140,6 +185,9 @@ float MovementMultiplierForState(const LevelData& level,
   return CurrentTileMovementMultiplier(level, state);
 }
 
+/**
+ * @brief Executes the exponential alpha operation.
+ */
 float ExponentialAlpha(float speed, float dt) {
   if (speed <= 0.0F || dt <= 0.0F) {
     return 1.0F;
@@ -147,6 +195,9 @@ float ExponentialAlpha(float speed, float dt) {
   return std::clamp(1.0F - std::exp(-speed * dt), 0.0F, 1.0F);
 }
 
+/**
+ * @brief Executes the refresh effective movement speed operation.
+ */
 void RefreshEffectiveMovementSpeed(const LevelData& level,
                                    Level3DPlayerState* state) {
   if (state == nullptr) {
@@ -157,6 +208,9 @@ void RefreshEffectiveMovementSpeed(const LevelData& level,
       state->move_speed_tiles_per_sec * state->current_movement_multiplier;
 }
 
+/**
+ * @brief Resets movement multiplier to defaults.
+ */
 void ResetMovementMultiplier(const LevelData& level,
                              Level3DPlayerState* state) {
   if (state == nullptr) {
@@ -169,6 +223,9 @@ void ResetMovementMultiplier(const LevelData& level,
       state->move_speed_tiles_per_sec * state->current_movement_multiplier;
 }
 
+/**
+ * @brief Updates movement multiplier for the current frame.
+ */
 void UpdateMovementMultiplier(const LevelData& level, float safe_dt,
                               Level3DPlayerState* state) {
   if (state == nullptr) {
@@ -187,6 +244,9 @@ void UpdateMovementMultiplier(const LevelData& level, float safe_dt,
       state->move_speed_tiles_per_sec * state->current_movement_multiplier;
 }
 
+/**
+ * @brief Returns record blocked tile.
+ */
 void RecordBlockedTile(int tile_x, int tile_y,
                        Level3DMoveBlockReason reason,
                        Level3DPlayerState* state) {
@@ -205,11 +265,17 @@ void RecordBlockedTile(int tile_x, int tile_y,
   ++state->blocked_event_sequence;
 }
 
+/**
+ * @brief Executes the facing relative input direction operation.
+ */
 void FacingRelativeInputDirection(const InputState& input,
                                   const Level3DPlayerState& state,
                                   float* out_x,
                                   float* out_y);
 
+/**
+ * @brief Checks whether same transition endpoint is true.
+ */
 bool IsSameTransitionEndpoint(const ElevationTransition& transition,
                               int from_x, int from_y, int to_x, int to_y) {
   if (transition.from_x == from_x && transition.from_y == from_y &&
@@ -221,6 +287,9 @@ bool IsSameTransitionEndpoint(const ElevationTransition& transition,
          transition.to_y == from_y;
 }
 
+/**
+ * @brief Finds elevation transition.
+ */
 const ElevationTransition* FindElevationTransition(const LevelData& level,
                                                    int from_x, int from_y,
                                                    int to_x, int to_y) {
@@ -232,6 +301,9 @@ const ElevationTransition* FindElevationTransition(const LevelData& level,
   return nullptr;
 }
 
+/**
+ * @brief Executes the can use normal movement transition operation.
+ */
 bool CanUseNormalMovementTransition(const ElevationTransition& transition,
                                     std::int8_t from_height,
                                     std::int8_t to_height) {
@@ -250,6 +322,9 @@ bool CanUseNormalMovementTransition(const ElevationTransition& transition,
   return false;
 }
 
+/**
+ * @brief Executes the can use step jump transition operation.
+ */
 bool CanUseStepJumpTransition(const ElevationTransition& transition,
                               int height_delta) {
   if (height_delta != 1) {
@@ -267,6 +342,9 @@ bool CanUseStepJumpTransition(const ElevationTransition& transition,
   return false;
 }
 
+/**
+ * @brief Executes the record transition event operation.
+ */
 void RecordTransitionEvent(const EnterTileResult& enter_result,
                            const Level3DPlayerState& previous_state,
                            Level3DPlayerState* state) {
@@ -284,16 +362,25 @@ void RecordTransitionEvent(const EnterTileResult& enter_result,
   ++state->transition_event_sequence;
 }
 
+/**
+ * @brief Returns current horizontal speed.
+ */
 float CurrentHorizontalSpeed(const Level3DPlayerState& state) {
   return std::hypot(state.velocity_x_tiles_per_sec,
                     state.velocity_y_tiles_per_sec);
 }
 
+/**
+ * @brief Checks whether running jump candidate is true.
+ */
 bool IsRunningJumpCandidate(const Level3DPlayerState& state) {
   return state.jump_active && state.jump_kind == Level3DJumpKind::kRun &&
          CurrentHorizontalSpeed(state) >= state.jump_min_running_speed_tiles_per_sec;
 }
 
+/**
+ * @brief Returns check enter tile.
+ */
 EnterTileResult CheckEnterTile(const LevelData& level,
                                const Level3DPlayerState& state,
                                float next_x,
@@ -344,15 +431,24 @@ EnterTileResult CheckEnterTile(const LevelData& level,
   return {true, x, y, height_delta, Level3DMoveBlockReason::kNone};
 }
 
+/**
+ * @brief Clamps 01 to a safe range.
+ */
 float Clamp01(float value) {
   return std::clamp(value, 0.0F, 1.0F);
 }
 
+/**
+ * @brief Executes the smooth step01 operation.
+ */
 float SmoothStep01(float value) {
   const float clamped = Clamp01(value);
   return clamped * clamped * (3.0F - 2.0F * clamped);
 }
 
+/**
+ * @brief Executes the record jump event operation.
+ */
 void RecordJumpEvent(Level3DJumpEventType event_type,
                      Level3DMoveBlockReason block_reason,
                      Level3DPlayerState* state) {
@@ -370,6 +466,9 @@ void RecordJumpEvent(Level3DJumpEventType event_type,
   ++state->jump_event_sequence;
 }
 
+/**
+ * @brief Executes the step direction from input operation.
+ */
 bool StepDirectionFromInput(const InputState& input,
                             const Level3DPlayerState& state,
                             int* out_step_x,
@@ -396,6 +495,9 @@ bool StepDirectionFromInput(const InputState& input,
   return true;
 }
 
+/**
+ * @brief Executes the check step jump target operation.
+ */
 EnterTileResult CheckStepJumpTarget(const LevelData& level,
                                     const Level3DPlayerState& state,
                                     int target_x,
@@ -443,6 +545,9 @@ EnterTileResult CheckStepJumpTarget(const LevelData& level,
           Level3DMoveBlockReason::kNone};
 }
 
+/**
+ * @brief Starts step jump.
+ */
 void StartStepJump(const EnterTileResult& target,
                    Level3DPlayerState* state) {
   if (state == nullptr || !target.can_enter) {
@@ -471,6 +576,9 @@ void StartStepJump(const EnterTileResult& target,
                   Level3DMoveBlockReason::kNone, state);
 }
 
+/**
+ * @brief Starts running jump.
+ */
 void StartRunningJump(Level3DPlayerState* state) {
   if (state == nullptr || state->jump_active || state->step_jump_active) {
     return;
@@ -494,6 +602,9 @@ void StartRunningJump(Level3DPlayerState* state) {
                   Level3DMoveBlockReason::kNone, state);
 }
 
+/**
+ * @brief Executes the try start running jump operation.
+ */
 bool TryStartRunningJump(const LevelData& level, const InputState& input,
                          Level3DPlayerState* state) {
   if (state == nullptr || !input.jump_pressed || state->jump_active ||
@@ -506,6 +617,9 @@ bool TryStartRunningJump(const LevelData& level, const InputState& input,
   return true;
 }
 
+/**
+ * @brief Executes the try start step jump operation.
+ */
 bool TryStartStepJump(const LevelData& level, const InputState& input,
                       Level3DPlayerState* state) {
   if (state == nullptr || !input.jump_pressed || state->jump_active ||
@@ -548,6 +662,9 @@ bool TryStartStepJump(const LevelData& level, const InputState& input,
   return false;
 }
 
+/**
+ * @brief Updates step jump for the current frame.
+ */
 bool UpdateStepJump(const LevelData& level, float safe_dt,
                     Level3DPlayerState* state) {
   if (state == nullptr || !state->step_jump_active) {
@@ -593,6 +710,9 @@ bool UpdateStepJump(const LevelData& level, float safe_dt,
   return true;
 }
 
+/**
+ * @brief Executes the landing block reason operation.
+ */
 Level3DMoveBlockReason LandingBlockReason(const LevelData& level,
                                           int tile_x, int tile_y) {
   const RuntimeCell* cell = CellAt(level, tile_x, tile_y);
@@ -608,6 +728,9 @@ Level3DMoveBlockReason LandingBlockReason(const LevelData& level,
   return Level3DMoveBlockReason::kNone;
 }
 
+/**
+ * @brief Resets jump state to defaults.
+ */
 void ResetJumpState(Level3DPlayerState* state) {
   if (state == nullptr) {
     return;
@@ -619,6 +742,9 @@ void ResetJumpState(Level3DPlayerState* state) {
   state->step_jump_elapsed_sec = 0.0F;
 }
 
+/**
+ * @brief Updates running jump for the current frame.
+ */
 bool UpdateRunningJump(const LevelData& level, float safe_dt,
                        Level3DPlayerState* state) {
   if (state == nullptr || !state->jump_active ||
@@ -672,6 +798,9 @@ bool UpdateRunningJump(const LevelData& level, float safe_dt,
   return true;
 }
 
+/**
+ * @brief Applies movement axis.
+ */
 void ApplyMovementAxis(const LevelData& level, float dx, float dy,
                        Level3DPlayerState* state) {
   if (state == nullptr) {
@@ -709,6 +838,9 @@ void ApplyMovementAxis(const LevelData& level, float dx, float dy,
   RecordTransitionEvent(enter_result, previous_state, state);
 }
 
+/**
+ * @brief Executes the normalize facing operation.
+ */
 void NormalizeFacing(Level3DPlayerState* state) {
   if (state == nullptr) {
     return;
@@ -723,6 +855,9 @@ void NormalizeFacing(Level3DPlayerState* state) {
   state->facing_y /= length;
 }
 
+/**
+ * @brief Updates facing from mouse for the current frame.
+ */
 void UpdateFacingFromMouse(const InputState& input,
                            Level3DPlayerState* state) {
   if (state == nullptr || std::abs(input.mouse_delta.x) <= kVectorEpsilon) {
@@ -737,6 +872,9 @@ void UpdateFacingFromMouse(const InputState& input,
   NormalizeFacing(state);
 }
 
+/**
+ * @brief Executes the facing relative input direction operation.
+ */
 void FacingRelativeInputDirection(const InputState& input,
                                   const Level3DPlayerState& state,
                                   float* out_x,
@@ -791,6 +929,9 @@ void FacingRelativeInputDirection(const InputState& input,
   *out_y = desired_y;
 }
 
+/**
+ * @brief Executes the move velocity toward operation.
+ */
 void MoveVelocityToward(float target_x, float target_y, float max_delta,
                         Level3DPlayerState* state) {
   if (state == nullptr) {
@@ -811,6 +952,9 @@ void MoveVelocityToward(float target_x, float target_y, float max_delta,
   state->velocity_y_tiles_per_sec += delta_y * ratio;
 }
 
+/**
+ * @brief Updates velocity from input for the current frame.
+ */
 void UpdateVelocityFromInput(const LevelData& level,
                              const InputState& input,
                              float safe_dt,
@@ -843,6 +987,9 @@ void UpdateVelocityFromInput(const LevelData& level,
 
 }  // namespace
 
+/**
+ * @brief Returns level 3D move block reason name.
+ */
 const char* Level3DMoveBlockReasonName(Level3DMoveBlockReason reason) {
   switch (reason) {
     case Level3DMoveBlockReason::kNone:
@@ -863,6 +1010,9 @@ const char* Level3DMoveBlockReasonName(Level3DMoveBlockReason reason) {
   return "unknown";
 }
 
+/**
+ * @brief Returns level 3D jump kind name.
+ */
 const char* Level3DJumpKindName(Level3DJumpKind kind) {
   switch (kind) {
     case Level3DJumpKind::kNone:
@@ -875,6 +1025,9 @@ const char* Level3DJumpKindName(Level3DJumpKind kind) {
   return "unknown";
 }
 
+/**
+ * @brief Returns level 3D jump event type name.
+ */
 const char* Level3DJumpEventTypeName(Level3DJumpEventType event_type) {
   switch (event_type) {
     case Level3DJumpEventType::kNone:
@@ -889,6 +1042,9 @@ const char* Level3DJumpEventTypeName(Level3DJumpEventType event_type) {
   return "unknown";
 }
 
+/**
+ * @brief Initializes level 3D player.
+ */
 void InitializeLevel3DPlayer(const LevelData& level,
                              Level3DPlayerState* state) {
   if (state == nullptr) {
@@ -945,6 +1101,9 @@ void InitializeLevel3DPlayer(const LevelData& level,
   state->initialized = true;
 }
 
+/**
+ * @brief Updates level 3D player for the current frame.
+ */
 void UpdateLevel3DPlayer(const LevelData& level, const InputState& input,
                          float dt, Level3DPlayerState* state) {
   if (state == nullptr || !state->initialized || level.size.width <= 0 ||
@@ -987,6 +1146,9 @@ void UpdateLevel3DPlayer(const LevelData& level, const InputState& input,
   }
 }
 
+/**
+ * @brief Executes the level 3D player world position operation.
+ */
 Vector3 Level3DPlayerWorldPosition(const LevelData& level,
                                    const Level3DPlayerState& state,
                                    float tile_world_size,
@@ -1002,6 +1164,9 @@ Vector3 Level3DPlayerWorldPosition(const LevelData& level,
                  state.tile_y * tile_world_size - origin_z};
 }
 
+/**
+ * @brief Returns current level 3D player tile diagnostics.
+ */
 Level3DPlayerTileDiagnostics CurrentLevel3DPlayerTileDiagnostics(
     const LevelData& level,
     const Level3DPlayerState& state) {
@@ -1031,6 +1196,9 @@ Level3DPlayerTileDiagnostics CurrentLevel3DPlayerTileDiagnostics(
   return diagnostics;
 }
 
+/**
+ * @brief Returns level 3D jump event to string.
+ */
 std::string Level3DJumpEventToString(const Level3DPlayerState& state) {
   std::ostringstream stream;
   stream << Level3DJumpEventTypeName(state.last_jump_event_type)
@@ -1048,6 +1216,9 @@ std::string Level3DJumpEventToString(const Level3DPlayerState& state) {
   return stream.str();
 }
 
+/**
+ * @brief Returns level 3D transition event to string.
+ */
 std::string Level3DTransitionEventToString(
     const Level3DPlayerState& state) {
   std::ostringstream stream;
@@ -1062,6 +1233,9 @@ std::string Level3DTransitionEventToString(
   return stream.str();
 }
 
+/**
+ * @brief Returns level 3D player tile diagnostics to string.
+ */
 std::string Level3DPlayerTileDiagnosticsToString(
     const Level3DPlayerTileDiagnostics& diagnostics) {
   std::ostringstream stream;
@@ -1082,6 +1256,9 @@ std::string Level3DPlayerTileDiagnosticsToString(
   return stream.str();
 }
 
+/**
+ * @brief Returns level 3D player state to string.
+ */
 std::string Level3DPlayerStateToString(const Level3DPlayerState& state) {
   std::ostringstream stream;
   stream << "player3d: tile=" << state.tile_x << ',' << state.tile_y

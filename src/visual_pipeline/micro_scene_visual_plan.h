@@ -1,6 +1,12 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_MICRO_SCENE_VISUAL_PLAN_H_
 #define SHOOT_AND_RUN_CPP_SRC_VISUAL_PIPELINE_MICRO_SCENE_VISUAL_PLAN_H_
 
+/**
+ * @file src/visual_pipeline/micro_scene_visual_plan.h
+ * @brief Visual preparation pipeline data contracts, passes, and artifacts. Contains public
+ * declarations for micro_scene_visual_plan.h.
+ */
+
 #include <cstdint>
 #include <map>
 #include <string>
@@ -64,37 +70,37 @@ const char* MicroSceneTileName(MicroSceneTile tile);
  * @brief One generated micro-scene placement.
  */
 struct MicroSceneItem {
-  std::string id;
-  MicroSceneKind kind = MicroSceneKind::kNone;
-  std::string theme;
-  std::string primary_prop;
-  int x = 0;
-  int y = 0;
-  int radius = 1;
-  int priority = 0;
+  std::string id;  ///< Stable identifier loaded from source data or configuration.
+  MicroSceneKind kind = MicroSceneKind::kNone;  ///< Kind value carried by this data structure.
+  std::string theme;  ///< Theme value carried by this data structure.
+  std::string primary_prop;  ///< Primary prop value carried by this data structure.
+  int x = 0;  ///< Tile, screen, or world coordinate for x.
+  int y = 0;  ///< Tile, screen, or world coordinate for y.
+  int radius = 1;  ///< Size component for radius.
+  int priority = 0;  ///< Priority value carried by this data structure.
 };
 
 /**
  * @brief Counters produced by the micro-scene planning pass.
  */
 struct MicroSceneSummary {
-  int scene_count = 0;
-  int camp_scene_count = 0;
-  int roadside_debris_count = 0;
-  int logging_spot_count = 0;
-  int ruin_debris_cluster_count = 0;
-  int swamp_crossing_detail_count = 0;
-  int object_scene_dressing_count = 0;
-  int cache_hint_count = 0;
-  int visual_tiles = 0;
-  int primary_prop_tiles = 0;
-  int secondary_prop_tiles = 0;
-  int small_debris_tiles = 0;
-  int ground_detail_tiles = 0;
-  int vegetation_detail_tiles = 0;
-  int stone_detail_tiles = 0;
-  int wet_detail_tiles = 0;
-  std::map<std::string, int> theme_counts;
+  int scene_count = 0;  ///< Count of scene count entries or events.
+  int camp_scene_count = 0;  ///< Count of camp scene count entries or events.
+  int roadside_debris_count = 0;  ///< Count of roadside debris count entries or events.
+  int logging_spot_count = 0;  ///< Count of logging spot count entries or events.
+  int ruin_debris_cluster_count = 0;  ///< Count of ruin debris cluster count entries or events.
+  int swamp_crossing_detail_count = 0;  ///< Count of swamp crossing detail count entries or events.
+  int object_scene_dressing_count = 0;  ///< Count of object scene dressing count entries or events.
+  int cache_hint_count = 0;  ///< Count of cache hint count entries or events.
+  int visual_tiles = 0;  ///< Visual tiles value carried by this data structure.
+  int primary_prop_tiles = 0;  ///< Primary prop tiles value carried by this data structure.
+  int secondary_prop_tiles = 0;  ///< Secondary prop tiles value carried by this data structure.
+  int small_debris_tiles = 0;  ///< Small debris tiles value carried by this data structure.
+  int ground_detail_tiles = 0;  ///< Ground detail tiles value carried by this data structure.
+  int vegetation_detail_tiles = 0;  ///< Vegetation detail tiles value carried by this data structure.
+  int stone_detail_tiles = 0;  ///< Stone detail tiles value carried by this data structure.
+  int wet_detail_tiles = 0;  ///< Wet detail tiles value carried by this data structure.
+  std::map<std::string, int> theme_counts;  ///< Count of theme counts entries or events.
 
   /**
    * @brief Returns a readable dump of micro-scene counters.
@@ -108,11 +114,11 @@ struct MicroSceneSummary {
  * @brief Generated micro-scenes and their tile masks.
  */
 struct MicroSceneVisualPlan {
-  LevelSize size;
-  std::vector<std::uint8_t> tiles;
-  std::vector<std::uint16_t> scene_ids;
-  std::vector<MicroSceneItem> scenes;
-  MicroSceneSummary summary;
+  LevelSize size;  ///< Size value carried by this data structure.
+  std::vector<std::uint8_t> tiles;  ///< Tiles value carried by this data structure.
+  std::vector<std::uint16_t> scene_ids;  ///< Scene ids value carried by this data structure.
+  std::vector<MicroSceneItem> scenes;  ///< Scenes value carried by this data structure.
+  MicroSceneSummary summary;  ///< Summary value carried by this data structure.
 
   /**
    * @brief Returns true when the plan matches the level dimensions.

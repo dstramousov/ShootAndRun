@@ -1,7 +1,16 @@
+/**
+ * @file src/level/elevation_transition.cpp
+ * @brief Generated map package data contracts and loading logic. Contains implementation for
+ * elevation_transition.cpp.
+ */
+
 #include "level/elevation_transition.h"
 
 namespace sar {
 
+/**
+ * @brief Returns elevation transition type name.
+ */
 const char* ElevationTransitionTypeName(ElevationTransitionType type) {
   switch (type) {
     case ElevationTransitionType::kUnknown:
@@ -18,6 +27,9 @@ const char* ElevationTransitionTypeName(ElevationTransitionType type) {
   return "unknown";
 }
 
+/**
+ * @brief Parses elevation transition type from external data.
+ */
 ElevationTransitionType ParseElevationTransitionType(const std::string& value) {
   if (value == "step" || value == "step_up" || value == "ledge") {
     return ElevationTransitionType::kStep;
