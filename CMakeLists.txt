@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(ShootAndRun
-  VERSION 0.1.58
+  VERSION 0.1.59
   DESCRIPTION "ShootAndRun C++ raylib bootstrap"
   LANGUAGES CXX
 )
@@ -40,6 +40,7 @@ add_executable(shoot_and_run
   src/render3d/level_3d_camera.cpp
   src/render3d/level_3d_player_controller.cpp
   src/render3d/level_3d_renderer.cpp
+  src/render3d/model_registry.cpp
   src/render/ui_font.cpp
   src/ui/confirm_dialog.cpp
   src/ui/main_menu.cpp
@@ -101,6 +102,7 @@ if(SAR_BUILD_TESTS)
     src/level/elevation_transition.cpp
     src/level/level_loader.cpp
     src/level/terrain_type.cpp
+    src/render3d/model_registry.cpp
     src/ui/main_menu.cpp
     src/visual_pipeline/pipeline_progress.cpp
     src/visual_pipeline/semantic_masks.cpp

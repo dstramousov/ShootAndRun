@@ -493,3 +493,14 @@
 - Preserved backward compatibility with the legacy `render3d_los_enabled` setting when `render3d_fog_mode` is not present.
 - Updated README and default config to make `circle` the safe default mode while keeping `raycast` available for experiments.
 - Kept the 2D renderer path, HUD and profiler unchanged.
+
+
+## v0.1.58 -> v0.1.59
+
+- Bumped CMake project and runtime application version to `0.1.59`.
+- Added 3D asset registry foundation for future model-based rendering.
+- Added `config/render3d/asset_library.json` as the physical model catalog.
+- Added `config/render3d/tileset_dark_forest.json` as the active 3D tileset binding file.
+- Added deterministic selector support for `fixed`, `random`, `weighted_random`, `named` and `by_tag` model selection.
+- Added startup loading and validation of the 3D registry in renderer=3d mode.
+- Kept current debug primitives as the fallback path; no visual replacement is enabled yet.

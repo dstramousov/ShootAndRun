@@ -19,6 +19,7 @@
 #include "render/renderer.h"
 #include "render/ui_font.h"
 #include "render3d/level_3d_renderer.h"
+#include "render3d/model_registry.h"
 #include "ui/confirm_dialog.h"
 #include "ui/main_menu.h"
 #include "visual_pipeline/prepared_level.h"
@@ -46,6 +47,7 @@ class Application {
  private:
   void LoadProjectConfigAtStartup();
   void LoadDeveloperConfigAtStartup();
+  void LoadRender3DAssetRegistryAtStartup();
   void InitializeWindow();
   void LoadUiFont();
   void ShutdownWindow();
@@ -99,6 +101,7 @@ class Application {
   visual_pipeline::VisualPreparationPipeline visual_pipeline_;
   LevelViewState level_view_;
   render3d::Level3DViewState level_3d_view_;
+  render3d::ModelRegistry3D model_registry_3d_;
   LevelRenderMode level_render_mode_ = LevelRenderMode::kRawTerrain;
   Texture2D final_render_texture_{};
   bool final_render_texture_loaded_ = false;

@@ -1,4 +1,4 @@
-# ShootAndRunCpp v0.1.58
+# ShootAndRunCpp v0.1.59
 
 Первый каркас C++20 + raylib проекта.
 
@@ -128,3 +128,56 @@ Esc            - вернуться в главное меню
 circle   - классический радиус видимости без LoS-блокеров
 raycast  - радиус видимости плюс raycast по vision blockers
 ```
+
+## 3D asset registry
+
+Для будущих GLB/OBJ-моделей добавлен отдельный слой регистрации 3D-ассетов.
+Сейчас он не меняет внешний вид сцены: если модель не подключена или не найдена,
+renderer продолжает использовать текущие debug primitives.
+
+Файлы конфигурации:
+
+```text
+config/render3d/asset_library.json       - общий каталог физических моделей
+config/render3d/tileset_dark_forest.json - активный 3D tileset / theme bindings
+```
+
+Минимальный пример модели и binding:
+
+```json
+{
+  "models": {
+    "tree_pine_01": {
+      "path": "assets/models/trees/tree_pine_01.glb",
+      "tags": ["tree", "pine", "forest"],
+      "default_scale": 1.0,
+      "vertical_offset": 0.0,
+      "fallback": "tree_debug"
+    }
+  }
+}
+```
+
+```json
+{
+  "tileset_id": "dark_forest_3d",
+  "bindings": {
+    "forest_dense": {
+      "placement": "single",
+      "selector": "weighted_random",
+      "variants": [
+        { "model": "tree_pine_01", "weight": 5 }
+      ],
+      "random_rotation": true,
+      "scale_range": [0.9, 1.15],
+      "offset_range": [-0.15, 0.15],
+      "fallback": "tree_debug"
+    }
+  }
+}
+```
+
+Поддерживаемые selector-режимы фундамента: `fixed`, `random`,
+`weighted_random`, `named`, `by_tag`. Выбор random/weighted_random
+детерминированный: seed + semantic key + координаты tile дают один и тот же
+результат между запусками.

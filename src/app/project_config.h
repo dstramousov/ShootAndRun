@@ -90,6 +90,17 @@ struct Render3DVisibilityConfig {
 };
 
 /**
+ * @brief Configures 3D model registry metadata files.
+ */
+struct Render3DAssetRegistryConfig {
+  bool enabled = true;
+  std::filesystem::path asset_library_path =
+      "config/render3d/asset_library.json";
+  std::filesystem::path tileset_path =
+      "config/render3d/tileset_dark_forest.json";
+};
+
+/**
  * @brief Configures the 3D new-game camera intro fly-in.
  */
 struct Render3DIntroCameraConfig {
@@ -133,6 +144,7 @@ struct ProjectConfig {
   Player3DLogConfig player3d_log;
   Render3DPerfConfig render3d_perf;
   Render3DVisibilityConfig render3d_visibility;
+  Render3DAssetRegistryConfig render3d_assets;
   Render3DIntroCameraConfig render3d_intro_camera;
   Player3DMovementConfig player3d_movement;
   visual_pipeline::VisualPipelineConfig visual_pipeline_config;

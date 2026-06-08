@@ -384,7 +384,12 @@ std::string ProjectConfig::Dump() const {
          Render3DFogModeName(render3d_visibility.fog_mode) +
          ", seen_tile_dim_factor: " +
          std::to_string(render3d_visibility.seen_tile_dim_factor) +
-         " }, render3d_intro_camera: { enabled: " +
+         " }, render3d_assets: { enabled: " +
+         std::string(render3d_assets.enabled ? "true" : "false") +
+         ", asset_library_path: \"" +
+         render3d_assets.asset_library_path.string() +
+         "\", tileset_path: \"" + render3d_assets.tileset_path.string() +
+         "\" }, render3d_intro_camera: { enabled: " +
          std::string(render3d_intro_camera.enabled ? "true" : "false") +
          ", duration_ms: " +
          std::to_string(render3d_intro_camera.duration_ms) +
@@ -776,6 +781,33 @@ ProjectConfigResult LoadProjectConfig(
     }
     config.render3d_visibility.seen_tile_dim_factor =
         render3d_seen_tile_dim_factor.value;
+  }
+
+  ParseBoolResult render3d_asset_registry_enabled =
+      ExtractOptionalJsonBoolField(content, "render3d_asset_registry_enabled");
+  if (!render3d_asset_registry_enabled.ok) {
+    return {false, {}, render3d_asset_registry_enabled.error};
+  }
+  if (render3d_asset_registry_enabled.found) {
+    config.render3d_assets.enabled = render3d_asset_registry_enabled.value;
+  }
+
+  ParseStringResult render3d_asset_library_path =
+      ExtractOptionalJsonStringField(content, "render3d_asset_library_path");
+  if (!render3d_asset_library_path.ok) {
+    return {false, {}, render3d_asset_library_path.error};
+  }
+  if (!render3d_asset_library_path.value.empty()) {
+    config.render3d_assets.asset_library_path = render3d_asset_library_path.value;
+  }
+
+  ParseStringResult render3d_tileset_path =
+      ExtractOptionalJsonStringField(content, "render3d_tileset_path");
+  if (!render3d_tileset_path.ok) {
+    return {false, {}, render3d_tileset_path.error};
+  }
+  if (!render3d_tileset_path.value.empty()) {
+    config.render3d_assets.tileset_path = render3d_tileset_path.value;
   }
 
   ParseBoolResult render3d_intro_enabled =

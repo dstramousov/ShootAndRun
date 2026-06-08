@@ -63,5 +63,10 @@
     "render3d_intro_start_yaw_offset_deg": 35.0,
     "render3d_intro_lock_player_input": true,
     "render3d_intro_skip_enabled": true
+  },
+  "render3d_assets": {
+    "render3d_asset_registry_enabled": true,
+    "render3d_asset_library_path": "config/render3d/asset_library.json",
+    "render3d_tileset_path": "config/render3d/tileset_dark_forest.json"
   }
 }

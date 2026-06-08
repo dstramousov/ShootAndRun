@@ -435,6 +435,7 @@ int Application::Run() {
   SetCurrentThreadName("main");
   LoadDeveloperConfigAtStartup();
   LoadProjectConfigAtStartup();
+  LoadRender3DAssetRegistryAtStartup();
   logger_.Info("app", "starting application");
   InitializeWindow();
   LogStartup();
@@ -466,6 +467,33 @@ void Application::LoadProjectConfigAtStartup() {
   project_config_ = result.config;
   config_.window = project_config_->window_config;
   logger_.Info("config", project_config_->Dump());
+}
+
+void Application::LoadRender3DAssetRegistryAtStartup() {
+  if (config_.renderer_mode != RuntimeRendererMode::kRenderer3D ||
+      !project_config_.has_value()) {
+    return;
+  }
+  if (!project_config_->render3d_assets.enabled) {
+    logger_.Info("render3d_assets", "3D asset registry disabled by config");
+    return;
+  }
+
+  const render3d::LoadModelRegistry3DResult result =
+      render3d::LoadModelRegistry3D(
+          project_config_->render3d_assets.asset_library_path,
+          project_config_->render3d_assets.tileset_path);
+  if (!result.ok) {
+    logger_.Warn("render3d_assets",
+                 result.error + "; debug primitives remain active");
+    return;
+  }
+
+  model_registry_3d_ = result.registry;
+  logger_.Info("render3d_assets", model_registry_3d_.Dump());
+  for (const std::string& warning : result.warnings) {
+    logger_.Warn("render3d_assets", warning);
+  }
 }
 
 void Application::LoadDeveloperConfigAtStartup() {
