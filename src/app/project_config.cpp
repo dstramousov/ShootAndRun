@@ -336,6 +336,14 @@ std::string ProjectConfig::Dump() const {
          std::string(service_info.show_memory ? "true" : "false") +
          ", update_interval_ms: " +
          std::to_string(service_info.update_interval_ms) +
+         " }, player3d_log: { enabled: " +
+         std::string(player3d_log.enabled ? "true" : "false") +
+         ", include_mouse: " +
+         std::string(player3d_log.include_mouse ? "true" : "false") +
+         ", tile_log_min_interval_ms: " +
+         std::to_string(player3d_log.tile_log_min_interval_ms) +
+         ", blocked_log_min_interval_ms: " +
+         std::to_string(player3d_log.blocked_log_min_interval_ms) +
          " }, visual_pipeline: { mode: " +
          visual_pipeline::VisualPipelineModeName(visual_pipeline_config.mode) +
          ", prepared_visual_map_path: \"" +
@@ -510,6 +518,52 @@ ProjectConfigResult LoadProjectConfig(
       return {false, {}, "update_interval_ms must be positive"};
     }
     config.service_info.update_interval_ms = update_interval_ms.value;
+  }
+
+  ParseBoolResult player3d_log_enabled =
+      ExtractOptionalJsonBoolField(content, "player3d_log_enabled");
+  if (!player3d_log_enabled.ok) {
+    return {false, {}, player3d_log_enabled.error};
+  }
+  if (player3d_log_enabled.found) {
+    config.player3d_log.enabled = player3d_log_enabled.value;
+  }
+
+  ParseBoolResult player3d_log_mouse =
+      ExtractOptionalJsonBoolField(content, "player3d_log_mouse");
+  if (!player3d_log_mouse.ok) {
+    return {false, {}, player3d_log_mouse.error};
+  }
+  if (player3d_log_mouse.found) {
+    config.player3d_log.include_mouse = player3d_log_mouse.value;
+  }
+
+  ParseIntResult player3d_tile_log_min_interval_ms =
+      ExtractOptionalJsonIntField(content, "player3d_tile_log_min_interval_ms");
+  if (!player3d_tile_log_min_interval_ms.ok) {
+    return {false, {}, player3d_tile_log_min_interval_ms.error};
+  }
+  if (player3d_tile_log_min_interval_ms.found) {
+    if (player3d_tile_log_min_interval_ms.value < 0) {
+      return {false, {},
+              "player3d_tile_log_min_interval_ms must be non-negative"};
+    }
+    config.player3d_log.tile_log_min_interval_ms =
+        player3d_tile_log_min_interval_ms.value;
+  }
+
+  ParseIntResult player3d_block_log_min_interval_ms =
+      ExtractOptionalJsonIntField(content, "player3d_block_log_min_interval_ms");
+  if (!player3d_block_log_min_interval_ms.ok) {
+    return {false, {}, player3d_block_log_min_interval_ms.error};
+  }
+  if (player3d_block_log_min_interval_ms.found) {
+    if (player3d_block_log_min_interval_ms.value < 0) {
+      return {false, {},
+              "player3d_block_log_min_interval_ms must be non-negative"};
+    }
+    config.player3d_log.blocked_log_min_interval_ms =
+        player3d_block_log_min_interval_ms.value;
   }
 
   ParseStringResult visual_pipeline_mode =

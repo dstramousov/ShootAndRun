@@ -33,6 +33,13 @@ struct ServiceInfoConfig {
   int update_interval_ms = 1000;
 };
 
+struct Player3DLogConfig {
+  bool enabled = true;
+  bool include_mouse = true;
+  int tile_log_min_interval_ms = 250;
+  int blocked_log_min_interval_ms = 600;
+};
+
 struct ProjectConfig {
   std::filesystem::path map_package_path;
   std::filesystem::path ui_font_path = "data/fonts/PressStart2P-Regular.ttf";
@@ -40,6 +47,7 @@ struct ProjectConfig {
   RaylibLogLevel raylib_log_level = RaylibLogLevel::kWarning;
   WindowConfig window_config;
   ServiceInfoConfig service_info;
+  Player3DLogConfig player3d_log;
   visual_pipeline::VisualPipelineConfig visual_pipeline_config;
 
   /**

@@ -9,7 +9,7 @@
 #include "window/window_config.h"
 
 #ifndef SAR_APP_VERSION
-#define SAR_APP_VERSION "0.1.44-dev"
+#define SAR_APP_VERSION "0.1.45-dev"
 #endif
 
 namespace sar {

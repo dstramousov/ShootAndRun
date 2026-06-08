@@ -112,6 +112,8 @@ class Application {
   float accumulated_abs_mouse_dy_since_tile_ = 0.0F;
   float accumulated_mouse_wheel_since_tile_ = 0.0F;
   int mouse_sample_count_since_tile_ = 0;
+  double last_3d_tile_log_time_ = -1000.0;
+  double last_3d_block_log_time_ = -1000.0;
   double last_preparation_step_time_ = -1.0;
   ServiceInfoOverlayData service_info_data_;
   double last_service_info_update_time_ = -1.0;

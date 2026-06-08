@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
+#include <iomanip>
 #include <sstream>
 #include <string_view>
 
@@ -71,6 +72,28 @@ std::int8_t HeightAtOrZero(const LevelData& level, int x, int y) {
 
 int TileIndexFromPosition(float value) {
   return static_cast<int>(std::floor(value));
+}
+
+std::string_view TerrainShortName(TerrainType terrain) {
+  switch (terrain) {
+    case TerrainType::kOpenGround:
+      return "open";
+    case TerrainType::kForest:
+      return "forest";
+    case TerrainType::kRoad:
+      return "road";
+    case TerrainType::kSwamp:
+      return "swamp";
+    case TerrainType::kRuins:
+      return "ruins";
+    case TerrainType::kWater:
+      return "water";
+    case TerrainType::kWall:
+      return "wall";
+    case TerrainType::kUnknown:
+      return "unknown";
+  }
+  return "unknown";
 }
 
 float CurrentTileMovementMultiplier(const LevelData& level,
@@ -421,18 +444,20 @@ Level3DPlayerTileDiagnostics CurrentLevel3DPlayerTileDiagnostics(
 std::string Level3DPlayerTileDiagnosticsToString(
     const Level3DPlayerTileDiagnostics& diagnostics) {
   std::ostringstream stream;
-  stream << "tile=" << diagnostics.tile_x << ',' << diagnostics.tile_y
-         << " terrain=" << TerrainTypeToString(diagnostics.terrain)
-         << " elevation=" << static_cast<int>(diagnostics.elevation)
-         << " walkable=" << (diagnostics.walkable ? "yes" : "no")
-         << " collision=" << (diagnostics.collision ? "yes" : "no")
-         << " concealment=" << static_cast<int>(diagnostics.concealment)
-         << " movement_multiplier=" << diagnostics.movement_multiplier
-         << " base_speed=" << diagnostics.base_speed_tiles_per_sec
-         << " effective_speed=" << diagnostics.effective_speed_tiles_per_sec
-         << " velocity=" << diagnostics.velocity_x_tiles_per_sec << ','
+  stream << std::fixed << std::setprecision(2);
+  stream << "tile=" << std::setw(3) << diagnostics.tile_x << ','
+         << std::setw(3) << diagnostics.tile_y
+         << " ter=" << TerrainShortName(diagnostics.terrain)
+         << " el=" << static_cast<int>(diagnostics.elevation)
+         << " w=" << (diagnostics.walkable ? 'Y' : 'N')
+         << " col=" << (diagnostics.collision ? 'Y' : 'N')
+         << " con=" << static_cast<int>(diagnostics.concealment)
+         << " mov=" << diagnostics.movement_multiplier
+         << " bs=" << diagnostics.base_speed_tiles_per_sec
+         << " es=" << diagnostics.effective_speed_tiles_per_sec
+         << " vel=" << diagnostics.velocity_x_tiles_per_sec << ','
          << diagnostics.velocity_y_tiles_per_sec
-         << " facing=" << diagnostics.facing_x << ',' << diagnostics.facing_y;
+         << " face=" << diagnostics.facing_x << ',' << diagnostics.facing_y;
   return stream.str();
 }
 

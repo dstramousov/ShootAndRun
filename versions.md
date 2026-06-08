@@ -366,3 +366,12 @@
 - Added event-based 3D movement logs on tile boundary crossing with terrain, elevation, movement multiplier, effective speed and accumulated mouse delta since the previous tile.
 - Added mouse capture change logs and throttled blocked-movement logs keyed by blocked tile/reason instead of logging every frame.
 - Removed the detailed 3D runtime state overlay from the screen; diagnostics now go to logs.
+
+## v0.1.44 -> v0.1.45
+
+- Bumped CMake project and runtime application version to `0.1.45`.
+- Replaced verbose 3D tile movement logs with compact `p3d` event lines and short field names.
+- Added configurable 3D movement log throttling through `player3d_tile_log_min_interval_ms` and `player3d_block_log_min_interval_ms` in `config/app_config.json`.
+- Added `player3d_log_enabled` and `player3d_log_mouse` switches for 3D movement diagnostics.
+- Rendered passable forest-boundary / undergrowth tiles as transparent low forest volumes instead of opaque blocking forest blocks.
+- Kept dense collision forest opaque and impassable.

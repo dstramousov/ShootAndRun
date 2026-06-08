@@ -36,6 +36,18 @@ int ScaledFontSize(const UiFont& font, const WindowState& window,
   return std::max(1, static_cast<int>(std::lround(size)));
 }
 
+double SecondsFromMilliseconds(int milliseconds) {
+  if (milliseconds <= 0) {
+    return 0.0;
+  }
+  return static_cast<double>(milliseconds) / 1000.0;
+}
+
+bool IsIntervalElapsed(double now, double last_time, int interval_ms) {
+  return interval_ms <= 0 ||
+         now - last_time >= SecondsFromMilliseconds(interval_ms);
+}
+
 int ToRaylibTraceLogLevel(RaylibLogLevel level) {
   switch (level) {
     case RaylibLogLevel::kTrace:
@@ -825,24 +837,39 @@ void Application::Log3DMovementEvents(const InputState& input) {
     return;
   }
 
+  const Player3DLogConfig log_config = project_config_.has_value()
+                                           ? project_config_->player3d_log
+                                           : Player3DLogConfig{};
+  if (!log_config.enabled) {
+    return;
+  }
+
+  const double now = GetTime();
   const render3d::Level3DPlayerTileDiagnostics diagnostics =
       render3d::CurrentLevel3DPlayerTileDiagnostics(
           *loaded_level_, level_3d_view_.player);
-  if (diagnostics.tile_x != last_logged_3d_tile_x_ ||
-      diagnostics.tile_y != last_logged_3d_tile_y_) {
+  const bool tile_changed = diagnostics.tile_x != last_logged_3d_tile_x_ ||
+                            diagnostics.tile_y != last_logged_3d_tile_y_;
+  if (tile_changed &&
+      IsIntervalElapsed(now, last_3d_tile_log_time_,
+                        log_config.tile_log_min_interval_ms)) {
     std::ostringstream stream;
-    stream << render3d::Level3DPlayerTileDiagnosticsToString(diagnostics)
-           << " mouse_dx_sum=" << accumulated_mouse_dx_since_tile_
-           << " mouse_dy_sum=" << accumulated_mouse_dy_since_tile_
-           << " mouse_abs_dx=" << accumulated_abs_mouse_dx_since_tile_
-           << " mouse_abs_dy=" << accumulated_abs_mouse_dy_since_tile_
-           << " mouse_wheel_sum=" << accumulated_mouse_wheel_since_tile_
-           << " mouse_samples=" << mouse_sample_count_since_tile_
-           << " mouse_capture=" << (mouse_capture_active_ ? "on" : "off");
-    logger_.Info("player3d", stream.str());
+    stream << render3d::Level3DPlayerTileDiagnosticsToString(diagnostics);
+    if (log_config.include_mouse) {
+      stream << std::fixed << std::setprecision(2)
+             << " md=" << accumulated_mouse_dx_since_tile_ << ','
+             << accumulated_mouse_dy_since_tile_
+             << " ma=" << accumulated_abs_mouse_dx_since_tile_ << ','
+             << accumulated_abs_mouse_dy_since_tile_
+             << " wh=" << accumulated_mouse_wheel_since_tile_
+             << " mn=" << mouse_sample_count_since_tile_
+             << " cap=" << (mouse_capture_active_ ? 'Y' : 'N');
+    }
+    logger_.Info("p3d", stream.str());
 
     last_logged_3d_tile_x_ = diagnostics.tile_x;
     last_logged_3d_tile_y_ = diagnostics.tile_y;
+    last_3d_tile_log_time_ = now;
     accumulated_mouse_dx_since_tile_ = 0.0F;
     accumulated_mouse_dy_since_tile_ = 0.0F;
     accumulated_abs_mouse_dx_since_tile_ = 0.0F;
@@ -852,19 +879,23 @@ void Application::Log3DMovementEvents(const InputState& input) {
   }
 
   const render3d::Level3DPlayerState& player = level_3d_view_.player;
-  if (player.blocked_event_sequence != last_logged_3d_block_sequence_) {
+  if (player.blocked_event_sequence != last_logged_3d_block_sequence_ &&
+      IsIntervalElapsed(now, last_3d_block_log_time_,
+                        log_config.blocked_log_min_interval_ms)) {
     std::ostringstream stream;
-    stream << "movement blocked tile=" << player.last_blocked_tile_x << ','
+    stream << "block tile=" << player.last_blocked_tile_x << ','
            << player.last_blocked_tile_y
            << " reason="
-           << render3d::Level3DMoveBlockReasonName(
-                  player.last_block_reason)
-           << " current_tile=" << diagnostics.tile_x << ','
-           << diagnostics.tile_y
-           << " mouse_dx=" << input.mouse_delta.x
-           << " mouse_dy=" << input.mouse_delta.y;
-    logger_.Debug("player3d", stream.str());
+           << render3d::Level3DMoveBlockReasonName(player.last_block_reason)
+           << " cur=" << diagnostics.tile_x << ',' << diagnostics.tile_y;
+    if (log_config.include_mouse) {
+      stream << std::fixed << std::setprecision(2)
+             << " md=" << input.mouse_delta.x << ',' << input.mouse_delta.y
+             << " cap=" << (mouse_capture_active_ ? 'Y' : 'N');
+    }
+    logger_.Debug("p3d", stream.str());
     last_logged_3d_block_sequence_ = player.blocked_event_sequence;
+    last_3d_block_log_time_ = now;
   }
 }
 
@@ -1100,6 +1131,8 @@ bool Application::StartNewGameFromConfig() {
     accumulated_abs_mouse_dy_since_tile_ = 0.0F;
     accumulated_mouse_wheel_since_tile_ = 0.0F;
     mouse_sample_count_since_tile_ = 0;
+    last_3d_tile_log_time_ = -1000.0;
+    last_3d_block_log_time_ = -1000.0;
     render3d::InitializeLevel3DView(*loaded_level_, &level_3d_view_);
     game_session_.StartNewGame();
     screen_ = AppScreen::kGame;

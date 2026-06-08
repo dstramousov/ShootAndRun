@@ -118,9 +118,17 @@ Color CollisionColor(const RuntimeCell& cell) {
   return Color{33, 175, 58, 255};
 }
 
+bool IsPassableForestBoundary(const RuntimeCell& cell) {
+  return cell.terrain == TerrainType::kForest && cell.walkable &&
+         !cell.collision && cell.movement_multiplier > 0.0F;
+}
+
 Color TileColor(const RuntimeCell& cell, Level3DRenderMode mode) {
   switch (mode) {
     case Level3DRenderMode::kTerrain:
+      if (IsPassableForestBoundary(cell)) {
+        return Color{38, 122, 55, 255};
+      }
       return TerrainColor3D(cell.terrain);
     case Level3DRenderMode::kElevation:
       return ElevationColor(cell.height);
@@ -168,6 +176,10 @@ void DrawGroundTile(const LevelData& level, int x, int y,
 void DrawBlockingVolume(const LevelData& level, int x, int y,
                         const RuntimeCell& cell,
                         const Level3DViewState& state) {
+  if (IsPassableForestBoundary(cell)) {
+    return;
+  }
+
   const float height = BlockingVolumeHeight(cell);
   if (height <= 0.0F || !IsSurfaceVisible(cell)) {
     return;
@@ -186,6 +198,29 @@ void DrawBlockingVolume(const LevelData& level, int x, int y,
     color = Color{105, 77, 54, 238};
   }
   DrawCube(center, width, height, depth, color);
+}
+
+void DrawPassableForestBoundaryVolume(const LevelData& level, int x, int y,
+                                      const RuntimeCell& cell,
+                                      const Level3DViewState& state) {
+  if (!IsPassableForestBoundary(cell) || !IsSurfaceVisible(cell)) {
+    return;
+  }
+
+  const float height = 0.62F;
+  Vector3 center = TileWorldCenter(level, x, y, cell.height,
+                                   state.tile_world_size,
+                                   state.elevation_step);
+  center.y += height * 0.5F;
+  const float width = state.tile_world_size * 0.92F;
+  const float depth = state.tile_world_size * 0.92F;
+  Color color = Color{54, 103, 48, 92};
+  if (state.mode == Level3DRenderMode::kCollision) {
+    color = Color{44, 146, 58, 104};
+  }
+
+  DrawCube(center, width, height, depth, color);
+  DrawCubeWires(center, width, height, depth, Color{118, 166, 95, 112});
 }
 
 void DrawLevelBounds(const LevelData& level, float tile_world_size) {
@@ -235,6 +270,18 @@ void DrawTiles(const LevelData& level, const Level3DViewState& state) {
       DrawBlockingVolume(level, x, y, *cell, state);
     }
   }
+
+  BeginBlendMode(BLEND_ALPHA);
+  for (int y = range.min_y; y <= range.max_y; ++y) {
+    for (int x = range.min_x; x <= range.max_x; ++x) {
+      const RuntimeCell* cell = CellAt(level, x, y);
+      if (cell == nullptr) {
+        continue;
+      }
+      DrawPassableForestBoundaryVolume(level, x, y, *cell, state);
+    }
+  }
+  EndBlendMode();
 }
 
 }  // namespace
