@@ -521,3 +521,23 @@
 - Applied fall damage as `(drop_levels - 1) * player3d_fall_damage_per_level`, so a one-level drop is safe and a two-level drop costs 5 HP by default.
 - Added compact HP HUD text under the FPS counter in 3D mode.
 - Added event logs for unsafe falls and health changes when 3D player logging is enabled.
+
+
+## v0.1.61 -> v0.1.62
+
+- Bumped CMake project and runtime application version to `0.1.62`.
+- Rendered elevation `-1` as a visible lower 3D plane instead of skipping it as hidden underground space.
+- Added plain vertical cutaway walls between open pit level `-1` and neighboring elevations `0..4` without extra bright borders or decorative rims.
+- Reinterpreted `-1` as an open pit/cutaway level for movement instead of hatch/underground-only space.
+- Allowed normal movement/fall from surface elevation into `-1`, with one-level `0 -> -1` drops remaining damage-free.
+- Required `Space` step-up/jump to leave `-1` for elevation `0` while keeping normal upward `+2` movement blocked.
+- Kept the v0.1.61 fall-damage formula for all downward elevation drops: `(drop_levels - 1) * player3d_fall_damage_per_level`.
+- Added regression tests for entering `-1`, fall damage into `-1`, blocked normal exit, and `Space` step-up exit.
+
+## v0.1.62 -> v0.1.63
+
+- Bumped CMake project and runtime application version to `0.1.63`.
+- Fixed 3D rendering of walkable ruins floor tiles so they no longer draw blocking volumes.
+- Kept actual collision/vision blockers rendered as vertical volumes.
+- Fixed the visual shape of elevation `-1` pit/cutaway areas on the elevation playground map: the lower floor now reads as a lower plane instead of a raised plateau.
+

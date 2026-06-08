@@ -314,7 +314,7 @@ bool CanUseNormalMovementTransition(const ElevationTransition& transition,
     case ElevationTransitionType::kStairs:
       return std::abs(height_delta) <= 1;
     case ElevationTransitionType::kHatch:
-      return from_height < 0 || to_height < 0;
+      return false;
     case ElevationTransitionType::kStep:
     case ElevationTransitionType::kUnknown:
       return false;
@@ -404,15 +404,11 @@ EnterTileResult CheckEnterTile(const LevelData& level,
   if (!target->walkable || target->movement_multiplier <= 0.0F) {
     return {false, x, y, height_delta, Level3DMoveBlockReason::kNotWalkable};
   }
-  if (transition != nullptr &&
+  if (transition != nullptr && state.elevation >= 0 && target->height >= 0 &&
       CanUseNormalMovementTransition(*transition, state.elevation,
                                      target->height)) {
     return {true, x, y, height_delta, Level3DMoveBlockReason::kNone,
             true, transition->type};
-  }
-  if ((target->height < 0 || state.elevation < 0) &&
-      target->height != state.elevation) {
-    return {false, x, y, height_delta, Level3DMoveBlockReason::kUnderground};
   }
   if (height_delta == 1 && IsRunningJumpCandidate(state)) {
     return {true, x, y, height_delta, Level3DMoveBlockReason::kNone,
@@ -469,8 +465,7 @@ void ApplyFallDamageIfNeeded(const Level3DPlayerState& previous_state,
                              int target_tile_x, int target_tile_y,
                              std::int8_t target_elevation,
                              Level3DPlayerState* state) {
-  if (state == nullptr || previous_state.elevation < 0 ||
-      target_elevation < 0) {
+  if (state == nullptr) {
     return;
   }
 
@@ -559,12 +554,7 @@ EnterTileResult CheckStepJumpTarget(const LevelData& level,
     return {false, target_x, target_y, height_delta,
             Level3DMoveBlockReason::kNotWalkable};
   }
-  if ((target->height < 0 || state.elevation < 0) &&
-      target->height != state.elevation) {
-    return {false, target_x, target_y, height_delta,
-            Level3DMoveBlockReason::kUnderground};
-  }
-  if (transition != nullptr &&
+  if (transition != nullptr && state.elevation >= 0 && target->height >= 0 &&
       !CanUseStepJumpTransition(*transition, height_delta)) {
     return {false, target_x, target_y, height_delta,
             Level3DMoveBlockReason::kNone};

@@ -506,6 +506,9 @@ Color ElevationWallColor(const RuntimeCell& cell, Level3DRenderMode mode) {
   if (mode == Level3DRenderMode::kCollision) {
     return Color{94, 72, 52, 255};
   }
+  if (cell.height < 0) {
+    return Color{62, 48, 40, 255};
+  }
   return ScaleColorRgb(TerrainColor3D(cell.terrain), 0.52F, 255);
 }
 
@@ -539,7 +542,7 @@ Color TileColor(const RuntimeCell& cell, Level3DRenderMode mode) {
  * @brief Checks whether surface visible is true.
  */
 bool IsSurfaceVisible(const RuntimeCell& cell) {
-  return cell.height >= 0;
+  return cell.height >= -1;
 }
 
 /**
@@ -587,6 +590,9 @@ void DrawTransitionPrimitive(const LevelData& level,
   const RuntimeCell* to = CellAt(level, transition.to_x, transition.to_y);
   if (from == nullptr || to == nullptr || !IsSurfaceVisible(*from) ||
       !IsSurfaceVisible(*to)) {
+    return;
+  }
+  if (from->height < 0 || to->height < 0) {
     return;
   }
 
@@ -649,16 +655,20 @@ void DrawElevationTransitions(const LevelData& level,
  * @brief Executes the blocking volume height operation.
  */
 float BlockingVolumeHeight(const RuntimeCell& cell) {
+  const bool has_blocking_runtime_semantics =
+      cell.collision || cell.blocks_vision || !cell.walkable ||
+      cell.movement_multiplier <= 0.0F;
+
   if (cell.terrain == TerrainType::kForest) {
     return 1.2F;
+  }
+  if (!has_blocking_runtime_semantics) {
+    return 0.0F;
   }
   if (cell.terrain == TerrainType::kWall || cell.terrain == TerrainType::kRuins) {
     return 0.8F;
   }
-  if (cell.collision || cell.blocks_vision) {
-    return 0.55F;
-  }
-  return 0.0F;
+  return 0.55F;
 }
 
 /**
@@ -689,8 +699,7 @@ void DrawElevationWallToNeighbor(const LevelData& level, int x, int y,
                                  int neighbor_x, int neighbor_y,
                                  const RuntimeCell& cell,
                                  const Level3DViewState& state) {
-  if (!IsSurfaceVisible(cell) || cell.height <= 0 ||
-      !IsTileRenderable(state, x, y)) {
+  if (!IsSurfaceVisible(cell) || !IsTileRenderable(state, x, y)) {
     return;
   }
 

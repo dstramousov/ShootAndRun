@@ -1,4 +1,4 @@
-# ShootAndRunCpp v0.1.60
+# ShootAndRunCpp v0.1.63
 
 Первый каркас C++20 + raylib проекта.
 
@@ -102,8 +102,8 @@ Esc            - вернуться в главное меню
 ```text
 WASD / Arrows  - W/S вперёд/назад, A/D стрейф относительно взгляда
 Mouse X        - поворот взгляда / прицела игрока
-Space + move   - заскок на соседний elevation +1
-Fall down      - падение вниз на 2+ elevation levels с уроном
+Space + move   - заскок на соседний elevation +1, включая выход из pit -1 на 0
+Fall down      - падение вниз; 0 -> -1 безопасно, 2+ уровней дают урон
 Mouse wheel    - zoom in/out
 F1             - terrain colors
 F2             - elevation debug
@@ -140,9 +140,11 @@ raycast  - радиус видимости плюс raycast по vision blockers
 }
 ```
 
-Падение на один elevation level считается безопасным. Для большего перепада урон
-считается как `(drop_levels - 1) * player3d_fall_damage_per_level`. Например,
-падение на два уровня даёт 5 HP урона при значении по умолчанию.
+Падение на один elevation level считается безопасным, включая открытый pit-переход
+`0 -> -1`. Для большего перепада урон считается как
+`(drop_levels - 1) * player3d_fall_damage_per_level`. Например, падение на два
+уровня даёт 5 HP урона при значении по умолчанию. Выход из `-1` на `0`
+требует `Space` step-up/jump; обычное движение вверх из pit блокируется.
 
 ## 3D asset registry
 

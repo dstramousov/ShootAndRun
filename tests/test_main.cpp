@@ -1,13 +1,17 @@
+#include <cstddef>
+#include <cstdint>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string_view>
+#include <vector>
 
 #include "app/project_config.h"
 #include "developer/developer_config.h"
 #include "level/level_loader.h"
 #include "level/terrain_type.h"
+#include "render3d/level_3d_player_controller.h"
 #include "ui/main_menu.h"
 #include "visual_pipeline/object_visual_plan.h"
 #include "visual_pipeline/road_visual_plan.h"
@@ -18,6 +22,56 @@
 #include "window/window_layout.h"
 
 namespace {
+
+sar::LevelData BuildFlatTestLevel(int width, int height,
+                                  const std::vector<std::int8_t>& elevations) {
+  sar::LevelData level;
+  level.size.width = width;
+  level.size.height = height;
+  level.size.tile_size = 16;
+  level.cells.resize(elevations.size());
+  for (std::size_t index = 0; index < elevations.size(); ++index) {
+    level.cells[index].terrain = sar::TerrainType::kOpenGround;
+    level.cells[index].walkable = true;
+    level.cells[index].collision = false;
+    level.cells[index].blocks_projectiles = false;
+    level.cells[index].blocks_vision = false;
+    level.cells[index].cover = 0;
+    level.cells[index].concealment = 0;
+    level.cells[index].height = elevations[index];
+    level.cells[index].movement_multiplier = 1.0F;
+  }
+  return level;
+}
+
+sar::render3d::Level3DPlayerState MakeTestPlayer(float tile_x, float tile_y,
+                                                 std::int8_t elevation,
+                                                 float facing_x,
+                                                 float facing_y) {
+  sar::render3d::Level3DPlayerState state;
+  state.tile_x = tile_x;
+  state.tile_y = tile_y;
+  state.elevation = elevation;
+  state.facing_x = facing_x;
+  state.facing_y = facing_y;
+  state.max_hp = 100;
+  state.current_hp = 100;
+  state.fall_damage_per_level = 5;
+  state.allowed_step_down_height = 1;
+  state.current_movement_multiplier = 1.0F;
+  state.target_movement_multiplier = 1.0F;
+  state.effective_move_speed_tiles_per_sec = state.move_speed_tiles_per_sec;
+  state.initialized = true;
+  return state;
+}
+
+void Run3DPlayerFrames(const sar::LevelData& level, const sar::InputState& input,
+                       int frame_count,
+                       sar::render3d::Level3DPlayerState* state) {
+  for (int frame = 0; frame < frame_count; ++frame) {
+    sar::render3d::UpdateLevel3DPlayer(level, input, 0.05F, state);
+  }
+}
 
 void Expect(bool condition, std::string_view message) {
   if (!condition) {
@@ -1178,6 +1232,85 @@ void TestLevelLoaderBasicPackage() {
   std::filesystem::remove_all(package_path);
 }
 
+void TestLevel3DPlayerFallsIntoNegativePitWithoutDamage() {
+  const sar::LevelData level = BuildFlatTestLevel(2, 1, {0, -1});
+  sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      0.5F, 0.5F, 0, 1.0F, 0.0F);
+  sar::InputState input;
+  input.up_down = true;
+
+  Run3DPlayerFrames(level, input, 10, &state);
+
+  Expect(state.tile_x >= 1.0F,
+         "3D player should enter an open -1 pit from surface elevation");
+  Expect(state.elevation == -1,
+         "3D player elevation should become -1 after falling into the pit");
+  Expect(state.current_hp == 100,
+         "0 to -1 pit fall should not apply HP damage");
+  Expect(state.last_fall_damage == 0,
+         "one-level pit fall should keep last fall damage at zero");
+}
+
+void TestLevel3DPlayerDropIntoNegativePitUsesFallDamageFormula() {
+  const sar::LevelData level = BuildFlatTestLevel(2, 1, {1, -1});
+  sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      0.5F, 0.5F, 1, 1.0F, 0.0F);
+  sar::InputState input;
+  input.up_down = true;
+
+  Run3DPlayerFrames(level, input, 10, &state);
+
+  Expect(state.tile_x >= 1.0F,
+         "3D player should enter a -1 pit from higher elevation");
+  Expect(state.elevation == -1,
+         "3D player elevation should become -1 after a higher pit fall");
+  Expect(state.last_fall_drop_levels == 2,
+         "1 to -1 pit fall should be counted as a two-level drop");
+  Expect(state.last_fall_damage == 5,
+         "two-level pit fall should use one unsafe fall-damage level");
+  Expect(state.current_hp == 95,
+         "two-level pit fall should subtract 5 HP by default");
+}
+
+void TestLevel3DPlayerCannotWalkOutOfNegativePit() {
+  const sar::LevelData level = BuildFlatTestLevel(2, 1, {0, -1});
+  sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      1.5F, 0.5F, -1, -1.0F, 0.0F);
+  sar::InputState input;
+  input.up_down = true;
+
+  Run3DPlayerFrames(level, input, 10, &state);
+
+  Expect(state.tile_x > 1.0F,
+         "3D player should not walk out of -1 pit without Space step-up");
+  Expect(state.elevation == -1,
+         "3D player should remain at -1 when normal movement tries to climb out");
+  Expect(state.last_block_reason ==
+             sar::render3d::Level3DMoveBlockReason::kStepUpRequired,
+         "walking from -1 to 0 should be blocked as step-up-required");
+}
+
+void TestLevel3DPlayerStepJumpsOutOfNegativePit() {
+  const sar::LevelData level = BuildFlatTestLevel(2, 1, {0, -1});
+  sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      1.5F, 0.5F, -1, -1.0F, 0.0F);
+  sar::InputState input;
+  input.up_down = true;
+  input.jump_pressed = true;
+
+  sar::render3d::UpdateLevel3DPlayer(level, input, 0.05F, &state);
+  input.jump_pressed = false;
+  input.up_down = false;
+  Run3DPlayerFrames(level, input, 8, &state);
+
+  Expect(!state.jump_active,
+         "Space step-up from -1 to 0 should finish the jump state");
+  Expect(state.tile_x < 1.0F,
+         "Space step-up should move the 3D player out of the -1 pit");
+  Expect(state.elevation == 0,
+         "Space step-up from -1 should land on elevation 0");
+}
+
 }  // namespace
 
 int main() {
@@ -1201,6 +1334,10 @@ int main() {
   TestMicroSceneVisualPlanBuildsDressing();
   TestLevelLoaderBasicPackage();
   TestLevelLoaderManifestPackage();
+  TestLevel3DPlayerFallsIntoNegativePitWithoutDamage();
+  TestLevel3DPlayerDropIntoNegativePitUsesFallDamageFormula();
+  TestLevel3DPlayerCannotWalkOutOfNegativePit();
+  TestLevel3DPlayerStepJumpsOutOfNegativePit();
   std::cout << "All tests passed.\n";
   return 0;
 }
