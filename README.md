@@ -1,4 +1,4 @@
-# ShootAndRunCpp v0.1.55
+# ShootAndRunCpp v0.1.56
 
 Первый каркас C++20 + raylib проекта.
 
@@ -23,6 +23,7 @@
 - 3D visibility foundation: current-view circle, fog memory for previously seen tiles, and chunk-based render iteration.
 - Debug marker overlay for `markers.json`, including player spawn markers.
 - 3D player-facing follow camera: mouse X turns player aim/facing, WASD moves relative to facing, and mouse wheel changes camera distance.
+- 3D new-game intro orients the player and camera toward the map center before the fly-in.
 - Базовые структуры `level/` под будущий renderer/gameplay.
 - Минимальные unit-тесты без внешнего test framework.
 

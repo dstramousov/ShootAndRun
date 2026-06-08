@@ -464,3 +464,12 @@
 - Added optional intro skip with `Space`, `Enter`, or left mouse click.
 - Locked 3D player movement during the intro by default so the camera can finish without gameplay drift.
 - Added rare camera lifecycle logs for intro start, skip and finish.
+
+## v0.1.55 -> v0.1.56
+
+- Bumped CMake project and runtime application version to `0.1.56`.
+- Oriented the initial 3D player facing direction from the spawn point toward the map center.
+- Made the 3D intro camera fly-in use that inward-facing direction so starts near corners no longer look out toward the map edge.
+- Added one event-style camera log line with spawn tile, map center and computed facing vector.
+- Kept 2D rendering, visibility, chunks and player movement rules unchanged.
+

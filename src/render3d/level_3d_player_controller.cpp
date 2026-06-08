@@ -79,6 +79,27 @@ int TileIndexFromPosition(float value) {
   return static_cast<int>(std::floor(value));
 }
 
+void SetInitialFacingTowardMapCenter(const LevelData& level,
+                                     Level3DPlayerState* state) {
+  if (state == nullptr || level.size.width <= 0 || level.size.height <= 0) {
+    return;
+  }
+
+  const float center_x = static_cast<float>(level.size.width) * 0.5F;
+  const float center_y = static_cast<float>(level.size.height) * 0.5F;
+  const float direction_x = center_x - state->tile_x;
+  const float direction_y = center_y - state->tile_y;
+  const float length = std::hypot(direction_x, direction_y);
+  if (length <= kVectorEpsilon) {
+    state->facing_x = 0.0F;
+    state->facing_y = -1.0F;
+    return;
+  }
+
+  state->facing_x = direction_x / length;
+  state->facing_y = direction_y / length;
+}
+
 std::string_view TerrainShortName(TerrainType terrain) {
   switch (terrain) {
     case TerrainType::kOpenGround:
@@ -886,8 +907,7 @@ void InitializeLevel3DPlayer(const LevelData& level,
         level, TileIndexFromPosition(state->tile_x),
         TileIndexFromPosition(state->tile_y));
   }
-  state->facing_x = 0.0F;
-  state->facing_y = -1.0F;
+  SetInitialFacingTowardMapCenter(level, state);
   state->velocity_x_tiles_per_sec = 0.0F;
   state->velocity_y_tiles_per_sec = 0.0F;
   state->last_blocked_tile_x = -1;

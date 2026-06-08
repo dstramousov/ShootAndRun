@@ -48,6 +48,17 @@ bool IsIntervalElapsed(double now, double last_time, int interval_ms) {
          now - last_time >= SecondsFromMilliseconds(interval_ms);
 }
 
+std::string Level3DSpawnFacingLogLine(
+    const LevelData& level, const render3d::Level3DPlayerState& player) {
+  std::ostringstream stream;
+  stream << std::fixed << std::setprecision(2)
+         << "spawn_facing tile=" << player.tile_x << ',' << player.tile_y
+         << " center=" << static_cast<float>(level.size.width) * 0.5F << ','
+         << static_cast<float>(level.size.height) * 0.5F
+         << " face=" << player.facing_x << ',' << player.facing_y;
+  return stream.str();
+}
+
 void ApplyPlayer3DMovementConfig(
     const Player3DMovementConfig& config,
     render3d::Level3DPlayerState* player) {
@@ -1207,6 +1218,8 @@ bool Application::StartNewGameFromConfig() {
     last_3d_tile_log_time_ = -1000.0;
     last_3d_block_log_time_ = -1000.0;
     render3d::InitializeLevel3DView(*loaded_level_, &level_3d_view_);
+    logger_.Info("camera",
+                 Level3DSpawnFacingLogLine(*loaded_level_, level_3d_view_.player));
     if (project_config_.has_value()) {
       ApplyPlayer3DMovementConfig(project_config_->player3d_movement,
                                   &level_3d_view_.player);
