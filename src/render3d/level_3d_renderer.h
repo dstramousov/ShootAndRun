@@ -24,6 +24,7 @@ struct Level3DViewState {
   Level3DRenderMode mode = Level3DRenderMode::kTerrain;
   float tile_world_size = 1.0F;
   float elevation_step = 0.35F;
+  float elevation_wall_thickness = 0.075F;
   int visible_radius_tiles = 48;
   int culling_deadzone_tiles = 4;
   int culling_center_tile_x = 0;

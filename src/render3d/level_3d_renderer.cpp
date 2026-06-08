@@ -149,6 +149,30 @@ Color CollisionColor(const RuntimeCell& cell) {
   return Color{33, 175, 58, 255};
 }
 
+Color ScaleColorRgb(Color color, float scale, unsigned char alpha) {
+  return Color{
+      static_cast<unsigned char>(std::clamp(
+          static_cast<int>(std::lround(static_cast<float>(color.r) * scale)),
+          0, 255)),
+      static_cast<unsigned char>(std::clamp(
+          static_cast<int>(std::lround(static_cast<float>(color.g) * scale)),
+          0, 255)),
+      static_cast<unsigned char>(std::clamp(
+          static_cast<int>(std::lround(static_cast<float>(color.b) * scale)),
+          0, 255)),
+      alpha};
+}
+
+Color ElevationWallColor(const RuntimeCell& cell, Level3DRenderMode mode) {
+  if (mode == Level3DRenderMode::kElevation) {
+    return ScaleColorRgb(ElevationColor(cell.height), 0.58F, 255);
+  }
+  if (mode == Level3DRenderMode::kCollision) {
+    return Color{94, 72, 52, 255};
+  }
+  return ScaleColorRgb(TerrainColor3D(cell.terrain), 0.52F, 255);
+}
+
 bool IsPassableForestBoundary(const RuntimeCell& cell) {
   return cell.terrain == TerrainType::kForest && cell.walkable &&
          !cell.collision && cell.movement_multiplier > 0.0F;
@@ -202,6 +226,67 @@ void DrawGroundTile(const LevelData& level, int x, int y,
 
   DrawCube(center, state.tile_world_size, slab_height, state.tile_world_size,
            TileColor(cell, state.mode));
+}
+
+void DrawElevationWallToNeighbor(const LevelData& level, int x, int y,
+                                 int neighbor_x, int neighbor_y,
+                                 const RuntimeCell& cell,
+                                 const Level3DViewState& state) {
+  if (!IsSurfaceVisible(cell) || cell.height <= 0) {
+    return;
+  }
+
+  const RuntimeCell* neighbor = CellAt(level, neighbor_x, neighbor_y);
+  if (neighbor == nullptr || !IsSurfaceVisible(*neighbor)) {
+    return;
+  }
+
+  const int height_delta = static_cast<int>(cell.height) -
+                           static_cast<int>(neighbor->height);
+  if (height_delta <= 0) {
+    return;
+  }
+
+  const float wall_height = static_cast<float>(height_delta) *
+                            state.elevation_step;
+  if (wall_height <= 0.01F) {
+    return;
+  }
+
+  Vector3 center = TileWorldCenter(level, x, y, cell.height,
+                                   state.tile_world_size,
+                                   state.elevation_step);
+  const float neighbor_y_world = static_cast<float>(neighbor->height) *
+                                 state.elevation_step;
+  center.y = neighbor_y_world + wall_height * 0.5F;
+
+  float width = state.tile_world_size;
+  float depth = std::max(0.02F, state.elevation_wall_thickness);
+  if (neighbor_x < x) {
+    center.x -= state.tile_world_size * 0.5F;
+    width = depth;
+    depth = state.tile_world_size;
+  } else if (neighbor_x > x) {
+    center.x += state.tile_world_size * 0.5F;
+    width = depth;
+    depth = state.tile_world_size;
+  } else if (neighbor_y < y) {
+    center.z -= state.tile_world_size * 0.5F;
+  } else {
+    center.z += state.tile_world_size * 0.5F;
+  }
+
+  DrawCube(center, width, wall_height, depth,
+           ElevationWallColor(cell, state.mode));
+}
+
+void DrawElevationWalls(const LevelData& level, int x, int y,
+                        const RuntimeCell& cell,
+                        const Level3DViewState& state) {
+  DrawElevationWallToNeighbor(level, x, y, x - 1, y, cell, state);
+  DrawElevationWallToNeighbor(level, x, y, x + 1, y, cell, state);
+  DrawElevationWallToNeighbor(level, x, y, x, y - 1, cell, state);
+  DrawElevationWallToNeighbor(level, x, y, x, y + 1, cell, state);
 }
 
 void DrawBlockingVolume(const LevelData& level, int x, int y,
@@ -289,6 +374,16 @@ void DrawTiles(const LevelData& level, const Level3DViewState& state) {
         continue;
       }
       DrawGroundTile(level, x, y, *cell, state);
+    }
+  }
+
+  for (int y = range.min_y; y <= range.max_y; ++y) {
+    for (int x = range.min_x; x <= range.max_x; ++x) {
+      const RuntimeCell* cell = CellAt(level, x, y);
+      if (cell == nullptr) {
+        continue;
+      }
+      DrawElevationWalls(level, x, y, *cell, state);
     }
   }
 

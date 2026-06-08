@@ -1,4 +1,4 @@
-# ShootAndRunCpp v0.1.47
+# ShootAndRunCpp v0.1.48
 
 Первый каркас C++20 + raylib проекта.
 
@@ -19,6 +19,7 @@
 
 - Debug renderer for loaded terrain maps.
 - Separate 3D renderer mode selected from CLI with `--renderer=3d`.
+- 3D elevation readability: elevated tiles are drawn at `height_grid` level with visible side walls.
 - Debug marker overlay for `markers.json`, including player spawn markers.
 - 3D player-facing follow camera: mouse X turns player aim/facing, WASD moves relative to facing, and mouse wheel changes camera distance.
 - Базовые структуры `level/` под будущий renderer/gameplay.

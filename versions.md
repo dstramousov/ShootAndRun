@@ -393,3 +393,11 @@
 - Stopped shifting the 3D visible tile range on every tile crossing; the range now recenters only after the player leaves a small culling deadzone.
 - Reduced default 3D visible radius from 52 to 48 tiles to lower per-frame draw work without changing gameplay data.
 - Kept 2D renderer, gameplay grids, collision, markers, routes, and visual pipeline unchanged.
+
+## v0.1.47 -> v0.1.48
+
+- Bumped CMake project and runtime application version to `0.1.48`.
+- Added visible 3D elevation side walls between neighboring surface tiles with different `height_grid` values.
+- Kept elevated tile surfaces at their runtime elevation and rendered vertical faces only from higher tiles toward lower neighbors.
+- Kept underground `-1` cells hidden from the surface renderer.
+- Kept 3D movement, step-jump rules, culling deadzone, and the 2D renderer path unchanged.
