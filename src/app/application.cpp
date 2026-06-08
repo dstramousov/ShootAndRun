@@ -1237,6 +1237,8 @@ bool Application::StartNewGameFromConfig() {
           project_config_->render3d_visibility.radius_tiles;
       level_3d_view_.visibility_memory_enabled =
           project_config_->render3d_visibility.memory_enabled;
+      level_3d_view_.visibility_los_enabled =
+          project_config_->render3d_visibility.los_enabled;
       level_3d_view_.seen_tile_dim_factor =
           project_config_->render3d_visibility.seen_tile_dim_factor;
       ApplyRender3DIntroCameraConfig(project_config_->render3d_intro_camera,

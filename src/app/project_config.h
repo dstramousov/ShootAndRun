@@ -69,6 +69,7 @@ struct Render3DVisibilityConfig {
   bool enabled = true;
   int radius_tiles = 22;
   bool memory_enabled = true;
+  bool los_enabled = true;
   float seen_tile_dim_factor = 0.32F;
 };
 

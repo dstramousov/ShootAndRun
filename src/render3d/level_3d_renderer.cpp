@@ -151,6 +151,51 @@ void EnsureVisibilityBuffer(const LevelData& level, Level3DViewState* state) {
   state->visibility_height = height;
   state->visibility_tiles.assign(expected_size, kVisibilityUnknown);
   state->visibility_current_indices.clear();
+  state->visibility_state_valid = false;
+}
+
+bool IsVisionBlocker(const LevelData& level, int x, int y) {
+  const RuntimeCell* cell = CellAt(level, x, y);
+  return cell != nullptr && cell->blocks_vision;
+}
+
+bool HasLineOfSight(const LevelData& level, int from_x, int from_y,
+                    int to_x, int to_y) {
+  if (from_x == to_x && from_y == to_y) {
+    return true;
+  }
+
+  int x = from_x;
+  int y = from_y;
+  const int dx = std::abs(to_x - from_x);
+  const int dy = std::abs(to_y - from_y);
+  const int step_x = from_x < to_x ? 1 : -1;
+  const int step_y = from_y < to_y ? 1 : -1;
+  int error = dx - dy;
+
+  while (x != to_x || y != to_y) {
+    const int doubled_error = error * 2;
+    if (doubled_error > -dy) {
+      error -= dy;
+      x += step_x;
+    }
+    if (doubled_error < dx) {
+      error += dx;
+      y += step_y;
+    }
+
+    if (x == to_x && y == to_y) {
+      return true;
+    }
+    if (!IsInsideMap(level, x, y)) {
+      return false;
+    }
+    if (IsVisionBlocker(level, x, y)) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 std::size_t VisibilityIndex(const Level3DViewState& state, int x, int y) {
@@ -206,10 +251,43 @@ void UpdateVisibilityState(const LevelData& level, Level3DViewState* state) {
   }
 
   EnsureVisibilityBuffer(level, state);
+
+  const int center_x = std::clamp(TileIndexFromPosition(state->player.tile_x),
+                                  0, level.size.width - 1);
+  const int center_y = std::clamp(TileIndexFromPosition(state->player.tile_y),
+                                  0, level.size.height - 1);
+  const int radius = std::clamp(state->visibility_radius_tiles, 1, 128);
+
+  const bool inputs_unchanged =
+      state->visibility_state_valid &&
+      state->visibility_last_center_x == center_x &&
+      state->visibility_last_center_y == center_y &&
+      state->visibility_last_radius_tiles == radius &&
+      state->visibility_last_enabled == state->visibility_enabled &&
+      state->visibility_last_memory_enabled == state->visibility_memory_enabled &&
+      state->visibility_last_los_enabled == state->visibility_los_enabled;
+  if (inputs_unchanged) {
+    return;
+  }
+
   if (!state->visibility_enabled) {
     std::fill(state->visibility_tiles.begin(), state->visibility_tiles.end(),
               kVisibilityVisible);
+    state->visibility_current_indices.clear();
+    state->visibility_state_valid = true;
+    state->visibility_last_center_x = center_x;
+    state->visibility_last_center_y = center_y;
+    state->visibility_last_radius_tiles = radius;
+    state->visibility_last_enabled = state->visibility_enabled;
+    state->visibility_last_memory_enabled = state->visibility_memory_enabled;
+    state->visibility_last_los_enabled = state->visibility_los_enabled;
     return;
+  }
+
+  if (state->visibility_state_valid && !state->visibility_last_enabled) {
+    std::fill(state->visibility_tiles.begin(), state->visibility_tiles.end(),
+              kVisibilityUnknown);
+    state->visibility_current_indices.clear();
   }
 
   for (const std::size_t index : state->visibility_current_indices) {
@@ -222,11 +300,6 @@ void UpdateVisibilityState(const LevelData& level, Level3DViewState* state) {
   }
   state->visibility_current_indices.clear();
 
-  const int center_x = std::clamp(TileIndexFromPosition(state->player.tile_x),
-                                  0, level.size.width - 1);
-  const int center_y = std::clamp(TileIndexFromPosition(state->player.tile_y),
-                                  0, level.size.height - 1);
-  const int radius = std::clamp(state->visibility_radius_tiles, 1, 128);
   const int radius_squared = radius * radius;
   const int min_x = std::clamp(center_x - radius, 0, level.size.width - 1);
   const int max_x = std::clamp(center_x + radius, 0, level.size.width - 1);
@@ -240,11 +313,23 @@ void UpdateVisibilityState(const LevelData& level, Level3DViewState* state) {
       if (dx * dx + dy * dy > radius_squared) {
         continue;
       }
+      if (state->visibility_los_enabled &&
+          !HasLineOfSight(level, center_x, center_y, x, y)) {
+        continue;
+      }
       const std::size_t index = VisibilityIndex(*state, x, y);
       state->visibility_tiles[index] = kVisibilityVisible;
       state->visibility_current_indices.push_back(index);
     }
   }
+
+  state->visibility_state_valid = true;
+  state->visibility_last_center_x = center_x;
+  state->visibility_last_center_y = center_y;
+  state->visibility_last_radius_tiles = radius;
+  state->visibility_last_enabled = state->visibility_enabled;
+  state->visibility_last_memory_enabled = state->visibility_memory_enabled;
+  state->visibility_last_los_enabled = state->visibility_los_enabled;
 }
 
 Vector3 TileWorldCenter(const LevelData& level, int x, int y,
@@ -759,6 +844,7 @@ std::string Level3DViewStateToString(const Level3DViewState& state) {
          << " visibility=" << (state.visibility_enabled ? "on" : "off")
          << "/r" << state.visibility_radius_tiles
          << "/memory=" << (state.visibility_memory_enabled ? "on" : "off")
+         << "/los=" << (state.visibility_los_enabled ? "on" : "off")
          << " cull_center=" << state.culling_center_tile_x << ','
          << state.culling_center_tile_y
          << " deadzone=" << state.culling_deadzone_tiles << "  "

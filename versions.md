@@ -473,3 +473,13 @@
 - Added one event-style camera log line with spawn tile, map center and computed facing vector.
 - Kept 2D rendering, visibility, chunks and player movement rules unchanged.
 
+
+## v0.1.56 -> v0.1.57
+
+- Bumped CMake project and runtime application version to `0.1.57`.
+- Added optional 3D line-of-sight visibility using `RuntimeCell::blocks_vision` / `vision_block_grid` semantics.
+- Kept blocker tiles visible while hiding tiles behind earlier blockers on the player-to-tile ray.
+- Kept fog memory behavior: currently visible tiles render normally, previously seen tiles render dimmed, and unknown tiles are skipped.
+- Added `render3d_los_enabled` to `config/app_config.json` so LoS can be toggled independently from the visibility radius and memory system.
+- Avoided recalculating visibility every frame when player tile, radius and visibility settings have not changed.
+- Kept the 2D renderer path and debug HUD unchanged.

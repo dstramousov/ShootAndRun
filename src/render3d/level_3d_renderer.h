@@ -43,11 +43,19 @@ struct Level3DViewState {
   bool visibility_enabled = true;
   int visibility_radius_tiles = 22;
   bool visibility_memory_enabled = true;
+  bool visibility_los_enabled = true;
   float seen_tile_dim_factor = 0.32F;
   int visibility_width = 0;
   int visibility_height = 0;
   std::vector<unsigned char> visibility_tiles;
   std::vector<std::size_t> visibility_current_indices;
+  bool visibility_state_valid = false;
+  int visibility_last_center_x = -1;
+  int visibility_last_center_y = -1;
+  int visibility_last_radius_tiles = -1;
+  bool visibility_last_enabled = false;
+  bool visibility_last_memory_enabled = false;
+  bool visibility_last_los_enabled = false;
   bool initialized = false;
 };
 

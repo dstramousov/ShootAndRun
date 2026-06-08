@@ -358,6 +358,8 @@ std::string ProjectConfig::Dump() const {
          std::to_string(render3d_visibility.radius_tiles) +
          ", memory_enabled: " +
          std::string(render3d_visibility.memory_enabled ? "true" : "false") +
+         ", los_enabled: " +
+         std::string(render3d_visibility.los_enabled ? "true" : "false") +
          ", seen_tile_dim_factor: " +
          std::to_string(render3d_visibility.seen_tile_dim_factor) +
          " }, render3d_intro_camera: { enabled: " +
@@ -711,6 +713,15 @@ ProjectConfigResult LoadProjectConfig(
   if (render3d_visibility_memory_enabled.found) {
     config.render3d_visibility.memory_enabled =
         render3d_visibility_memory_enabled.value;
+  }
+
+  ParseBoolResult render3d_los_enabled =
+      ExtractOptionalJsonBoolField(content, "render3d_los_enabled");
+  if (!render3d_los_enabled.ok) {
+    return {false, {}, render3d_los_enabled.error};
+  }
+  if (render3d_los_enabled.found) {
+    config.render3d_visibility.los_enabled = render3d_los_enabled.value;
   }
 
   ParseFloatResult render3d_seen_tile_dim_factor =
