@@ -6,6 +6,9 @@
 
 namespace sar {
 
+/**
+ * @brief Semantic type of a movement transition between elevation levels.
+ */
 enum class ElevationTransitionType {
   kUnknown,
   kStep,
@@ -14,6 +17,9 @@ enum class ElevationTransitionType {
   kHatch,
 };
 
+/**
+ * @brief One explicit allowed transition between two neighboring elevation tiles.
+ */
 struct ElevationTransition {
   std::string id;
   ElevationTransitionType type = ElevationTransitionType::kUnknown;

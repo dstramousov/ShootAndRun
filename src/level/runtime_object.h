@@ -7,6 +7,12 @@
 
 namespace sar {
 
+/**
+ * @brief Runtime object footprint and metadata loaded from the map package.
+ *
+ * Object coordinates and dimensions are stored in tile units. Runtime grids are
+ * still treated as the gameplay source of truth for collision and visibility.
+ */
 struct RuntimeObject {
   std::string id;
   std::string type;

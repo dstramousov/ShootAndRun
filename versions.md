@@ -447,4 +447,11 @@
 - Limited 3D drawing to currently visible or previously seen tiles instead of showing the whole loaded map.
 - Kept line-of-sight blockers for a later pass; visibility is currently a circular player-centered foundation.
 - Kept the 2D renderer path unchanged and added no debug HUD.
+## v0.1.53 -> v0.1.54
+
+- Bumped CMake project and runtime application version to `0.1.54`.
+- Added Doxygen comments to public runtime, level, input, window, UI, 3D and visual-pipeline data contracts.
+- Clarified comments that diagnostic dumps are for logs where screen overlays are not required.
+- Removed unused input fields left from the removed right-mouse/orbit-camera path.
+- Removed unused Q/E camera-rotation input fields after switching 3D controls to mouse-facing movement.
 

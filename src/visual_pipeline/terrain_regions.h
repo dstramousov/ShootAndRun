@@ -11,6 +11,9 @@
 
 namespace sar::visual_pipeline {
 
+/**
+ * @brief One connected terrain component extracted from semantic masks.
+ */
 struct TerrainRegion {
   int id = 0;
   TerrainType type = TerrainType::kUnknown;
@@ -32,6 +35,9 @@ struct TerrainRegion {
   std::string Dump() const;
 };
 
+/**
+ * @brief Counters describing connected terrain regions.
+ */
 struct TerrainRegionSummary {
   int total_regions = 0;
   int open_ground_regions = 0;
@@ -50,11 +56,14 @@ struct TerrainRegionSummary {
   /**
    * @brief Returns a readable summary of terrain region counters.
    *
-   * @return String representation for logs and debug overlays.
+   * @return String representation for logs.
    */
   std::string Dump() const;
 };
 
+/**
+ * @brief Collection of connected terrain regions for a level.
+ */
 struct TerrainRegions {
   LevelSize size;
   std::vector<TerrainRegion> regions;

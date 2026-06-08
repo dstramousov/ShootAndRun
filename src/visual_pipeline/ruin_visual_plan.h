@@ -10,6 +10,9 @@
 
 namespace sar::visual_pipeline {
 
+/**
+ * @brief Visual role assigned to a ruin tile.
+ */
 enum class RuinVisualTile : std::uint8_t {
   kNone = 0,
   kCrackedFloor = 1,
@@ -22,6 +25,9 @@ enum class RuinVisualTile : std::uint8_t {
   kEntrance = 8,
 };
 
+/**
+ * @brief Counters produced by the ruin visual planning pass.
+ */
 struct RuinVisualSummary {
   int site_count = 0;
   int source_ruin_tiles = 0;
@@ -44,6 +50,9 @@ struct RuinVisualSummary {
   std::string Dump() const;
 };
 
+/**
+ * @brief Planned ruin floor, wall and debris masks.
+ */
 struct RuinVisualPlan {
   LevelSize size;
   std::vector<std::uint8_t> tiles;

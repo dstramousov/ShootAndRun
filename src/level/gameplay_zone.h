@@ -6,6 +6,9 @@
 
 namespace sar {
 
+/**
+ * @brief Gameplay area used by spawning, encounters and high-level logic.
+ */
 struct GameplayZone {
   std::string id;
   std::string type;

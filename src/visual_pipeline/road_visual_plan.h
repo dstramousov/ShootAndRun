@@ -10,6 +10,9 @@
 
 namespace sar::visual_pipeline {
 
+/**
+ * @brief Visual band assigned around road and route influence tiles.
+ */
 enum class RoadVisualBand : std::uint8_t {
   kNone = 0,
   kTrampledGrass = 1,
@@ -19,6 +22,9 @@ enum class RoadVisualBand : std::uint8_t {
   kRuinApproach = 5,
 };
 
+/**
+ * @brief Counters produced by the road visual planning pass.
+ */
 struct RoadVisualSummary {
   int route_count = 0;
   int main_route_count = 0;
@@ -42,6 +48,9 @@ struct RoadVisualSummary {
   std::string Dump() const;
 };
 
+/**
+ * @brief Planned road influence and visual band masks.
+ */
 struct RoadVisualPlan {
   LevelSize size;
   std::vector<std::uint8_t> road_bands;

@@ -3,6 +3,9 @@
 
 namespace sar {
 
+/**
+ * @brief Lifecycle state of the active game session.
+ */
 enum class GameState {
   kNotStarted,
   kRunning,

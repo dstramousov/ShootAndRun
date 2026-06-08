@@ -10,6 +10,9 @@
 
 namespace sar::visual_pipeline {
 
+/**
+ * @brief Visual role assigned to a water or swamp tile.
+ */
 enum class WaterVisualTile : std::uint8_t {
   kNone = 0,
   kWetGrass = 1,
@@ -20,6 +23,9 @@ enum class WaterVisualTile : std::uint8_t {
   kWaterCore = 6,
 };
 
+/**
+ * @brief Counters produced by the water visual planning pass.
+ */
 struct WaterVisualSummary {
   int source_water_tiles = 0;
   int source_swamp_tiles = 0;
@@ -41,6 +47,9 @@ struct WaterVisualSummary {
   std::string Dump() const;
 };
 
+/**
+ * @brief Planned water core, shore and reed-zone masks.
+ */
 struct WaterVisualPlan {
   LevelSize size;
   std::vector<std::uint8_t> tiles;

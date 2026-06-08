@@ -9,6 +9,9 @@
 
 namespace sar {
 
+/**
+ * @brief Compact statistics collected while loading a map package.
+ */
 struct LevelPackageSummary {
   std::filesystem::path package_path;
   LevelSize size;
@@ -30,6 +33,9 @@ struct LevelPackageSummary {
   std::string Dump() const;
 };
 
+/**
+ * @brief Result object returned by level package loading.
+ */
 struct LevelLoadResult {
   /**
    * @brief Creates an empty failed load result.
@@ -70,6 +76,9 @@ struct LevelLoadResult {
   LevelData level;
 };
 
+/**
+ * @brief Loads TopDownMapGen output packages into runtime level data.
+ */
 class LevelLoader {
  public:
   /**

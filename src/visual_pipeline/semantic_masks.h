@@ -9,6 +9,9 @@
 
 namespace sar::visual_pipeline {
 
+/**
+ * @brief Counters describing semantic mask coverage for one level.
+ */
 struct SemanticMaskSummary {
   int total_tiles = 0;
   int open_ground_tiles = 0;
@@ -31,11 +34,14 @@ struct SemanticMaskSummary {
   /**
    * @brief Returns a readable summary of semantic mask counters.
    *
-   * @return String representation for logs and debug overlays.
+   * @return String representation for logs.
    */
   std::string Dump() const;
 };
 
+/**
+ * @brief Boolean and height masks derived from loaded runtime level data.
+ */
 struct SemanticMasks {
   LevelSize size;
   std::vector<std::uint8_t> open_ground;

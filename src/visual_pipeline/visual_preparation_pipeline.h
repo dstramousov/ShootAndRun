@@ -12,15 +12,24 @@
 
 namespace sar::visual_pipeline {
 
+/**
+ * @brief Static metadata for one visual preparation pipeline step.
+ */
 struct PipelineStepInfo {
   std::string name;
 };
 
+/**
+ * @brief Input options used by the visual preparation pipeline.
+ */
 struct VisualPreparationOptions {
   std::filesystem::path map_package_path;
   VisualPipelineConfig visual_pipeline_config;
 };
 
+/**
+ * @brief Runtime report emitted after one pipeline step finishes.
+ */
 struct PipelineStepReport {
   int step_index = 0;
   int total_steps = 0;
@@ -31,6 +40,9 @@ struct PipelineStepReport {
   std::vector<std::string> warnings;
 };
 
+/**
+ * @brief Incremental visual-map preparation pipeline.
+ */
 class VisualPreparationPipeline {
  public:
   /**

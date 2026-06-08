@@ -5,6 +5,9 @@
 
 namespace sar {
 
+/**
+ * @brief Action executed when a main-menu item is activated.
+ */
 enum class MenuAction {
   kNewGame,
   kLoadGame,
@@ -13,6 +16,9 @@ enum class MenuAction {
   kExit,
 };
 
+/**
+ * @brief Immutable menu item data used by menu state and renderers.
+ */
 struct MenuItem {
   std::string id;
   std::string title;

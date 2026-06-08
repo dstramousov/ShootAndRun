@@ -11,6 +11,9 @@
 
 namespace sar::visual_pipeline {
 
+/**
+ * @brief Relative depth band of a forest tile inside a forest region.
+ */
 enum class ForestDepthBand : std::uint8_t {
   kNone = 0,
   kEdge = 1,
@@ -18,6 +21,9 @@ enum class ForestDepthBand : std::uint8_t {
   kDeep = 3,
 };
 
+/**
+ * @brief High-level role assigned to an open clearing.
+ */
 enum class ClearingRole : std::uint8_t {
   kNone = 0,
   kMainClearing = 1,
@@ -27,6 +33,9 @@ enum class ClearingRole : std::uint8_t {
   kSceneSpace = 5,
 };
 
+/**
+ * @brief Scene role used to dress an open clearing.
+ */
 enum class ClearingSceneRole : std::uint8_t {
   kNone = 0,
   kRuinsScene = 1,
@@ -59,6 +68,9 @@ const char* ClearingRoleName(ClearingRole role);
  */
 const char* ClearingSceneRoleName(ClearingSceneRole role);
 
+/**
+ * @brief Counters produced by the forest visual planning pass.
+ */
 struct ForestVisualSummary {
   int forest_tiles = 0;
   int forest_edge_tiles = 0;
@@ -85,6 +97,9 @@ struct ForestVisualSummary {
   std::string Dump() const;
 };
 
+/**
+ * @brief Planned forest depth, edge and clearing-role masks.
+ */
 struct ForestVisualPlan {
   LevelSize size;
   std::vector<std::uint8_t> forest_depth;

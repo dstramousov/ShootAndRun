@@ -3,6 +3,9 @@
 
 namespace sar {
 
+/**
+ * @brief High-level application screen currently receiving input and drawing.
+ */
 enum class AppScreen {
   kMainMenu,
   kMapPreparing,

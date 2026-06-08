@@ -21,14 +21,11 @@ InputState InputSystem::Poll() {
   input.cancel_down = escape_down;
   escape_was_down_ = escape_down;
   input.left_mouse_pressed = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
-  input.right_mouse_down = IsMouseButtonDown(MOUSE_BUTTON_RIGHT);
   input.jump_pressed = IsKeyPressed(KEY_SPACE);
   input.debug_view_raw_pressed = IsKeyPressed(KEY_F1);
   input.debug_view_analysis_pressed = IsKeyPressed(KEY_F2);
   input.debug_view_visual_pressed = IsKeyPressed(KEY_F3);
   input.debug_view_final_render_pressed = IsKeyPressed(KEY_F4);
-  input.camera_rotate_left_down = IsKeyDown(KEY_Q);
-  input.camera_rotate_right_down = IsKeyDown(KEY_E);
   input.mouse_wheel_delta = GetMouseWheelMove();
   input.mouse_position.x = static_cast<float>(GetMouseX());
   input.mouse_position.y = static_cast<float>(GetMouseY());

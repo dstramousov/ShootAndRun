@@ -5,6 +5,9 @@
 
 namespace sar {
 
+/**
+ * @brief Normalized terrain type used by the runtime and renderers.
+ */
 enum class TerrainType {
   kUnknown,
   kOpenGround,

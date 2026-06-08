@@ -10,6 +10,9 @@
 
 namespace sar::visual_pipeline {
 
+/**
+ * @brief Resolved visual category for a runtime object.
+ */
 enum class ObjectVisualKind : std::uint8_t {
   kUnknown = 0,
   kVegetation = 1,
@@ -34,6 +37,9 @@ enum class ObjectVisualKind : std::uint8_t {
  */
 const char* ObjectVisualKindName(ObjectVisualKind kind);
 
+/**
+ * @brief One resolved visual object placement.
+ */
 struct ObjectVisualItem {
   std::string id;
   std::string source_type;
@@ -49,6 +55,9 @@ struct ObjectVisualItem {
   int sort_y = 0;
 };
 
+/**
+ * @brief Counters produced by the runtime object visual planning pass.
+ */
 struct ObjectVisualSummary {
   int source_object_count = 0;
   int mapped_object_count = 0;
@@ -68,6 +77,9 @@ struct ObjectVisualSummary {
   std::string Dump() const;
 };
 
+/**
+ * @brief Resolved visual placements for runtime objects.
+ */
 struct ObjectVisualPlan {
   LevelSize size;
   std::vector<ObjectVisualItem> items;

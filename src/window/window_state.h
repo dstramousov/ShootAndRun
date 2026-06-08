@@ -3,6 +3,9 @@
 
 namespace sar {
 
+/**
+ * @brief Physical monitor bounds used to place the application window.
+ */
 struct MonitorInfo {
   int x = 0;
   int y = 0;
@@ -10,6 +13,9 @@ struct MonitorInfo {
   int height = 720;
 };
 
+/**
+ * @brief Current window dimensions, position and resolved UI scale.
+ */
 struct WindowState {
   int monitor_width = 1280;
   int monitor_height = 720;

@@ -16,12 +16,22 @@
 
 namespace sar {
 
+/**
+ * @brief Dimensions of a loaded tile-map level.
+ */
 struct LevelSize {
   int width = 0;
   int height = 0;
   int tile_size = 16;
 };
 
+/**
+ * @brief Complete runtime representation of a loaded level package.
+ *
+ * The structure stores terrain/runtime cells as a flat row-major array and
+ * keeps higher-level gameplay data, such as routes, markers and elevation
+ * transitions, in stable vectors matching the source package order.
+ */
 struct LevelData {
   LevelSize size;
   std::vector<RuntimeCell> cells;

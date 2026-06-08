@@ -14,12 +14,18 @@
 
 namespace sar::render3d {
 
+/**
+ * @brief Runtime visualization mode for the 3D level renderer.
+ */
 enum class Level3DRenderMode {
   kTerrain,
   kElevation,
   kCollision,
 };
 
+/**
+ * @brief Aggregated 3D renderer, camera, culling and visibility state.
+ */
 struct Level3DViewState {
   Level3DPlayerState player;
   Level3DCameraState camera;
@@ -76,10 +82,13 @@ void UpdateLevel3DView(const LevelData& level, const InputState& input,
  * @brief Returns a readable dump of a 3D view state.
  *
  * @param state Current 3D view state.
- * @return String representation for debug overlays and logs.
+ * @return String representation for logs.
  */
 std::string Level3DViewStateToString(const Level3DViewState& state);
 
+/**
+ * @brief Draws the loaded level through the standalone 3D renderer path.
+ */
 class Level3DRenderer {
  public:
   /**

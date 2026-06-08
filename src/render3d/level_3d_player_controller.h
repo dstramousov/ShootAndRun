@@ -12,6 +12,9 @@
 
 namespace sar::render3d {
 
+/**
+ * @brief Reason why 3D player movement into a target tile was rejected.
+ */
 enum class Level3DMoveBlockReason {
   kNone,
   kOutOfBounds,
@@ -22,6 +25,9 @@ enum class Level3DMoveBlockReason {
   kHeightStep,
 };
 
+/**
+ * @brief Event type emitted by the 3D jump state machine.
+ */
 enum class Level3DJumpEventType {
   kNone,
   kStarted,
@@ -29,12 +35,22 @@ enum class Level3DJumpEventType {
   kBlocked,
 };
 
+/**
+ * @brief Jump behavior currently used by the 3D player.
+ */
 enum class Level3DJumpKind {
   kNone,
   kStepUp,
   kRun,
 };
 
+/**
+ * @brief Mutable 3D player movement and jump state.
+ *
+ * Coordinates are stored in tile units. Visual elevation is stored separately
+ * from logical elevation so jumps and step-up transitions can animate without
+ * changing the gameplay cell too early.
+ */
 struct Level3DPlayerState {
   float tile_x = 0.0F;
   float tile_y = 0.0F;
@@ -93,6 +109,9 @@ struct Level3DPlayerState {
   bool initialized = false;
 };
 
+/**
+ * @brief Compact diagnostics for the tile currently occupied by the 3D player.
+ */
 struct Level3DPlayerTileDiagnostics {
   int tile_x = -1;
   int tile_y = -1;

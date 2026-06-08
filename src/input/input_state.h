@@ -5,6 +5,13 @@
 
 namespace sar {
 
+/**
+ * @brief Frame-local input snapshot used by gameplay, UI and render modules.
+ *
+ * The structure contains raw button transitions, held-key states and mouse
+ * deltas collected once per frame by InputSystem. It intentionally stores only
+ * plain values so it can be copied safely between update functions.
+ */
 struct InputState {
   bool up_pressed = false;
   bool down_pressed = false;
@@ -18,14 +25,11 @@ struct InputState {
   bool cancel_pressed = false;
   bool cancel_down = false;
   bool left_mouse_pressed = false;
-  bool right_mouse_down = false;
   bool jump_pressed = false;
   bool debug_view_raw_pressed = false;
   bool debug_view_analysis_pressed = false;
   bool debug_view_visual_pressed = false;
   bool debug_view_final_render_pressed = false;
-  bool camera_rotate_left_down = false;
-  bool camera_rotate_right_down = false;
   float mouse_wheel_delta = 0.0F;
   Vec2 mouse_position;
   Vec2 mouse_delta;

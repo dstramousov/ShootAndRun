@@ -3,6 +3,9 @@
 
 namespace sar {
 
+/**
+ * @brief Window sizing and UI scaling preferences loaded before raylib startup.
+ */
 struct WindowConfig {
   int preferred_width = 1600;
   int preferred_height = 900;

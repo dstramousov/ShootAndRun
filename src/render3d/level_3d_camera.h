@@ -12,6 +12,9 @@
 
 namespace sar::render3d {
 
+/**
+ * @brief Smoothed 3D follow camera state derived from player facing.
+ */
 struct Level3DCameraState {
   Vector3 position{0.0F, 0.0F, 0.0F};
   Vector3 target{0.0F, 0.0F, 0.0F};
@@ -86,7 +89,7 @@ Camera3D BuildLevel3DCamera(const LevelData& level,
  * @brief Returns a readable dump of a 3D camera state.
  *
  * @param state Current camera state.
- * @return String representation for logs and debug overlays.
+ * @return String representation for logs and logs.
  */
 std::string Level3DCameraStateToString(const Level3DCameraState& state);
 

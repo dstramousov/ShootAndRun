@@ -6,6 +6,9 @@
 
 namespace sar {
 
+/**
+ * @brief Named semantic area or point of interest from the level package.
+ */
 struct Place {
   std::string id;
   std::string type;

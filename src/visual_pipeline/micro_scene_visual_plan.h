@@ -16,6 +16,9 @@
 
 namespace sar::visual_pipeline {
 
+/**
+ * @brief Type of a generated micro-scene.
+ */
 enum class MicroSceneKind : std::uint8_t {
   kNone = 0,
   kCampScene = 1,
@@ -27,6 +30,9 @@ enum class MicroSceneKind : std::uint8_t {
   kCacheHint = 7,
 };
 
+/**
+ * @brief Visual role of one tile inside a generated micro-scene.
+ */
 enum class MicroSceneTile : std::uint8_t {
   kNone = 0,
   kGroundDetail = 1,
@@ -54,6 +60,9 @@ const char* MicroSceneKindName(MicroSceneKind kind);
  */
 const char* MicroSceneTileName(MicroSceneTile tile);
 
+/**
+ * @brief One generated micro-scene placement.
+ */
 struct MicroSceneItem {
   std::string id;
   MicroSceneKind kind = MicroSceneKind::kNone;
@@ -65,6 +74,9 @@ struct MicroSceneItem {
   int priority = 0;
 };
 
+/**
+ * @brief Counters produced by the micro-scene planning pass.
+ */
 struct MicroSceneSummary {
   int scene_count = 0;
   int camp_scene_count = 0;
@@ -92,6 +104,9 @@ struct MicroSceneSummary {
   std::string Dump() const;
 };
 
+/**
+ * @brief Generated micro-scenes and their tile masks.
+ */
 struct MicroSceneVisualPlan {
   LevelSize size;
   std::vector<std::uint8_t> tiles;

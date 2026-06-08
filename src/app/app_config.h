@@ -9,11 +9,14 @@
 #include "window/window_config.h"
 
 #ifndef SAR_APP_VERSION
-#define SAR_APP_VERSION "0.1.53-dev"
+#define SAR_APP_VERSION "0.1.54-dev"
 #endif
 
 namespace sar {
 
+/**
+ * @brief Renderer backend selected for the runtime session.
+ */
 enum class RuntimeRendererMode {
   kRenderer2D,
   kRenderer3D,
@@ -35,6 +38,9 @@ constexpr std::string_view RuntimeRendererModeName(RuntimeRendererMode mode) {
   return "2d";
 }
 
+/**
+ * @brief Startup options resolved before the main application object is created.
+ */
 struct AppConfig {
   std::string app_name = "ShootAndRun";
   std::string version = SAR_APP_VERSION;

@@ -7,6 +7,12 @@
 
 namespace sar {
 
+/**
+ * @brief Gameplay marker loaded from the map package.
+ *
+ * Markers represent concrete runtime points such as spawn positions, exits or
+ * interaction anchors. Coordinates are stored in tile units.
+ */
 struct Marker {
   std::string id;
   std::string type;

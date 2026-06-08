@@ -7,6 +7,13 @@
 
 namespace sar {
 
+/**
+ * @brief Runtime gameplay properties for one map tile.
+ *
+ * Runtime grids are the source of truth for movement, collision, visibility
+ * blocking and elevation. Rendering code may visualize these values, but it
+ * must not reinterpret them as decorative-only data.
+ */
 struct RuntimeCell {
   TerrainType terrain = TerrainType::kUnknown;
   bool walkable = false;

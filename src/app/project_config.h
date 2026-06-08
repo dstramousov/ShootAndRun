@@ -9,6 +9,9 @@
 
 namespace sar {
 
+/**
+ * @brief Supported raylib trace log levels loaded from project configuration.
+ */
 enum class RaylibLogLevel {
   kTrace,
   kDebug,
@@ -27,12 +30,21 @@ enum class RaylibLogLevel {
  */
 const char* RaylibLogLevelName(RaylibLogLevel level);
 
+/**
+ * @brief Controls the small service-information overlay.
+ */
 struct ServiceInfoConfig {
   bool enabled = true;
   bool show_memory = true;
   int update_interval_ms = 1000;
 };
 
+/**
+ * @brief Controls event-based 3D player movement logging.
+ *
+ * Logging is intentionally throttled and event-based. It must not write every
+ * frame because that would distort runtime performance measurements.
+ */
 struct Player3DLogConfig {
   bool enabled = true;
   bool include_mouse = true;
@@ -40,6 +52,9 @@ struct Player3DLogConfig {
   int blocked_log_min_interval_ms = 600;
 };
 
+/**
+ * @brief Configures 3D culling, chunk iteration and visible render radius.
+ */
 struct Render3DPerfConfig {
   int visible_radius_tiles = 48;
   int culling_deadzone_tiles = 4;
@@ -47,6 +62,9 @@ struct Render3DPerfConfig {
   int active_chunk_radius = 3;
 };
 
+/**
+ * @brief Configures 3D visibility radius and fog-of-war memory.
+ */
 struct Render3DVisibilityConfig {
   bool enabled = true;
   int radius_tiles = 22;
@@ -54,6 +72,9 @@ struct Render3DVisibilityConfig {
   float seen_tile_dim_factor = 0.32F;
 };
 
+/**
+ * @brief Configures 3D player movement, mouse-facing and jump tuning.
+ */
 struct Player3DMovementConfig {
   float move_speed_tiles_per_sec = 4.25F;
   float acceleration_tiles_per_sec2 = 28.0F;
@@ -67,6 +88,9 @@ struct Player3DMovementConfig {
   float jump_min_running_speed_tiles_per_sec = 1.00F;
 };
 
+/**
+ * @brief Fully resolved runtime configuration for the application.
+ */
 struct ProjectConfig {
   std::filesystem::path map_package_path;
   std::filesystem::path ui_font_path = "data/fonts/PressStart2P-Regular.ttf";
@@ -88,6 +112,9 @@ struct ProjectConfig {
   std::string Dump() const;
 };
 
+/**
+ * @brief Result of loading and validating project configuration.
+ */
 struct ProjectConfigResult {
   bool ok = false;
   ProjectConfig config;

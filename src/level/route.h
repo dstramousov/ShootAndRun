@@ -6,11 +6,17 @@
 
 namespace sar {
 
+/**
+ * @brief One tile-space point in a route polyline.
+ */
 struct RoutePoint {
   int x = 0;
   int y = 0;
 };
 
+/**
+ * @brief Named path or gameplay route loaded from routes.json.
+ */
 struct Route {
   std::string id;
   std::string type;

@@ -8,6 +8,9 @@
 
 namespace sar {
 
+/**
+ * @brief Runtime state and navigation logic for the main menu.
+ */
 class MainMenu {
  public:
   /**
