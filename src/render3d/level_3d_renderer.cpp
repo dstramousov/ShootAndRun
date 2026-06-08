@@ -271,7 +271,8 @@ void UpdateLevel3DView(const LevelData& level, const InputState& input,
   }
 
   UpdateLevel3DPlayer(level, input, dt, &state->player);
-  UpdateLevel3DCamera(input, dt, &state->camera);
+  UpdateLevel3DCamera(level, state->player, input, dt, state->tile_world_size,
+                      state->elevation_step, &state->camera);
 }
 
 std::string Level3DViewStateToString(const Level3DViewState& state) {

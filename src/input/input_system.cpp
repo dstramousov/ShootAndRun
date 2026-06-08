@@ -21,6 +21,7 @@ InputState InputSystem::Poll() {
   input.cancel_down = escape_down;
   escape_was_down_ = escape_down;
   input.left_mouse_pressed = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
+  input.right_mouse_down = IsMouseButtonDown(MOUSE_BUTTON_RIGHT);
   input.debug_view_raw_pressed = IsKeyPressed(KEY_F1);
   input.debug_view_analysis_pressed = IsKeyPressed(KEY_F2);
   input.debug_view_visual_pressed = IsKeyPressed(KEY_F3);
@@ -30,6 +31,9 @@ InputState InputSystem::Poll() {
   input.mouse_wheel_delta = GetMouseWheelMove();
   input.mouse_position.x = static_cast<float>(GetMouseX());
   input.mouse_position.y = static_cast<float>(GetMouseY());
+  const Vector2 mouse_delta = GetMouseDelta();
+  input.mouse_delta.x = mouse_delta.x;
+  input.mouse_delta.y = mouse_delta.y;
   return input;
 }
 

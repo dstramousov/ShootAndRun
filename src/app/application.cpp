@@ -881,7 +881,7 @@ void Application::DrawGameOverlay() const {
                           x, y, font_size, color);
     y += line_step;
     ui_font_.DrawTextLine(
-        "view: 3d  F1 terrain  F2 elevation  F3 collision  Q/E rotate  Wheel zoom",
+        "view: 3d  F1 terrain  F2 elevation  F3 collision  RMB drag orbit  Q/E rotate  Wheel zoom",
         x, y, font_size, color);
   } else {
     ui_font_.DrawTextLine(LevelViewStateToString(level_view_), x, y,

@@ -341,3 +341,11 @@
 - Added 3D player movement driven by `movement_grid`, `collision_grid`, and `height_grid`.
 - Added 3D follow camera with Q/E rotation and mouse-wheel distance control.
 - Kept the existing 2D renderer path unchanged and skipped the 2D visual pipeline for `--renderer=3d`.
+
+## v0.1.41 -> v0.1.42
+
+- Bumped CMake project and runtime application version to `0.1.42`.
+- Added right-mouse drag orbit control for the 3D camera yaw and pitch.
+- Added smoothed 3D camera target follow, pitch, yaw, and distance interpolation.
+- Added movement-based camera lookahead and target clamping inside map bounds.
+- Kept the 2D renderer path unchanged.

@@ -1,4 +1,4 @@
-# ShootAndRunCpp v0.1.41
+# ShootAndRunCpp v0.1.42
 
 Первый каркас C++20 + raylib проекта.
 
@@ -20,7 +20,7 @@
 - Debug renderer for loaded terrain maps.
 - Separate 3D renderer mode selected from CLI with `--renderer=3d`.
 - Debug marker overlay for `markers.json`, including player spawn markers.
-- Free camera for map inspection with WASD/arrows and mouse-wheel zoom.
+- 3D orbit/follow camera with right-mouse drag, Q/E rotation fallback, and smooth mouse-wheel zoom.
 - Базовые структуры `level/` под будущий renderer/gameplay.
 - Минимальные unit-тесты без внешнего test framework.
 

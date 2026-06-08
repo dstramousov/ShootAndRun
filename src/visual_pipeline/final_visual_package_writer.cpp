@@ -589,7 +589,7 @@ std::string BuildVisualMapJson(const LevelData& level,
   std::ostringstream output;
   output << "{\n";
   output << "  \"schema_version\": \"cpp-visual-map-v1\",\n";
-  output << "  \"visual_generator_version\": \"cpp_pipeline_0.1.40\",\n";
+  output << "  \"visual_generator_version\": \"cpp_pipeline_0.1.42\",\n";
   output << "  \"width_tiles\": " << level.size.width << ",\n";
   output << "  \"height_tiles\": " << level.size.height << ",\n";
   output << "  \"tile_size_px\": " << level.size.tile_size << ",\n";
