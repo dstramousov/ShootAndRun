@@ -11,6 +11,13 @@ namespace {
 
 constexpr float kVectorEpsilon = 0.0001F;
 
+struct EnterTileResult {
+  bool can_enter = false;
+  int tile_x = -1;
+  int tile_y = -1;
+  Level3DMoveBlockReason reason = Level3DMoveBlockReason::kNone;
+};
+
 bool TextContains(std::string_view text, std::string_view needle) {
   return text.find(needle) != std::string_view::npos;
 }
@@ -66,25 +73,73 @@ int TileIndexFromPosition(float value) {
   return static_cast<int>(std::floor(value));
 }
 
-bool CanEnterTile(const LevelData& level, const Level3DPlayerState& state,
-                  float next_x, float next_y) {
+float CurrentTileMovementMultiplier(const LevelData& level,
+                                    const Level3DPlayerState& state) {
+  const RuntimeCell* cell = CellAt(level, TileIndexFromPosition(state.tile_x),
+                                   TileIndexFromPosition(state.tile_y));
+  if (cell == nullptr || cell->collision || !cell->walkable) {
+    return 0.0F;
+  }
+  return std::clamp(cell->movement_multiplier, 0.0F, 1.50F);
+}
+
+void RefreshEffectiveMovementSpeed(const LevelData& level,
+                                   Level3DPlayerState* state) {
+  if (state == nullptr) {
+    return;
+  }
+  state->current_movement_multiplier = CurrentTileMovementMultiplier(
+      level, *state);
+  state->effective_move_speed_tiles_per_sec =
+      state->move_speed_tiles_per_sec * state->current_movement_multiplier;
+}
+
+void RecordBlockedTile(int tile_x, int tile_y,
+                       Level3DMoveBlockReason reason,
+                       Level3DPlayerState* state) {
+  if (state == nullptr || reason == Level3DMoveBlockReason::kNone) {
+    return;
+  }
+  if (state->last_blocked_tile_x == tile_x &&
+      state->last_blocked_tile_y == tile_y &&
+      state->last_block_reason == reason) {
+    return;
+  }
+
+  state->last_blocked_tile_x = tile_x;
+  state->last_blocked_tile_y = tile_y;
+  state->last_block_reason = reason;
+  ++state->blocked_event_sequence;
+}
+
+EnterTileResult CheckEnterTile(const LevelData& level,
+                               const Level3DPlayerState& state,
+                               float next_x,
+                               float next_y) {
   const int x = TileIndexFromPosition(next_x);
   const int y = TileIndexFromPosition(next_y);
   const RuntimeCell* target = CellAt(level, x, y);
   if (target == nullptr) {
-    return false;
+    return {false, x, y, Level3DMoveBlockReason::kOutOfBounds};
   }
-  if (target->collision || !target->walkable) {
-    return false;
+  if (target->collision) {
+    return {false, x, y, Level3DMoveBlockReason::kCollision};
+  }
+  if (!target->walkable || target->movement_multiplier <= 0.0F) {
+    return {false, x, y, Level3DMoveBlockReason::kNotWalkable};
   }
   if (target->height < 0 && state.elevation >= 0) {
-    return false;
+    return {false, x, y, Level3DMoveBlockReason::kUnderground};
   }
 
   const int height_delta = std::abs(static_cast<int>(target->height) -
                                     static_cast<int>(state.elevation));
-  return height_delta <= state.allowed_step_height;
+  if (height_delta > state.allowed_step_height) {
+    return {false, x, y, Level3DMoveBlockReason::kHeightStep};
+  }
+  return {true, x, y, Level3DMoveBlockReason::kNone};
 }
+
 
 void ApplyMovementAxis(const LevelData& level, float dx, float dy,
                        Level3DPlayerState* state) {
@@ -98,7 +153,11 @@ void ApplyMovementAxis(const LevelData& level, float dx, float dy,
   const float next_y = std::clamp(state->tile_y + dy, 0.0F,
                                   static_cast<float>(level.size.height) -
                                       0.001F);
-  if (!CanEnterTile(level, *state, next_x, next_y)) {
+  const EnterTileResult enter_result = CheckEnterTile(level, *state,
+                                                      next_x, next_y);
+  if (!enter_result.can_enter) {
+    RecordBlockedTile(enter_result.tile_x, enter_result.tile_y,
+                      enter_result.reason, state);
     return;
   }
 
@@ -106,6 +165,7 @@ void ApplyMovementAxis(const LevelData& level, float dx, float dy,
   state->tile_y = next_y;
   state->elevation = HeightAtOrZero(level, TileIndexFromPosition(state->tile_x),
                                     TileIndexFromPosition(state->tile_y));
+  RefreshEffectiveMovementSpeed(level, state);
 }
 
 void NormalizeFacing(Level3DPlayerState* state) {
@@ -210,18 +270,24 @@ void MoveVelocityToward(float target_x, float target_y, float max_delta,
   state->velocity_y_tiles_per_sec += delta_y * ratio;
 }
 
-void UpdateVelocityFromInput(const InputState& input, float safe_dt,
+void UpdateVelocityFromInput(const LevelData& level,
+                             const InputState& input,
+                             float safe_dt,
                              Level3DPlayerState* state) {
   if (state == nullptr) {
     return;
   }
 
+  RefreshEffectiveMovementSpeed(level, state);
+
   float direction_x = 0.0F;
   float direction_y = 0.0F;
   FacingRelativeInputDirection(input, *state, &direction_x, &direction_y);
 
-  const float target_x = direction_x * state->move_speed_tiles_per_sec;
-  const float target_y = direction_y * state->move_speed_tiles_per_sec;
+  const float target_x = direction_x *
+                         state->effective_move_speed_tiles_per_sec;
+  const float target_y = direction_y *
+                         state->effective_move_speed_tiles_per_sec;
   const float acceleration = (direction_x == 0.0F && direction_y == 0.0F)
                                  ? state->deceleration_tiles_per_sec2
                                  : state->acceleration_tiles_per_sec2;
@@ -229,6 +295,24 @@ void UpdateVelocityFromInput(const InputState& input, float safe_dt,
 }
 
 }  // namespace
+
+const char* Level3DMoveBlockReasonName(Level3DMoveBlockReason reason) {
+  switch (reason) {
+    case Level3DMoveBlockReason::kNone:
+      return "none";
+    case Level3DMoveBlockReason::kOutOfBounds:
+      return "out_of_bounds";
+    case Level3DMoveBlockReason::kCollision:
+      return "collision";
+    case Level3DMoveBlockReason::kNotWalkable:
+      return "not_walkable";
+    case Level3DMoveBlockReason::kUnderground:
+      return "underground";
+    case Level3DMoveBlockReason::kHeightStep:
+      return "height_step";
+  }
+  return "unknown";
+}
 
 void InitializeLevel3DPlayer(const LevelData& level,
                              Level3DPlayerState* state) {
@@ -252,6 +336,11 @@ void InitializeLevel3DPlayer(const LevelData& level,
   state->facing_y = -1.0F;
   state->velocity_x_tiles_per_sec = 0.0F;
   state->velocity_y_tiles_per_sec = 0.0F;
+  state->last_blocked_tile_x = -1;
+  state->last_blocked_tile_y = -1;
+  state->last_block_reason = Level3DMoveBlockReason::kNone;
+  state->blocked_event_sequence = 0;
+  RefreshEffectiveMovementSpeed(level, state);
   state->initialized = true;
 }
 
@@ -264,7 +353,7 @@ void UpdateLevel3DPlayer(const LevelData& level, const InputState& input,
 
   const float safe_dt = std::clamp(dt, 0.0F, 0.05F);
   UpdateFacingFromMouse(input, state);
-  UpdateVelocityFromInput(input, safe_dt, state);
+  UpdateVelocityFromInput(level, input, safe_dt, state);
 
   const float dx = state->velocity_x_tiles_per_sec * safe_dt;
   const float dy = state->velocity_y_tiles_per_sec * safe_dt;
@@ -272,13 +361,19 @@ void UpdateLevel3DPlayer(const LevelData& level, const InputState& input,
     return;
   }
 
-  if (CanEnterTile(level, *state, state->tile_x + dx, state->tile_y + dy)) {
+  const EnterTileResult full_enter = CheckEnterTile(
+      level, *state, state->tile_x + dx, state->tile_y + dy);
+  if (full_enter.can_enter) {
     ApplyMovementAxis(level, dx, dy, state);
     return;
   }
 
   ApplyMovementAxis(level, dx, 0.0F, state);
   ApplyMovementAxis(level, 0.0F, dy, state);
+  if (std::abs(dx) > kVectorEpsilon || std::abs(dy) > kVectorEpsilon) {
+    RecordBlockedTile(full_enter.tile_x, full_enter.tile_y,
+                      full_enter.reason, state);
+  }
 }
 
 Vector3 Level3DPlayerWorldPosition(const LevelData& level,
@@ -294,13 +389,63 @@ Vector3 Level3DPlayerWorldPosition(const LevelData& level,
                  state.tile_y * tile_world_size - origin_z};
 }
 
+Level3DPlayerTileDiagnostics CurrentLevel3DPlayerTileDiagnostics(
+    const LevelData& level,
+    const Level3DPlayerState& state) {
+  Level3DPlayerTileDiagnostics diagnostics;
+  diagnostics.tile_x = TileIndexFromPosition(state.tile_x);
+  diagnostics.tile_y = TileIndexFromPosition(state.tile_y);
+  diagnostics.base_speed_tiles_per_sec = state.move_speed_tiles_per_sec;
+  diagnostics.effective_speed_tiles_per_sec =
+      state.effective_move_speed_tiles_per_sec;
+  diagnostics.velocity_x_tiles_per_sec = state.velocity_x_tiles_per_sec;
+  diagnostics.velocity_y_tiles_per_sec = state.velocity_y_tiles_per_sec;
+  diagnostics.facing_x = state.facing_x;
+  diagnostics.facing_y = state.facing_y;
+
+  const RuntimeCell* cell = CellAt(level, diagnostics.tile_x,
+                                   diagnostics.tile_y);
+  if (cell == nullptr) {
+    return diagnostics;
+  }
+
+  diagnostics.terrain = cell->terrain;
+  diagnostics.walkable = cell->walkable;
+  diagnostics.collision = cell->collision;
+  diagnostics.concealment = cell->concealment;
+  diagnostics.elevation = cell->height;
+  diagnostics.movement_multiplier = cell->movement_multiplier;
+  return diagnostics;
+}
+
+std::string Level3DPlayerTileDiagnosticsToString(
+    const Level3DPlayerTileDiagnostics& diagnostics) {
+  std::ostringstream stream;
+  stream << "tile=" << diagnostics.tile_x << ',' << diagnostics.tile_y
+         << " terrain=" << TerrainTypeToString(diagnostics.terrain)
+         << " elevation=" << static_cast<int>(diagnostics.elevation)
+         << " walkable=" << (diagnostics.walkable ? "yes" : "no")
+         << " collision=" << (diagnostics.collision ? "yes" : "no")
+         << " concealment=" << static_cast<int>(diagnostics.concealment)
+         << " movement_multiplier=" << diagnostics.movement_multiplier
+         << " base_speed=" << diagnostics.base_speed_tiles_per_sec
+         << " effective_speed=" << diagnostics.effective_speed_tiles_per_sec
+         << " velocity=" << diagnostics.velocity_x_tiles_per_sec << ','
+         << diagnostics.velocity_y_tiles_per_sec
+         << " facing=" << diagnostics.facing_x << ',' << diagnostics.facing_y;
+  return stream.str();
+}
+
 std::string Level3DPlayerStateToString(const Level3DPlayerState& state) {
   std::ostringstream stream;
   stream << "player3d: tile=" << state.tile_x << ',' << state.tile_y
          << " elevation=" << static_cast<int>(state.elevation)
          << " facing=" << state.facing_x << ',' << state.facing_y
          << " velocity=" << state.velocity_x_tiles_per_sec << ','
-         << state.velocity_y_tiles_per_sec;
+         << state.velocity_y_tiles_per_sec
+         << " movement_multiplier=" << state.current_movement_multiplier
+         << " base_speed=" << state.move_speed_tiles_per_sec
+         << " effective_speed=" << state.effective_move_speed_tiles_per_sec;
   return stream.str();
 }
 

@@ -358,3 +358,11 @@
 - Changed the 3D follow camera to derive position and target from player facing, smoothed lookahead, distance, and height instead of independent orbit yaw/pitch.
 - Added mouse capture for the 3D game view and releases it when returning to menus or shutting down.
 - Kept the 2D renderer path unchanged.
+
+## v0.1.43 -> v0.1.44
+
+- Added runtime `movement_multiplier` loading from `movement_grid` so 3D movement uses both player base speed and current tile movement cost.
+- Applied movement slowdown to passable slow terrain such as water/swamp and passable forest undergrowth while keeping collision-blocked cells impassable.
+- Added event-based 3D movement logs on tile boundary crossing with terrain, elevation, movement multiplier, effective speed and accumulated mouse delta since the previous tile.
+- Added mouse capture change logs and throttled blocked-movement logs keyed by blocked tile/reason instead of logging every frame.
+- Removed the detailed 3D runtime state overlay from the screen; diagnostics now go to logs.

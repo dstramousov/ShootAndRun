@@ -1,5 +1,6 @@
 #include "level/level_loader.h"
 
+#include <algorithm>
 #include <charconv>
 #include <cctype>
 #include <filesystem>
@@ -143,6 +144,47 @@ struct PackageLayout {
   bool has_manifest_size = false;
   LevelSize manifest_size;
 };
+
+
+float FallbackMovementMultiplier(TerrainType terrain) {
+  switch (terrain) {
+    case TerrainType::kRoad:
+      return 1.08F;
+    case TerrainType::kSwamp:
+    case TerrainType::kWater:
+      return 0.50F;
+    case TerrainType::kForest:
+      return 0.55F;
+    case TerrainType::kRuins:
+      return 0.90F;
+    case TerrainType::kOpenGround:
+      return 1.0F;
+    case TerrainType::kWall:
+      return 0.0F;
+    case TerrainType::kUnknown:
+      return 0.80F;
+  }
+  return 1.0F;
+}
+
+float NormalizeMovementMultiplier(double grid_value, TerrainType terrain,
+                                  bool walkable, bool collision) {
+  if (collision || !walkable) {
+    return 0.0F;
+  }
+
+  const float fallback = FallbackMovementMultiplier(terrain);
+  if (grid_value > 0.0) {
+    const float raw_value = std::clamp(static_cast<float>(grid_value),
+                                       0.05F, 1.50F);
+    if (fallback > 0.0F && fallback < 1.0F) {
+      return std::min(raw_value, fallback);
+    }
+    return raw_value;
+  }
+
+  return fallback;
+}
 
 ReadFileResult ReadTextFile(const std::filesystem::path& path) {
   std::ifstream input(path);
@@ -2648,10 +2690,14 @@ LevelLoadResult LevelLoader::LoadBasicPackage(
   for (std::size_t index = 0; index < cell_count; ++index) {
     RuntimeCell cell;
     cell.terrain = terrain_grid.cells[index];
-    cell.walkable = movement_grid.present[index] != 0 &&
-                    movement_grid.values[index] > 0.0;
+    const double movement_value = movement_grid.present[index] == 0
+                                      ? 0.0
+                                      : movement_grid.values[index];
+    cell.walkable = movement_grid.present[index] != 0 && movement_value > 0.0;
     cell.collision = collision_grid.present[index] != 0 &&
                      collision_grid.values[index] != 0.0;
+    cell.movement_multiplier = NormalizeMovementMultiplier(
+        movement_value, cell.terrain, cell.walkable, cell.collision);
     cell.blocks_projectiles = projectile_grid.present[index] != 0 &&
                               projectile_grid.values[index] != 0.0;
     cell.blocks_vision = vision_grid.present[index] != 0 &&

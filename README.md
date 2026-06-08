@@ -1,4 +1,4 @@
-# ShootAndRunCpp v0.1.43
+# ShootAndRunCpp v0.1.44
 
 Первый каркас C++20 + raylib проекта.
 

@@ -16,6 +16,7 @@ struct RuntimeCell {
   std::uint8_t cover = 0;
   std::uint8_t concealment = 0;
   std::int8_t height = 0;
+  float movement_multiplier = 1.0F;
 };
 
 }  // namespace sar

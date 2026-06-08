@@ -8,8 +8,18 @@
 
 #include "input/input_state.h"
 #include "level/level_data.h"
+#include "level/terrain_type.h"
 
 namespace sar::render3d {
+
+enum class Level3DMoveBlockReason {
+  kNone,
+  kOutOfBounds,
+  kCollision,
+  kNotWalkable,
+  kUnderground,
+  kHeightStep,
+};
 
 struct Level3DPlayerState {
   float tile_x = 0.0F;
@@ -20,12 +30,43 @@ struct Level3DPlayerState {
   float velocity_x_tiles_per_sec = 0.0F;
   float velocity_y_tiles_per_sec = 0.0F;
   float move_speed_tiles_per_sec = 4.25F;
+  float current_movement_multiplier = 1.0F;
+  float effective_move_speed_tiles_per_sec = 4.25F;
   float acceleration_tiles_per_sec2 = 28.0F;
   float deceleration_tiles_per_sec2 = 34.0F;
   float mouse_turn_sensitivity_rad = 0.0031F;
   int allowed_step_height = 1;
+  int last_blocked_tile_x = -1;
+  int last_blocked_tile_y = -1;
+  Level3DMoveBlockReason last_block_reason = Level3DMoveBlockReason::kNone;
+  unsigned int blocked_event_sequence = 0;
   bool initialized = false;
 };
+
+struct Level3DPlayerTileDiagnostics {
+  int tile_x = -1;
+  int tile_y = -1;
+  TerrainType terrain = TerrainType::kUnknown;
+  bool walkable = false;
+  bool collision = false;
+  std::uint8_t concealment = 0;
+  std::int8_t elevation = 0;
+  float movement_multiplier = 0.0F;
+  float base_speed_tiles_per_sec = 0.0F;
+  float effective_speed_tiles_per_sec = 0.0F;
+  float velocity_x_tiles_per_sec = 0.0F;
+  float velocity_y_tiles_per_sec = 0.0F;
+  float facing_x = 0.0F;
+  float facing_y = -1.0F;
+};
+
+/**
+ * @brief Returns a stable display name for a movement block reason.
+ *
+ * @param reason Movement block reason.
+ * @return Stable lowercase reason name.
+ */
+const char* Level3DMoveBlockReasonName(Level3DMoveBlockReason reason);
 
 /**
  * @brief Finds a spawn point and initializes the 3D player state.
@@ -44,8 +85,8 @@ void InitializeLevel3DPlayer(const LevelData& level,
  * @brief Updates tile-space 3D player movement from mouse-facing input.
  *
  * Mouse X rotates the player's facing direction. Movement is facing-relative:
- * W/S move forward and backward, while A/D strafe. Runtime collision and
- * height data still decide whether the next tile can be entered.
+ * W/S move forward and backward, while A/D strafe. Runtime collision, height,
+ * and movement multiplier data decide whether and how fast the player moves.
  *
  * @param level Loaded level data.
  * @param input Current input state.
@@ -68,6 +109,26 @@ Vector3 Level3DPlayerWorldPosition(const LevelData& level,
                                    const Level3DPlayerState& state,
                                    float tile_world_size,
                                    float elevation_step);
+
+/**
+ * @brief Builds current tile diagnostics for event-based movement logging.
+ *
+ * @param level Loaded level data.
+ * @param state Current player state.
+ * @return Current player tile diagnostics.
+ */
+Level3DPlayerTileDiagnostics CurrentLevel3DPlayerTileDiagnostics(
+    const LevelData& level,
+    const Level3DPlayerState& state);
+
+/**
+ * @brief Returns a readable dump of a 3D player tile diagnostics object.
+ *
+ * @param diagnostics Current player tile diagnostics.
+ * @return String representation for event logs.
+ */
+std::string Level3DPlayerTileDiagnosticsToString(
+    const Level3DPlayerTileDiagnostics& diagnostics);
 
 /**
  * @brief Returns a readable dump of a 3D player state.

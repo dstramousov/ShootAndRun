@@ -766,8 +766,19 @@ void Application::UpdateGameView(const InputState& input) {
   }
 
   if (config_.renderer_mode == RuntimeRendererMode::kRenderer3D) {
+    if (input.mouse_delta.x != 0.0F || input.mouse_delta.y != 0.0F ||
+        input.mouse_wheel_delta != 0.0F) {
+      accumulated_mouse_dx_since_tile_ += input.mouse_delta.x;
+      accumulated_mouse_dy_since_tile_ += input.mouse_delta.y;
+      accumulated_abs_mouse_dx_since_tile_ += std::abs(input.mouse_delta.x);
+      accumulated_abs_mouse_dy_since_tile_ += std::abs(input.mouse_delta.y);
+      accumulated_mouse_wheel_since_tile_ += input.mouse_wheel_delta;
+      ++mouse_sample_count_since_tile_;
+    }
+
     render3d::UpdateLevel3DView(*loaded_level_, input, GetFrameTime(),
                                 &level_3d_view_);
+    Log3DMovementEvents(input);
     return;
   }
 
@@ -805,6 +816,56 @@ void Application::UpdateGameView(const InputState& input) {
   }
 
   ClampLevelViewToMap(*loaded_level_, window_state_, &level_view_);
+}
+
+void Application::Log3DMovementEvents(const InputState& input) {
+  if (!loaded_level_.has_value() ||
+      config_.renderer_mode != RuntimeRendererMode::kRenderer3D ||
+      !level_3d_view_.initialized) {
+    return;
+  }
+
+  const render3d::Level3DPlayerTileDiagnostics diagnostics =
+      render3d::CurrentLevel3DPlayerTileDiagnostics(
+          *loaded_level_, level_3d_view_.player);
+  if (diagnostics.tile_x != last_logged_3d_tile_x_ ||
+      diagnostics.tile_y != last_logged_3d_tile_y_) {
+    std::ostringstream stream;
+    stream << render3d::Level3DPlayerTileDiagnosticsToString(diagnostics)
+           << " mouse_dx_sum=" << accumulated_mouse_dx_since_tile_
+           << " mouse_dy_sum=" << accumulated_mouse_dy_since_tile_
+           << " mouse_abs_dx=" << accumulated_abs_mouse_dx_since_tile_
+           << " mouse_abs_dy=" << accumulated_abs_mouse_dy_since_tile_
+           << " mouse_wheel_sum=" << accumulated_mouse_wheel_since_tile_
+           << " mouse_samples=" << mouse_sample_count_since_tile_
+           << " mouse_capture=" << (mouse_capture_active_ ? "on" : "off");
+    logger_.Info("player3d", stream.str());
+
+    last_logged_3d_tile_x_ = diagnostics.tile_x;
+    last_logged_3d_tile_y_ = diagnostics.tile_y;
+    accumulated_mouse_dx_since_tile_ = 0.0F;
+    accumulated_mouse_dy_since_tile_ = 0.0F;
+    accumulated_abs_mouse_dx_since_tile_ = 0.0F;
+    accumulated_abs_mouse_dy_since_tile_ = 0.0F;
+    accumulated_mouse_wheel_since_tile_ = 0.0F;
+    mouse_sample_count_since_tile_ = 0;
+  }
+
+  const render3d::Level3DPlayerState& player = level_3d_view_.player;
+  if (player.blocked_event_sequence != last_logged_3d_block_sequence_) {
+    std::ostringstream stream;
+    stream << "movement blocked tile=" << player.last_blocked_tile_x << ','
+           << player.last_blocked_tile_y
+           << " reason="
+           << render3d::Level3DMoveBlockReasonName(
+                  player.last_block_reason)
+           << " current_tile=" << diagnostics.tile_x << ','
+           << diagnostics.tile_y
+           << " mouse_dx=" << input.mouse_delta.x
+           << " mouse_dy=" << input.mouse_delta.y;
+    logger_.Debug("player3d", stream.str());
+    last_logged_3d_block_sequence_ = player.blocked_event_sequence;
+  }
 }
 
 void Application::DrawMapPreparingScreen() const {
@@ -863,6 +924,9 @@ void Application::DrawMapPreparingScreen() const {
 }
 
 void Application::DrawGameOverlay() const {
+  if (config_.renderer_mode == RuntimeRendererMode::kRenderer3D) {
+    return;
+  }
   if (!loaded_level_summary_.has_value()) {
     return;
   }
@@ -1027,6 +1091,15 @@ bool Application::StartNewGameFromConfig() {
 
   if (config_.renderer_mode == RuntimeRendererMode::kRenderer3D) {
     visual_pipeline_ = visual_pipeline::VisualPreparationPipeline();
+    last_logged_3d_tile_x_ = -1;
+    last_logged_3d_tile_y_ = -1;
+    last_logged_3d_block_sequence_ = 0;
+    accumulated_mouse_dx_since_tile_ = 0.0F;
+    accumulated_mouse_dy_since_tile_ = 0.0F;
+    accumulated_abs_mouse_dx_since_tile_ = 0.0F;
+    accumulated_abs_mouse_dy_since_tile_ = 0.0F;
+    accumulated_mouse_wheel_since_tile_ = 0.0F;
+    mouse_sample_count_since_tile_ = 0;
     render3d::InitializeLevel3DView(*loaded_level_, &level_3d_view_);
     game_session_.StartNewGame();
     screen_ = AppScreen::kGame;
@@ -1116,6 +1189,8 @@ void Application::SetMouseCapture(bool enabled) {
     EnableCursor();
   }
   mouse_capture_active_ = enabled;
+  logger_.Info("mouse", std::string("capture=") +
+                            (mouse_capture_active_ ? "enabled" : "disabled"));
 }
 
 void Application::RenderFrame() {
