@@ -432,6 +432,8 @@ void StartStepJump(const EnterTileResult& target,
   state->jump_kind = Level3DJumpKind::kStepUp;
   state->jump_elapsed_sec = 0.0F;
   state->jump_start_movement_multiplier = state->current_movement_multiplier;
+  state->jump_start_tile_x = state->tile_x;
+  state->jump_start_tile_y = state->tile_y;
   state->step_jump_active = true;
   state->step_jump_from_tile_x = TileIndexFromPosition(state->tile_x);
   state->step_jump_from_tile_y = TileIndexFromPosition(state->tile_y);
@@ -458,6 +460,8 @@ void StartRunningJump(Level3DPlayerState* state) {
   state->jump_elapsed_sec = 0.0F;
   state->jump_start_movement_multiplier = std::max(
       state->current_movement_multiplier, 0.0F);
+  state->jump_start_tile_x = state->tile_x;
+  state->jump_start_tile_y = state->tile_y;
   state->visual_elevation_offset = 0.0F;
   state->step_jump_from_tile_x = TileIndexFromPosition(state->tile_x);
   state->step_jump_from_tile_y = TileIndexFromPosition(state->tile_y);
@@ -621,8 +625,8 @@ bool UpdateRunningJump(const LevelData& level, float safe_dt,
   const Level3DMoveBlockReason landing_reason = LandingBlockReason(
       level, landing_x, landing_y);
   if (landing_reason != Level3DMoveBlockReason::kNone) {
-    state->tile_x = static_cast<float>(state->step_jump_from_tile_x) + 0.5F;
-    state->tile_y = static_cast<float>(state->step_jump_from_tile_y) + 0.5F;
+    state->tile_x = state->jump_start_tile_x;
+    state->tile_y = state->jump_start_tile_y;
     state->elevation = state->step_jump_from_elevation;
     state->step_jump_to_tile_x = landing_x;
     state->step_jump_to_tile_y = landing_y;
@@ -635,8 +639,6 @@ bool UpdateRunningJump(const LevelData& level, float safe_dt,
     return true;
   }
 
-  state->tile_x = static_cast<float>(landing_x) + 0.5F;
-  state->tile_y = static_cast<float>(landing_y) + 0.5F;
   state->elevation = HeightAtOrZero(level, landing_x, landing_y);
   state->step_jump_to_tile_x = landing_x;
   state->step_jump_to_tile_y = landing_y;
@@ -896,6 +898,8 @@ void InitializeLevel3DPlayer(const LevelData& level,
   state->jump_kind = Level3DJumpKind::kNone;
   state->jump_elapsed_sec = 0.0F;
   state->jump_start_movement_multiplier = 1.0F;
+  state->jump_start_tile_x = state->tile_x;
+  state->jump_start_tile_y = state->tile_y;
   state->step_jump_active = false;
   state->step_jump_from_tile_x = -1;
   state->step_jump_from_tile_y = -1;

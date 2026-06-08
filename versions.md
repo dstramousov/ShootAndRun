@@ -431,3 +431,11 @@
 - Smoothed movement multiplier changes to reduce sticky speed jumps when crossing water, undergrowth, road, and open-ground borders.
 - Tuned default jump values to a shorter, lower, more controllable running jump.
 - Added `player3d_movement_multiplier_smooth_speed` to `config/app_config.json`.
+
+## v0.1.51 -> v0.1.52
+
+- Bumped CMake project and runtime application version to `0.1.52`.
+- Fixed 3D running-jump landing so normal jumps preserve continuous X/Y position instead of snapping to the center of the landing tile.
+- Stored the continuous jump start position and use it for invalid landing rollback instead of recentering on the start tile.
+- Kept scripted step-up jumps unchanged; only free/running jump landing behavior was adjusted.
+

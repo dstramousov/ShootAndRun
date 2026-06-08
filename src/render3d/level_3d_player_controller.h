@@ -61,6 +61,8 @@ struct Level3DPlayerState {
   float jump_air_control_multiplier = 0.72F;
   float jump_start_movement_multiplier = 1.0F;
   float jump_min_running_speed_tiles_per_sec = 1.20F;
+  float jump_start_tile_x = 0.0F;
+  float jump_start_tile_y = 0.0F;
   bool step_jump_active = false;
   int step_jump_from_tile_x = -1;
   int step_jump_from_tile_y = -1;
