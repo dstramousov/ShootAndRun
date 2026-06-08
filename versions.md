@@ -439,3 +439,12 @@
 - Stored the continuous jump start position and use it for invalid landing rollback instead of recentering on the start tile.
 - Kept scripted step-up jumps unchanged; only free/running jump landing behavior was adjusted.
 
+## v0.1.52 -> v0.1.53
+
+- Bumped CMake project and runtime application version to `0.1.53`.
+- Added configurable 3D visibility settings for current visible radius, fog-memory, and seen-tile dimming.
+- Added chunk-based 3D render iteration with configurable chunk size and active chunk radius.
+- Limited 3D drawing to currently visible or previously seen tiles instead of showing the whole loaded map.
+- Kept line-of-sight blockers for a later pass; visibility is currently a circular player-centered foundation.
+- Kept the 2D renderer path unchanged and added no debug HUD.
+

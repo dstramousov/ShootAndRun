@@ -43,6 +43,15 @@ struct Player3DLogConfig {
 struct Render3DPerfConfig {
   int visible_radius_tiles = 48;
   int culling_deadzone_tiles = 4;
+  int chunk_size_tiles = 16;
+  int active_chunk_radius = 3;
+};
+
+struct Render3DVisibilityConfig {
+  bool enabled = true;
+  int radius_tiles = 22;
+  bool memory_enabled = true;
+  float seen_tile_dim_factor = 0.32F;
 };
 
 struct Player3DMovementConfig {
@@ -67,6 +76,7 @@ struct ProjectConfig {
   ServiceInfoConfig service_info;
   Player3DLogConfig player3d_log;
   Render3DPerfConfig render3d_perf;
+  Render3DVisibilityConfig render3d_visibility;
   Player3DMovementConfig player3d_movement;
   visual_pipeline::VisualPipelineConfig visual_pipeline_config;
 

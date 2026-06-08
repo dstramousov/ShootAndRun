@@ -1175,6 +1175,18 @@ bool Application::StartNewGameFromConfig() {
           project_config_->render3d_perf.visible_radius_tiles;
       level_3d_view_.culling_deadzone_tiles =
           project_config_->render3d_perf.culling_deadzone_tiles;
+      level_3d_view_.chunk_size_tiles =
+          project_config_->render3d_perf.chunk_size_tiles;
+      level_3d_view_.active_chunk_radius =
+          project_config_->render3d_perf.active_chunk_radius;
+      level_3d_view_.visibility_enabled =
+          project_config_->render3d_visibility.enabled;
+      level_3d_view_.visibility_radius_tiles =
+          project_config_->render3d_visibility.radius_tiles;
+      level_3d_view_.visibility_memory_enabled =
+          project_config_->render3d_visibility.memory_enabled;
+      level_3d_view_.seen_tile_dim_factor =
+          project_config_->render3d_visibility.seen_tile_dim_factor;
       level_3d_view_.culling_center_initialized = false;
       render3d::UpdateLevel3DView(*loaded_level_, InputState{}, 0.0F,
                                   &level_3d_view_);

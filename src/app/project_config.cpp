@@ -348,6 +348,18 @@ std::string ProjectConfig::Dump() const {
          std::to_string(render3d_perf.visible_radius_tiles) +
          ", culling_deadzone_tiles: " +
          std::to_string(render3d_perf.culling_deadzone_tiles) +
+         ", chunk_size_tiles: " +
+         std::to_string(render3d_perf.chunk_size_tiles) +
+         ", active_chunk_radius: " +
+         std::to_string(render3d_perf.active_chunk_radius) +
+         " }, render3d_visibility: { enabled: " +
+         std::string(render3d_visibility.enabled ? "true" : "false") +
+         ", radius_tiles: " +
+         std::to_string(render3d_visibility.radius_tiles) +
+         ", memory_enabled: " +
+         std::string(render3d_visibility.memory_enabled ? "true" : "false") +
+         ", seen_tile_dim_factor: " +
+         std::to_string(render3d_visibility.seen_tile_dim_factor) +
          " }, player3d_movement: { speed: " +
          std::to_string(player3d_movement.move_speed_tiles_per_sec) +
          ", accel: " +
@@ -618,6 +630,84 @@ ProjectConfigResult LoadProjectConfig(
     }
     config.render3d_perf.culling_deadzone_tiles =
         render3d_culling_deadzone_tiles.value;
+  }
+
+  ParseIntResult render3d_chunk_size_tiles =
+      ExtractOptionalJsonIntField(content, "render3d_chunk_size_tiles");
+  if (!render3d_chunk_size_tiles.ok) {
+    return {false, {}, render3d_chunk_size_tiles.error};
+  }
+  if (render3d_chunk_size_tiles.found) {
+    if (render3d_chunk_size_tiles.value < 4 ||
+        render3d_chunk_size_tiles.value > 64) {
+      return {false, {},
+              "render3d_chunk_size_tiles must be in range [4, 64]"};
+    }
+    config.render3d_perf.chunk_size_tiles = render3d_chunk_size_tiles.value;
+  }
+
+  ParseIntResult render3d_active_chunk_radius =
+      ExtractOptionalJsonIntField(content, "render3d_active_chunk_radius");
+  if (!render3d_active_chunk_radius.ok) {
+    return {false, {}, render3d_active_chunk_radius.error};
+  }
+  if (render3d_active_chunk_radius.found) {
+    if (render3d_active_chunk_radius.value < 0 ||
+        render3d_active_chunk_radius.value > 16) {
+      return {false, {},
+              "render3d_active_chunk_radius must be in range [0, 16]"};
+    }
+    config.render3d_perf.active_chunk_radius =
+        render3d_active_chunk_radius.value;
+  }
+
+  ParseBoolResult render3d_visibility_enabled =
+      ExtractOptionalJsonBoolField(content, "render3d_visibility_enabled");
+  if (!render3d_visibility_enabled.ok) {
+    return {false, {}, render3d_visibility_enabled.error};
+  }
+  if (render3d_visibility_enabled.found) {
+    config.render3d_visibility.enabled = render3d_visibility_enabled.value;
+  }
+
+  ParseIntResult render3d_visibility_radius_tiles =
+      ExtractOptionalJsonIntField(content, "render3d_visibility_radius_tiles");
+  if (!render3d_visibility_radius_tiles.ok) {
+    return {false, {}, render3d_visibility_radius_tiles.error};
+  }
+  if (render3d_visibility_radius_tiles.found) {
+    if (render3d_visibility_radius_tiles.value < 1 ||
+        render3d_visibility_radius_tiles.value > 128) {
+      return {false, {},
+              "render3d_visibility_radius_tiles must be in range [1, 128]"};
+    }
+    config.render3d_visibility.radius_tiles =
+        render3d_visibility_radius_tiles.value;
+  }
+
+  ParseBoolResult render3d_visibility_memory_enabled =
+      ExtractOptionalJsonBoolField(content, "render3d_visibility_memory_enabled");
+  if (!render3d_visibility_memory_enabled.ok) {
+    return {false, {}, render3d_visibility_memory_enabled.error};
+  }
+  if (render3d_visibility_memory_enabled.found) {
+    config.render3d_visibility.memory_enabled =
+        render3d_visibility_memory_enabled.value;
+  }
+
+  ParseFloatResult render3d_seen_tile_dim_factor =
+      ExtractOptionalJsonFloatField(content, "render3d_seen_tile_dim_factor");
+  if (!render3d_seen_tile_dim_factor.ok) {
+    return {false, {}, render3d_seen_tile_dim_factor.error};
+  }
+  if (render3d_seen_tile_dim_factor.found) {
+    if (render3d_seen_tile_dim_factor.value < 0.0F ||
+        render3d_seen_tile_dim_factor.value > 1.0F) {
+      return {false, {},
+              "render3d_seen_tile_dim_factor must be in range [0, 1]"};
+    }
+    config.render3d_visibility.seen_tile_dim_factor =
+        render3d_seen_tile_dim_factor.value;
   }
 
   ParseFloatResult player3d_move_speed =

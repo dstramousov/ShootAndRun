@@ -1,7 +1,9 @@
 #ifndef SHOOT_AND_RUN_CPP_SRC_RENDER3D_LEVEL_3D_RENDERER_H_
 #define SHOOT_AND_RUN_CPP_SRC_RENDER3D_LEVEL_3D_RENDERER_H_
 
+#include <cstddef>
 #include <string>
+#include <vector>
 
 #include <raylib.h>
 
@@ -27,9 +29,19 @@ struct Level3DViewState {
   float elevation_wall_thickness = 0.075F;
   int visible_radius_tiles = 48;
   int culling_deadzone_tiles = 4;
+  int chunk_size_tiles = 16;
+  int active_chunk_radius = 3;
   int culling_center_tile_x = 0;
   int culling_center_tile_y = 0;
   bool culling_center_initialized = false;
+  bool visibility_enabled = true;
+  int visibility_radius_tiles = 22;
+  bool visibility_memory_enabled = true;
+  float seen_tile_dim_factor = 0.32F;
+  int visibility_width = 0;
+  int visibility_height = 0;
+  std::vector<unsigned char> visibility_tiles;
+  std::vector<std::size_t> visibility_current_indices;
   bool initialized = false;
 };
 

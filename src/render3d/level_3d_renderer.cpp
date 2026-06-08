@@ -11,12 +11,25 @@
 namespace sar::render3d {
 namespace {
 
+constexpr unsigned char kVisibilityUnknown = 0;
+constexpr unsigned char kVisibilitySeen = 1;
+constexpr unsigned char kVisibilityVisible = 2;
+
 struct TileRange3D {
   int min_x = 0;
   int max_x = 0;
   int min_y = 0;
   int max_y = 0;
 };
+
+struct ChunkRange3D {
+  int min_x = 0;
+  int max_x = 0;
+  int min_y = 0;
+  int max_y = 0;
+};
+
+Color ScaleColorRgb(Color color, float scale, unsigned char alpha);
 
 int TileIndexFromPosition(float value) {
   return static_cast<int>(std::floor(value));
@@ -41,19 +54,58 @@ const RuntimeCell* CellAt(const LevelData& level, int x, int y) {
   return &level.cells[static_cast<std::size_t>(index)];
 }
 
-TileRange3D VisibleTileRange(const LevelData& level,
-                             const Level3DViewState& state) {
+int SafeChunkSize(const Level3DViewState& state) {
+  return std::clamp(state.chunk_size_tiles, 4, 64);
+}
+
+int ChunkIndexFromTile(int tile, int chunk_size) {
+  return tile / std::max(1, chunk_size);
+}
+
+int MinimumChunkRadiusForTileRadius(int radius_tiles, int chunk_size) {
+  const int safe_chunk_size = std::max(1, chunk_size);
+  return std::max(0, (std::max(0, radius_tiles) + safe_chunk_size - 1) /
+                         safe_chunk_size + 1);
+}
+
+ChunkRange3D ActiveChunkRange(const LevelData& level,
+                              const Level3DViewState& state) {
+  const int chunk_size = SafeChunkSize(state);
+  const int max_chunk_x = ChunkIndexFromTile(level.size.width - 1, chunk_size);
+  const int max_chunk_y = ChunkIndexFromTile(level.size.height - 1, chunk_size);
   const int center_x = state.culling_center_initialized
                            ? state.culling_center_tile_x
                            : TileIndexFromPosition(state.player.tile_x);
   const int center_y = state.culling_center_initialized
                            ? state.culling_center_tile_y
                            : TileIndexFromPosition(state.player.tile_y);
-  const int radius = std::clamp(state.visible_radius_tiles, 8, 128);
-  return TileRange3D{std::clamp(center_x - radius, 0, level.size.width - 1),
-                     std::clamp(center_x + radius, 0, level.size.width - 1),
-                     std::clamp(center_y - radius, 0, level.size.height - 1),
-                     std::clamp(center_y + radius, 0, level.size.height - 1)};
+  const int center_chunk_x = ChunkIndexFromTile(
+      std::clamp(center_x, 0, level.size.width - 1), chunk_size);
+  const int center_chunk_y = ChunkIndexFromTile(
+      std::clamp(center_y, 0, level.size.height - 1), chunk_size);
+  const int radius_source = state.visibility_enabled
+                                ? state.visibility_radius_tiles
+                                : state.visible_radius_tiles;
+  const int minimum_radius = MinimumChunkRadiusForTileRadius(radius_source,
+                                                            chunk_size);
+  const int active_radius = std::clamp(
+      std::max(state.active_chunk_radius, minimum_radius), 0, 32);
+  return ChunkRange3D{std::clamp(center_chunk_x - active_radius, 0, max_chunk_x),
+                      std::clamp(center_chunk_x + active_radius, 0, max_chunk_x),
+                      std::clamp(center_chunk_y - active_radius, 0, max_chunk_y),
+                      std::clamp(center_chunk_y + active_radius, 0, max_chunk_y)};
+}
+
+TileRange3D TileRangeFromChunks(const LevelData& level,
+                                const Level3DViewState& state,
+                                const ChunkRange3D& chunks) {
+  const int chunk_size = SafeChunkSize(state);
+  return TileRange3D{std::clamp(chunks.min_x * chunk_size, 0, level.size.width - 1),
+                     std::clamp((chunks.max_x + 1) * chunk_size - 1, 0,
+                                level.size.width - 1),
+                     std::clamp(chunks.min_y * chunk_size, 0, level.size.height - 1),
+                     std::clamp((chunks.max_y + 1) * chunk_size - 1, 0,
+                                level.size.height - 1)};
 }
 
 void UpdateCullingCenter(const LevelData& level, Level3DViewState* state) {
@@ -81,6 +133,118 @@ void UpdateCullingCenter(const LevelData& level, Level3DViewState* state) {
 
   state->culling_center_tile_x = player_tile_x;
   state->culling_center_tile_y = player_tile_y;
+}
+
+void EnsureVisibilityBuffer(const LevelData& level, Level3DViewState* state) {
+  if (state == nullptr) {
+    return;
+  }
+  const int width = std::max(0, level.size.width);
+  const int height = std::max(0, level.size.height);
+  const std::size_t expected_size = static_cast<std::size_t>(width) *
+                                    static_cast<std::size_t>(height);
+  if (state->visibility_width == width && state->visibility_height == height &&
+      state->visibility_tiles.size() == expected_size) {
+    return;
+  }
+  state->visibility_width = width;
+  state->visibility_height = height;
+  state->visibility_tiles.assign(expected_size, kVisibilityUnknown);
+  state->visibility_current_indices.clear();
+}
+
+std::size_t VisibilityIndex(const Level3DViewState& state, int x, int y) {
+  return static_cast<std::size_t>(y) *
+             static_cast<std::size_t>(state.visibility_width) +
+         static_cast<std::size_t>(x);
+}
+
+unsigned char VisibilityAt(const Level3DViewState& state, int x, int y) {
+  if (!state.visibility_enabled) {
+    return kVisibilityVisible;
+  }
+  if (x < 0 || y < 0 || x >= state.visibility_width ||
+      y >= state.visibility_height) {
+    return kVisibilityUnknown;
+  }
+  const std::size_t index = VisibilityIndex(state, x, y);
+  if (index >= state.visibility_tiles.size()) {
+    return kVisibilityUnknown;
+  }
+  return state.visibility_tiles[index];
+}
+
+bool IsTileRenderable(const Level3DViewState& state, int x, int y) {
+  const unsigned char visibility = VisibilityAt(state, x, y);
+  return visibility == kVisibilityVisible ||
+         (state.visibility_memory_enabled && visibility == kVisibilitySeen);
+}
+
+Color ApplyVisibilityColor(Color color, const Level3DViewState& state,
+                           int x, int y) {
+  if (!state.visibility_enabled) {
+    return color;
+  }
+  const unsigned char visibility = VisibilityAt(state, x, y);
+  if (visibility == kVisibilityVisible) {
+    return color;
+  }
+  if (visibility == kVisibilitySeen) {
+    const float factor = std::clamp(state.seen_tile_dim_factor, 0.0F, 1.0F);
+    const int alpha = std::clamp(
+        static_cast<int>(std::lround(static_cast<float>(color.a) *
+                                     std::max(0.25F, factor))),
+        0, 255);
+    return ScaleColorRgb(color, factor, static_cast<unsigned char>(alpha));
+  }
+  return Color{0, 0, 0, 0};
+}
+
+void UpdateVisibilityState(const LevelData& level, Level3DViewState* state) {
+  if (state == nullptr || level.size.width <= 0 || level.size.height <= 0) {
+    return;
+  }
+
+  EnsureVisibilityBuffer(level, state);
+  if (!state->visibility_enabled) {
+    std::fill(state->visibility_tiles.begin(), state->visibility_tiles.end(),
+              kVisibilityVisible);
+    return;
+  }
+
+  for (const std::size_t index : state->visibility_current_indices) {
+    if (index >= state->visibility_tiles.size()) {
+      continue;
+    }
+    state->visibility_tiles[index] = state->visibility_memory_enabled
+                                        ? kVisibilitySeen
+                                        : kVisibilityUnknown;
+  }
+  state->visibility_current_indices.clear();
+
+  const int center_x = std::clamp(TileIndexFromPosition(state->player.tile_x),
+                                  0, level.size.width - 1);
+  const int center_y = std::clamp(TileIndexFromPosition(state->player.tile_y),
+                                  0, level.size.height - 1);
+  const int radius = std::clamp(state->visibility_radius_tiles, 1, 128);
+  const int radius_squared = radius * radius;
+  const int min_x = std::clamp(center_x - radius, 0, level.size.width - 1);
+  const int max_x = std::clamp(center_x + radius, 0, level.size.width - 1);
+  const int min_y = std::clamp(center_y - radius, 0, level.size.height - 1);
+  const int max_y = std::clamp(center_y + radius, 0, level.size.height - 1);
+
+  for (int y = min_y; y <= max_y; ++y) {
+    for (int x = min_x; x <= max_x; ++x) {
+      const int dx = x - center_x;
+      const int dy = y - center_y;
+      if (dx * dx + dy * dy > radius_squared) {
+        continue;
+      }
+      const std::size_t index = VisibilityIndex(*state, x, y);
+      state->visibility_tiles[index] = kVisibilityVisible;
+      state->visibility_current_indices.push_back(index);
+    }
+  }
 }
 
 Vector3 TileWorldCenter(const LevelData& level, int x, int y,
@@ -261,7 +425,14 @@ void DrawTransitionPrimitive(const LevelData& level,
   const float height = 0.07F;
   const float width = horizontal ? long_axis : short_axis;
   const float depth = horizontal ? short_axis : long_axis;
-  const Color color = TransitionColor(transition.type);
+  const int color_tile_x = IsTileRenderable(state, transition.from_x, transition.from_y)
+                               ? transition.from_x
+                               : transition.to_x;
+  const int color_tile_y = IsTileRenderable(state, transition.from_x, transition.from_y)
+                               ? transition.from_y
+                               : transition.to_y;
+  const Color color = ApplyVisibilityColor(TransitionColor(transition.type),
+                                           state, color_tile_x, color_tile_y);
   DrawCube(center, width, height, depth, color);
   DrawCubeWires(center, width, height, depth, ScaleColorRgb(color, 0.75F, 210));
 }
@@ -271,6 +442,10 @@ void DrawElevationTransitions(const LevelData& level,
                               const TileRange3D& range) {
   for (const ElevationTransition& transition : level.elevation_transitions) {
     if (!IsTransitionVisibleInRange(transition, range)) {
+      continue;
+    }
+    if (!IsTileRenderable(state, transition.from_x, transition.from_y) &&
+        !IsTileRenderable(state, transition.to_x, transition.to_y)) {
       continue;
     }
     DrawTransitionPrimitive(level, transition, state);
@@ -305,14 +480,15 @@ void DrawGroundTile(const LevelData& level, int x, int y,
   }
 
   DrawCube(center, state.tile_world_size, slab_height, state.tile_world_size,
-           TileColor(cell, state.mode));
+           ApplyVisibilityColor(TileColor(cell, state.mode), state, x, y));
 }
 
 void DrawElevationWallToNeighbor(const LevelData& level, int x, int y,
                                  int neighbor_x, int neighbor_y,
                                  const RuntimeCell& cell,
                                  const Level3DViewState& state) {
-  if (!IsSurfaceVisible(cell) || cell.height <= 0) {
+  if (!IsSurfaceVisible(cell) || cell.height <= 0 ||
+      !IsTileRenderable(state, x, y)) {
     return;
   }
 
@@ -357,7 +533,8 @@ void DrawElevationWallToNeighbor(const LevelData& level, int x, int y,
   }
 
   DrawCube(center, width, wall_height, depth,
-           ElevationWallColor(cell, state.mode));
+           ApplyVisibilityColor(ElevationWallColor(cell, state.mode),
+                                state, x, y));
 }
 
 void DrawElevationWalls(const LevelData& level, int x, int y,
@@ -372,7 +549,7 @@ void DrawElevationWalls(const LevelData& level, int x, int y,
 void DrawBlockingVolume(const LevelData& level, int x, int y,
                         const RuntimeCell& cell,
                         const Level3DViewState& state) {
-  if (IsPassableForestBoundary(cell)) {
+  if (IsPassableForestBoundary(cell) || !IsTileRenderable(state, x, y)) {
     return;
   }
 
@@ -393,13 +570,15 @@ void DrawBlockingVolume(const LevelData& level, int x, int y,
   if (state.mode == Level3DRenderMode::kCollision) {
     color = Color{105, 77, 54, 238};
   }
-  DrawCube(center, width, height, depth, color);
+  DrawCube(center, width, height, depth,
+           ApplyVisibilityColor(color, state, x, y));
 }
 
 void DrawPassableForestBoundaryVolume(const LevelData& level, int x, int y,
                                       const RuntimeCell& cell,
                                       const Level3DViewState& state) {
-  if (!IsPassableForestBoundary(cell) || !IsSurfaceVisible(cell)) {
+  if (!IsPassableForestBoundary(cell) || !IsSurfaceVisible(cell) ||
+      !IsTileRenderable(state, x, y)) {
     return;
   }
 
@@ -415,15 +594,53 @@ void DrawPassableForestBoundaryVolume(const LevelData& level, int x, int y,
     color = Color{44, 146, 58, 104};
   }
 
-  DrawCube(center, width, height, depth, color);
-  DrawCubeWires(center, width, height, depth, Color{118, 166, 95, 112});
+  const Color visible_color = ApplyVisibilityColor(color, state, x, y);
+  DrawCube(center, width, height, depth, visible_color);
+  DrawCubeWires(center, width, height, depth,
+                ApplyVisibilityColor(Color{118, 166, 95, 112}, state, x, y));
 }
 
-void DrawLevelBounds(const LevelData& level, float tile_world_size) {
-  const float width = static_cast<float>(level.size.width) * tile_world_size;
-  const float height = static_cast<float>(level.size.height) * tile_world_size;
+void DrawLevelBounds(const LevelData& level, const Level3DViewState& state) {
+  if (state.visibility_enabled) {
+    return;
+  }
+  const float width = static_cast<float>(level.size.width) *
+                      state.tile_world_size;
+  const float height = static_cast<float>(level.size.height) *
+                       state.tile_world_size;
   const Vector3 center{0.0F, 0.02F, 0.0F};
   DrawCubeWires(center, width, 0.04F, height, Color{150, 155, 170, 180});
+}
+
+template <typename DrawFunction>
+void ForEachActiveRenderableTile(const LevelData& level,
+                                 const Level3DViewState& state,
+                                 DrawFunction draw_function) {
+  const ChunkRange3D chunks = ActiveChunkRange(level, state);
+  const int chunk_size = SafeChunkSize(state);
+  for (int chunk_y = chunks.min_y; chunk_y <= chunks.max_y; ++chunk_y) {
+    const int min_y = std::clamp(chunk_y * chunk_size, 0, level.size.height - 1);
+    const int max_y = std::clamp((chunk_y + 1) * chunk_size - 1, 0,
+                                 level.size.height - 1);
+    for (int chunk_x = chunks.min_x; chunk_x <= chunks.max_x; ++chunk_x) {
+      const int min_x = std::clamp(chunk_x * chunk_size, 0,
+                                   level.size.width - 1);
+      const int max_x = std::clamp((chunk_x + 1) * chunk_size - 1, 0,
+                                   level.size.width - 1);
+      for (int y = min_y; y <= max_y; ++y) {
+        for (int x = min_x; x <= max_x; ++x) {
+          if (!IsTileRenderable(state, x, y)) {
+            continue;
+          }
+          const RuntimeCell* cell = CellAt(level, x, y);
+          if (cell == nullptr) {
+            continue;
+          }
+          draw_function(x, y, *cell);
+        }
+      }
+    }
+  }
 }
 
 void DrawPlayer(const LevelData& level, const Level3DViewState& state) {
@@ -446,49 +663,31 @@ void DrawPlayer(const LevelData& level, const Level3DViewState& state) {
 }
 
 void DrawTiles(const LevelData& level, const Level3DViewState& state) {
-  const TileRange3D range = VisibleTileRange(level, state);
-  for (int y = range.min_y; y <= range.max_y; ++y) {
-    for (int x = range.min_x; x <= range.max_x; ++x) {
-      const RuntimeCell* cell = CellAt(level, x, y);
-      if (cell == nullptr) {
-        continue;
-      }
-      DrawGroundTile(level, x, y, *cell, state);
-    }
-  }
+  const ChunkRange3D chunks = ActiveChunkRange(level, state);
+  const TileRange3D range = TileRangeFromChunks(level, state, chunks);
+
+  ForEachActiveRenderableTile(
+      level, state, [&level, &state](int x, int y, const RuntimeCell& cell) {
+        DrawGroundTile(level, x, y, cell, state);
+      });
 
   DrawElevationTransitions(level, state, range);
 
-  for (int y = range.min_y; y <= range.max_y; ++y) {
-    for (int x = range.min_x; x <= range.max_x; ++x) {
-      const RuntimeCell* cell = CellAt(level, x, y);
-      if (cell == nullptr) {
-        continue;
-      }
-      DrawElevationWalls(level, x, y, *cell, state);
-    }
-  }
+  ForEachActiveRenderableTile(
+      level, state, [&level, &state](int x, int y, const RuntimeCell& cell) {
+        DrawElevationWalls(level, x, y, cell, state);
+      });
 
-  for (int y = range.min_y; y <= range.max_y; ++y) {
-    for (int x = range.min_x; x <= range.max_x; ++x) {
-      const RuntimeCell* cell = CellAt(level, x, y);
-      if (cell == nullptr) {
-        continue;
-      }
-      DrawBlockingVolume(level, x, y, *cell, state);
-    }
-  }
+  ForEachActiveRenderableTile(
+      level, state, [&level, &state](int x, int y, const RuntimeCell& cell) {
+        DrawBlockingVolume(level, x, y, cell, state);
+      });
 
   BeginBlendMode(BLEND_ALPHA);
-  for (int y = range.min_y; y <= range.max_y; ++y) {
-    for (int x = range.min_x; x <= range.max_x; ++x) {
-      const RuntimeCell* cell = CellAt(level, x, y);
-      if (cell == nullptr) {
-        continue;
-      }
-      DrawPassableForestBoundaryVolume(level, x, y, *cell, state);
-    }
-  }
+  ForEachActiveRenderableTile(
+      level, state, [&level, &state](int x, int y, const RuntimeCell& cell) {
+        DrawPassableForestBoundaryVolume(level, x, y, cell, state);
+      });
   EndBlendMode();
 }
 
@@ -515,6 +714,7 @@ void InitializeLevel3DView(const LevelData& level, Level3DViewState* state) {
   state->mode = Level3DRenderMode::kTerrain;
   state->culling_center_initialized = false;
   UpdateCullingCenter(level, state);
+  UpdateVisibilityState(level, state);
   state->initialized = true;
 }
 
@@ -536,6 +736,7 @@ void UpdateLevel3DView(const LevelData& level, const InputState& input,
 
   UpdateLevel3DPlayer(level, input, dt, &state->player);
   UpdateCullingCenter(level, state);
+  UpdateVisibilityState(level, state);
   UpdateLevel3DCamera(level, state->player, input, dt, state->tile_world_size,
                       state->elevation_step, &state->camera);
 }
@@ -544,6 +745,11 @@ std::string Level3DViewStateToString(const Level3DViewState& state) {
   std::ostringstream stream;
   stream << "renderer3d: mode=" << Level3DRenderModeName(state.mode)
          << " radius=" << state.visible_radius_tiles
+         << " chunks=" << state.chunk_size_tiles << "x"
+         << state.chunk_size_tiles << "/r" << state.active_chunk_radius
+         << " visibility=" << (state.visibility_enabled ? "on" : "off")
+         << "/r" << state.visibility_radius_tiles
+         << "/memory=" << (state.visibility_memory_enabled ? "on" : "off")
          << " cull_center=" << state.culling_center_tile_x << ','
          << state.culling_center_tile_y
          << " deadzone=" << state.culling_deadzone_tiles << "  "
@@ -566,7 +772,7 @@ void Level3DRenderer::Draw(const LevelData& level,
 
   BeginMode3D(camera);
   DrawTiles(level, state);
-  DrawLevelBounds(level, state.tile_world_size);
+  DrawLevelBounds(level, state);
   DrawPlayer(level, state);
   EndMode3D();
 }
