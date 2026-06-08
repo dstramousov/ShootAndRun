@@ -442,12 +442,74 @@ Color TerrainColor3D(TerrainType terrain) {
 }
 
 /**
+ * @brief Returns a muted lower-floor material for open pit cells.
+ */
+Color PitFloorColor(const RuntimeCell& cell) {
+  switch (cell.terrain) {
+    case TerrainType::kRuins:
+      return Color{86, 80, 72, 255};
+    case TerrainType::kRoad:
+      return Color{118, 94, 66, 255};
+    case TerrainType::kSwamp:
+      return Color{42, 90, 68, 255};
+    case TerrainType::kWater:
+      return Color{25, 72, 130, 255};
+    case TerrainType::kForest:
+      return Color{54, 64, 45, 255};
+    case TerrainType::kWall:
+      return Color{68, 56, 48, 255};
+    case TerrainType::kOpenGround:
+      return Color{44, 102, 52, 255};
+    case TerrainType::kUnknown:
+      return Color{126, 70, 116, 255};
+  }
+  return Color{86, 80, 72, 255};
+}
+
+/**
+ * @brief Returns a plain earth cut color for vertical pit walls.
+ */
+Color PitCutWallColor(const RuntimeCell& upper_cell,
+                      const RuntimeCell& lower_cell) {
+  if (upper_cell.terrain == TerrainType::kRuins ||
+      lower_cell.terrain == TerrainType::kRuins) {
+    return Color{73, 65, 55, 255};
+  }
+  if (upper_cell.terrain == TerrainType::kWater ||
+      lower_cell.terrain == TerrainType::kWater ||
+      upper_cell.terrain == TerrainType::kSwamp ||
+      lower_cell.terrain == TerrainType::kSwamp) {
+    return Color{48, 66, 52, 255};
+  }
+  return Color{70, 58, 46, 255};
+}
+
+/**
+ * @brief Returns a visually quieter material for elevated cut faces.
+ */
+Color ElevationCutWallColor(const RuntimeCell& upper_cell,
+                            const RuntimeCell& lower_cell) {
+  if (lower_cell.height < 0) {
+    return PitCutWallColor(upper_cell, lower_cell);
+  }
+  if (upper_cell.terrain == TerrainType::kRuins ||
+      lower_cell.terrain == TerrainType::kRuins) {
+    return Color{84, 77, 66, 255};
+  }
+  if (upper_cell.terrain == TerrainType::kWall ||
+      lower_cell.terrain == TerrainType::kWall) {
+    return Color{70, 58, 48, 255};
+  }
+  return ScaleColorRgb(TerrainColor3D(upper_cell.terrain), 0.42F, 255);
+}
+
+/**
  * @brief Returns the color used for elevation.
  */
 Color ElevationColor(std::int8_t elevation) {
   switch (elevation) {
     case -1:
-      return Color{78, 58, 112, 255};
+      return Color{80, 76, 88, 255};
     case 0:
       return Color{34, 150, 58, 255};
     case 1:
@@ -499,17 +561,16 @@ Color ScaleColorRgb(Color color, float scale, unsigned char alpha) {
 /**
  * @brief Returns the color used for elevation wall.
  */
-Color ElevationWallColor(const RuntimeCell& cell, Level3DRenderMode mode) {
+Color ElevationWallColor(const RuntimeCell& upper_cell,
+                         const RuntimeCell& lower_cell,
+                         Level3DRenderMode mode) {
   if (mode == Level3DRenderMode::kElevation) {
-    return ScaleColorRgb(ElevationColor(cell.height), 0.58F, 255);
+    return ScaleColorRgb(ElevationColor(upper_cell.height), 0.50F, 255);
   }
   if (mode == Level3DRenderMode::kCollision) {
     return Color{94, 72, 52, 255};
   }
-  if (cell.height < 0) {
-    return Color{62, 48, 40, 255};
-  }
-  return ScaleColorRgb(TerrainColor3D(cell.terrain), 0.52F, 255);
+  return ElevationCutWallColor(upper_cell, lower_cell);
 }
 
 /**
@@ -526,6 +587,9 @@ bool IsPassableForestBoundary(const RuntimeCell& cell) {
 Color TileColor(const RuntimeCell& cell, Level3DRenderMode mode) {
   switch (mode) {
     case Level3DRenderMode::kTerrain:
+      if (cell.height < 0) {
+        return PitFloorColor(cell);
+      }
       if (IsPassableForestBoundary(cell)) {
         return Color{38, 122, 55, 255};
       }
@@ -551,17 +615,17 @@ bool IsSurfaceVisible(const RuntimeCell& cell) {
 Color TransitionColor(ElevationTransitionType type) {
   switch (type) {
     case ElevationTransitionType::kRamp:
-      return Color{205, 194, 108, 230};
+      return Color{128, 106, 72, 232};
     case ElevationTransitionType::kStairs:
-      return Color{204, 204, 188, 235};
+      return Color{142, 132, 112, 236};
     case ElevationTransitionType::kHatch:
-      return Color{118, 96, 190, 235};
+      return Color{92, 78, 104, 230};
     case ElevationTransitionType::kStep:
-      return Color{214, 158, 86, 225};
+      return Color{122, 86, 58, 226};
     case ElevationTransitionType::kUnknown:
-      return Color{190, 190, 118, 210};
+      return Color{118, 108, 86, 214};
   }
-  return Color{190, 190, 118, 210};
+  return Color{118, 108, 86, 214};
 }
 
 /**
@@ -578,6 +642,108 @@ bool IsTransitionVisibleInRange(const ElevationTransition& transition,
                           transition.to_y >= range.min_y &&
                           transition.to_y <= range.max_y;
   return from_visible || to_visible;
+}
+
+/**
+ * @brief Returns the normalized XZ direction between two tile centers.
+ */
+Vector3 TransitionDirectionXZ(Vector3 from_center, Vector3 to_center) {
+  const float dx = to_center.x - from_center.x;
+  const float dz = to_center.z - from_center.z;
+  const float length = std::hypot(dx, dz);
+  if (length <= 0.001F) {
+    return Vector3{1.0F, 0.0F, 0.0F};
+  }
+  return Vector3{dx / length, 0.0F, dz / length};
+}
+
+/**
+ * @brief Returns the perpendicular XZ direction for a transition.
+ */
+Vector3 TransitionPerpendicularXZ(Vector3 direction) {
+  return Vector3{-direction.z, 0.0F, direction.x};
+}
+
+/**
+ * @brief Adds a scaled XZ vector to a 3D point.
+ */
+Vector3 AddScaledXZ(Vector3 point, Vector3 vector, float scale) {
+  point.x += vector.x * scale;
+  point.z += vector.z * scale;
+  return point;
+}
+
+/**
+ * @brief Interpolates between two 3D points.
+ */
+Vector3 LerpVector3(Vector3 from, Vector3 to, float t) {
+  return Vector3{from.x + (to.x - from.x) * t,
+                 from.y + (to.y - from.y) * t,
+                 from.z + (to.z - from.z) * t};
+}
+
+/**
+ * @brief Draws a muted sloped ramp surface between two elevations.
+ */
+void DrawRampTransitionPrimitive(Vector3 from_center, Vector3 to_center,
+                                 const Level3DViewState& state, Color color) {
+  const Vector3 direction = TransitionDirectionXZ(from_center, to_center);
+  const Vector3 perpendicular = TransitionPerpendicularXZ(direction);
+  const float half_width = state.tile_world_size * 0.34F;
+  const float end_inset = state.tile_world_size * 0.16F;
+
+  Vector3 start = AddScaledXZ(from_center, direction, end_inset);
+  Vector3 end = AddScaledXZ(to_center, direction, -end_inset);
+  start.y += 0.055F;
+  end.y += 0.055F;
+
+  const Vector3 start_left = AddScaledXZ(start, perpendicular, half_width);
+  const Vector3 start_right = AddScaledXZ(start, perpendicular, -half_width);
+  const Vector3 end_left = AddScaledXZ(end, perpendicular, half_width);
+  const Vector3 end_right = AddScaledXZ(end, perpendicular, -half_width);
+
+  DrawTriangle3D(start_left, end_left, end_right, color);
+  DrawTriangle3D(start_left, end_right, start_right, color);
+  DrawTriangle3D(end_right, end_left, start_left, color);
+  DrawTriangle3D(start_right, end_right, start_left, color);
+}
+
+/**
+ * @brief Draws low-profile stair treads between two elevations.
+ */
+void DrawStairsTransitionPrimitive(Vector3 from_center, Vector3 to_center,
+                                   const Level3DViewState& state, Color color) {
+  const Vector3 direction = TransitionDirectionXZ(from_center, to_center);
+  const bool horizontal = std::abs(direction.x) >= std::abs(direction.z);
+  const float tread_long_axis = state.tile_world_size * 0.18F;
+  const float tread_short_axis = state.tile_world_size * 0.68F;
+  const float width = horizontal ? tread_long_axis : tread_short_axis;
+  const float depth = horizontal ? tread_short_axis : tread_long_axis;
+
+  constexpr int kStepCount = 4;
+  for (int index = 0; index < kStepCount; ++index) {
+    const float t = (static_cast<float>(index) + 0.5F) /
+                    static_cast<float>(kStepCount);
+    Vector3 center = LerpVector3(from_center, to_center, t);
+    center.y += 0.075F;
+    DrawCube(center, width, 0.055F, depth, color);
+  }
+}
+
+/**
+ * @brief Draws a small Space-step ledge marker at the high side of a transition.
+ */
+void DrawStepTransitionPrimitive(Vector3 from_center, Vector3 to_center,
+                                 const Level3DViewState& state, Color color) {
+  const Vector3 direction = TransitionDirectionXZ(from_center, to_center);
+  const bool horizontal = std::abs(direction.x) >= std::abs(direction.z);
+  const float width = horizontal ? state.tile_world_size * 0.20F
+                                 : state.tile_world_size * 0.62F;
+  const float depth = horizontal ? state.tile_world_size * 0.62F
+                                 : state.tile_world_size * 0.20F;
+  Vector3 center = LerpVector3(from_center, to_center, 0.5F);
+  center.y = std::max(from_center.y, to_center.y) + 0.065F;
+  DrawCube(center, width, 0.08F, depth, color);
 }
 
 /**
@@ -611,26 +777,42 @@ void DrawTransitionPrimitive(const LevelData& level,
     return;
   }
 
+  const int color_tile_x = IsTileRenderable(state, transition.from_x,
+                                            transition.from_y)
+                               ? transition.from_x
+                               : transition.to_x;
+  const int color_tile_y = IsTileRenderable(state, transition.from_x,
+                                            transition.from_y)
+                               ? transition.from_y
+                               : transition.to_y;
+  const Color color = ApplyVisibilityColor(TransitionColor(transition.type),
+                                           state, color_tile_x, color_tile_y);
+
+  switch (transition.type) {
+    case ElevationTransitionType::kRamp:
+      DrawRampTransitionPrimitive(from_center, to_center, state, color);
+      return;
+    case ElevationTransitionType::kStairs:
+      DrawStairsTransitionPrimitive(from_center, to_center, state, color);
+      return;
+    case ElevationTransitionType::kStep:
+      DrawStepTransitionPrimitive(from_center, to_center, state, color);
+      return;
+    case ElevationTransitionType::kHatch:
+    case ElevationTransitionType::kUnknown:
+      break;
+  }
+
   const Vector3 center{(from_center.x + to_center.x) * 0.5F,
                        (from_center.y + to_center.y) * 0.5F + 0.055F,
                        (from_center.z + to_center.z) * 0.5F};
   const bool horizontal = std::abs(dx) >= std::abs(dz);
   const float long_axis = std::max(state.tile_world_size * 0.84F,
                                    distance + state.tile_world_size * 0.12F);
-  const float short_axis = state.tile_world_size * 0.26F;
-  const float height = 0.07F;
+  const float short_axis = state.tile_world_size * 0.24F;
   const float width = horizontal ? long_axis : short_axis;
   const float depth = horizontal ? short_axis : long_axis;
-  const int color_tile_x = IsTileRenderable(state, transition.from_x, transition.from_y)
-                               ? transition.from_x
-                               : transition.to_x;
-  const int color_tile_y = IsTileRenderable(state, transition.from_x, transition.from_y)
-                               ? transition.from_y
-                               : transition.to_y;
-  const Color color = ApplyVisibilityColor(TransitionColor(transition.type),
-                                           state, color_tile_x, color_tile_y);
-  DrawCube(center, width, height, depth, color);
-  DrawCubeWires(center, width, height, depth, ScaleColorRgb(color, 0.75F, 210));
+  DrawCube(center, width, 0.055F, depth, color);
 }
 
 /**
@@ -727,8 +909,10 @@ void DrawElevationWallToNeighbor(const LevelData& level, int x, int y,
                                  state.elevation_step;
   center.y = neighbor_y_world + wall_height * 0.5F;
 
+  const bool pit_cut = neighbor->height < 0;
   float width = state.tile_world_size;
-  float depth = std::max(0.02F, state.elevation_wall_thickness);
+  float depth = pit_cut ? std::max(0.16F, state.elevation_wall_thickness)
+                        : std::max(0.02F, state.elevation_wall_thickness);
   if (neighbor_x < x) {
     center.x -= state.tile_world_size * 0.5F;
     width = depth;
@@ -744,7 +928,7 @@ void DrawElevationWallToNeighbor(const LevelData& level, int x, int y,
   }
 
   DrawCube(center, width, wall_height, depth,
-           ApplyVisibilityColor(ElevationWallColor(cell, state.mode),
+           ApplyVisibilityColor(ElevationWallColor(cell, *neighbor, state.mode),
                                 state, x, y));
 }
 

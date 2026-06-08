@@ -549,3 +549,12 @@
 - Highlighted active 3D elevation debug cells only while the overlay is enabled, keeping the default runtime path disabled.
 - Added current-tile and facing-target tile diagnostics for elevation, collision, movement, transition and Space-step checks.
 
+
+## v0.1.64 -> v0.1.65
+
+- Bumped CMake project and runtime application version to `0.1.65`.
+- Improved 3D elevation visual readability without changing movement rules.
+- Added muted lower-floor material colors for elevation `-1` so open pits/trenches read as lower playable planes instead of black holes or raised slabs.
+- Reworked vertical elevation cut walls to use earth/stone cut colors, with thicker `0 -> -1` pit cut faces and no bright rim decoration.
+- Replaced debug-like transition bars with low-profile gameplay primitives: sloped ramp surfaces, stair treads and small Space-step ledge markers.
+- Kept the temporary F6/F7 elevation diagnostics from v0.1.64 available and disabled by default.
