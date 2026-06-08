@@ -64,6 +64,8 @@ struct Level3DViewState {
   std::vector<unsigned char> visibility_tiles;  ///< Visibility tiles value carried by this data structure.
   std::vector<std::size_t> visibility_current_indices;  ///< Visibility current indices value carried by this data structure.
   bool visibility_state_valid = false;  ///< Visibility state valid value carried by this data structure.
+  bool debug_elevation_overlay_enabled = false;  ///< Runtime-only elevation debug overlay toggle.
+  bool debug_elevation_move_logs_enabled = false;  ///< Runtime-only elevation movement diagnostics logging toggle.
   int visibility_last_center_x = -1;  ///< Tile, screen, or world coordinate for visibility last center x.
   int visibility_last_center_y = -1;  ///< Tile, screen, or world coordinate for visibility last center y.
   int visibility_last_radius_tiles = -1;  ///< Visibility last radius tiles value carried by this data structure.

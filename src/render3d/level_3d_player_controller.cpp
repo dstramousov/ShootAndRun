@@ -528,6 +528,29 @@ bool StepDirectionFromInput(const InputState& input,
 }
 
 /**
+ * @brief Returns a single-tile step matching the current facing direction.
+ */
+bool FacingStep(const Level3DPlayerState& state, int* out_step_x,
+                int* out_step_y) {
+  if (out_step_x == nullptr || out_step_y == nullptr) {
+    return false;
+  }
+  *out_step_x = 0;
+  *out_step_y = 0;
+  if (std::abs(state.facing_x) <= kVectorEpsilon &&
+      std::abs(state.facing_y) <= kVectorEpsilon) {
+    *out_step_y = -1;
+    return true;
+  }
+  if (std::abs(state.facing_x) >= std::abs(state.facing_y)) {
+    *out_step_x = state.facing_x >= 0.0F ? 1 : -1;
+  } else {
+    *out_step_y = state.facing_y >= 0.0F ? 1 : -1;
+  }
+  return true;
+}
+
+/**
  * @brief Executes the check step jump target operation.
  */
 EnterTileResult CheckStepJumpTarget(const LevelData& level,
@@ -1242,6 +1265,86 @@ Level3DPlayerTileDiagnostics CurrentLevel3DPlayerTileDiagnostics(
   diagnostics.elevation = cell->height;
   diagnostics.movement_multiplier = state.current_movement_multiplier;
   return diagnostics;
+}
+
+/**
+ * @brief Builds facing target diagnostics.
+ */
+Level3DTargetTileDiagnostics FacingLevel3DTargetTileDiagnostics(
+    const LevelData& level,
+    const Level3DPlayerState& state) {
+  Level3DTargetTileDiagnostics diagnostics;
+  diagnostics.from_tile_x = TileIndexFromPosition(state.tile_x);
+  diagnostics.from_tile_y = TileIndexFromPosition(state.tile_y);
+  diagnostics.from_elevation = state.elevation;
+
+  int step_x = 0;
+  int step_y = 0;
+  if (!FacingStep(state, &step_x, &step_y)) {
+    diagnostics.target_tile_x = diagnostics.from_tile_x;
+    diagnostics.target_tile_y = diagnostics.from_tile_y;
+    return diagnostics;
+  }
+
+  diagnostics.target_tile_x = diagnostics.from_tile_x + step_x;
+  diagnostics.target_tile_y = diagnostics.from_tile_y + step_y;
+  const RuntimeCell* target = CellAt(level, diagnostics.target_tile_x,
+                                     diagnostics.target_tile_y);
+  if (target != nullptr) {
+    diagnostics.terrain = target->terrain;
+    diagnostics.walkable = target->walkable;
+    diagnostics.collision = target->collision;
+    diagnostics.target_elevation = target->height;
+    diagnostics.movement_multiplier = target->movement_multiplier;
+  }
+  diagnostics.height_delta = static_cast<int>(diagnostics.target_elevation) -
+                             static_cast<int>(diagnostics.from_elevation);
+
+  const ElevationTransition* transition = FindElevationTransition(
+      level, diagnostics.from_tile_x, diagnostics.from_tile_y,
+      diagnostics.target_tile_x, diagnostics.target_tile_y);
+  if (transition != nullptr) {
+    diagnostics.has_transition = true;
+    diagnostics.transition_type = transition->type;
+  }
+
+  const EnterTileResult enter_result = CheckEnterTile(
+      level, state, static_cast<float>(diagnostics.target_tile_x) + 0.5F,
+      static_cast<float>(diagnostics.target_tile_y) + 0.5F);
+  diagnostics.can_enter = enter_result.can_enter;
+  diagnostics.reason = enter_result.reason;
+
+  const EnterTileResult step_result = CheckStepJumpTarget(
+      level, state, diagnostics.target_tile_x, diagnostics.target_tile_y);
+  diagnostics.can_space_step = step_result.can_enter;
+  return diagnostics;
+}
+
+/**
+ * @brief Returns level 3D target tile diagnostics to string.
+ */
+std::string Level3DTargetTileDiagnosticsToString(
+    const Level3DTargetTileDiagnostics& diagnostics) {
+  std::ostringstream stream;
+  stream << std::fixed << std::setprecision(2);
+  stream << "target=" << diagnostics.target_tile_x << ','
+         << diagnostics.target_tile_y
+         << " from=" << diagnostics.from_tile_x << ','
+         << diagnostics.from_tile_y
+         << " ter=" << TerrainShortName(diagnostics.terrain)
+         << " el=" << static_cast<int>(diagnostics.target_elevation)
+         << " delta=" << diagnostics.height_delta
+         << " w=" << (diagnostics.walkable ? 'Y' : 'N')
+         << " col=" << (diagnostics.collision ? 'Y' : 'N')
+         << " mov=" << diagnostics.movement_multiplier
+         << " transition="
+         << (diagnostics.has_transition
+                 ? ElevationTransitionTypeName(diagnostics.transition_type)
+                 : "none")
+         << " normal=" << (diagnostics.can_enter ? "allowed" : "blocked")
+         << " reason=" << Level3DMoveBlockReasonName(diagnostics.reason)
+         << " space=" << (diagnostics.can_space_step ? "allowed" : "blocked");
+  return stream.str();
 }
 
 /**

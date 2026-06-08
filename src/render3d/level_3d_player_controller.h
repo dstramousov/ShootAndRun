@@ -149,6 +149,29 @@ struct Level3DPlayerTileDiagnostics {
   float facing_y = -1.0F;  ///< Tile, screen, or world coordinate for facing y.
 };
 
+
+/**
+ * @brief Compact diagnostics for the tile currently faced by the 3D player.
+ */
+struct Level3DTargetTileDiagnostics {
+  int from_tile_x = -1;  ///< Source tile X used for the movement probe.
+  int from_tile_y = -1;  ///< Source tile Y used for the movement probe.
+  int target_tile_x = -1;  ///< Target tile X selected from the current facing direction.
+  int target_tile_y = -1;  ///< Target tile Y selected from the current facing direction.
+  TerrainType terrain = TerrainType::kUnknown;  ///< Base terrain classification for the target tile.
+  bool walkable = false;  ///< true when movement is allowed by the target movement grid.
+  bool collision = false;  ///< true when the target cell blocks physical movement.
+  bool has_transition = false;  ///< true when an explicit elevation transition connects source and target.
+  bool can_enter = false;  ///< true when normal movement can enter the target tile.
+  bool can_space_step = false;  ///< true when Space can step up into the target tile.
+  std::int8_t from_elevation = 0;  ///< Source tile elevation.
+  std::int8_t target_elevation = 0;  ///< Target tile elevation.
+  int height_delta = 0;  ///< Target elevation minus source elevation.
+  float movement_multiplier = 0.0F;  ///< Movement multiplier encoded by the target tile.
+  ElevationTransitionType transition_type = ElevationTransitionType::kUnknown;  ///< Explicit transition type, if present.
+  Level3DMoveBlockReason reason = Level3DMoveBlockReason::kNone;  ///< Normal movement block reason.
+};
+
 /**
  * @brief Returns a stable display name for a movement block reason.
  *
@@ -267,6 +290,26 @@ Level3DPlayerTileDiagnostics CurrentLevel3DPlayerTileDiagnostics(
  */
 std::string Level3DPlayerTileDiagnosticsToString(
     const Level3DPlayerTileDiagnostics& diagnostics);
+
+/**
+ * @brief Builds diagnostics for the tile currently faced by the 3D player.
+ *
+ * @param level Loaded level data.
+ * @param state Current player state.
+ * @return Target tile diagnostics for overlays and event-based logs.
+ */
+Level3DTargetTileDiagnostics FacingLevel3DTargetTileDiagnostics(
+    const LevelData& level,
+    const Level3DPlayerState& state);
+
+/**
+ * @brief Returns a readable dump of a 3D target tile diagnostics object.
+ *
+ * @param diagnostics Target tile diagnostics.
+ * @return String representation for event logs and debug overlays.
+ */
+std::string Level3DTargetTileDiagnosticsToString(
+    const Level3DTargetTileDiagnostics& diagnostics);
 
 /**
  * @brief Returns a readable dump of a 3D player state.

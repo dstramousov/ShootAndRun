@@ -161,6 +161,10 @@ class Application {
    */
   void Draw3DPlayerHud() const;
   /**
+   * @brief Draws temporary 3D elevation diagnostics while the debug toggle is active.
+   */
+  void Draw3DElevationDebugOverlay() const;
+  /**
    * @brief Releases the prepared final render texture when it is no longer needed.
    */
   void UnloadFinalRenderTexture();

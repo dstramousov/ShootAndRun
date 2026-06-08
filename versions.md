@@ -541,3 +541,11 @@
 - Kept actual collision/vision blockers rendered as vertical volumes.
 - Fixed the visual shape of elevation `-1` pit/cutaway areas on the elevation playground map: the lower floor now reads as a lower plane instead of a raised plateau.
 
+## v0.1.63 -> v0.1.64
+
+- Bumped CMake project and runtime application version to `0.1.64`.
+- Added a temporary 3D elevation debug overlay toggled by `F6`.
+- Added temporary event-based 3D elevation movement diagnostics toggled by `F7`.
+- Highlighted active 3D elevation debug cells only while the overlay is enabled, keeping the default runtime path disabled.
+- Added current-tile and facing-target tile diagnostics for elevation, collision, movement, transition and Space-step checks.
+

@@ -1025,6 +1025,20 @@ void Application::UpdateGameView(const InputState& input) {
 
     render3d::UpdateLevel3DView(*loaded_level_, input, GetFrameTime(),
                                 &level_3d_view_);
+    if (input.debug_elevation_overlay_pressed) {
+      logger_.Info("debug",
+                   std::string("elevation overlay=") +
+                       (level_3d_view_.debug_elevation_overlay_enabled
+                            ? "enabled"
+                            : "disabled"));
+    }
+    if (input.debug_elevation_logs_pressed) {
+      logger_.Info("debug",
+                   std::string("elevation move logs=") +
+                       (level_3d_view_.debug_elevation_move_logs_enabled
+                            ? "enabled"
+                            : "disabled"));
+    }
     Log3DMovementEvents(input);
     Log3DCameraIntroEvents();
     return;
@@ -1079,10 +1093,11 @@ void Application::Log3DMovementEvents(const InputState& input) {
   const Player3DLogConfig log_config = project_config_.has_value()
                                            ? project_config_->player3d_log
                                            : Player3DLogConfig{};
-  if (!log_config.enabled) {
+  if (!log_config.enabled && !level_3d_view_.debug_elevation_move_logs_enabled) {
     return;
   }
 
+  const bool include_mouse = log_config.include_mouse && log_config.enabled;
   const double now = GetTime();
   const render3d::Level3DPlayerTileDiagnostics diagnostics =
       render3d::CurrentLevel3DPlayerTileDiagnostics(
@@ -1094,7 +1109,7 @@ void Application::Log3DMovementEvents(const InputState& input) {
                         log_config.tile_log_min_interval_ms)) {
     std::ostringstream stream;
     stream << render3d::Level3DPlayerTileDiagnosticsToString(diagnostics);
-    if (log_config.include_mouse) {
+    if (include_mouse) {
       stream << std::fixed << std::setprecision(2)
              << " md=" << accumulated_mouse_dx_since_tile_ << ','
              << accumulated_mouse_dy_since_tile_
@@ -1147,7 +1162,7 @@ void Application::Log3DMovementEvents(const InputState& input) {
            << " reason="
            << render3d::Level3DMoveBlockReasonName(player.last_block_reason)
            << " cur=" << diagnostics.tile_x << ',' << diagnostics.tile_y;
-    if (log_config.include_mouse) {
+    if (include_mouse) {
       stream << std::fixed << std::setprecision(2)
              << " md=" << input.mouse_delta.x << ',' << input.mouse_delta.y
              << " cap=" << (mouse_capture_active_ ? 'Y' : 'N');
@@ -1240,6 +1255,7 @@ void Application::DrawMapPreparingScreen() const {
 void Application::DrawGameOverlay() const {
   if (config_.renderer_mode == RuntimeRendererMode::kRenderer3D) {
     Draw3DPlayerHud();
+    Draw3DElevationDebugOverlay();
     return;
   }
   if (!loaded_level_summary_.has_value()) {
@@ -1293,6 +1309,67 @@ void Application::Draw3DPlayerHud() const {
                                              : Color{226, 232, 214, 255};
   ui_font_.DrawTextLine(text, window_state_.width - text_width - padding,
                         padding + line_step, font_size, color);
+}
+
+/**
+ * @brief Draws temporary 3D elevation diagnostics while enabled.
+ */
+void Application::Draw3DElevationDebugOverlay() const {
+  if (config_.renderer_mode != RuntimeRendererMode::kRenderer3D ||
+      !level_3d_view_.initialized ||
+      !level_3d_view_.debug_elevation_overlay_enabled ||
+      !loaded_level_.has_value()) {
+    return;
+  }
+
+  const int font_size = ScaledFontSize(ui_font_, window_state_, 0.62F);
+  const int x = static_cast<int>(18.0F * window_state_.ui_scale);
+  int y = static_cast<int>(300.0F * window_state_.ui_scale);
+  const int line_step = font_size +
+                        static_cast<int>(6.0F * window_state_.ui_scale);
+  const Color title_color{255, 235, 120, 255};
+  const Color color{215, 220, 230, 255};
+  const Color muted_color{160, 168, 180, 255};
+
+  const render3d::Level3DPlayerTileDiagnostics current =
+      render3d::CurrentLevel3DPlayerTileDiagnostics(*loaded_level_,
+                                                    level_3d_view_.player);
+  const render3d::Level3DTargetTileDiagnostics target =
+      render3d::FacingLevel3DTargetTileDiagnostics(*loaded_level_,
+                                                   level_3d_view_.player);
+
+  ui_font_.DrawTextLine("ELEVATION DEBUG  F6 overlay  F7 logs", x, y,
+                        font_size, title_color);
+  y += line_step;
+  ui_font_.DrawTextLine(
+      std::string("logs: ") +
+          (level_3d_view_.debug_elevation_move_logs_enabled ? "on" : "off") +
+          "  render: " + render3d::Level3DRenderModeName(level_3d_view_.mode),
+      x, y, font_size, muted_color);
+  y += line_step;
+  ui_font_.DrawTextLine(
+      "cur  " + render3d::Level3DPlayerTileDiagnosticsToString(current),
+      x, y, font_size, color);
+  y += line_step;
+  ui_font_.DrawTextLine(
+      "face " + render3d::Level3DTargetTileDiagnosticsToString(target),
+      x, y, font_size, target.can_enter ? Color{156, 238, 166, 255}
+                                        : Color{244, 118, 92, 255});
+  y += line_step;
+
+  const render3d::Level3DPlayerState& player = level_3d_view_.player;
+  ui_font_.DrawTextLine(
+      std::string("last block: ") +
+          render3d::Level3DMoveBlockReasonName(player.last_block_reason) +
+          " tile=" + std::to_string(player.last_blocked_tile_x) + "," +
+          std::to_string(player.last_blocked_tile_y),
+      x, y, font_size, muted_color);
+  y += line_step;
+  ui_font_.DrawTextLine(render3d::Level3DJumpEventToString(player), x, y,
+                        font_size, muted_color);
+  y += line_step;
+  ui_font_.DrawTextLine(render3d::Level3DFallEventToString(player), x, y,
+                        font_size, muted_color);
 }
 
 /**

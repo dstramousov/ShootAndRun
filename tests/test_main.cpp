@@ -1290,6 +1290,27 @@ void TestLevel3DPlayerCannotWalkOutOfNegativePit() {
          "walking from -1 to 0 should be blocked as step-up-required");
 }
 
+void TestLevel3DTargetDiagnosticsReportsPitStepUp() {
+  const sar::LevelData level = BuildFlatTestLevel(2, 1, {0, -1});
+  const sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      1.5F, 0.5F, -1, -1.0F, 0.0F);
+
+  const sar::render3d::Level3DTargetTileDiagnostics diagnostics =
+      sar::render3d::FacingLevel3DTargetTileDiagnostics(level, state);
+
+  Expect(diagnostics.target_tile_x == 0 && diagnostics.target_tile_y == 0,
+         "target diagnostics should inspect the tile in facing direction");
+  Expect(diagnostics.height_delta == 1,
+         "target diagnostics should report -1 to 0 as +1 height delta");
+  Expect(!diagnostics.can_enter,
+         "normal movement diagnostics should block -1 to 0 step-up");
+  Expect(diagnostics.reason ==
+             sar::render3d::Level3DMoveBlockReason::kStepUpRequired,
+         "normal movement diagnostics should explain Space is required");
+  Expect(diagnostics.can_space_step,
+         "target diagnostics should allow Space step-up from -1 to 0");
+}
+
 void TestLevel3DPlayerStepJumpsOutOfNegativePit() {
   const sar::LevelData level = BuildFlatTestLevel(2, 1, {0, -1});
   sar::render3d::Level3DPlayerState state = MakeTestPlayer(
@@ -1337,6 +1358,7 @@ int main() {
   TestLevel3DPlayerFallsIntoNegativePitWithoutDamage();
   TestLevel3DPlayerDropIntoNegativePitUsesFallDamageFormula();
   TestLevel3DPlayerCannotWalkOutOfNegativePit();
+  TestLevel3DTargetDiagnosticsReportsPitStepUp();
   TestLevel3DPlayerStepJumpsOutOfNegativePit();
   std::cout << "All tests passed.\n";
   return 0;
