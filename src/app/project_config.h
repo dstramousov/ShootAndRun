@@ -50,11 +50,12 @@ struct Player3DMovementConfig {
   float acceleration_tiles_per_sec2 = 28.0F;
   float deceleration_tiles_per_sec2 = 34.0F;
   float mouse_turn_sensitivity_rad = 0.0031F;
-  float jump_duration_sec = 0.32F;
-  float jump_arc_elevation_units = 0.72F;
-  float jump_horizontal_speed_multiplier = 1.08F;
-  float jump_air_control_multiplier = 0.72F;
-  float jump_min_running_speed_tiles_per_sec = 1.20F;
+  float movement_multiplier_smooth_speed = 14.0F;
+  float jump_duration_sec = 0.30F;
+  float jump_arc_elevation_units = 0.62F;
+  float jump_horizontal_speed_multiplier = 1.05F;
+  float jump_air_control_multiplier = 0.82F;
+  float jump_min_running_speed_tiles_per_sec = 1.00F;
 };
 
 struct ProjectConfig {

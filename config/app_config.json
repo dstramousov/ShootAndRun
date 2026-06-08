@@ -37,10 +37,11 @@
     "player3d_acceleration_tiles_per_sec2": 28.0,
     "player3d_deceleration_tiles_per_sec2": 34.0,
     "player3d_mouse_turn_sensitivity_rad": 0.0031,
-    "player3d_jump_duration_ms": 320,
-    "player3d_jump_arc_elevation_units": 0.72,
-    "player3d_jump_horizontal_speed_multiplier": 1.08,
-    "player3d_jump_air_control_multiplier": 0.72,
-    "player3d_jump_min_running_speed_tiles_per_sec": 1.2
+    "player3d_jump_duration_ms": 300,
+    "player3d_jump_arc_elevation_units": 0.62,
+    "player3d_jump_horizontal_speed_multiplier": 1.05,
+    "player3d_jump_air_control_multiplier": 0.82,
+    "player3d_jump_min_running_speed_tiles_per_sec": 1.0,
+    "player3d_movement_multiplier_smooth_speed": 14.0
   }
 }

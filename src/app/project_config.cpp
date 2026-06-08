@@ -356,6 +356,8 @@ std::string ProjectConfig::Dump() const {
          std::to_string(player3d_movement.deceleration_tiles_per_sec2) +
          ", mouse_turn: " +
          std::to_string(player3d_movement.mouse_turn_sensitivity_rad) +
+         ", movement_smooth: " +
+         std::to_string(player3d_movement.movement_multiplier_smooth_speed) +
          ", jump_duration: " +
          std::to_string(player3d_movement.jump_duration_sec) +
          ", jump_arc: " +
@@ -668,6 +670,20 @@ ProjectConfigResult LoadProjectConfig(
     }
     config.player3d_movement.mouse_turn_sensitivity_rad =
         player3d_mouse_turn.value;
+  }
+
+  ParseFloatResult player3d_movement_smooth = ExtractOptionalJsonFloatField(
+      content, "player3d_movement_multiplier_smooth_speed");
+  if (!player3d_movement_smooth.ok) {
+    return {false, {}, player3d_movement_smooth.error};
+  }
+  if (player3d_movement_smooth.found) {
+    if (player3d_movement_smooth.value < 0.0F) {
+      return {false, {},
+              "player3d_movement_multiplier_smooth_speed must be non-negative"};
+    }
+    config.player3d_movement.movement_multiplier_smooth_speed =
+        player3d_movement_smooth.value;
   }
 
   ParseIntResult player3d_jump_duration_ms = ExtractOptionalJsonIntField(

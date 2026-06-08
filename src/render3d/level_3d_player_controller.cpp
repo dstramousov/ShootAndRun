@@ -111,13 +111,57 @@ float CurrentTileMovementMultiplier(const LevelData& level,
   return std::clamp(cell->movement_multiplier, 0.0F, 1.50F);
 }
 
+float MovementMultiplierForState(const LevelData& level,
+                                 const Level3DPlayerState& state) {
+  if (state.jump_active && state.jump_kind == Level3DJumpKind::kRun) {
+    return std::clamp(state.jump_start_movement_multiplier, 0.0F, 1.50F);
+  }
+  return CurrentTileMovementMultiplier(level, state);
+}
+
+float ExponentialAlpha(float speed, float dt) {
+  if (speed <= 0.0F || dt <= 0.0F) {
+    return 1.0F;
+  }
+  return std::clamp(1.0F - std::exp(-speed * dt), 0.0F, 1.0F);
+}
+
 void RefreshEffectiveMovementSpeed(const LevelData& level,
                                    Level3DPlayerState* state) {
   if (state == nullptr) {
     return;
   }
-  state->current_movement_multiplier = CurrentTileMovementMultiplier(
+  state->target_movement_multiplier = MovementMultiplierForState(level, *state);
+  state->effective_move_speed_tiles_per_sec =
+      state->move_speed_tiles_per_sec * state->current_movement_multiplier;
+}
+
+void ResetMovementMultiplier(const LevelData& level,
+                             Level3DPlayerState* state) {
+  if (state == nullptr) {
+    return;
+  }
+  state->target_movement_multiplier = CurrentTileMovementMultiplier(
       level, *state);
+  state->current_movement_multiplier = state->target_movement_multiplier;
+  state->effective_move_speed_tiles_per_sec =
+      state->move_speed_tiles_per_sec * state->current_movement_multiplier;
+}
+
+void UpdateMovementMultiplier(const LevelData& level, float safe_dt,
+                              Level3DPlayerState* state) {
+  if (state == nullptr) {
+    return;
+  }
+
+  state->target_movement_multiplier = MovementMultiplierForState(level, *state);
+  const float alpha = ExponentialAlpha(state->movement_multiplier_smooth_speed,
+                                       safe_dt);
+  state->current_movement_multiplier +=
+      (state->target_movement_multiplier - state->current_movement_multiplier) *
+      alpha;
+  state->current_movement_multiplier = std::clamp(
+      state->current_movement_multiplier, 0.0F, 1.50F);
   state->effective_move_speed_tiles_per_sec =
       state->move_speed_tiles_per_sec * state->current_movement_multiplier;
 }
@@ -524,6 +568,32 @@ bool UpdateStepJump(const LevelData& level, float safe_dt,
   return true;
 }
 
+Level3DMoveBlockReason LandingBlockReason(const LevelData& level,
+                                          int tile_x, int tile_y) {
+  const RuntimeCell* cell = CellAt(level, tile_x, tile_y);
+  if (cell == nullptr) {
+    return Level3DMoveBlockReason::kOutOfBounds;
+  }
+  if (cell->collision) {
+    return Level3DMoveBlockReason::kCollision;
+  }
+  if (!cell->walkable || cell->movement_multiplier <= 0.0F) {
+    return Level3DMoveBlockReason::kNotWalkable;
+  }
+  return Level3DMoveBlockReason::kNone;
+}
+
+void ResetJumpState(Level3DPlayerState* state) {
+  if (state == nullptr) {
+    return;
+  }
+  state->jump_active = false;
+  state->jump_kind = Level3DJumpKind::kNone;
+  state->jump_elapsed_sec = 0.0F;
+  state->step_jump_active = false;
+  state->step_jump_elapsed_sec = 0.0F;
+}
+
 bool UpdateRunningJump(const LevelData& level, float safe_dt,
                        Level3DPlayerState* state) {
   if (state == nullptr || !state->jump_active ||
@@ -534,24 +604,47 @@ bool UpdateRunningJump(const LevelData& level, float safe_dt,
   state->jump_elapsed_sec += safe_dt;
   const float duration = std::max(state->jump_duration_sec, 0.001F);
   const float progress = Clamp01(state->jump_elapsed_sec / duration);
-  state->visual_elevation_offset =
-      std::sin(kPi * progress) * state->jump_arc_elevation_units;
+  const float smooth_progress = SmoothStep01(progress);
+  const float elevation_delta = static_cast<float>(
+      static_cast<int>(state->step_jump_to_elevation) -
+      static_cast<int>(state->step_jump_from_elevation));
+  const float arc = std::sin(kPi * progress) *
+                    state->jump_arc_elevation_units;
+  state->visual_elevation_offset = elevation_delta * smooth_progress + arc;
 
   if (progress < 1.0F) {
     return true;
   }
 
-  state->visual_elevation_offset = 0.0F;
-  state->elevation = HeightAtOrZero(level, TileIndexFromPosition(state->tile_x),
-                                    TileIndexFromPosition(state->tile_y));
-  state->step_jump_to_tile_x = TileIndexFromPosition(state->tile_x);
-  state->step_jump_to_tile_y = TileIndexFromPosition(state->tile_y);
+  const int landing_x = TileIndexFromPosition(state->tile_x);
+  const int landing_y = TileIndexFromPosition(state->tile_y);
+  const Level3DMoveBlockReason landing_reason = LandingBlockReason(
+      level, landing_x, landing_y);
+  if (landing_reason != Level3DMoveBlockReason::kNone) {
+    state->tile_x = static_cast<float>(state->step_jump_from_tile_x) + 0.5F;
+    state->tile_y = static_cast<float>(state->step_jump_from_tile_y) + 0.5F;
+    state->elevation = state->step_jump_from_elevation;
+    state->step_jump_to_tile_x = landing_x;
+    state->step_jump_to_tile_y = landing_y;
+    state->step_jump_to_elevation = HeightAtOrZero(level, landing_x, landing_y);
+    state->visual_elevation_offset = 0.0F;
+    RecordJumpEvent(Level3DJumpEventType::kBlocked, landing_reason, state);
+    RecordBlockedTile(landing_x, landing_y, landing_reason, state);
+    ResetJumpState(state);
+    RefreshEffectiveMovementSpeed(level, state);
+    return true;
+  }
+
+  state->tile_x = static_cast<float>(landing_x) + 0.5F;
+  state->tile_y = static_cast<float>(landing_y) + 0.5F;
+  state->elevation = HeightAtOrZero(level, landing_x, landing_y);
+  state->step_jump_to_tile_x = landing_x;
+  state->step_jump_to_tile_y = landing_y;
   state->step_jump_to_elevation = state->elevation;
+  state->visual_elevation_offset = 0.0F;
   RecordJumpEvent(Level3DJumpEventType::kLanded,
                   Level3DMoveBlockReason::kNone, state);
-  state->jump_active = false;
-  state->jump_kind = Level3DJumpKind::kNone;
-  state->jump_elapsed_sec = 0.0F;
+  ResetJumpState(state);
   RefreshEffectiveMovementSpeed(level, state);
   return true;
 }
@@ -579,12 +672,15 @@ void ApplyMovementAxis(const LevelData& level, float dx, float dy,
   const Level3DPlayerState previous_state = *state;
   state->tile_x = next_x;
   state->tile_y = next_y;
-  state->elevation = HeightAtOrZero(level, TileIndexFromPosition(state->tile_x),
-                                    TileIndexFromPosition(state->tile_y));
-  if (enter_result.used_running_jump && state->jump_active) {
+  const std::int8_t target_elevation = HeightAtOrZero(
+      level, TileIndexFromPosition(state->tile_x),
+      TileIndexFromPosition(state->tile_y));
+  if (state->jump_active && state->jump_kind == Level3DJumpKind::kRun) {
     state->step_jump_to_tile_x = enter_result.tile_x;
     state->step_jump_to_tile_y = enter_result.tile_y;
-    state->step_jump_to_elevation = state->elevation;
+    state->step_jump_to_elevation = target_elevation;
+  } else {
+    state->elevation = target_elevation;
   }
   RefreshEffectiveMovementSpeed(level, state);
   RecordTransitionEvent(enter_result, previous_state, state);
@@ -700,7 +796,7 @@ void UpdateVelocityFromInput(const LevelData& level,
     return;
   }
 
-  RefreshEffectiveMovementSpeed(level, state);
+  UpdateMovementMultiplier(level, safe_dt, state);
 
   float direction_x = 0.0F;
   float direction_y = 0.0F;
@@ -821,7 +917,7 @@ void InitializeLevel3DPlayer(const LevelData& level,
   state->last_transition_to_tile_y = -1;
   state->last_transition_from_elevation = state->elevation;
   state->last_transition_to_elevation = state->elevation;
-  RefreshEffectiveMovementSpeed(level, state);
+  ResetMovementMultiplier(level, state);
   state->initialized = true;
 }
 
@@ -907,7 +1003,7 @@ Level3DPlayerTileDiagnostics CurrentLevel3DPlayerTileDiagnostics(
   diagnostics.collision = cell->collision;
   diagnostics.concealment = cell->concealment;
   diagnostics.elevation = cell->height;
-  diagnostics.movement_multiplier = cell->movement_multiplier;
+  diagnostics.movement_multiplier = state.current_movement_multiplier;
   return diagnostics;
 }
 
@@ -970,6 +1066,7 @@ std::string Level3DPlayerStateToString(const Level3DPlayerState& state) {
          << " velocity=" << state.velocity_x_tiles_per_sec << ','
          << state.velocity_y_tiles_per_sec
          << " movement_multiplier=" << state.current_movement_multiplier
+         << " target_movement_multiplier=" << state.target_movement_multiplier
          << " base_speed=" << state.move_speed_tiles_per_sec
          << " effective_speed=" << state.effective_move_speed_tiles_per_sec
          << " jump_active=" << (state.jump_active ? "true" : "false")

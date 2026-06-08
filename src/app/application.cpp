@@ -59,6 +59,8 @@ void ApplyPlayer3DMovementConfig(
   player->acceleration_tiles_per_sec2 = config.acceleration_tiles_per_sec2;
   player->deceleration_tiles_per_sec2 = config.deceleration_tiles_per_sec2;
   player->mouse_turn_sensitivity_rad = config.mouse_turn_sensitivity_rad;
+  player->movement_multiplier_smooth_speed =
+      config.movement_multiplier_smooth_speed;
   player->jump_duration_sec = config.jump_duration_sec;
   player->jump_arc_elevation_units = config.jump_arc_elevation_units;
   player->jump_horizontal_speed_multiplier =

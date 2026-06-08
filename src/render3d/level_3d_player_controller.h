@@ -45,6 +45,8 @@ struct Level3DPlayerState {
   float velocity_y_tiles_per_sec = 0.0F;
   float move_speed_tiles_per_sec = 4.25F;
   float current_movement_multiplier = 1.0F;
+  float target_movement_multiplier = 1.0F;
+  float movement_multiplier_smooth_speed = 14.0F;
   float effective_move_speed_tiles_per_sec = 4.25F;
   float acceleration_tiles_per_sec2 = 28.0F;
   float deceleration_tiles_per_sec2 = 34.0F;

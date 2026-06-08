@@ -422,3 +422,12 @@
 - Allowed airborne movement to keep the jump-start terrain movement multiplier and apply a small configurable horizontal speed multiplier.
 - Added configurable 3D player movement and jump tuning in `config/app_config.json`.
 - Kept `ramp/stairs` elevation transitions, existing collision rules, and the 2D renderer path unchanged.
+
+## v0.1.50 -> v0.1.51
+
+- Bumped CMake project and runtime application version to `0.1.51`.
+- Stabilized 3D running jump landing by keeping base elevation stable during air time and interpolating the visual height toward the landing elevation.
+- Added a landing validation guard so invalid landing cells snap back safely and emit a jump block event instead of leaving the player inside collision.
+- Smoothed movement multiplier changes to reduce sticky speed jumps when crossing water, undergrowth, road, and open-ground borders.
+- Tuned default jump values to a shorter, lower, more controllable running jump.
+- Added `player3d_movement_multiplier_smooth_speed` to `config/app_config.json`.
