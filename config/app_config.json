@@ -51,5 +51,16 @@
     "render3d_visibility_radius_tiles": 22,
     "render3d_visibility_memory_enabled": true,
     "render3d_seen_tile_dim_factor": 0.32
+  },
+  "render3d_intro_camera": {
+    "render3d_intro_enabled": true,
+    "render3d_intro_duration_ms": 1800,
+    "render3d_intro_start_distance": 42.0,
+    "render3d_intro_end_distance": 18.0,
+    "render3d_intro_start_height": 20.0,
+    "render3d_intro_end_height": 10.0,
+    "render3d_intro_start_yaw_offset_deg": 35.0,
+    "render3d_intro_lock_player_input": true,
+    "render3d_intro_skip_enabled": true
   }
 }

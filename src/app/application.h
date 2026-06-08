@@ -62,6 +62,7 @@ class Application {
   void UpdateMapPreparation();
   void UpdateGameView(const InputState& input);
   void Log3DMovementEvents(const InputState& input);
+  void Log3DCameraIntroEvents();
   void DrawMapPreparingScreen() const;
   void DrawGameOverlay() const;
   void UnloadFinalRenderTexture();
@@ -108,6 +109,7 @@ class Application {
   unsigned int last_logged_3d_block_sequence_ = 0;
   unsigned int last_logged_3d_jump_sequence_ = 0;
   unsigned int last_logged_3d_transition_sequence_ = 0;
+  unsigned int last_logged_3d_intro_sequence_ = 0;
   float accumulated_mouse_dx_since_tile_ = 0.0F;
   float accumulated_mouse_dy_since_tile_ = 0.0F;
   float accumulated_abs_mouse_dx_since_tile_ = 0.0F;

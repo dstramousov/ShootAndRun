@@ -70,6 +70,28 @@ void ApplyPlayer3DMovementConfig(
       config.jump_min_running_speed_tiles_per_sec;
 }
 
+void ApplyRender3DIntroCameraConfig(
+    const Render3DIntroCameraConfig& config,
+    render3d::Level3DCameraState* camera) {
+  if (camera == nullptr) {
+    return;
+  }
+
+  camera->intro_enabled = config.enabled;
+  camera->intro_duration_sec = static_cast<float>(config.duration_ms) / 1000.0F;
+  camera->intro_start_distance = config.start_distance;
+  camera->intro_end_distance = config.end_distance;
+  camera->intro_start_height = config.start_height;
+  camera->intro_end_height = config.end_height;
+  camera->intro_start_yaw_offset_deg = config.start_yaw_offset_deg;
+  camera->intro_lock_player_input = config.lock_player_input;
+  camera->intro_skip_enabled = config.skip_enabled;
+  camera->min_distance = std::min(camera->min_distance, config.end_distance);
+  camera->max_distance = std::max(camera->max_distance,
+                                  std::max(config.start_distance,
+                                           config.end_distance));
+}
+
 int ToRaylibTraceLogLevel(RaylibLogLevel level) {
   switch (level) {
     case RaylibLogLevel::kTrace:
@@ -813,6 +835,7 @@ void Application::UpdateGameView(const InputState& input) {
     render3d::UpdateLevel3DView(*loaded_level_, input, GetFrameTime(),
                                 &level_3d_view_);
     Log3DMovementEvents(input);
+    Log3DCameraIntroEvents();
     return;
   }
 
@@ -929,6 +952,21 @@ void Application::Log3DMovementEvents(const InputState& input) {
     last_logged_3d_block_sequence_ = player.blocked_event_sequence;
     last_3d_block_log_time_ = now;
   }
+}
+
+void Application::Log3DCameraIntroEvents() {
+  if (config_.renderer_mode != RuntimeRendererMode::kRenderer3D ||
+      !level_3d_view_.initialized) {
+    return;
+  }
+
+  const render3d::Level3DCameraState& camera = level_3d_view_.camera;
+  if (camera.intro_event_sequence == last_logged_3d_intro_sequence_) {
+    return;
+  }
+
+  logger_.Info("camera", render3d::Level3DCameraIntroEventToString(camera));
+  last_logged_3d_intro_sequence_ = camera.intro_event_sequence;
 }
 
 void Application::DrawMapPreparingScreen() const {
@@ -1159,6 +1197,7 @@ bool Application::StartNewGameFromConfig() {
     last_logged_3d_block_sequence_ = 0;
     last_logged_3d_jump_sequence_ = 0;
     last_logged_3d_transition_sequence_ = 0;
+    last_logged_3d_intro_sequence_ = 0;
     accumulated_mouse_dx_since_tile_ = 0.0F;
     accumulated_mouse_dy_since_tile_ = 0.0F;
     accumulated_abs_mouse_dx_since_tile_ = 0.0F;
@@ -1187,7 +1226,15 @@ bool Application::StartNewGameFromConfig() {
           project_config_->render3d_visibility.memory_enabled;
       level_3d_view_.seen_tile_dim_factor =
           project_config_->render3d_visibility.seen_tile_dim_factor;
+      ApplyRender3DIntroCameraConfig(project_config_->render3d_intro_camera,
+                                     &level_3d_view_.camera);
       level_3d_view_.culling_center_initialized = false;
+      if (level_3d_view_.camera.intro_enabled) {
+        render3d::StartLevel3DCameraIntro(*loaded_level_, level_3d_view_.player,
+                                          level_3d_view_.tile_world_size,
+                                          level_3d_view_.elevation_step,
+                                          &level_3d_view_.camera);
+      }
       render3d::UpdateLevel3DView(*loaded_level_, InputState{}, 0.0F,
                                   &level_3d_view_);
     }
@@ -1196,6 +1243,7 @@ bool Application::StartNewGameFromConfig() {
     ApplyFramePacing();
     logger_.Info("render", "runtime renderer=3d");
     logger_.Info("camera", render3d::Level3DViewStateToString(level_3d_view_));
+    Log3DCameraIntroEvents();
     SetMouseCapture(true);
     logger_.Info("game", "new 3D game session started");
     return true;

@@ -455,3 +455,12 @@
 - Removed unused input fields left from the removed right-mouse/orbit-camera path.
 - Removed unused Q/E camera-rotation input fields after switching 3D controls to mouse-facing movement.
 
+
+## v0.1.54 -> v0.1.55
+
+- Bumped CMake project and runtime application version to `0.1.55`.
+- Added configurable 3D intro camera fly-in after `New Game`.
+- Added smooth camera interpolation from a wide overview pose to the normal follow-camera pose.
+- Added optional intro skip with `Space`, `Enter`, or left mouse click.
+- Locked 3D player movement during the intro by default so the camera can finish without gameplay drift.
+- Added rare camera lifecycle logs for intro start, skip and finish.

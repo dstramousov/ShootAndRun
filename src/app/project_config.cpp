@@ -360,6 +360,24 @@ std::string ProjectConfig::Dump() const {
          std::string(render3d_visibility.memory_enabled ? "true" : "false") +
          ", seen_tile_dim_factor: " +
          std::to_string(render3d_visibility.seen_tile_dim_factor) +
+         " }, render3d_intro_camera: { enabled: " +
+         std::string(render3d_intro_camera.enabled ? "true" : "false") +
+         ", duration_ms: " +
+         std::to_string(render3d_intro_camera.duration_ms) +
+         ", start_distance: " +
+         std::to_string(render3d_intro_camera.start_distance) +
+         ", end_distance: " +
+         std::to_string(render3d_intro_camera.end_distance) +
+         ", start_height: " +
+         std::to_string(render3d_intro_camera.start_height) +
+         ", end_height: " +
+         std::to_string(render3d_intro_camera.end_height) +
+         ", yaw_offset: " +
+         std::to_string(render3d_intro_camera.start_yaw_offset_deg) +
+         ", lock_player: " +
+         std::string(render3d_intro_camera.lock_player_input ? "true" : "false") +
+         ", skip: " +
+         std::string(render3d_intro_camera.skip_enabled ? "true" : "false") +
          " }, player3d_movement: { speed: " +
          std::to_string(player3d_movement.move_speed_tiles_per_sec) +
          ", accel: " +
@@ -708,6 +726,107 @@ ProjectConfigResult LoadProjectConfig(
     }
     config.render3d_visibility.seen_tile_dim_factor =
         render3d_seen_tile_dim_factor.value;
+  }
+
+  ParseBoolResult render3d_intro_enabled =
+      ExtractOptionalJsonBoolField(content, "render3d_intro_enabled");
+  if (!render3d_intro_enabled.ok) {
+    return {false, {}, render3d_intro_enabled.error};
+  }
+  if (render3d_intro_enabled.found) {
+    config.render3d_intro_camera.enabled = render3d_intro_enabled.value;
+  }
+
+  ParseIntResult render3d_intro_duration_ms =
+      ExtractOptionalJsonIntField(content, "render3d_intro_duration_ms");
+  if (!render3d_intro_duration_ms.ok) {
+    return {false, {}, render3d_intro_duration_ms.error};
+  }
+  if (render3d_intro_duration_ms.found) {
+    if (render3d_intro_duration_ms.value < 0 ||
+        render3d_intro_duration_ms.value > 10000) {
+      return {false, {},
+              "render3d_intro_duration_ms must be in range [0, 10000]"};
+    }
+    config.render3d_intro_camera.duration_ms = render3d_intro_duration_ms.value;
+  }
+
+  ParseFloatResult render3d_intro_start_distance =
+      ExtractOptionalJsonFloatField(content, "render3d_intro_start_distance");
+  if (!render3d_intro_start_distance.ok) {
+    return {false, {}, render3d_intro_start_distance.error};
+  }
+  if (render3d_intro_start_distance.found) {
+    if (render3d_intro_start_distance.value <= 0.0F) {
+      return {false, {}, "render3d_intro_start_distance must be positive"};
+    }
+    config.render3d_intro_camera.start_distance =
+        render3d_intro_start_distance.value;
+  }
+
+  ParseFloatResult render3d_intro_end_distance =
+      ExtractOptionalJsonFloatField(content, "render3d_intro_end_distance");
+  if (!render3d_intro_end_distance.ok) {
+    return {false, {}, render3d_intro_end_distance.error};
+  }
+  if (render3d_intro_end_distance.found) {
+    if (render3d_intro_end_distance.value <= 0.0F) {
+      return {false, {}, "render3d_intro_end_distance must be positive"};
+    }
+    config.render3d_intro_camera.end_distance = render3d_intro_end_distance.value;
+  }
+
+  ParseFloatResult render3d_intro_start_height =
+      ExtractOptionalJsonFloatField(content, "render3d_intro_start_height");
+  if (!render3d_intro_start_height.ok) {
+    return {false, {}, render3d_intro_start_height.error};
+  }
+  if (render3d_intro_start_height.found) {
+    if (render3d_intro_start_height.value <= 0.0F) {
+      return {false, {}, "render3d_intro_start_height must be positive"};
+    }
+    config.render3d_intro_camera.start_height = render3d_intro_start_height.value;
+  }
+
+  ParseFloatResult render3d_intro_end_height =
+      ExtractOptionalJsonFloatField(content, "render3d_intro_end_height");
+  if (!render3d_intro_end_height.ok) {
+    return {false, {}, render3d_intro_end_height.error};
+  }
+  if (render3d_intro_end_height.found) {
+    if (render3d_intro_end_height.value <= 0.0F) {
+      return {false, {}, "render3d_intro_end_height must be positive"};
+    }
+    config.render3d_intro_camera.end_height = render3d_intro_end_height.value;
+  }
+
+  ParseFloatResult render3d_intro_yaw_offset = ExtractOptionalJsonFloatField(
+      content, "render3d_intro_start_yaw_offset_deg");
+  if (!render3d_intro_yaw_offset.ok) {
+    return {false, {}, render3d_intro_yaw_offset.error};
+  }
+  if (render3d_intro_yaw_offset.found) {
+    config.render3d_intro_camera.start_yaw_offset_deg =
+        render3d_intro_yaw_offset.value;
+  }
+
+  ParseBoolResult render3d_intro_lock_player = ExtractOptionalJsonBoolField(
+      content, "render3d_intro_lock_player_input");
+  if (!render3d_intro_lock_player.ok) {
+    return {false, {}, render3d_intro_lock_player.error};
+  }
+  if (render3d_intro_lock_player.found) {
+    config.render3d_intro_camera.lock_player_input =
+        render3d_intro_lock_player.value;
+  }
+
+  ParseBoolResult render3d_intro_skip_enabled = ExtractOptionalJsonBoolField(
+      content, "render3d_intro_skip_enabled");
+  if (!render3d_intro_skip_enabled.ok) {
+    return {false, {}, render3d_intro_skip_enabled.error};
+  }
+  if (render3d_intro_skip_enabled.found) {
+    config.render3d_intro_camera.skip_enabled = render3d_intro_skip_enabled.value;
   }
 
   ParseFloatResult player3d_move_speed =

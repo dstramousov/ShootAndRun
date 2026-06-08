@@ -734,7 +734,16 @@ void UpdateLevel3DView(const LevelData& level, const InputState& input,
     state->mode = Level3DRenderMode::kCollision;
   }
 
-  UpdateLevel3DPlayer(level, input, dt, &state->player);
+  bool skip_intro_this_frame = false;
+  if (Level3DCameraIntroSkipRequested(state->camera, input)) {
+    SkipLevel3DCameraIntro(&state->camera);
+    skip_intro_this_frame = true;
+  }
+
+  if (!Level3DCameraIntroLocksPlayer(state->camera) &&
+      !skip_intro_this_frame) {
+    UpdateLevel3DPlayer(level, input, dt, &state->player);
+  }
   UpdateCullingCenter(level, state);
   UpdateVisibilityState(level, state);
   UpdateLevel3DCamera(level, state->player, input, dt, state->tile_world_size,

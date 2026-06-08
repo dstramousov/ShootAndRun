@@ -73,6 +73,21 @@ struct Render3DVisibilityConfig {
 };
 
 /**
+ * @brief Configures the 3D new-game camera intro fly-in.
+ */
+struct Render3DIntroCameraConfig {
+  bool enabled = true;
+  int duration_ms = 1800;
+  float start_distance = 42.0F;
+  float end_distance = 18.0F;
+  float start_height = 20.0F;
+  float end_height = 10.0F;
+  float start_yaw_offset_deg = 35.0F;
+  bool lock_player_input = true;
+  bool skip_enabled = true;
+};
+
+/**
  * @brief Configures 3D player movement, mouse-facing and jump tuning.
  */
 struct Player3DMovementConfig {
@@ -101,6 +116,7 @@ struct ProjectConfig {
   Player3DLogConfig player3d_log;
   Render3DPerfConfig render3d_perf;
   Render3DVisibilityConfig render3d_visibility;
+  Render3DIntroCameraConfig render3d_intro_camera;
   Player3DMovementConfig player3d_movement;
   visual_pipeline::VisualPipelineConfig visual_pipeline_config;
 
