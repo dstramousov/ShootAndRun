@@ -18,7 +18,15 @@ enum class Level3DMoveBlockReason {
   kCollision,
   kNotWalkable,
   kUnderground,
+  kStepUpRequired,
   kHeightStep,
+};
+
+enum class Level3DJumpEventType {
+  kNone,
+  kStarted,
+  kLanded,
+  kBlocked,
 };
 
 struct Level3DPlayerState {
@@ -35,7 +43,21 @@ struct Level3DPlayerState {
   float acceleration_tiles_per_sec2 = 28.0F;
   float deceleration_tiles_per_sec2 = 34.0F;
   float mouse_turn_sensitivity_rad = 0.0031F;
-  int allowed_step_height = 1;
+  int allowed_step_down_height = 1;
+  bool step_jump_active = false;
+  int step_jump_from_tile_x = -1;
+  int step_jump_from_tile_y = -1;
+  int step_jump_to_tile_x = -1;
+  int step_jump_to_tile_y = -1;
+  std::int8_t step_jump_from_elevation = 0;
+  std::int8_t step_jump_to_elevation = 0;
+  float step_jump_elapsed_sec = 0.0F;
+  float step_jump_duration_sec = 0.22F;
+  float step_jump_arc_elevation_units = 0.85F;
+  float visual_elevation_offset = 0.0F;
+  unsigned int jump_event_sequence = 0;
+  Level3DJumpEventType last_jump_event_type = Level3DJumpEventType::kNone;
+  Level3DMoveBlockReason last_jump_block_reason = Level3DMoveBlockReason::kNone;
   int last_blocked_tile_x = -1;
   int last_blocked_tile_y = -1;
   Level3DMoveBlockReason last_block_reason = Level3DMoveBlockReason::kNone;
@@ -67,6 +89,23 @@ struct Level3DPlayerTileDiagnostics {
  * @return Stable lowercase reason name.
  */
 const char* Level3DMoveBlockReasonName(Level3DMoveBlockReason reason);
+
+
+/**
+ * @brief Returns a stable display name for a jump event type.
+ *
+ * @param event_type Jump event type.
+ * @return Stable lowercase event name.
+ */
+const char* Level3DJumpEventTypeName(Level3DJumpEventType event_type);
+
+/**
+ * @brief Returns a compact readable dump of the last jump event.
+ *
+ * @param state Current player state containing the last jump event.
+ * @return String representation for event logs.
+ */
+std::string Level3DJumpEventToString(const Level3DPlayerState& state);
 
 /**
  * @brief Finds a spawn point and initializes the 3D player state.

@@ -375,3 +375,13 @@
 - Added `player3d_log_enabled` and `player3d_log_mouse` switches for 3D movement diagnostics.
 - Rendered passable forest-boundary / undergrowth tiles as transparent low forest volumes instead of opaque blocking forest blocks.
 - Kept dense collision forest opaque and impassable.
+
+## v0.1.45 -> v0.1.46
+
+- Bumped CMake project and runtime application version to `0.1.46`.
+- Added `Space + movement direction` step-up action for the 3D player.
+- Changed normal 3D movement so elevation `+1` requires an explicit step jump instead of being crossed automatically.
+- Kept same-level movement and one-level descent available through normal movement.
+- Added short step-jump transition state with smoothed tile movement and a visual vertical arc.
+- Added event-based `p3d` logs for `jump_start`, `jump_land`, and `jump_block` without adding any debug HUD.
+- Kept the 2D renderer path unchanged.

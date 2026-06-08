@@ -19,6 +19,7 @@ struct InputState {
   bool cancel_down = false;
   bool left_mouse_pressed = false;
   bool right_mouse_down = false;
+  bool jump_pressed = false;
   bool debug_view_raw_pressed = false;
   bool debug_view_analysis_pressed = false;
   bool debug_view_visual_pressed = false;

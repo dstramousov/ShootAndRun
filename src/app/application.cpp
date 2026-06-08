@@ -879,6 +879,11 @@ void Application::Log3DMovementEvents(const InputState& input) {
   }
 
   const render3d::Level3DPlayerState& player = level_3d_view_.player;
+  if (player.jump_event_sequence != last_logged_3d_jump_sequence_) {
+    logger_.Info("p3d", render3d::Level3DJumpEventToString(player));
+    last_logged_3d_jump_sequence_ = player.jump_event_sequence;
+  }
+
   if (player.blocked_event_sequence != last_logged_3d_block_sequence_ &&
       IsIntervalElapsed(now, last_3d_block_log_time_,
                         log_config.blocked_log_min_interval_ms)) {
@@ -978,7 +983,7 @@ void Application::DrawGameOverlay() const {
                           x, y, font_size, color);
     y += line_step;
     ui_font_.DrawTextLine(
-        "view: 3d  Mouse X aim/facing  W/S forward/back  A/D strafe  Wheel zoom  F1/F2/F3 debug",
+        "view: 3d  Mouse X aim/facing  WASD move  Space step-up  Wheel zoom  F1/F2/F3 debug",
         x, y, font_size, color);
   } else {
     ui_font_.DrawTextLine(LevelViewStateToString(level_view_), x, y,
@@ -1125,6 +1130,7 @@ bool Application::StartNewGameFromConfig() {
     last_logged_3d_tile_x_ = -1;
     last_logged_3d_tile_y_ = -1;
     last_logged_3d_block_sequence_ = 0;
+    last_logged_3d_jump_sequence_ = 0;
     accumulated_mouse_dx_since_tile_ = 0.0F;
     accumulated_mouse_dy_since_tile_ = 0.0F;
     accumulated_abs_mouse_dx_since_tile_ = 0.0F;

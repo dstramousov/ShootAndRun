@@ -1,4 +1,4 @@
-# ShootAndRunCpp v0.1.45
+# ShootAndRunCpp v0.1.46
 
 Первый каркас C++20 + raylib проекта.
 
@@ -99,6 +99,7 @@ Esc            - вернуться в главное меню
 ```text
 WASD / Arrows  - W/S вперёд/назад, A/D стрейф относительно взгляда
 Mouse X        - поворот взгляда / прицела игрока
+Space + move   - заскок на соседний elevation +1
 Mouse wheel    - zoom in/out
 F1             - terrain colors
 F2             - elevation debug

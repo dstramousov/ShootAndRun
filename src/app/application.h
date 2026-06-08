@@ -106,6 +106,7 @@ class Application {
   int last_logged_3d_tile_x_ = -1;
   int last_logged_3d_tile_y_ = -1;
   unsigned int last_logged_3d_block_sequence_ = 0;
+  unsigned int last_logged_3d_jump_sequence_ = 0;
   float accumulated_mouse_dx_since_tile_ = 0.0F;
   float accumulated_mouse_dy_since_tile_ = 0.0F;
   float accumulated_abs_mouse_dx_since_tile_ = 0.0F;

@@ -11,11 +11,13 @@ namespace sar::render3d {
 namespace {
 
 constexpr float kVectorEpsilon = 0.0001F;
+constexpr float kPi = 3.14159265358979323846F;
 
 struct EnterTileResult {
   bool can_enter = false;
   int tile_x = -1;
   int tile_y = -1;
+  int height_delta = 0;
   Level3DMoveBlockReason reason = Level3DMoveBlockReason::kNone;
 };
 
@@ -135,6 +137,11 @@ void RecordBlockedTile(int tile_x, int tile_y,
   ++state->blocked_event_sequence;
 }
 
+void FacingRelativeInputDirection(const InputState& input,
+                                  const Level3DPlayerState& state,
+                                  float* out_x,
+                                  float* out_y);
+
 EnterTileResult CheckEnterTile(const LevelData& level,
                                const Level3DPlayerState& state,
                                float next_x,
@@ -143,26 +150,218 @@ EnterTileResult CheckEnterTile(const LevelData& level,
   const int y = TileIndexFromPosition(next_y);
   const RuntimeCell* target = CellAt(level, x, y);
   if (target == nullptr) {
-    return {false, x, y, Level3DMoveBlockReason::kOutOfBounds};
+    return {false, x, y, 0, Level3DMoveBlockReason::kOutOfBounds};
   }
+
+  const int height_delta = static_cast<int>(target->height) -
+                           static_cast<int>(state.elevation);
   if (target->collision) {
-    return {false, x, y, Level3DMoveBlockReason::kCollision};
+    return {false, x, y, height_delta, Level3DMoveBlockReason::kCollision};
   }
   if (!target->walkable || target->movement_multiplier <= 0.0F) {
-    return {false, x, y, Level3DMoveBlockReason::kNotWalkable};
+    return {false, x, y, height_delta, Level3DMoveBlockReason::kNotWalkable};
   }
-  if (target->height < 0 && state.elevation >= 0) {
-    return {false, x, y, Level3DMoveBlockReason::kUnderground};
+  if ((target->height < 0 || state.elevation < 0) &&
+      target->height != state.elevation) {
+    return {false, x, y, height_delta, Level3DMoveBlockReason::kUnderground};
+  }
+  if (height_delta > 0) {
+    const Level3DMoveBlockReason reason =
+        height_delta == 1 ? Level3DMoveBlockReason::kStepUpRequired
+                          : Level3DMoveBlockReason::kHeightStep;
+    return {false, x, y, height_delta, reason};
+  }
+  if (-height_delta > state.allowed_step_down_height) {
+    return {false, x, y, height_delta, Level3DMoveBlockReason::kHeightStep};
   }
 
-  const int height_delta = std::abs(static_cast<int>(target->height) -
-                                    static_cast<int>(state.elevation));
-  if (height_delta > state.allowed_step_height) {
-    return {false, x, y, Level3DMoveBlockReason::kHeightStep};
-  }
-  return {true, x, y, Level3DMoveBlockReason::kNone};
+  return {true, x, y, height_delta, Level3DMoveBlockReason::kNone};
 }
 
+float Clamp01(float value) {
+  return std::clamp(value, 0.0F, 1.0F);
+}
+
+float SmoothStep01(float value) {
+  const float clamped = Clamp01(value);
+  return clamped * clamped * (3.0F - 2.0F * clamped);
+}
+
+void RecordJumpEvent(Level3DJumpEventType event_type,
+                     Level3DMoveBlockReason block_reason,
+                     Level3DPlayerState* state) {
+  if (state == nullptr || event_type == Level3DJumpEventType::kNone) {
+    return;
+  }
+
+  state->last_jump_event_type = event_type;
+  state->last_jump_block_reason = block_reason;
+  ++state->jump_event_sequence;
+}
+
+bool StepDirectionFromInput(const InputState& input,
+                            const Level3DPlayerState& state,
+                            int* out_step_x,
+                            int* out_step_y) {
+  if (out_step_x == nullptr || out_step_y == nullptr) {
+    return false;
+  }
+
+  float direction_x = 0.0F;
+  float direction_y = 0.0F;
+  FacingRelativeInputDirection(input, state, &direction_x, &direction_y);
+  if (std::abs(direction_x) <= kVectorEpsilon &&
+      std::abs(direction_y) <= kVectorEpsilon) {
+    return false;
+  }
+
+  *out_step_x = 0;
+  *out_step_y = 0;
+  if (std::abs(direction_x) >= std::abs(direction_y)) {
+    *out_step_x = direction_x > 0.0F ? 1 : -1;
+  } else {
+    *out_step_y = direction_y > 0.0F ? 1 : -1;
+  }
+  return true;
+}
+
+EnterTileResult CheckStepJumpTarget(const LevelData& level,
+                                    const Level3DPlayerState& state,
+                                    int target_x,
+                                    int target_y) {
+  const RuntimeCell* target = CellAt(level, target_x, target_y);
+  if (target == nullptr) {
+    return {false, target_x, target_y, 0,
+            Level3DMoveBlockReason::kOutOfBounds};
+  }
+
+  const int height_delta = static_cast<int>(target->height) -
+                           static_cast<int>(state.elevation);
+  if (target->collision) {
+    return {false, target_x, target_y, height_delta,
+            Level3DMoveBlockReason::kCollision};
+  }
+  if (!target->walkable || target->movement_multiplier <= 0.0F) {
+    return {false, target_x, target_y, height_delta,
+            Level3DMoveBlockReason::kNotWalkable};
+  }
+  if ((target->height < 0 || state.elevation < 0) &&
+      target->height != state.elevation) {
+    return {false, target_x, target_y, height_delta,
+            Level3DMoveBlockReason::kUnderground};
+  }
+  if (height_delta == 1) {
+    return {true, target_x, target_y, height_delta,
+            Level3DMoveBlockReason::kNone};
+  }
+  if (height_delta > 1) {
+    return {false, target_x, target_y, height_delta,
+            Level3DMoveBlockReason::kHeightStep};
+  }
+
+  return {false, target_x, target_y, height_delta,
+          Level3DMoveBlockReason::kNone};
+}
+
+void StartStepJump(const EnterTileResult& target,
+                   Level3DPlayerState* state) {
+  if (state == nullptr || !target.can_enter) {
+    return;
+  }
+
+  state->step_jump_active = true;
+  state->step_jump_from_tile_x = TileIndexFromPosition(state->tile_x);
+  state->step_jump_from_tile_y = TileIndexFromPosition(state->tile_y);
+  state->step_jump_to_tile_x = target.tile_x;
+  state->step_jump_to_tile_y = target.tile_y;
+  state->step_jump_from_elevation = state->elevation;
+  state->step_jump_to_elevation = static_cast<std::int8_t>(
+      static_cast<int>(state->elevation) + target.height_delta);
+  state->step_jump_elapsed_sec = 0.0F;
+  state->visual_elevation_offset = 0.0F;
+  state->velocity_x_tiles_per_sec = 0.0F;
+  state->velocity_y_tiles_per_sec = 0.0F;
+  RecordJumpEvent(Level3DJumpEventType::kStarted,
+                  Level3DMoveBlockReason::kNone, state);
+}
+
+bool TryStartStepJump(const LevelData& level, const InputState& input,
+                      Level3DPlayerState* state) {
+  if (state == nullptr || !input.jump_pressed || state->step_jump_active) {
+    return false;
+  }
+
+  int step_x = 0;
+  int step_y = 0;
+  if (!StepDirectionFromInput(input, *state, &step_x, &step_y)) {
+    return false;
+  }
+
+  const int current_x = TileIndexFromPosition(state->tile_x);
+  const int current_y = TileIndexFromPosition(state->tile_y);
+  const EnterTileResult target = CheckStepJumpTarget(
+      level, *state, current_x + step_x, current_y + step_y);
+  if (target.can_enter) {
+    StartStepJump(target, state);
+    return true;
+  }
+
+  if (target.reason != Level3DMoveBlockReason::kNone) {
+    state->step_jump_from_tile_x = current_x;
+    state->step_jump_from_tile_y = current_y;
+    state->step_jump_to_tile_x = target.tile_x;
+    state->step_jump_to_tile_y = target.tile_y;
+    state->step_jump_from_elevation = state->elevation;
+    state->step_jump_to_elevation = static_cast<std::int8_t>(
+        static_cast<int>(state->elevation) + target.height_delta);
+    RecordJumpEvent(Level3DJumpEventType::kBlocked, target.reason, state);
+    RecordBlockedTile(target.tile_x, target.tile_y, target.reason, state);
+    return true;
+  }
+
+  return false;
+}
+
+bool UpdateStepJump(const LevelData& level, float safe_dt,
+                    Level3DPlayerState* state) {
+  if (state == nullptr || !state->step_jump_active) {
+    return false;
+  }
+
+  state->step_jump_elapsed_sec += safe_dt;
+  const float duration = std::max(state->step_jump_duration_sec, 0.001F);
+  const float progress = Clamp01(state->step_jump_elapsed_sec / duration);
+  const float smooth_progress = SmoothStep01(progress);
+
+  const float from_x = static_cast<float>(state->step_jump_from_tile_x) + 0.5F;
+  const float from_y = static_cast<float>(state->step_jump_from_tile_y) + 0.5F;
+  const float to_x = static_cast<float>(state->step_jump_to_tile_x) + 0.5F;
+  const float to_y = static_cast<float>(state->step_jump_to_tile_y) + 0.5F;
+  state->tile_x = from_x + (to_x - from_x) * smooth_progress;
+  state->tile_y = from_y + (to_y - from_y) * smooth_progress;
+
+  const float elevation_delta = static_cast<float>(
+      static_cast<int>(state->step_jump_to_elevation) -
+      static_cast<int>(state->step_jump_from_elevation));
+  const float arc = std::sin(kPi * progress) *
+                    state->step_jump_arc_elevation_units;
+  state->visual_elevation_offset = elevation_delta * smooth_progress + arc;
+
+  if (progress < 1.0F) {
+    return true;
+  }
+
+  state->tile_x = to_x;
+  state->tile_y = to_y;
+  state->elevation = state->step_jump_to_elevation;
+  state->visual_elevation_offset = 0.0F;
+  state->step_jump_active = false;
+  state->step_jump_elapsed_sec = 0.0F;
+  RefreshEffectiveMovementSpeed(level, state);
+  RecordJumpEvent(Level3DJumpEventType::kLanded,
+                  Level3DMoveBlockReason::kNone, state);
+  return true;
+}
 
 void ApplyMovementAxis(const LevelData& level, float dx, float dy,
                        Level3DPlayerState* state) {
@@ -331,8 +530,24 @@ const char* Level3DMoveBlockReasonName(Level3DMoveBlockReason reason) {
       return "not_walkable";
     case Level3DMoveBlockReason::kUnderground:
       return "underground";
+    case Level3DMoveBlockReason::kStepUpRequired:
+      return "step_up_required";
     case Level3DMoveBlockReason::kHeightStep:
       return "height_step";
+  }
+  return "unknown";
+}
+
+const char* Level3DJumpEventTypeName(Level3DJumpEventType event_type) {
+  switch (event_type) {
+    case Level3DJumpEventType::kNone:
+      return "none";
+    case Level3DJumpEventType::kStarted:
+      return "jump_start";
+    case Level3DJumpEventType::kLanded:
+      return "jump_land";
+    case Level3DJumpEventType::kBlocked:
+      return "jump_block";
   }
   return "unknown";
 }
@@ -363,6 +578,18 @@ void InitializeLevel3DPlayer(const LevelData& level,
   state->last_blocked_tile_y = -1;
   state->last_block_reason = Level3DMoveBlockReason::kNone;
   state->blocked_event_sequence = 0;
+  state->step_jump_active = false;
+  state->step_jump_from_tile_x = -1;
+  state->step_jump_from_tile_y = -1;
+  state->step_jump_to_tile_x = -1;
+  state->step_jump_to_tile_y = -1;
+  state->step_jump_from_elevation = state->elevation;
+  state->step_jump_to_elevation = state->elevation;
+  state->step_jump_elapsed_sec = 0.0F;
+  state->visual_elevation_offset = 0.0F;
+  state->jump_event_sequence = 0;
+  state->last_jump_event_type = Level3DJumpEventType::kNone;
+  state->last_jump_block_reason = Level3DMoveBlockReason::kNone;
   RefreshEffectiveMovementSpeed(level, state);
   state->initialized = true;
 }
@@ -376,6 +603,12 @@ void UpdateLevel3DPlayer(const LevelData& level, const InputState& input,
 
   const float safe_dt = std::clamp(dt, 0.0F, 0.05F);
   UpdateFacingFromMouse(input, state);
+  if (UpdateStepJump(level, safe_dt, state)) {
+    return;
+  }
+  if (TryStartStepJump(level, input, state)) {
+    return;
+  }
   UpdateVelocityFromInput(level, input, safe_dt, state);
 
   const float dx = state->velocity_x_tiles_per_sec * safe_dt;
@@ -407,8 +640,10 @@ Vector3 Level3DPlayerWorldPosition(const LevelData& level,
                          0.5F;
   const float origin_z = static_cast<float>(level.size.height) *
                          tile_world_size * 0.5F;
+  const float visual_elevation = static_cast<float>(state.elevation) +
+                                 state.visual_elevation_offset;
   return Vector3{state.tile_x * tile_world_size - origin_x,
-                 static_cast<float>(state.elevation) * elevation_step,
+                 visual_elevation * elevation_step,
                  state.tile_y * tile_world_size - origin_z};
 }
 
@@ -441,6 +676,22 @@ Level3DPlayerTileDiagnostics CurrentLevel3DPlayerTileDiagnostics(
   return diagnostics;
 }
 
+std::string Level3DJumpEventToString(const Level3DPlayerState& state) {
+  std::ostringstream stream;
+  stream << Level3DJumpEventTypeName(state.last_jump_event_type)
+         << " from=" << state.step_jump_from_tile_x << ','
+         << state.step_jump_from_tile_y
+         << " el=" << static_cast<int>(state.step_jump_from_elevation)
+         << " to=" << state.step_jump_to_tile_x << ','
+         << state.step_jump_to_tile_y
+         << " el=" << static_cast<int>(state.step_jump_to_elevation);
+  if (state.last_jump_event_type == Level3DJumpEventType::kBlocked) {
+    stream << " reason="
+           << Level3DMoveBlockReasonName(state.last_jump_block_reason);
+  }
+  return stream.str();
+}
+
 std::string Level3DPlayerTileDiagnosticsToString(
     const Level3DPlayerTileDiagnostics& diagnostics) {
   std::ostringstream stream;
@@ -470,7 +721,8 @@ std::string Level3DPlayerStateToString(const Level3DPlayerState& state) {
          << state.velocity_y_tiles_per_sec
          << " movement_multiplier=" << state.current_movement_multiplier
          << " base_speed=" << state.move_speed_tiles_per_sec
-         << " effective_speed=" << state.effective_move_speed_tiles_per_sec;
+         << " effective_speed=" << state.effective_move_speed_tiles_per_sec
+         << " jump_active=" << (state.step_jump_active ? "true" : "false");
   return stream.str();
 }
 

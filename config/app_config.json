@@ -17,8 +17,8 @@
     "update_interval_ms": 1000
   },
   "player3d_log": {
-    "player3d_log_enabled": true,
-    "player3d_log_mouse": true,
+    "player3d_log_enabled": false,
+    "player3d_log_mouse": false,
     "player3d_tile_log_min_interval_ms": 250,
     "player3d_block_log_min_interval_ms": 600
   },
