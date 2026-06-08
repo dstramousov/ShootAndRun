@@ -474,7 +474,10 @@ void Application::UpdateWindowStateFromRaylib() {
 }
 
 void Application::LogStartup() {
-  logger_.Info("app", "started version=" + config_.version);
+  logger_.Info("app", "started version=" + config_.version +
+                          " renderer=" +
+                          std::string(RuntimeRendererModeName(
+                              config_.renderer_mode)));
   logger_.Info("log", std::string("level=") +
                           std::string(LogLevelName(config_.log_level)));
   logger_.Info("window", WindowStateToString(window_state_));
@@ -634,32 +637,34 @@ void Application::HandleGameInput(const InputState& input) {
     return;
   }
 
-  if (input.debug_view_raw_pressed) {
-    level_render_mode_ = LevelRenderMode::kRawTerrain;
-    logger_.Info("render", std::string("level view mode=") +
-                               LevelRenderModeName(level_render_mode_));
-  }
-  if (input.debug_view_analysis_pressed) {
-    level_render_mode_ = LevelRenderMode::kForestClearingAnalysis;
-    logger_.Info("render", std::string("level view mode=") +
-                               LevelRenderModeName(level_render_mode_));
-  }
-  if (input.debug_view_visual_pressed) {
-    level_render_mode_ = LevelRenderMode::kVisualIntentPreview;
-    logger_.Info("render", std::string("level view mode=") +
-                               LevelRenderModeName(level_render_mode_));
-  }
-  if (input.debug_view_final_render_pressed) {
-    if (final_render_texture_loaded_) {
-      level_render_mode_ = LevelRenderMode::kFinalRenderReference;
+  if (config_.renderer_mode == RuntimeRendererMode::kRenderer2D) {
+    if (input.debug_view_raw_pressed) {
+      level_render_mode_ = LevelRenderMode::kRawTerrain;
       logger_.Info("render", std::string("level view mode=") +
                                  LevelRenderModeName(level_render_mode_));
-    } else {
-      logger_.Warn("render", "final_render package view is not loaded");
+    }
+    if (input.debug_view_analysis_pressed) {
+      level_render_mode_ = LevelRenderMode::kForestClearingAnalysis;
+      logger_.Info("render", std::string("level view mode=") +
+                                 LevelRenderModeName(level_render_mode_));
+    }
+    if (input.debug_view_visual_pressed) {
+      level_render_mode_ = LevelRenderMode::kVisualIntentPreview;
+      logger_.Info("render", std::string("level view mode=") +
+                                 LevelRenderModeName(level_render_mode_));
+    }
+    if (input.debug_view_final_render_pressed) {
+      if (final_render_texture_loaded_) {
+        level_render_mode_ = LevelRenderMode::kFinalRenderReference;
+        logger_.Info("render", std::string("level view mode=") +
+                                   LevelRenderModeName(level_render_mode_));
+      } else {
+        logger_.Warn("render", "final_render package view is not loaded");
+      }
     }
   }
 
-  UpdateGameCamera(input);
+  UpdateGameView(input);
 }
 
 void Application::UpdateMapPreparation() {
@@ -753,8 +758,14 @@ void Application::UpdateMapPreparation() {
   logger_.Info("game", "new game session started");
 }
 
-void Application::UpdateGameCamera(const InputState& input) {
+void Application::UpdateGameView(const InputState& input) {
   if (!loaded_level_.has_value()) {
+    return;
+  }
+
+  if (config_.renderer_mode == RuntimeRendererMode::kRenderer3D) {
+    render3d::UpdateLevel3DView(*loaded_level_, input, GetFrameTime(),
+                                &level_3d_view_);
     return;
   }
 
@@ -865,13 +876,22 @@ void Application::DrawGameOverlay() const {
   ui_font_.DrawTextLine(loaded_level_summary_->Dump(), x, y, font_size,
                         color);
   y += line_step;
-  ui_font_.DrawTextLine(LevelViewStateToString(level_view_), x, y,
-                        font_size, color);
-  y += line_step;
-  ui_font_.DrawTextLine(std::string("view: ") +
-                            LevelRenderModeName(level_render_mode_) +
-                            "  F1 raw  F2 forest  F3 preview  F4 final",
-                        x, y, font_size, color);
+  if (config_.renderer_mode == RuntimeRendererMode::kRenderer3D) {
+    ui_font_.DrawTextLine(render3d::Level3DViewStateToString(level_3d_view_),
+                          x, y, font_size, color);
+    y += line_step;
+    ui_font_.DrawTextLine(
+        "view: 3d  F1 terrain  F2 elevation  F3 collision  Q/E rotate  Wheel zoom",
+        x, y, font_size, color);
+  } else {
+    ui_font_.DrawTextLine(LevelViewStateToString(level_view_), x, y,
+                          font_size, color);
+    y += line_step;
+    ui_font_.DrawTextLine(std::string("view: ") +
+                              LevelRenderModeName(level_render_mode_) +
+                              "  F1 raw  F2 forest  F3 preview  F4 final",
+                          x, y, font_size, color);
+  }
   if (prepared_level_.has_value()) {
     y += line_step;
     ui_font_.DrawTextLine(PreparedLevelOverlayLine(*prepared_level_), x, y,
@@ -1001,6 +1021,20 @@ bool Application::StartNewGameFromConfig() {
   loaded_level_summary_ = level_result.summary;
   loaded_level_ = level_result.level;
   prepared_level_.reset();
+  logger_.Info("level", loaded_level_summary_->Dump());
+
+  if (config_.renderer_mode == RuntimeRendererMode::kRenderer3D) {
+    visual_pipeline_ = visual_pipeline::VisualPreparationPipeline();
+    render3d::InitializeLevel3DView(*loaded_level_, &level_3d_view_);
+    game_session_.StartNewGame();
+    screen_ = AppScreen::kGame;
+    ApplyFramePacing();
+    logger_.Info("render", "runtime renderer=3d");
+    logger_.Info("camera", render3d::Level3DViewStateToString(level_3d_view_));
+    logger_.Info("game", "new 3D game session started");
+    return true;
+  }
+
   visual_pipeline::VisualPreparationOptions preparation_options;
   preparation_options.map_package_path = project_config_->map_package_path;
   preparation_options.visual_pipeline_config =
@@ -1008,7 +1042,6 @@ bool Application::StartNewGameFromConfig() {
   visual_pipeline_.Start(*loaded_level_, std::move(preparation_options));
   last_preparation_step_time_ = -1.0;
   screen_ = AppScreen::kMapPreparing;
-  logger_.Info("level", loaded_level_summary_->Dump());
   if (developer_config_.log.visual_pipeline_diagnostics &&
       developer_config_.log.visual_pipeline_step_details) {
     logger_.Debug("visual_pipeline",
@@ -1077,12 +1110,16 @@ void Application::RenderFrame() {
     DrawMapPreparingScreen();
   } else if (screen_ == AppScreen::kGame) {
     if (loaded_level_.has_value()) {
-      ClampLevelViewToMap(*loaded_level_, window_state_, &level_view_);
-      level_renderer_.Draw(*loaded_level_,
-                           prepared_level_.has_value() ? &(*prepared_level_)
-                                                        : nullptr,
-                           level_view_, window_state_, level_render_mode_,
-                           FinalRenderTexture());
+      if (config_.renderer_mode == RuntimeRendererMode::kRenderer3D) {
+        level_3d_renderer_.Draw(*loaded_level_, level_3d_view_, window_state_);
+      } else {
+        ClampLevelViewToMap(*loaded_level_, window_state_, &level_view_);
+        level_renderer_.Draw(*loaded_level_,
+                             prepared_level_.has_value() ? &(*prepared_level_)
+                                                          : nullptr,
+                             level_view_, window_state_, level_render_mode_,
+                             FinalRenderTexture());
+      }
       DrawGameOverlay();
     } else {
       const int title_size = ScaledFontSize(ui_font_, window_state_, 1.0F);

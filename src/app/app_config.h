@@ -3,15 +3,37 @@
 
 #include <filesystem>
 #include <string>
+#include <string_view>
 
 #include "logging/log_level.h"
 #include "window/window_config.h"
 
 #ifndef SAR_APP_VERSION
-#define SAR_APP_VERSION "0.1.40-dev"
+#define SAR_APP_VERSION "0.1.41-dev"
 #endif
 
 namespace sar {
+
+enum class RuntimeRendererMode {
+  kRenderer2D,
+  kRenderer3D,
+};
+
+/**
+ * @brief Returns the stable command-line name of a runtime renderer mode.
+ *
+ * @param mode Runtime renderer mode.
+ * @return Stable lowercase renderer name.
+ */
+constexpr std::string_view RuntimeRendererModeName(RuntimeRendererMode mode) {
+  switch (mode) {
+    case RuntimeRendererMode::kRenderer2D:
+      return "2d";
+    case RuntimeRendererMode::kRenderer3D:
+      return "3d";
+  }
+  return "2d";
+}
 
 struct AppConfig {
   std::string app_name = "ShootAndRun";
@@ -20,6 +42,7 @@ struct AppConfig {
   WindowConfig window;
   std::filesystem::path project_config_path = "config/app_config.json";
   std::filesystem::path developer_config_path = "config/developer_log_config.json";
+  RuntimeRendererMode renderer_mode = RuntimeRendererMode::kRenderer2D;
   LogLevel log_level = LogLevel::kInfo;
   bool color_log = true;
   bool debug_overlay_enabled = true;

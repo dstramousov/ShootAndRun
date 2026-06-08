@@ -3,4 +3,4 @@
 
 PROJECT_NAME="ShootAndRun"
 
-./build/SaR
+./build/SaR --renderer=3d

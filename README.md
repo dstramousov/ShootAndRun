@@ -1,4 +1,4 @@
-# ShootAndRunCpp v0.1.40
+# ShootAndRunCpp v0.1.41
 
 Первый каркас C++20 + raylib проекта.
 
@@ -18,6 +18,7 @@
 - Базовая валидация `TopDownMapGen` map package.
 
 - Debug renderer for loaded terrain maps.
+- Separate 3D renderer mode selected from CLI with `--renderer=3d`.
 - Debug marker overlay for `markers.json`, including player spawn markers.
 - Free camera for map inspection with WASD/arrows and mouse-wheel zoom.
 - Базовые структуры `level/` под будущий renderer/gameplay.
@@ -48,6 +49,8 @@ ctest --test-dir build --output-on-failure
 ./build/SaR --log-level=debug
 ./build/SaR --log-level=trace --no-color
 ./build/SaR --config=config/app_config.json
+./build/SaR --renderer=2d
+./build/SaR --renderer=3d
 ```
 
 ## Конфигурация
@@ -79,12 +82,26 @@ ctest --test-dir build --output-on-failure
 `runtime_grids.json` и опциональный `markers.json`, валидирует размеры базовых
 grid-слоёв и только после этого переходит в game screen.
 
-В game screen карта отображается в debug-режиме. Если в `markers.json` есть
+В режиме `--renderer=2d` game screen отображает карту в debug-режиме. Если в `markers.json` есть
 `player_spawn` или другой spawn-маркер, камера стартует с него; иначе камера
-центрируется по карте. Управление камерой:
+центрируется по карте. Управление 2D-камерой:
 
 ```text
 WASD / Arrows  - двигать камеру
 Mouse wheel    - zoom in/out
+Esc            - вернуться в главное меню
+```
+
+В режиме `--renderer=3d` используется отдельный 3D renderer. Он читает тот же
+`map_package`, рисует terrain/collision/height_grid в 3D и двигает игрока по
+`movement_grid`/`collision_grid` без запуска 2D visual pipeline.
+
+```text
+WASD / Arrows  - двигать игрока
+Q / E          - вращать камеру
+Mouse wheel    - zoom in/out
+F1             - terrain colors
+F2             - elevation debug
+F3             - collision debug
 Esc            - вернуться в главное меню
 ```

@@ -333,3 +333,11 @@
 - Removed forest pattern/canopy-only counters and debug artifacts.
 - Kept forest depth, edge, clearing, route influence, and mass group analysis.
 - Kept gameplay data, collision, routes, markers, places, world graph, and runtime grids untouched.
+## v0.1.40 -> v0.1.41
+
+- Bumped CMake project and runtime application version to `0.1.41`.
+- Added `--renderer=2d|3d` CLI runtime renderer selection.
+- Added an isolated `src/render3d` module for the first 3D map renderer.
+- Added 3D player movement driven by `movement_grid`, `collision_grid`, and `height_grid`.
+- Added 3D follow camera with Q/E rotation and mouse-wheel distance control.
+- Kept the existing 2D renderer path unchanged and skipped the 2D visual pipeline for `--renderer=3d`.

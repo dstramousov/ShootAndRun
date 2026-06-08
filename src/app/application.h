@@ -18,6 +18,7 @@
 #include "render/menu_renderer.h"
 #include "render/renderer.h"
 #include "render/ui_font.h"
+#include "render3d/level_3d_renderer.h"
 #include "ui/confirm_dialog.h"
 #include "ui/main_menu.h"
 #include "visual_pipeline/prepared_level.h"
@@ -59,7 +60,7 @@ class Application {
   void HandleMapPreparingInput(const InputState& input);
   void HandleGameInput(const InputState& input);
   void UpdateMapPreparation();
-  void UpdateGameCamera(const InputState& input);
+  void UpdateGameView(const InputState& input);
   void DrawMapPreparingScreen() const;
   void DrawGameOverlay() const;
   void UnloadFinalRenderTexture();
@@ -80,6 +81,7 @@ class Application {
   InputSystem input_system_;
   Renderer renderer_;
   LevelRenderer level_renderer_;
+  render3d::Level3DRenderer level_3d_renderer_;
   MenuRenderer menu_renderer_;
   DebugOverlay debug_overlay_;
   MainMenu main_menu_;
@@ -93,6 +95,7 @@ class Application {
   std::optional<visual_pipeline::PreparedLevel> prepared_level_;
   visual_pipeline::VisualPreparationPipeline visual_pipeline_;
   LevelViewState level_view_;
+  render3d::Level3DViewState level_3d_view_;
   LevelRenderMode level_render_mode_ = LevelRenderMode::kRawTerrain;
   Texture2D final_render_texture_{};
   bool final_render_texture_loaded_ = false;

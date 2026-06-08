@@ -25,6 +25,8 @@ InputState InputSystem::Poll() {
   input.debug_view_analysis_pressed = IsKeyPressed(KEY_F2);
   input.debug_view_visual_pressed = IsKeyPressed(KEY_F3);
   input.debug_view_final_render_pressed = IsKeyPressed(KEY_F4);
+  input.camera_rotate_left_down = IsKeyDown(KEY_Q);
+  input.camera_rotate_right_down = IsKeyDown(KEY_E);
   input.mouse_wheel_delta = GetMouseWheelMove();
   input.mouse_position.x = static_cast<float>(GetMouseX());
   input.mouse_position.y = static_cast<float>(GetMouseY());
