@@ -15,7 +15,14 @@ struct Level3DPlayerState {
   float tile_x = 0.0F;
   float tile_y = 0.0F;
   std::int8_t elevation = 0;
+  float facing_x = 0.0F;
+  float facing_y = -1.0F;
+  float velocity_x_tiles_per_sec = 0.0F;
+  float velocity_y_tiles_per_sec = 0.0F;
   float move_speed_tiles_per_sec = 4.25F;
+  float acceleration_tiles_per_sec2 = 28.0F;
+  float deceleration_tiles_per_sec2 = 34.0F;
+  float mouse_turn_sensitivity_rad = 0.0031F;
   int allowed_step_height = 1;
   bool initialized = false;
 };
@@ -34,11 +41,11 @@ void InitializeLevel3DPlayer(const LevelData& level,
                              Level3DPlayerState* state);
 
 /**
- * @brief Updates tile-space 3D player movement from normalized input.
+ * @brief Updates tile-space 3D player movement from mouse-facing input.
  *
- * Movement uses runtime collision and height data. Blocking cells are rejected,
- * and height differences larger than `allowed_step_height` are rejected until
- * explicit elevation transitions are implemented.
+ * Mouse X rotates the player's facing direction. Movement is facing-relative:
+ * W/S move forward and backward, while A/D strafe. Runtime collision and
+ * height data still decide whether the next tile can be entered.
  *
  * @param level Loaded level data.
  * @param input Current input state.

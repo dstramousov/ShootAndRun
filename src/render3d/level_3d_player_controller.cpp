@@ -9,6 +9,8 @@
 namespace sar::render3d {
 namespace {
 
+constexpr float kVectorEpsilon = 0.0001F;
+
 bool TextContains(std::string_view text, std::string_view needle) {
   return text.find(needle) != std::string_view::npos;
 }
@@ -106,6 +108,126 @@ void ApplyMovementAxis(const LevelData& level, float dx, float dy,
                                     TileIndexFromPosition(state->tile_y));
 }
 
+void NormalizeFacing(Level3DPlayerState* state) {
+  if (state == nullptr) {
+    return;
+  }
+  const float length = std::hypot(state->facing_x, state->facing_y);
+  if (length <= kVectorEpsilon) {
+    state->facing_x = 0.0F;
+    state->facing_y = -1.0F;
+    return;
+  }
+  state->facing_x /= length;
+  state->facing_y /= length;
+}
+
+void UpdateFacingFromMouse(const InputState& input,
+                           Level3DPlayerState* state) {
+  if (state == nullptr || std::abs(input.mouse_delta.x) <= kVectorEpsilon) {
+    return;
+  }
+
+  const float current_angle = std::atan2(state->facing_y, state->facing_x);
+  const float new_angle = current_angle + input.mouse_delta.x *
+                                              state->mouse_turn_sensitivity_rad;
+  state->facing_x = std::cos(new_angle);
+  state->facing_y = std::sin(new_angle);
+  NormalizeFacing(state);
+}
+
+void FacingRelativeInputDirection(const InputState& input,
+                                  const Level3DPlayerState& state,
+                                  float* out_x,
+                                  float* out_y) {
+  if (out_x == nullptr || out_y == nullptr) {
+    return;
+  }
+
+  float move_x = 0.0F;
+  float move_y = 0.0F;
+  if (input.left_down) {
+    move_x -= 1.0F;
+  }
+  if (input.right_down) {
+    move_x += 1.0F;
+  }
+  if (input.up_down) {
+    move_y -= 1.0F;
+  }
+  if (input.down_down) {
+    move_y += 1.0F;
+  }
+
+  if (move_x == 0.0F && move_y == 0.0F) {
+    *out_x = 0.0F;
+    *out_y = 0.0F;
+    return;
+  }
+
+  const float facing_length = std::hypot(state.facing_x, state.facing_y);
+  const float forward_x = facing_length > kVectorEpsilon
+                              ? state.facing_x / facing_length
+                              : 0.0F;
+  const float forward_y = facing_length > kVectorEpsilon
+                              ? state.facing_y / facing_length
+                              : -1.0F;
+  const float right_x = -forward_y;
+  const float right_y = forward_x;
+
+  float desired_x = right_x * move_x + forward_x * (-move_y);
+  float desired_y = right_y * move_x + forward_y * (-move_y);
+  const float desired_length = std::hypot(desired_x, desired_y);
+  if (desired_length <= kVectorEpsilon) {
+    *out_x = 0.0F;
+    *out_y = 0.0F;
+    return;
+  }
+
+  desired_x /= desired_length;
+  desired_y /= desired_length;
+  *out_x = desired_x;
+  *out_y = desired_y;
+}
+
+void MoveVelocityToward(float target_x, float target_y, float max_delta,
+                        Level3DPlayerState* state) {
+  if (state == nullptr) {
+    return;
+  }
+
+  const float delta_x = target_x - state->velocity_x_tiles_per_sec;
+  const float delta_y = target_y - state->velocity_y_tiles_per_sec;
+  const float delta_length = std::hypot(delta_x, delta_y);
+  if (delta_length <= max_delta || delta_length <= kVectorEpsilon) {
+    state->velocity_x_tiles_per_sec = target_x;
+    state->velocity_y_tiles_per_sec = target_y;
+    return;
+  }
+
+  const float ratio = max_delta / delta_length;
+  state->velocity_x_tiles_per_sec += delta_x * ratio;
+  state->velocity_y_tiles_per_sec += delta_y * ratio;
+}
+
+void UpdateVelocityFromInput(const InputState& input, float safe_dt,
+                             Level3DPlayerState* state) {
+  if (state == nullptr) {
+    return;
+  }
+
+  float direction_x = 0.0F;
+  float direction_y = 0.0F;
+  FacingRelativeInputDirection(input, *state, &direction_x, &direction_y);
+
+  const float target_x = direction_x * state->move_speed_tiles_per_sec;
+  const float target_y = direction_y * state->move_speed_tiles_per_sec;
+  const float acceleration = (direction_x == 0.0F && direction_y == 0.0F)
+                                 ? state->deceleration_tiles_per_sec2
+                                 : state->acceleration_tiles_per_sec2;
+  MoveVelocityToward(target_x, target_y, acceleration * safe_dt, state);
+}
+
 }  // namespace
 
 void InitializeLevel3DPlayer(const LevelData& level,
@@ -126,6 +248,10 @@ void InitializeLevel3DPlayer(const LevelData& level,
         level, TileIndexFromPosition(state->tile_x),
         TileIndexFromPosition(state->tile_y));
   }
+  state->facing_x = 0.0F;
+  state->facing_y = -1.0F;
+  state->velocity_x_tiles_per_sec = 0.0F;
+  state->velocity_y_tiles_per_sec = 0.0F;
   state->initialized = true;
 }
 
@@ -136,34 +262,15 @@ void UpdateLevel3DPlayer(const LevelData& level, const InputState& input,
     return;
   }
 
-  float direction_x = 0.0F;
-  float direction_y = 0.0F;
-  if (input.left_down) {
-    direction_x -= 1.0F;
-  }
-  if (input.right_down) {
-    direction_x += 1.0F;
-  }
-  if (input.up_down) {
-    direction_y -= 1.0F;
-  }
-  if (input.down_down) {
-    direction_y += 1.0F;
-  }
+  const float safe_dt = std::clamp(dt, 0.0F, 0.05F);
+  UpdateFacingFromMouse(input, state);
+  UpdateVelocityFromInput(input, safe_dt, state);
 
-  if (direction_x == 0.0F && direction_y == 0.0F) {
+  const float dx = state->velocity_x_tiles_per_sec * safe_dt;
+  const float dy = state->velocity_y_tiles_per_sec * safe_dt;
+  if (std::abs(dx) <= kVectorEpsilon && std::abs(dy) <= kVectorEpsilon) {
     return;
   }
-
-  const float length = std::sqrt(direction_x * direction_x +
-                                 direction_y * direction_y);
-  direction_x /= length;
-  direction_y /= length;
-
-  const float safe_dt = std::clamp(dt, 0.0F, 0.05F);
-  const float step = state->move_speed_tiles_per_sec * safe_dt;
-  const float dx = direction_x * step;
-  const float dy = direction_y * step;
 
   if (CanEnterTile(level, *state, state->tile_x + dx, state->tile_y + dy)) {
     ApplyMovementAxis(level, dx, dy, state);
@@ -190,7 +297,10 @@ Vector3 Level3DPlayerWorldPosition(const LevelData& level,
 std::string Level3DPlayerStateToString(const Level3DPlayerState& state) {
   std::ostringstream stream;
   stream << "player3d: tile=" << state.tile_x << ',' << state.tile_y
-         << " elevation=" << static_cast<int>(state.elevation);
+         << " elevation=" << static_cast<int>(state.elevation)
+         << " facing=" << state.facing_x << ',' << state.facing_y
+         << " velocity=" << state.velocity_x_tiles_per_sec << ','
+         << state.velocity_y_tiles_per_sec;
   return stream.str();
 }
 

@@ -458,6 +458,7 @@ void Application::LoadUiFont() {
 
 void Application::ShutdownWindow() {
   if (window_initialized_) {
+    SetMouseCapture(false);
     UnloadFinalRenderTexture();
     ui_font_.Reset();
     CloseWindow();
@@ -632,6 +633,7 @@ void Application::HandleMapPreparingInput(const InputState& input) {
 
 void Application::HandleGameInput(const InputState& input) {
   if (input.cancel_pressed || input.cancel_down) {
+    SetMouseCapture(false);
     screen_ = AppScreen::kMainMenu;
     logger_.Info("game", "returned to main menu");
     return;
@@ -881,7 +883,7 @@ void Application::DrawGameOverlay() const {
                           x, y, font_size, color);
     y += line_step;
     ui_font_.DrawTextLine(
-        "view: 3d  F1 terrain  F2 elevation  F3 collision  RMB drag orbit  Q/E rotate  Wheel zoom",
+        "view: 3d  Mouse X aim/facing  W/S forward/back  A/D strafe  Wheel zoom  F1/F2/F3 debug",
         x, y, font_size, color);
   } else {
     ui_font_.DrawTextLine(LevelViewStateToString(level_view_), x, y,
@@ -1031,10 +1033,12 @@ bool Application::StartNewGameFromConfig() {
     ApplyFramePacing();
     logger_.Info("render", "runtime renderer=3d");
     logger_.Info("camera", render3d::Level3DViewStateToString(level_3d_view_));
+    SetMouseCapture(true);
     logger_.Info("game", "new 3D game session started");
     return true;
   }
 
+  SetMouseCapture(false);
   visual_pipeline::VisualPreparationOptions preparation_options;
   preparation_options.map_package_path = project_config_->map_package_path;
   preparation_options.visual_pipeline_config =
@@ -1098,6 +1102,20 @@ bool Application::ValidateMapPackagePath(
 void Application::OpenExitDialog() {
   confirm_dialog_.emplace("Exit game", "Unsaved progress may be lost.");
   logger_.Debug("dialog", "opened type=exit_confirmation default=no");
+}
+
+
+void Application::SetMouseCapture(bool enabled) {
+  if (!window_initialized_ || mouse_capture_active_ == enabled) {
+    return;
+  }
+
+  if (enabled) {
+    DisableCursor();
+  } else {
+    EnableCursor();
+  }
+  mouse_capture_active_ = enabled;
 }
 
 void Application::RenderFrame() {

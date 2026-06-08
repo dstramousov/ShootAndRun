@@ -205,6 +205,13 @@ void DrawPlayer(const LevelData& level, const Level3DViewState& state) {
 
   const Vector3 vertical_end{position.x, position.y + 3.0F, position.z};
   DrawLine3D(position, vertical_end, Color{246, 204, 38, 200});
+
+  const Vector3 facing_end{
+      position.x + state.player.facing_x * state.tile_world_size * 1.4F,
+      position.y + 0.18F,
+      position.z + state.player.facing_y * state.tile_world_size * 1.4F};
+  DrawLine3D(position, facing_end, Color{255, 146, 28, 255});
+  DrawCube(facing_end, 0.18F, 0.18F, 0.18F, Color{255, 146, 28, 255});
 }
 
 void DrawTiles(const LevelData& level, const Level3DViewState& state) {

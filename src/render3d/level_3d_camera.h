@@ -13,35 +13,27 @@
 namespace sar::render3d {
 
 struct Level3DCameraState {
+  Vector3 position{0.0F, 0.0F, 0.0F};
   Vector3 target{0.0F, 0.0F, 0.0F};
   Vector3 lookahead{0.0F, 0.0F, 0.0F};
   Vector3 last_forward{0.0F, 0.0F, -1.0F};
-  float yaw_deg = 45.0F;
-  float yaw_target_deg = 45.0F;
-  float pitch_deg = 55.0F;
-  float pitch_target_deg = 55.0F;
-  float min_pitch_deg = 35.0F;
-  float max_pitch_deg = 75.0F;
+  float yaw_deg = 270.0F;
+  float height = 18.0F;
   float distance = 42.0F;
   float distance_target = 42.0F;
   float min_distance = 12.0F;
   float max_distance = 96.0F;
-  float rotate_speed_deg_per_sec = 95.0F;
-  float mouse_yaw_sensitivity = 0.18F;
-  float mouse_pitch_sensitivity = 0.12F;
   float zoom_step = 1.5F;
-  float yaw_smooth_speed = 10.0F;
-  float pitch_smooth_speed = 10.0F;
   float zoom_smooth_speed = 12.0F;
   float follow_smooth_speed = 9.0F;
   float lookahead_smooth_speed = 8.0F;
   float forward_smooth_speed = 12.0F;
-  float lookahead_distance_tiles = 2.5F;
-  float bounds_margin_factor = 0.45F;
+  float movement_lookahead_tiles = 2.5F;
+  float target_lookahead_tiles = 2.5F;
+  float bounds_margin_factor = 0.35F;
   float min_bounds_margin_tiles = 1.0F;
   float max_bounds_margin_tiles = 8.0F;
-  bool target_initialized = false;
-  bool mouse_look_active = false;
+  bool initialized = false;
 };
 
 /**
@@ -54,7 +46,7 @@ void InitializeLevel3DCamera(const LevelData& level,
                              Level3DCameraState* state);
 
 /**
- * @brief Updates 3D orbit camera state from player position and input.
+ * @brief Updates the 3D follow camera from player position and facing.
  *
  * @param level Loaded level data.
  * @param player Current player state.

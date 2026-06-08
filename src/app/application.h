@@ -71,6 +71,7 @@ class Application {
   bool ValidateMapPackagePath(const ProjectConfig& project_config);
   void OpenExitDialog();
   void RenderFrame();
+  void SetMouseCapture(bool enabled);
 
   AppConfig config_;
   Logger logger_;
@@ -100,6 +101,7 @@ class Application {
   Texture2D final_render_texture_{};
   bool final_render_texture_loaded_ = false;
   bool final_render_texture_from_cpp_package_ = false;
+  bool mouse_capture_active_ = false;
   double last_preparation_step_time_ = -1.0;
   ServiceInfoOverlayData service_info_data_;
   double last_service_info_update_time_ = -1.0;

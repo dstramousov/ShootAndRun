@@ -349,3 +349,12 @@
 - Added smoothed 3D camera target follow, pitch, yaw, and distance interpolation.
 - Added movement-based camera lookahead and target clamping inside map bounds.
 - Kept the 2D renderer path unchanged.
+
+## v0.1.42 -> v0.1.43
+
+- Bumped CMake project and runtime application version to `0.1.43`.
+- Removed right-mouse orbit camera control from the 3D mode.
+- Ported the Python 3D control model: mouse X rotates player facing/aim, W/S move forward/backward, and A/D strafe relative to facing.
+- Changed the 3D follow camera to derive position and target from player facing, smoothed lookahead, distance, and height instead of independent orbit yaw/pitch.
+- Added mouse capture for the 3D game view and releases it when returning to menus or shutting down.
+- Kept the 2D renderer path unchanged.
