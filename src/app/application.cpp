@@ -1140,6 +1140,15 @@ bool Application::StartNewGameFromConfig() {
     last_3d_tile_log_time_ = -1000.0;
     last_3d_block_log_time_ = -1000.0;
     render3d::InitializeLevel3DView(*loaded_level_, &level_3d_view_);
+    if (project_config_.has_value()) {
+      level_3d_view_.visible_radius_tiles =
+          project_config_->render3d_perf.visible_radius_tiles;
+      level_3d_view_.culling_deadzone_tiles =
+          project_config_->render3d_perf.culling_deadzone_tiles;
+      level_3d_view_.culling_center_initialized = false;
+      render3d::UpdateLevel3DView(*loaded_level_, InputState{}, 0.0F,
+                                  &level_3d_view_);
+    }
     game_session_.StartNewGame();
     screen_ = AppScreen::kGame;
     ApplyFramePacing();

@@ -40,6 +40,11 @@ struct Player3DLogConfig {
   int blocked_log_min_interval_ms = 600;
 };
 
+struct Render3DPerfConfig {
+  int visible_radius_tiles = 48;
+  int culling_deadzone_tiles = 4;
+};
+
 struct ProjectConfig {
   std::filesystem::path map_package_path;
   std::filesystem::path ui_font_path = "data/fonts/PressStart2P-Regular.ttf";
@@ -48,6 +53,7 @@ struct ProjectConfig {
   WindowConfig window_config;
   ServiceInfoConfig service_info;
   Player3DLogConfig player3d_log;
+  Render3DPerfConfig render3d_perf;
   visual_pipeline::VisualPipelineConfig visual_pipeline_config;
 
   /**

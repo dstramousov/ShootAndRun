@@ -344,6 +344,10 @@ std::string ProjectConfig::Dump() const {
          std::to_string(player3d_log.tile_log_min_interval_ms) +
          ", blocked_log_min_interval_ms: " +
          std::to_string(player3d_log.blocked_log_min_interval_ms) +
+         " }, render3d_perf: { visible_radius_tiles: " +
+         std::to_string(render3d_perf.visible_radius_tiles) +
+         ", culling_deadzone_tiles: " +
+         std::to_string(render3d_perf.culling_deadzone_tiles) +
          " }, visual_pipeline: { mode: " +
          visual_pipeline::VisualPipelineModeName(visual_pipeline_config.mode) +
          ", prepared_visual_map_path: \"" +
@@ -564,6 +568,36 @@ ProjectConfigResult LoadProjectConfig(
     }
     config.player3d_log.blocked_log_min_interval_ms =
         player3d_block_log_min_interval_ms.value;
+  }
+
+  ParseIntResult render3d_visible_radius_tiles =
+      ExtractOptionalJsonIntField(content, "render3d_visible_radius_tiles");
+  if (!render3d_visible_radius_tiles.ok) {
+    return {false, {}, render3d_visible_radius_tiles.error};
+  }
+  if (render3d_visible_radius_tiles.found) {
+    if (render3d_visible_radius_tiles.value < 8 ||
+        render3d_visible_radius_tiles.value > 128) {
+      return {false, {},
+              "render3d_visible_radius_tiles must be in range [8, 128]"};
+    }
+    config.render3d_perf.visible_radius_tiles =
+        render3d_visible_radius_tiles.value;
+  }
+
+  ParseIntResult render3d_culling_deadzone_tiles =
+      ExtractOptionalJsonIntField(content, "render3d_culling_deadzone_tiles");
+  if (!render3d_culling_deadzone_tiles.ok) {
+    return {false, {}, render3d_culling_deadzone_tiles.error};
+  }
+  if (render3d_culling_deadzone_tiles.found) {
+    if (render3d_culling_deadzone_tiles.value < 1 ||
+        render3d_culling_deadzone_tiles.value > 32) {
+      return {false, {},
+              "render3d_culling_deadzone_tiles must be in range [1, 32]"};
+    }
+    config.render3d_perf.culling_deadzone_tiles =
+        render3d_culling_deadzone_tiles.value;
   }
 
   ParseStringResult visual_pipeline_mode =

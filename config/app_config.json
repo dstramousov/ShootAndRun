@@ -22,6 +22,10 @@
     "player3d_tile_log_min_interval_ms": 250,
     "player3d_block_log_min_interval_ms": 600
   },
+  "render3d_perf": {
+    "render3d_visible_radius_tiles": 48,
+    "render3d_culling_deadzone_tiles": 4
+  },
   "visual_pipeline": {
     "visual_pipeline_mode": "build_cpp",
     "prepared_visual_map_path": "../visual_map/visual_map.json",

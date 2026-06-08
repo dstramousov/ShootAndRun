@@ -43,13 +43,44 @@ const RuntimeCell* CellAt(const LevelData& level, int x, int y) {
 
 TileRange3D VisibleTileRange(const LevelData& level,
                              const Level3DViewState& state) {
-  const int center_x = TileIndexFromPosition(state.player.tile_x);
-  const int center_y = TileIndexFromPosition(state.player.tile_y);
-  const int radius = std::max(8, state.visible_radius_tiles);
+  const int center_x = state.culling_center_initialized
+                           ? state.culling_center_tile_x
+                           : TileIndexFromPosition(state.player.tile_x);
+  const int center_y = state.culling_center_initialized
+                           ? state.culling_center_tile_y
+                           : TileIndexFromPosition(state.player.tile_y);
+  const int radius = std::clamp(state.visible_radius_tiles, 8, 128);
   return TileRange3D{std::clamp(center_x - radius, 0, level.size.width - 1),
                      std::clamp(center_x + radius, 0, level.size.width - 1),
                      std::clamp(center_y - radius, 0, level.size.height - 1),
                      std::clamp(center_y + radius, 0, level.size.height - 1)};
+}
+
+void UpdateCullingCenter(const LevelData& level, Level3DViewState* state) {
+  if (state == nullptr || level.size.width <= 0 || level.size.height <= 0) {
+    return;
+  }
+
+  const int player_tile_x = std::clamp(TileIndexFromPosition(state->player.tile_x),
+                                       0, level.size.width - 1);
+  const int player_tile_y = std::clamp(TileIndexFromPosition(state->player.tile_y),
+                                       0, level.size.height - 1);
+  if (!state->culling_center_initialized) {
+    state->culling_center_tile_x = player_tile_x;
+    state->culling_center_tile_y = player_tile_y;
+    state->culling_center_initialized = true;
+    return;
+  }
+
+  const int deadzone = std::max(1, state->culling_deadzone_tiles);
+  const int dx = player_tile_x - state->culling_center_tile_x;
+  const int dy = player_tile_y - state->culling_center_tile_y;
+  if (std::abs(dx) < deadzone && std::abs(dy) < deadzone) {
+    return;
+  }
+
+  state->culling_center_tile_x = player_tile_x;
+  state->culling_center_tile_y = player_tile_y;
 }
 
 Vector3 TileWorldCenter(const LevelData& level, int x, int y,
@@ -305,6 +336,8 @@ void InitializeLevel3DView(const LevelData& level, Level3DViewState* state) {
   InitializeLevel3DPlayer(level, &state->player);
   InitializeLevel3DCamera(level, &state->camera);
   state->mode = Level3DRenderMode::kTerrain;
+  state->culling_center_initialized = false;
+  UpdateCullingCenter(level, state);
   state->initialized = true;
 }
 
@@ -325,13 +358,18 @@ void UpdateLevel3DView(const LevelData& level, const InputState& input,
   }
 
   UpdateLevel3DPlayer(level, input, dt, &state->player);
+  UpdateCullingCenter(level, state);
   UpdateLevel3DCamera(level, state->player, input, dt, state->tile_world_size,
                       state->elevation_step, &state->camera);
 }
 
 std::string Level3DViewStateToString(const Level3DViewState& state) {
   std::ostringstream stream;
-  stream << "renderer3d: mode=" << Level3DRenderModeName(state.mode) << "  "
+  stream << "renderer3d: mode=" << Level3DRenderModeName(state.mode)
+         << " radius=" << state.visible_radius_tiles
+         << " cull_center=" << state.culling_center_tile_x << ','
+         << state.culling_center_tile_y
+         << " deadzone=" << state.culling_deadzone_tiles << "  "
          << Level3DPlayerStateToString(state.player) << "  "
          << Level3DCameraStateToString(state.camera);
   return stream.str();

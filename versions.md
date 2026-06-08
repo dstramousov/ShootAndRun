@@ -385,3 +385,11 @@
 - Added short step-jump transition state with smoothed tile movement and a visual vertical arc.
 - Added event-based `p3d` logs for `jump_start`, `jump_land`, and `jump_block` without adding any debug HUD.
 - Kept the 2D renderer path unchanged.
+
+## v0.1.46 -> v0.1.47
+
+- Bumped CMake project and runtime application version to `0.1.47`.
+- Added configurable 3D render culling settings: `render3d_visible_radius_tiles` and `render3d_culling_deadzone_tiles`.
+- Stopped shifting the 3D visible tile range on every tile crossing; the range now recenters only after the player leaves a small culling deadzone.
+- Reduced default 3D visible radius from 52 to 48 tiles to lower per-frame draw work without changing gameplay data.
+- Kept 2D renderer, gameplay grids, collision, markers, routes, and visual pipeline unchanged.
