@@ -45,6 +45,18 @@ struct Render3DPerfConfig {
   int culling_deadzone_tiles = 4;
 };
 
+struct Player3DMovementConfig {
+  float move_speed_tiles_per_sec = 4.25F;
+  float acceleration_tiles_per_sec2 = 28.0F;
+  float deceleration_tiles_per_sec2 = 34.0F;
+  float mouse_turn_sensitivity_rad = 0.0031F;
+  float jump_duration_sec = 0.32F;
+  float jump_arc_elevation_units = 0.72F;
+  float jump_horizontal_speed_multiplier = 1.08F;
+  float jump_air_control_multiplier = 0.72F;
+  float jump_min_running_speed_tiles_per_sec = 1.20F;
+};
+
 struct ProjectConfig {
   std::filesystem::path map_package_path;
   std::filesystem::path ui_font_path = "data/fonts/PressStart2P-Regular.ttf";
@@ -54,6 +66,7 @@ struct ProjectConfig {
   ServiceInfoConfig service_info;
   Player3DLogConfig player3d_log;
   Render3DPerfConfig render3d_perf;
+  Player3DMovementConfig player3d_movement;
   visual_pipeline::VisualPipelineConfig visual_pipeline_config;
 
   /**

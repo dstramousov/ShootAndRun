@@ -348,6 +348,24 @@ std::string ProjectConfig::Dump() const {
          std::to_string(render3d_perf.visible_radius_tiles) +
          ", culling_deadzone_tiles: " +
          std::to_string(render3d_perf.culling_deadzone_tiles) +
+         " }, player3d_movement: { speed: " +
+         std::to_string(player3d_movement.move_speed_tiles_per_sec) +
+         ", accel: " +
+         std::to_string(player3d_movement.acceleration_tiles_per_sec2) +
+         ", decel: " +
+         std::to_string(player3d_movement.deceleration_tiles_per_sec2) +
+         ", mouse_turn: " +
+         std::to_string(player3d_movement.mouse_turn_sensitivity_rad) +
+         ", jump_duration: " +
+         std::to_string(player3d_movement.jump_duration_sec) +
+         ", jump_arc: " +
+         std::to_string(player3d_movement.jump_arc_elevation_units) +
+         ", jump_speed_mul: " +
+         std::to_string(player3d_movement.jump_horizontal_speed_multiplier) +
+         ", air_control: " +
+         std::to_string(player3d_movement.jump_air_control_multiplier) +
+         ", jump_run_min: " +
+         std::to_string(player3d_movement.jump_min_running_speed_tiles_per_sec) +
          " }, visual_pipeline: { mode: " +
          visual_pipeline::VisualPipelineModeName(visual_pipeline_config.mode) +
          ", prepared_visual_map_path: \"" +
@@ -598,6 +616,122 @@ ProjectConfigResult LoadProjectConfig(
     }
     config.render3d_perf.culling_deadzone_tiles =
         render3d_culling_deadzone_tiles.value;
+  }
+
+  ParseFloatResult player3d_move_speed =
+      ExtractOptionalJsonFloatField(content, "player3d_move_speed_tiles_per_sec");
+  if (!player3d_move_speed.ok) {
+    return {false, {}, player3d_move_speed.error};
+  }
+  if (player3d_move_speed.found) {
+    if (player3d_move_speed.value <= 0.0F) {
+      return {false, {}, "player3d_move_speed_tiles_per_sec must be positive"};
+    }
+    config.player3d_movement.move_speed_tiles_per_sec =
+        player3d_move_speed.value;
+  }
+
+  ParseFloatResult player3d_acceleration = ExtractOptionalJsonFloatField(
+      content, "player3d_acceleration_tiles_per_sec2");
+  if (!player3d_acceleration.ok) {
+    return {false, {}, player3d_acceleration.error};
+  }
+  if (player3d_acceleration.found) {
+    if (player3d_acceleration.value <= 0.0F) {
+      return {false, {}, "player3d_acceleration_tiles_per_sec2 must be positive"};
+    }
+    config.player3d_movement.acceleration_tiles_per_sec2 =
+        player3d_acceleration.value;
+  }
+
+  ParseFloatResult player3d_deceleration = ExtractOptionalJsonFloatField(
+      content, "player3d_deceleration_tiles_per_sec2");
+  if (!player3d_deceleration.ok) {
+    return {false, {}, player3d_deceleration.error};
+  }
+  if (player3d_deceleration.found) {
+    if (player3d_deceleration.value <= 0.0F) {
+      return {false, {}, "player3d_deceleration_tiles_per_sec2 must be positive"};
+    }
+    config.player3d_movement.deceleration_tiles_per_sec2 =
+        player3d_deceleration.value;
+  }
+
+  ParseFloatResult player3d_mouse_turn = ExtractOptionalJsonFloatField(
+      content, "player3d_mouse_turn_sensitivity_rad");
+  if (!player3d_mouse_turn.ok) {
+    return {false, {}, player3d_mouse_turn.error};
+  }
+  if (player3d_mouse_turn.found) {
+    if (player3d_mouse_turn.value <= 0.0F) {
+      return {false, {}, "player3d_mouse_turn_sensitivity_rad must be positive"};
+    }
+    config.player3d_movement.mouse_turn_sensitivity_rad =
+        player3d_mouse_turn.value;
+  }
+
+  ParseIntResult player3d_jump_duration_ms = ExtractOptionalJsonIntField(
+      content, "player3d_jump_duration_ms");
+  if (!player3d_jump_duration_ms.ok) {
+    return {false, {}, player3d_jump_duration_ms.error};
+  }
+  if (player3d_jump_duration_ms.found) {
+    if (player3d_jump_duration_ms.value <= 0) {
+      return {false, {}, "player3d_jump_duration_ms must be positive"};
+    }
+    config.player3d_movement.jump_duration_sec =
+        static_cast<float>(player3d_jump_duration_ms.value) / 1000.0F;
+  }
+
+  ParseFloatResult player3d_jump_arc = ExtractOptionalJsonFloatField(
+      content, "player3d_jump_arc_elevation_units");
+  if (!player3d_jump_arc.ok) {
+    return {false, {}, player3d_jump_arc.error};
+  }
+  if (player3d_jump_arc.found) {
+    if (player3d_jump_arc.value < 0.0F) {
+      return {false, {}, "player3d_jump_arc_elevation_units must be non-negative"};
+    }
+    config.player3d_movement.jump_arc_elevation_units = player3d_jump_arc.value;
+  }
+
+  ParseFloatResult player3d_jump_speed = ExtractOptionalJsonFloatField(
+      content, "player3d_jump_horizontal_speed_multiplier");
+  if (!player3d_jump_speed.ok) {
+    return {false, {}, player3d_jump_speed.error};
+  }
+  if (player3d_jump_speed.found) {
+    if (player3d_jump_speed.value <= 0.0F) {
+      return {false, {}, "player3d_jump_horizontal_speed_multiplier must be positive"};
+    }
+    config.player3d_movement.jump_horizontal_speed_multiplier =
+        player3d_jump_speed.value;
+  }
+
+  ParseFloatResult player3d_air_control = ExtractOptionalJsonFloatField(
+      content, "player3d_jump_air_control_multiplier");
+  if (!player3d_air_control.ok) {
+    return {false, {}, player3d_air_control.error};
+  }
+  if (player3d_air_control.found) {
+    if (player3d_air_control.value < 0.0F) {
+      return {false, {}, "player3d_jump_air_control_multiplier must be non-negative"};
+    }
+    config.player3d_movement.jump_air_control_multiplier =
+        player3d_air_control.value;
+  }
+
+  ParseFloatResult player3d_jump_run_min = ExtractOptionalJsonFloatField(
+      content, "player3d_jump_min_running_speed_tiles_per_sec");
+  if (!player3d_jump_run_min.ok) {
+    return {false, {}, player3d_jump_run_min.error};
+  }
+  if (player3d_jump_run_min.found) {
+    if (player3d_jump_run_min.value < 0.0F) {
+      return {false, {}, "player3d_jump_min_running_speed_tiles_per_sec must be non-negative"};
+    }
+    config.player3d_movement.jump_min_running_speed_tiles_per_sec =
+        player3d_jump_run_min.value;
   }
 
   ParseStringResult visual_pipeline_mode =

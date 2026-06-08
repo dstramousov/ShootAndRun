@@ -413,3 +413,12 @@
 - Added simple 3D transition markers for visible ramp/stairs/hatch/step connections.
 - Added event-based `p3d` transition logs without adding any debug HUD.
 - Kept the 2D renderer path unchanged.
+
+## v0.1.49 -> v0.1.50
+
+- Bumped CMake project and runtime application version to `0.1.50`.
+- Added regular 3D running jump on `Space` while keeping collision-blocked tiles impassable.
+- Kept close-range `Space + direction` step-up for elevation `+1`, but running jumps preserve momentum instead of forcing the scripted step-up transition.
+- Allowed airborne movement to keep the jump-start terrain movement multiplier and apply a small configurable horizontal speed multiplier.
+- Added configurable 3D player movement and jump tuning in `config/app_config.json`.
+- Kept `ramp/stairs` elevation transitions, existing collision rules, and the 2D renderer path unchanged.

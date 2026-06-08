@@ -29,6 +29,12 @@ enum class Level3DJumpEventType {
   kBlocked,
 };
 
+enum class Level3DJumpKind {
+  kNone,
+  kStepUp,
+  kRun,
+};
+
 struct Level3DPlayerState {
   float tile_x = 0.0F;
   float tile_y = 0.0F;
@@ -44,6 +50,15 @@ struct Level3DPlayerState {
   float deceleration_tiles_per_sec2 = 34.0F;
   float mouse_turn_sensitivity_rad = 0.0031F;
   int allowed_step_down_height = 1;
+  bool jump_active = false;
+  Level3DJumpKind jump_kind = Level3DJumpKind::kNone;
+  float jump_elapsed_sec = 0.0F;
+  float jump_duration_sec = 0.32F;
+  float jump_arc_elevation_units = 0.72F;
+  float jump_horizontal_speed_multiplier = 1.08F;
+  float jump_air_control_multiplier = 0.72F;
+  float jump_start_movement_multiplier = 1.0F;
+  float jump_min_running_speed_tiles_per_sec = 1.20F;
   bool step_jump_active = false;
   int step_jump_from_tile_x = -1;
   int step_jump_from_tile_y = -1;
@@ -57,6 +72,7 @@ struct Level3DPlayerState {
   float visual_elevation_offset = 0.0F;
   unsigned int jump_event_sequence = 0;
   Level3DJumpEventType last_jump_event_type = Level3DJumpEventType::kNone;
+  Level3DJumpKind last_jump_kind = Level3DJumpKind::kNone;
   Level3DMoveBlockReason last_jump_block_reason = Level3DMoveBlockReason::kNone;
   unsigned int transition_event_sequence = 0;
   ElevationTransitionType last_transition_type = ElevationTransitionType::kUnknown;
@@ -98,6 +114,14 @@ struct Level3DPlayerTileDiagnostics {
  */
 const char* Level3DMoveBlockReasonName(Level3DMoveBlockReason reason);
 
+
+/**
+ * @brief Returns a stable display name for a jump kind.
+ *
+ * @param kind Jump kind.
+ * @return Stable lowercase jump kind name.
+ */
+const char* Level3DJumpKindName(Level3DJumpKind kind);
 
 /**
  * @brief Returns a stable display name for a jump event type.

@@ -48,6 +48,26 @@ bool IsIntervalElapsed(double now, double last_time, int interval_ms) {
          now - last_time >= SecondsFromMilliseconds(interval_ms);
 }
 
+void ApplyPlayer3DMovementConfig(
+    const Player3DMovementConfig& config,
+    render3d::Level3DPlayerState* player) {
+  if (player == nullptr) {
+    return;
+  }
+
+  player->move_speed_tiles_per_sec = config.move_speed_tiles_per_sec;
+  player->acceleration_tiles_per_sec2 = config.acceleration_tiles_per_sec2;
+  player->deceleration_tiles_per_sec2 = config.deceleration_tiles_per_sec2;
+  player->mouse_turn_sensitivity_rad = config.mouse_turn_sensitivity_rad;
+  player->jump_duration_sec = config.jump_duration_sec;
+  player->jump_arc_elevation_units = config.jump_arc_elevation_units;
+  player->jump_horizontal_speed_multiplier =
+      config.jump_horizontal_speed_multiplier;
+  player->jump_air_control_multiplier = config.jump_air_control_multiplier;
+  player->jump_min_running_speed_tiles_per_sec =
+      config.jump_min_running_speed_tiles_per_sec;
+}
+
 int ToRaylibTraceLogLevel(RaylibLogLevel level) {
   switch (level) {
     case RaylibLogLevel::kTrace:
@@ -1136,6 +1156,7 @@ bool Application::StartNewGameFromConfig() {
     last_logged_3d_tile_y_ = -1;
     last_logged_3d_block_sequence_ = 0;
     last_logged_3d_jump_sequence_ = 0;
+    last_logged_3d_transition_sequence_ = 0;
     accumulated_mouse_dx_since_tile_ = 0.0F;
     accumulated_mouse_dy_since_tile_ = 0.0F;
     accumulated_abs_mouse_dx_since_tile_ = 0.0F;
@@ -1146,6 +1167,8 @@ bool Application::StartNewGameFromConfig() {
     last_3d_block_log_time_ = -1000.0;
     render3d::InitializeLevel3DView(*loaded_level_, &level_3d_view_);
     if (project_config_.has_value()) {
+      ApplyPlayer3DMovementConfig(project_config_->player3d_movement,
+                                  &level_3d_view_.player);
       level_3d_view_.visible_radius_tiles =
           project_config_->render3d_perf.visible_radius_tiles;
       level_3d_view_.culling_deadzone_tiles =
