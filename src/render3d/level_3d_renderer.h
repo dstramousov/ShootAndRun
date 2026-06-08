@@ -15,6 +15,14 @@
 namespace sar::render3d {
 
 /**
+ * @brief Fog-of-war algorithm used by the 3D visibility buffer.
+ */
+enum class Level3DFogMode {
+  kCircle,
+  kRaycast,
+};
+
+/**
  * @brief Runtime visualization mode for the 3D level renderer.
  */
 enum class Level3DRenderMode {
@@ -43,7 +51,7 @@ struct Level3DViewState {
   bool visibility_enabled = true;
   int visibility_radius_tiles = 22;
   bool visibility_memory_enabled = true;
-  bool visibility_los_enabled = true;
+  Level3DFogMode fog_mode = Level3DFogMode::kCircle;
   float seen_tile_dim_factor = 0.32F;
   int visibility_width = 0;
   int visibility_height = 0;
@@ -55,9 +63,17 @@ struct Level3DViewState {
   int visibility_last_radius_tiles = -1;
   bool visibility_last_enabled = false;
   bool visibility_last_memory_enabled = false;
-  bool visibility_last_los_enabled = false;
+  Level3DFogMode visibility_last_fog_mode = Level3DFogMode::kCircle;
   bool initialized = false;
 };
+
+/**
+ * @brief Returns the stable display name of a 3D fog-of-war mode.
+ *
+ * @param mode 3D fog-of-war mode.
+ * @return Stable lowercase mode name.
+ */
+const char* Level3DFogModeName(Level3DFogMode mode);
 
 /**
  * @brief Returns the stable display name of a 3D render mode.

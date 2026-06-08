@@ -31,6 +31,22 @@ enum class RaylibLogLevel {
 const char* RaylibLogLevelName(RaylibLogLevel level);
 
 /**
+ * @brief Fog-of-war visibility algorithm used by the 3D renderer.
+ */
+enum class Render3DFogMode {
+  kCircle,
+  kRaycast,
+};
+
+/**
+ * @brief Returns the configuration name of a 3D fog-of-war mode.
+ *
+ * @param mode Fog-of-war mode.
+ * @return Stable lowercase configuration name.
+ */
+const char* Render3DFogModeName(Render3DFogMode mode);
+
+/**
  * @brief Controls the small service-information overlay.
  */
 struct ServiceInfoConfig {
@@ -63,13 +79,13 @@ struct Render3DPerfConfig {
 };
 
 /**
- * @brief Configures 3D visibility radius and fog-of-war memory.
+ * @brief Configures 3D visibility radius, fog mode and fog-of-war memory.
  */
 struct Render3DVisibilityConfig {
   bool enabled = true;
   int radius_tiles = 22;
   bool memory_enabled = true;
-  bool los_enabled = true;
+  Render3DFogMode fog_mode = Render3DFogMode::kCircle;
   float seen_tile_dim_factor = 0.32F;
 };
 

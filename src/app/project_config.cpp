@@ -295,6 +295,17 @@ std::optional<RaylibLogLevel> ParseRaylibLogLevel(std::string_view value) {
   return std::nullopt;
 }
 
+std::optional<Render3DFogMode> ParseRender3DFogMode(std::string_view value) {
+  if (value == "circle" || value == "classic" || value == "radius") {
+    return Render3DFogMode::kCircle;
+  }
+  if (value == "raycast" || value == "los" || value == "line_of_sight") {
+    return Render3DFogMode::kRaycast;
+  }
+
+  return std::nullopt;
+}
+
 }  // namespace
 
 const char* RaylibLogLevelName(RaylibLogLevel level) {
@@ -316,6 +327,17 @@ const char* RaylibLogLevelName(RaylibLogLevel level) {
   }
 
   return "warning";
+}
+
+const char* Render3DFogModeName(Render3DFogMode mode) {
+  switch (mode) {
+    case Render3DFogMode::kCircle:
+      return "circle";
+    case Render3DFogMode::kRaycast:
+      return "raycast";
+  }
+
+  return "circle";
 }
 
 std::string ProjectConfig::Dump() const {
@@ -358,8 +380,8 @@ std::string ProjectConfig::Dump() const {
          std::to_string(render3d_visibility.radius_tiles) +
          ", memory_enabled: " +
          std::string(render3d_visibility.memory_enabled ? "true" : "false") +
-         ", los_enabled: " +
-         std::string(render3d_visibility.los_enabled ? "true" : "false") +
+         ", fog_mode: " +
+         Render3DFogModeName(render3d_visibility.fog_mode) +
          ", seen_tile_dim_factor: " +
          std::to_string(render3d_visibility.seen_tile_dim_factor) +
          " }, render3d_intro_camera: { enabled: " +
@@ -715,13 +737,30 @@ ProjectConfigResult LoadProjectConfig(
         render3d_visibility_memory_enabled.value;
   }
 
+  ParseStringResult render3d_fog_mode =
+      ExtractOptionalJsonStringField(content, "render3d_fog_mode");
+  if (!render3d_fog_mode.ok) {
+    return {false, {}, render3d_fog_mode.error};
+  }
+  if (!render3d_fog_mode.value.empty()) {
+    const std::optional<Render3DFogMode> parsed =
+        ParseRender3DFogMode(render3d_fog_mode.value);
+    if (!parsed.has_value()) {
+      return {false, {},
+              "unsupported render3d_fog_mode: " + render3d_fog_mode.value};
+    }
+    config.render3d_visibility.fog_mode = *parsed;
+  }
+
   ParseBoolResult render3d_los_enabled =
       ExtractOptionalJsonBoolField(content, "render3d_los_enabled");
   if (!render3d_los_enabled.ok) {
     return {false, {}, render3d_los_enabled.error};
   }
-  if (render3d_los_enabled.found) {
-    config.render3d_visibility.los_enabled = render3d_los_enabled.value;
+  if (render3d_los_enabled.found && render3d_fog_mode.value.empty()) {
+    config.render3d_visibility.fog_mode = render3d_los_enabled.value
+                                            ? Render3DFogMode::kRaycast
+                                            : Render3DFogMode::kCircle;
   }
 
   ParseFloatResult render3d_seen_tile_dim_factor =

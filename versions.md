@@ -483,3 +483,13 @@
 - Added `render3d_los_enabled` to `config/app_config.json` so LoS can be toggled independently from the visibility radius and memory system.
 - Avoided recalculating visibility every frame when player tile, radius and visibility settings have not changed.
 - Kept the 2D renderer path and debug HUD unchanged.
+
+## v0.1.57 -> v0.1.58
+
+- Bumped CMake project and runtime application version to `0.1.58`.
+- Replaced the direct 3D LoS toggle with `render3d_fog_mode`.
+- Added two 3D fog-of-war modes: `circle` for classic radius visibility and `raycast` for radius visibility with `vision_block_grid` / `blocks_vision` LoS blocking.
+- Kept fog memory behavior unchanged for both modes.
+- Preserved backward compatibility with the legacy `render3d_los_enabled` setting when `render3d_fog_mode` is not present.
+- Updated README and default config to make `circle` the safe default mode while keeping `raycast` available for experiments.
+- Kept the 2D renderer path, HUD and profiler unchanged.

@@ -1,4 +1,4 @@
-# ShootAndRunCpp v0.1.57
+# ShootAndRunCpp v0.1.58
 
 Первый каркас C++20 + raylib проекта.
 
@@ -20,7 +20,7 @@
 - Debug renderer for loaded terrain maps.
 - Separate 3D renderer mode selected from CLI with `--renderer=3d`.
 - 3D elevation readability: elevated tiles are drawn at `height_grid` level with visible side walls.
-- 3D visibility foundation: current-view circle, fog memory for previously seen tiles, and chunk-based render iteration.
+- 3D fog-of-war modes: classic circle visibility, optional raycast LoS visibility, fog memory for previously seen tiles, and chunk-based render iteration.
 - Debug marker overlay for `markers.json`, including player spawn markers.
 - 3D player-facing follow camera: mouse X turns player aim/facing, WASD moves relative to facing, and mouse wheel changes camera distance.
 - 3D new-game intro orients the player and camera toward the map center before the fly-in.
@@ -97,7 +97,7 @@ Esc            - вернуться в главное меню
 
 В режиме `--renderer=3d` используется отдельный 3D renderer. Он читает тот же
 `map_package`, рисует terrain/collision/height_grid в 3D и двигает игрока по
-`movement_grid`/`collision_grid` без запуска 2D visual pipeline. В 3D включён круг видимости вокруг игрока и dimmed fog-memory для уже увиденных тайлов.
+`movement_grid`/`collision_grid` без запуска 2D visual pipeline. В 3D включён fog-of-war: режим `circle` даёт классический круг видимости вокруг игрока, режим `raycast` дополнительно режет обзор через `vision_block_grid`/`blocks_vision`.
 
 ```text
 WASD / Arrows  - W/S вперёд/назад, A/D стрейф относительно взгляда
@@ -108,4 +108,23 @@ F1             - terrain colors
 F2             - elevation debug
 F3             - collision debug
 Esc            - вернуться в главное меню
+```
+
+Режим fog-of-war выбирается в `config/app_config.json`:
+
+```json
+"render3d_visibility": {
+  "render3d_visibility_enabled": true,
+  "render3d_visibility_radius_tiles": 22,
+  "render3d_visibility_memory_enabled": true,
+  "render3d_fog_mode": "circle",
+  "render3d_seen_tile_dim_factor": 0.32
+}
+```
+
+Доступные значения `render3d_fog_mode`:
+
+```text
+circle   - классический радиус видимости без LoS-блокеров
+raycast  - радиус видимости плюс raycast по vision blockers
 ```

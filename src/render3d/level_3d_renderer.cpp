@@ -265,7 +265,7 @@ void UpdateVisibilityState(const LevelData& level, Level3DViewState* state) {
       state->visibility_last_radius_tiles == radius &&
       state->visibility_last_enabled == state->visibility_enabled &&
       state->visibility_last_memory_enabled == state->visibility_memory_enabled &&
-      state->visibility_last_los_enabled == state->visibility_los_enabled;
+      state->visibility_last_fog_mode == state->fog_mode;
   if (inputs_unchanged) {
     return;
   }
@@ -280,7 +280,7 @@ void UpdateVisibilityState(const LevelData& level, Level3DViewState* state) {
     state->visibility_last_radius_tiles = radius;
     state->visibility_last_enabled = state->visibility_enabled;
     state->visibility_last_memory_enabled = state->visibility_memory_enabled;
-    state->visibility_last_los_enabled = state->visibility_los_enabled;
+    state->visibility_last_fog_mode = state->fog_mode;
     return;
   }
 
@@ -313,7 +313,7 @@ void UpdateVisibilityState(const LevelData& level, Level3DViewState* state) {
       if (dx * dx + dy * dy > radius_squared) {
         continue;
       }
-      if (state->visibility_los_enabled &&
+      if (state->fog_mode == Level3DFogMode::kRaycast &&
           !HasLineOfSight(level, center_x, center_y, x, y)) {
         continue;
       }
@@ -329,7 +329,7 @@ void UpdateVisibilityState(const LevelData& level, Level3DViewState* state) {
   state->visibility_last_radius_tiles = radius;
   state->visibility_last_enabled = state->visibility_enabled;
   state->visibility_last_memory_enabled = state->visibility_memory_enabled;
-  state->visibility_last_los_enabled = state->visibility_los_enabled;
+  state->visibility_last_fog_mode = state->fog_mode;
 }
 
 Vector3 TileWorldCenter(const LevelData& level, int x, int y,
@@ -778,6 +778,17 @@ void DrawTiles(const LevelData& level, const Level3DViewState& state) {
 
 }  // namespace
 
+const char* Level3DFogModeName(Level3DFogMode mode) {
+  switch (mode) {
+    case Level3DFogMode::kCircle:
+      return "circle";
+    case Level3DFogMode::kRaycast:
+      return "raycast";
+  }
+
+  return "circle";
+}
+
 const char* Level3DRenderModeName(Level3DRenderMode mode) {
   switch (mode) {
     case Level3DRenderMode::kTerrain:
@@ -844,7 +855,7 @@ std::string Level3DViewStateToString(const Level3DViewState& state) {
          << " visibility=" << (state.visibility_enabled ? "on" : "off")
          << "/r" << state.visibility_radius_tiles
          << "/memory=" << (state.visibility_memory_enabled ? "on" : "off")
-         << "/los=" << (state.visibility_los_enabled ? "on" : "off")
+         << "/fog=" << Level3DFogModeName(state.fog_mode)
          << " cull_center=" << state.culling_center_tile_x << ','
          << state.culling_center_tile_y
          << " deadzone=" << state.culling_deadzone_tiles << "  "
