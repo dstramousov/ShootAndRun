@@ -884,6 +884,11 @@ void Application::Log3DMovementEvents(const InputState& input) {
     last_logged_3d_jump_sequence_ = player.jump_event_sequence;
   }
 
+  if (player.transition_event_sequence != last_logged_3d_transition_sequence_) {
+    logger_.Info("p3d", render3d::Level3DTransitionEventToString(player));
+    last_logged_3d_transition_sequence_ = player.transition_event_sequence;
+  }
+
   if (player.blocked_event_sequence != last_logged_3d_block_sequence_ &&
       IsIntervalElapsed(now, last_3d_block_log_time_,
                         log_config.blocked_log_min_interval_ms)) {

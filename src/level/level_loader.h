@@ -17,6 +17,7 @@ struct LevelPackageSummary {
   int object_count = 0;
   int place_count = 0;
   int route_count = 0;
+  int elevation_transition_count = 0;
   int gameplay_zone_count = 0;
   int graph_node_count = 0;
   int graph_edge_count = 0;

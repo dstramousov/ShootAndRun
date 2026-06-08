@@ -401,3 +401,15 @@
 - Kept elevated tile surfaces at their runtime elevation and rendered vertical faces only from higher tiles toward lower neighbors.
 - Kept underground `-1` cells hidden from the surface renderer.
 - Kept 3D movement, step-jump rules, culling deadzone, and the 2D renderer path unchanged.
+
+## v0.1.48 -> v0.1.49
+
+- Bumped CMake project and runtime application version to `0.1.49`.
+- Added optional `elevation_transitions.json` loading from the map package or manifest.
+- Added runtime elevation transition records with `step`, `ramp`, `stairs`, and `hatch` types.
+- Allowed normal 3D movement through explicit ramp/stairs transitions for one-level elevation changes.
+- Kept non-transition `+1` height changes gated behind the existing Space step-jump action.
+- Kept surface/underground crossing blocked unless an explicit hatch transition exists.
+- Added simple 3D transition markers for visible ramp/stairs/hatch/step connections.
+- Added event-based `p3d` transition logs without adding any debug HUD.
+- Kept the 2D renderer path unchanged.

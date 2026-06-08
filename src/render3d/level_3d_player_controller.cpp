@@ -19,6 +19,8 @@ struct EnterTileResult {
   int tile_y = -1;
   int height_delta = 0;
   Level3DMoveBlockReason reason = Level3DMoveBlockReason::kNone;
+  bool used_transition = false;
+  ElevationTransitionType transition_type = ElevationTransitionType::kUnknown;
 };
 
 bool TextContains(std::string_view text, std::string_view needle) {
@@ -142,6 +144,80 @@ void FacingRelativeInputDirection(const InputState& input,
                                   float* out_x,
                                   float* out_y);
 
+bool IsSameTransitionEndpoint(const ElevationTransition& transition,
+                              int from_x, int from_y, int to_x, int to_y) {
+  if (transition.from_x == from_x && transition.from_y == from_y &&
+      transition.to_x == to_x && transition.to_y == to_y) {
+    return true;
+  }
+  return transition.bidirectional && transition.from_x == to_x &&
+         transition.from_y == to_y && transition.to_x == from_x &&
+         transition.to_y == from_y;
+}
+
+const ElevationTransition* FindElevationTransition(const LevelData& level,
+                                                   int from_x, int from_y,
+                                                   int to_x, int to_y) {
+  for (const ElevationTransition& transition : level.elevation_transitions) {
+    if (IsSameTransitionEndpoint(transition, from_x, from_y, to_x, to_y)) {
+      return &transition;
+    }
+  }
+  return nullptr;
+}
+
+bool CanUseNormalMovementTransition(const ElevationTransition& transition,
+                                    std::int8_t from_height,
+                                    std::int8_t to_height) {
+  const int height_delta = static_cast<int>(to_height) -
+                           static_cast<int>(from_height);
+  switch (transition.type) {
+    case ElevationTransitionType::kRamp:
+    case ElevationTransitionType::kStairs:
+      return std::abs(height_delta) <= 1;
+    case ElevationTransitionType::kHatch:
+      return from_height < 0 || to_height < 0;
+    case ElevationTransitionType::kStep:
+    case ElevationTransitionType::kUnknown:
+      return false;
+  }
+  return false;
+}
+
+bool CanUseStepJumpTransition(const ElevationTransition& transition,
+                              int height_delta) {
+  if (height_delta != 1) {
+    return false;
+  }
+  switch (transition.type) {
+    case ElevationTransitionType::kStep:
+    case ElevationTransitionType::kUnknown:
+      return true;
+    case ElevationTransitionType::kRamp:
+    case ElevationTransitionType::kStairs:
+    case ElevationTransitionType::kHatch:
+      return false;
+  }
+  return false;
+}
+
+void RecordTransitionEvent(const EnterTileResult& enter_result,
+                           const Level3DPlayerState& previous_state,
+                           Level3DPlayerState* state) {
+  if (state == nullptr || !enter_result.used_transition) {
+    return;
+  }
+  state->last_transition_type = enter_result.transition_type;
+  state->last_transition_from_tile_x = TileIndexFromPosition(previous_state.tile_x);
+  state->last_transition_from_tile_y = TileIndexFromPosition(previous_state.tile_y);
+  state->last_transition_to_tile_x = enter_result.tile_x;
+  state->last_transition_to_tile_y = enter_result.tile_y;
+  state->last_transition_from_elevation = previous_state.elevation;
+  state->last_transition_to_elevation = static_cast<std::int8_t>(
+      static_cast<int>(previous_state.elevation) + enter_result.height_delta);
+  ++state->transition_event_sequence;
+}
+
 EnterTileResult CheckEnterTile(const LevelData& level,
                                const Level3DPlayerState& state,
                                float next_x,
@@ -155,11 +231,21 @@ EnterTileResult CheckEnterTile(const LevelData& level,
 
   const int height_delta = static_cast<int>(target->height) -
                            static_cast<int>(state.elevation);
+  const int current_x = TileIndexFromPosition(state.tile_x);
+  const int current_y = TileIndexFromPosition(state.tile_y);
+  const ElevationTransition* transition = FindElevationTransition(
+      level, current_x, current_y, x, y);
   if (target->collision) {
     return {false, x, y, height_delta, Level3DMoveBlockReason::kCollision};
   }
   if (!target->walkable || target->movement_multiplier <= 0.0F) {
     return {false, x, y, height_delta, Level3DMoveBlockReason::kNotWalkable};
+  }
+  if (transition != nullptr &&
+      CanUseNormalMovementTransition(*transition, state.elevation,
+                                     target->height)) {
+    return {true, x, y, height_delta, Level3DMoveBlockReason::kNone,
+            true, transition->type};
   }
   if ((target->height < 0 || state.elevation < 0) &&
       target->height != state.elevation) {
@@ -237,6 +323,10 @@ EnterTileResult CheckStepJumpTarget(const LevelData& level,
 
   const int height_delta = static_cast<int>(target->height) -
                            static_cast<int>(state.elevation);
+  const int current_x = TileIndexFromPosition(state.tile_x);
+  const int current_y = TileIndexFromPosition(state.tile_y);
+  const ElevationTransition* transition = FindElevationTransition(
+      level, current_x, current_y, target_x, target_y);
   if (target->collision) {
     return {false, target_x, target_y, height_delta,
             Level3DMoveBlockReason::kCollision};
@@ -249,6 +339,11 @@ EnterTileResult CheckStepJumpTarget(const LevelData& level,
       target->height != state.elevation) {
     return {false, target_x, target_y, height_delta,
             Level3DMoveBlockReason::kUnderground};
+  }
+  if (transition != nullptr &&
+      !CanUseStepJumpTransition(*transition, height_delta)) {
+    return {false, target_x, target_y, height_delta,
+            Level3DMoveBlockReason::kNone};
   }
   if (height_delta == 1) {
     return {true, target_x, target_y, height_delta,
@@ -383,11 +478,13 @@ void ApplyMovementAxis(const LevelData& level, float dx, float dy,
     return;
   }
 
+  const Level3DPlayerState previous_state = *state;
   state->tile_x = next_x;
   state->tile_y = next_y;
   state->elevation = HeightAtOrZero(level, TileIndexFromPosition(state->tile_x),
                                     TileIndexFromPosition(state->tile_y));
   RefreshEffectiveMovementSpeed(level, state);
+  RecordTransitionEvent(enter_result, previous_state, state);
 }
 
 void NormalizeFacing(Level3DPlayerState* state) {
@@ -590,6 +687,14 @@ void InitializeLevel3DPlayer(const LevelData& level,
   state->jump_event_sequence = 0;
   state->last_jump_event_type = Level3DJumpEventType::kNone;
   state->last_jump_block_reason = Level3DMoveBlockReason::kNone;
+  state->transition_event_sequence = 0;
+  state->last_transition_type = ElevationTransitionType::kUnknown;
+  state->last_transition_from_tile_x = -1;
+  state->last_transition_from_tile_y = -1;
+  state->last_transition_to_tile_x = -1;
+  state->last_transition_to_tile_y = -1;
+  state->last_transition_from_elevation = state->elevation;
+  state->last_transition_to_elevation = state->elevation;
   RefreshEffectiveMovementSpeed(level, state);
   state->initialized = true;
 }
@@ -689,6 +794,20 @@ std::string Level3DJumpEventToString(const Level3DPlayerState& state) {
     stream << " reason="
            << Level3DMoveBlockReasonName(state.last_jump_block_reason);
   }
+  return stream.str();
+}
+
+std::string Level3DTransitionEventToString(
+    const Level3DPlayerState& state) {
+  std::ostringstream stream;
+  stream << "transition type="
+         << ElevationTransitionTypeName(state.last_transition_type)
+         << " from=" << state.last_transition_from_tile_x << ','
+         << state.last_transition_from_tile_y
+         << " el=" << static_cast<int>(state.last_transition_from_elevation)
+         << " to=" << state.last_transition_to_tile_x << ','
+         << state.last_transition_to_tile_y
+         << " el=" << static_cast<int>(state.last_transition_to_elevation);
   return stream.str();
 }
 

@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "level/elevation_transition.h"
 #include "level/gameplay_zone.h"
 #include "level/marker.h"
 #include "level/place.h"
@@ -28,6 +29,7 @@ struct LevelData {
   std::vector<Place> places;
   std::vector<Marker> markers;
   std::vector<Route> routes;
+  std::vector<ElevationTransition> elevation_transitions;
   std::vector<GameplayZone> zones;
   WorldGraph world_graph;
   std::map<std::string, int> terrain_type_counts;

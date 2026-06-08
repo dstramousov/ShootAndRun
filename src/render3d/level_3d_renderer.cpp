@@ -197,6 +197,86 @@ bool IsSurfaceVisible(const RuntimeCell& cell) {
   return cell.height >= 0;
 }
 
+Color TransitionColor(ElevationTransitionType type) {
+  switch (type) {
+    case ElevationTransitionType::kRamp:
+      return Color{205, 194, 108, 230};
+    case ElevationTransitionType::kStairs:
+      return Color{204, 204, 188, 235};
+    case ElevationTransitionType::kHatch:
+      return Color{118, 96, 190, 235};
+    case ElevationTransitionType::kStep:
+      return Color{214, 158, 86, 225};
+    case ElevationTransitionType::kUnknown:
+      return Color{190, 190, 118, 210};
+  }
+  return Color{190, 190, 118, 210};
+}
+
+bool IsTransitionVisibleInRange(const ElevationTransition& transition,
+                                const TileRange3D& range) {
+  const bool from_visible = transition.from_x >= range.min_x &&
+                            transition.from_x <= range.max_x &&
+                            transition.from_y >= range.min_y &&
+                            transition.from_y <= range.max_y;
+  const bool to_visible = transition.to_x >= range.min_x &&
+                          transition.to_x <= range.max_x &&
+                          transition.to_y >= range.min_y &&
+                          transition.to_y <= range.max_y;
+  return from_visible || to_visible;
+}
+
+void DrawTransitionPrimitive(const LevelData& level,
+                             const ElevationTransition& transition,
+                             const Level3DViewState& state) {
+  const RuntimeCell* from = CellAt(level, transition.from_x, transition.from_y);
+  const RuntimeCell* to = CellAt(level, transition.to_x, transition.to_y);
+  if (from == nullptr || to == nullptr || !IsSurfaceVisible(*from) ||
+      !IsSurfaceVisible(*to)) {
+    return;
+  }
+
+  const Vector3 from_center = TileWorldCenter(level, transition.from_x,
+                                              transition.from_y, from->height,
+                                              state.tile_world_size,
+                                              state.elevation_step);
+  const Vector3 to_center = TileWorldCenter(level, transition.to_x,
+                                            transition.to_y, to->height,
+                                            state.tile_world_size,
+                                            state.elevation_step);
+  const float dx = to_center.x - from_center.x;
+  const float dz = to_center.z - from_center.z;
+  const float distance = std::hypot(dx, dz);
+  if (distance <= 0.001F) {
+    return;
+  }
+
+  const Vector3 center{(from_center.x + to_center.x) * 0.5F,
+                       (from_center.y + to_center.y) * 0.5F + 0.055F,
+                       (from_center.z + to_center.z) * 0.5F};
+  const bool horizontal = std::abs(dx) >= std::abs(dz);
+  const float long_axis = std::max(state.tile_world_size * 0.84F,
+                                   distance + state.tile_world_size * 0.12F);
+  const float short_axis = state.tile_world_size * 0.26F;
+  const float height = 0.07F;
+  const float width = horizontal ? long_axis : short_axis;
+  const float depth = horizontal ? short_axis : long_axis;
+  const Color color = TransitionColor(transition.type);
+  DrawCube(center, width, height, depth, color);
+  DrawCubeWires(center, width, height, depth, ScaleColorRgb(color, 0.75F, 210));
+}
+
+void DrawElevationTransitions(const LevelData& level,
+                              const Level3DViewState& state,
+                              const TileRange3D& range) {
+  for (const ElevationTransition& transition : level.elevation_transitions) {
+    if (!IsTransitionVisibleInRange(transition, range)) {
+      continue;
+    }
+    DrawTransitionPrimitive(level, transition, state);
+  }
+}
+
 float BlockingVolumeHeight(const RuntimeCell& cell) {
   if (cell.terrain == TerrainType::kForest) {
     return 1.2F;
@@ -376,6 +456,8 @@ void DrawTiles(const LevelData& level, const Level3DViewState& state) {
       DrawGroundTile(level, x, y, *cell, state);
     }
   }
+
+  DrawElevationTransitions(level, state, range);
 
   for (int y = range.min_y; y <= range.max_y; ++y) {
     for (int x = range.min_x; x <= range.max_x; ++x) {

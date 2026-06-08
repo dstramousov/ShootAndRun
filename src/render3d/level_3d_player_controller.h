@@ -58,6 +58,14 @@ struct Level3DPlayerState {
   unsigned int jump_event_sequence = 0;
   Level3DJumpEventType last_jump_event_type = Level3DJumpEventType::kNone;
   Level3DMoveBlockReason last_jump_block_reason = Level3DMoveBlockReason::kNone;
+  unsigned int transition_event_sequence = 0;
+  ElevationTransitionType last_transition_type = ElevationTransitionType::kUnknown;
+  int last_transition_from_tile_x = -1;
+  int last_transition_from_tile_y = -1;
+  int last_transition_to_tile_x = -1;
+  int last_transition_to_tile_y = -1;
+  std::int8_t last_transition_from_elevation = 0;
+  std::int8_t last_transition_to_elevation = 0;
   int last_blocked_tile_x = -1;
   int last_blocked_tile_y = -1;
   Level3DMoveBlockReason last_block_reason = Level3DMoveBlockReason::kNone;
@@ -106,6 +114,14 @@ const char* Level3DJumpEventTypeName(Level3DJumpEventType event_type);
  * @return String representation for event logs.
  */
 std::string Level3DJumpEventToString(const Level3DPlayerState& state);
+
+/**
+ * @brief Returns a compact readable dump of the last elevation transition event.
+ *
+ * @param state Current player state containing the last transition event.
+ * @return String representation for event logs.
+ */
+std::string Level3DTransitionEventToString(const Level3DPlayerState& state);
 
 /**
  * @brief Finds a spawn point and initializes the 3D player state.

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(ShootAndRun
-  VERSION 0.1.48
+  VERSION 0.1.49
   DESCRIPTION "ShootAndRun C++ raylib bootstrap"
   LANGUAGES CXX
 )
@@ -24,6 +24,7 @@ add_executable(shoot_and_run
   src/developer/developer_config.cpp
   src/game/game_session.cpp
   src/input/input_system.cpp
+  src/level/elevation_transition.cpp
   src/level/level_loader.cpp
   src/level/terrain_type.cpp
   src/logging/logger.cpp
@@ -50,8 +51,8 @@ add_executable(shoot_and_run
   src/visual_pipeline/ruin_visual_plan.cpp
   src/visual_pipeline/water_visual_plan.cpp
   src/visual_pipeline/object_visual_plan.cpp
-  src/visual_pipeline/micro_scene_visual_plan.cpp
-  src/visual_pipeline/final_visual_package_writer.cpp
+    src/visual_pipeline/micro_scene_visual_plan.cpp
+    src/visual_pipeline/final_visual_package_writer.cpp
   src/visual_pipeline/terrain_regions.cpp
   src/visual_pipeline/region_borders.cpp
   src/visual_pipeline/debug_artifact_writer.cpp
@@ -97,6 +98,7 @@ if(SAR_BUILD_TESTS)
     tests/test_main.cpp
     src/app/project_config.cpp
     src/developer/developer_config.cpp
+    src/level/elevation_transition.cpp
     src/level/level_loader.cpp
     src/level/terrain_type.cpp
     src/ui/main_menu.cpp
@@ -107,8 +109,8 @@ if(SAR_BUILD_TESTS)
     src/visual_pipeline/ruin_visual_plan.cpp
     src/visual_pipeline/water_visual_plan.cpp
     src/visual_pipeline/object_visual_plan.cpp
-  src/visual_pipeline/micro_scene_visual_plan.cpp
-  src/visual_pipeline/final_visual_package_writer.cpp
+    src/visual_pipeline/micro_scene_visual_plan.cpp
+    src/visual_pipeline/final_visual_package_writer.cpp
     src/visual_pipeline/terrain_regions.cpp
     src/visual_pipeline/region_borders.cpp
     src/visual_pipeline/debug_artifact_writer.cpp

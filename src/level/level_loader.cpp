@@ -122,6 +122,12 @@ struct GameplayZoneLoadResult {
   std::string error;
 };
 
+struct ElevationTransitionLoadResult {
+  bool ok = false;
+  std::vector<ElevationTransition> transitions;
+  std::string error;
+};
+
 struct WorldGraphLoadResult {
   bool ok = false;
   WorldGraph graph;
@@ -138,6 +144,7 @@ struct PackageLayout {
   std::filesystem::path routes_path;
   std::filesystem::path world_graph_path;
   std::filesystem::path gameplay_zones_path;
+  std::filesystem::path elevation_transitions_path;
   std::filesystem::path tile_types_catalog_path;
   bool has_tile_types_catalog = false;
   bool uses_manifest = false;
@@ -2206,6 +2213,136 @@ GameplayZoneLoadResult LoadGameplayZonesIfPresent(
   return ParseGameplayZones(file.content, width, height);
 }
 
+
+bool ExtractNestedCoordinate(std::string_view object,
+                             std::string_view field_name,
+                             int* x, int* y, std::string* error) {
+  const std::optional<std::string_view> nested = ExtractObjectField(
+      object, field_name, error);
+  if (!nested.has_value()) {
+    if (!error->empty()) {
+      return false;
+    }
+    *error = "missing coordinate object: " + std::string(field_name);
+    return false;
+  }
+  return ExtractCoordinate(*nested, x, y, error);
+}
+
+bool ExtractEndpointCoordinate(std::string_view object,
+                               std::string_view object_field,
+                               std::string_view prefix,
+                               int* x, int* y, std::string* error) {
+  IntFieldResult x_value = ExtractOptionalIntField(
+      object, std::string(prefix) + "_x");
+  IntFieldResult y_value = ExtractOptionalIntField(
+      object, std::string(prefix) + "_y");
+  if (!x_value.ok || !y_value.ok) {
+    *error = !x_value.ok ? x_value.error : y_value.error;
+    return false;
+  }
+  if (x_value.found && y_value.found) {
+    *x = x_value.value;
+    *y = y_value.value;
+    return true;
+  }
+  return ExtractNestedCoordinate(object, object_field, x, y, error);
+}
+
+std::int8_t ExtractOptionalElevation(std::string_view object,
+                                     std::string_view field_name,
+                                     std::int8_t fallback) {
+  const IntFieldResult elevation = ExtractOptionalIntField(object, field_name);
+  if (!elevation.ok || !elevation.found) {
+    return fallback;
+  }
+  return static_cast<std::int8_t>(std::clamp(elevation.value, -8, 8));
+}
+
+ElevationTransitionLoadResult ParseElevationTransitions(std::string_view text,
+                                                        int width,
+                                                        int height) {
+  std::string error;
+  const std::optional<std::vector<std::string_view>> transition_values =
+      ExtractNamedObjectArray(text, {"items", "transitions", "edges"}, &error);
+  if (!transition_values.has_value()) {
+    return {false, {}, error};
+  }
+
+  std::vector<ElevationTransition> transitions;
+  transitions.reserve(transition_values->size());
+  int fallback_id = 0;
+  for (const std::string_view transition_value : *transition_values) {
+    int from_x = 0;
+    int from_y = 0;
+    int to_x = 0;
+    int to_y = 0;
+    if (!ExtractEndpointCoordinate(transition_value, "from", "from", &from_x,
+                                   &from_y, &error)) {
+      return {false, {}, "elevation transition: " + error};
+    }
+    if (!ExtractEndpointCoordinate(transition_value, "to", "to", &to_x,
+                                   &to_y, &error)) {
+      return {false, {}, "elevation transition: " + error};
+    }
+    if (!IsCoordinateInside(from_x, from_y, width, height) ||
+        !IsCoordinateInside(to_x, to_y, width, height)) {
+      return {false, {}, "elevation transition endpoint outside map"};
+    }
+
+    const StringFieldResult id = ExtractOptionalStringField(transition_value,
+                                                            "id");
+    if (!id.ok) {
+      return {false, {}, id.error};
+    }
+    const StringFieldResult type = ExtractOptionalStringField(transition_value,
+                                                              "type");
+    if (!type.ok) {
+      return {false, {}, type.error};
+    }
+    const BoolFieldResult bidirectional = ExtractOptionalBoolField(
+        transition_value, "bidirectional");
+    if (!bidirectional.ok) {
+      return {false, {}, bidirectional.error};
+    }
+
+    ElevationTransition transition;
+    if (id.found && !id.value.empty()) {
+      transition.id = id.value;
+    } else {
+      transition.id = "elevation_transition_" + std::to_string(fallback_id);
+    }
+    ++fallback_id;
+    transition.type = type.found ? ParseElevationTransitionType(type.value)
+                                 : ElevationTransitionType::kUnknown;
+    transition.from_x = from_x;
+    transition.from_y = from_y;
+    transition.to_x = to_x;
+    transition.to_y = to_y;
+    transition.from_elevation = ExtractOptionalElevation(
+        transition_value, "from_elevation", 0);
+    transition.to_elevation = ExtractOptionalElevation(
+        transition_value, "to_elevation", transition.from_elevation);
+    transition.bidirectional = !bidirectional.found || bidirectional.value;
+    transitions.push_back(std::move(transition));
+  }
+
+  return {true, std::move(transitions), {}};
+}
+
+ElevationTransitionLoadResult LoadElevationTransitionsIfPresent(
+    const std::filesystem::path& path, int width, int height) {
+  ReadFileResult file;
+  std::string error;
+  if (!LoadOptionalFile(path, &file, &error)) {
+    return {false, {}, error};
+  }
+  if (!file.ok) {
+    return {true, {}, {}};
+  }
+  return ParseElevationTransitions(file.content, width, height);
+}
+
 MarkerLoadResult ParseMarkers(std::string_view text, int width, int height) {
   std::string error;
   std::string_view array_field_name = "markers";
@@ -2334,6 +2471,7 @@ LevelLoadResult ResolvePackageLayout(const std::filesystem::path& package_path,
   layout->routes_path = package_path / "routes.json";
   layout->world_graph_path = package_path / "world_graph.json";
   layout->gameplay_zones_path = package_path / "gameplay_zones.json";
+  layout->elevation_transitions_path = package_path / "elevation_transitions.json";
 
   const std::filesystem::path manifest_path = package_path / "map.json";
   std::error_code error_code;
@@ -2436,6 +2574,16 @@ LevelLoadResult ResolvePackageLayout(const std::filesystem::path& package_path,
                                                      gameplay_zones.value);
   }
 
+  const StringFieldResult elevation_transitions = ExtractOptionalStringField(
+      manifest.content, "elevation_transitions");
+  if (!elevation_transitions.ok) {
+    return {false, {}, elevation_transitions.error};
+  }
+  if (elevation_transitions.found && !elevation_transitions.value.empty()) {
+    layout->elevation_transitions_path = ResolvePackageFile(
+        package_path, elevation_transitions.value);
+  }
+
   const StringFieldResult tile_types = ExtractOptionalStringField(
       manifest.content, "tile_types");
   if (!tile_types.ok) {
@@ -2490,6 +2638,8 @@ std::string LevelPackageSummary::Dump() const {
          ", objects: " + std::to_string(object_count) +
          ", places: " + std::to_string(place_count) +
          ", routes: " + std::to_string(route_count) +
+         ", elevation_transitions: " +
+         std::to_string(elevation_transition_count) +
          ", zones: " + std::to_string(gameplay_zone_count) +
          ", graph_nodes: " + std::to_string(graph_node_count) +
          ", graph_edges: " + std::to_string(graph_edge_count) + " }";
@@ -2656,6 +2806,15 @@ LevelLoadResult LevelLoader::LoadBasicPackage(
   }
   summary.route_count = static_cast<int>(routes.routes.size());
 
+  const ElevationTransitionLoadResult elevation_transitions =
+      LoadElevationTransitionsIfPresent(layout.elevation_transitions_path,
+                                        width.value, height.value);
+  if (!elevation_transitions.ok) {
+    return {false, {}, elevation_transitions.error};
+  }
+  summary.elevation_transition_count = static_cast<int>(
+      elevation_transitions.transitions.size());
+
   const WorldGraphLoadResult world_graph = LoadWorldGraphIfPresent(
       layout.world_graph_path, width.value, height.value);
   if (!world_graph.ok) {
@@ -2678,6 +2837,7 @@ LevelLoadResult LevelLoader::LoadBasicPackage(
   level.objects = std::move(runtime_objects.objects);
   level.places = std::move(places.places);
   level.routes = std::move(routes.routes);
+  level.elevation_transitions = std::move(elevation_transitions.transitions);
   level.world_graph = std::move(world_graph.graph);
   level.zones = std::move(gameplay_zones.zones);
   level.terrain_type_counts = terrain_grid.terrain_type_counts;
