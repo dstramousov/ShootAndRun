@@ -76,6 +76,45 @@ struct GroundTileSpan {
 };
 
 /**
+ * @brief Stores a blocking volume span key used for safe horizontal batching.
+ */
+struct BlockingVolumeSpanKey {
+  std::int8_t height = 0;
+  TerrainType terrain = TerrainType::kUnknown;
+  float volume_height = 0.0F;
+  Color color = Color{0, 0, 0, 0};
+};
+
+/**
+ * @brief Stores one horizontal blocking volume span prepared for batched drawing.
+ */
+struct BlockingVolumeSpan {
+  int start_x = 0;
+  int end_x = 0;
+  int y = 0;
+  BlockingVolumeSpanKey key;
+};
+
+/**
+ * @brief Stores a passable forest boundary span key used for safe horizontal batching.
+ */
+struct ForestBoundarySpanKey {
+  std::int8_t height = 0;
+  Color color = Color{0, 0, 0, 0};
+  Color wire_color = Color{0, 0, 0, 0};
+};
+
+/**
+ * @brief Stores one horizontal passable forest boundary span prepared for batched drawing.
+ */
+struct ForestBoundarySpan {
+  int start_x = 0;
+  int end_x = 0;
+  int y = 0;
+  ForestBoundarySpanKey key;
+};
+
+/**
  * @brief Converts a floating tile position to an integer tile index.
  */
 int TileIndexFromPosition(float value) {
@@ -1000,6 +1039,253 @@ void DrawGroundTileSpans(const LevelData& level, const Level3DViewState& state,
 }
 
 /**
+ * @brief Returns a stable color for a blocking volume tile.
+ */
+Color BlockingVolumeColor(const RuntimeCell& cell, const Level3DViewState& state,
+                          int x, int y) {
+  Color color = cell.terrain == TerrainType::kForest
+                    ? Color{75, 61, 43, 235}
+                    : Color{72, 62, 52, 235};
+  if (state.mode == Level3DRenderMode::kCollision) {
+    color = Color{105, 77, 54, 238};
+  }
+  return ApplyVisibilityColor(color, state, x, y);
+}
+
+/**
+ * @brief Checks whether two blocking volume span keys can be drawn as one slab.
+ */
+bool SameBlockingVolumeSpanKey(const BlockingVolumeSpanKey& lhs,
+                               const BlockingVolumeSpanKey& rhs) {
+  return lhs.height == rhs.height && lhs.terrain == rhs.terrain &&
+         std::abs(lhs.volume_height - rhs.volume_height) <= 0.001F &&
+         SameColor(lhs.color, rhs.color);
+}
+
+/**
+ * @brief Builds a safe blocking volume span key for one tile.
+ */
+BlockingVolumeSpanKey BlockingVolumeKey(const RuntimeCell& cell,
+                                        const Level3DViewState& state,
+                                        int x, int y) {
+  return BlockingVolumeSpanKey{cell.height, cell.terrain,
+                               BlockingVolumeHeight(cell),
+                               BlockingVolumeColor(cell, state, x, y)};
+}
+
+/**
+ * @brief Checks whether a tile may participate in blocking volume batching.
+ */
+bool IsBlockingVolumeSpanCandidate(const Level3DViewState& state, int x, int y,
+                                   const RuntimeCell& cell) {
+  return !IsPassableForestBoundary(cell) && IsSurfaceVisible(cell) &&
+         IsTileRenderable(state, x, y) && BlockingVolumeHeight(cell) > 0.0F;
+}
+
+/**
+ * @brief Draws one batched horizontal blocking volume slab.
+ */
+int DrawBlockingVolumeSpan(const LevelData& level,
+                           const BlockingVolumeSpan& span,
+                           const Level3DViewState& state) {
+  const int tile_count = span.end_x - span.start_x + 1;
+  if (tile_count <= 0 || span.key.volume_height <= 0.0F) {
+    return 0;
+  }
+
+  Vector3 center = TileWorldCenter(level, span.start_x, span.y,
+                                   span.key.height, state.tile_world_size,
+                                   state.elevation_step);
+  center.x += static_cast<float>(tile_count - 1) * state.tile_world_size *
+              0.5F;
+  center.y += span.key.volume_height * 0.5F;
+
+  const float width = std::max(state.tile_world_size * 0.95F,
+                               static_cast<float>(tile_count) *
+                                       state.tile_world_size -
+                                   state.tile_world_size * 0.05F);
+  const float depth = state.tile_world_size * 0.95F;
+  DrawCube(center, width, span.key.volume_height, depth, span.key.color);
+  return tile_count;
+}
+
+/**
+ * @brief Draws batched horizontal blocking volume slabs for active renderable tiles.
+ */
+void DrawBlockingVolumeSpans(const LevelData& level,
+                             const Level3DViewState& state,
+                             const TileRange3D& range,
+                             Level3DPerfStats* stats) {
+  for (int y = range.min_y; y <= range.max_y; ++y) {
+    int x = range.min_x;
+    while (x <= range.max_x) {
+      const RuntimeCell* cell = CellAt(level, x, y);
+      if (cell == nullptr ||
+          !IsBlockingVolumeSpanCandidate(state, x, y, *cell)) {
+        ++x;
+        continue;
+      }
+
+      BlockingVolumeSpan span;
+      span.start_x = x;
+      span.end_x = x;
+      span.y = y;
+      span.key = BlockingVolumeKey(*cell, state, x, y);
+
+      int next_x = x + 1;
+      while (next_x <= range.max_x) {
+        const RuntimeCell* next_cell = CellAt(level, next_x, y);
+        if (next_cell == nullptr ||
+            !IsBlockingVolumeSpanCandidate(state, next_x, y, *next_cell)) {
+          break;
+        }
+        const BlockingVolumeSpanKey next_key = BlockingVolumeKey(
+            *next_cell, state, next_x, y);
+        if (!SameBlockingVolumeSpanKey(span.key, next_key)) {
+          break;
+        }
+        span.end_x = next_x;
+        ++next_x;
+      }
+
+      const int covered_tiles = DrawBlockingVolumeSpan(level, span, state);
+      if (stats != nullptr) {
+        ++stats->blocking_volumes_drawn;
+        stats->blocking_volume_tiles_covered += covered_tiles;
+      }
+      x = span.end_x + 1;
+    }
+  }
+}
+
+/**
+ * @brief Returns a stable color for a passable forest boundary volume tile.
+ */
+Color ForestBoundaryVolumeColor(const RuntimeCell& cell,
+                                const Level3DViewState& state, int x, int y) {
+  Color color = Color{54, 103, 48, 92};
+  if (state.mode == Level3DRenderMode::kCollision) {
+    color = Color{44, 146, 58, 104};
+  }
+  return ApplyVisibilityColor(color, state, x, y);
+}
+
+/**
+ * @brief Returns a stable wire color for a passable forest boundary volume tile.
+ */
+Color ForestBoundaryWireColor(const Level3DViewState& state, int x, int y) {
+  return ApplyVisibilityColor(Color{118, 166, 95, 112}, state, x, y);
+}
+
+/**
+ * @brief Checks whether two forest boundary span keys can be drawn as one slab.
+ */
+bool SameForestBoundarySpanKey(const ForestBoundarySpanKey& lhs,
+                               const ForestBoundarySpanKey& rhs) {
+  return lhs.height == rhs.height && SameColor(lhs.color, rhs.color) &&
+         SameColor(lhs.wire_color, rhs.wire_color);
+}
+
+/**
+ * @brief Builds a safe forest boundary span key for one tile.
+ */
+ForestBoundarySpanKey ForestBoundaryKey(const RuntimeCell& cell,
+                                        const Level3DViewState& state,
+                                        int x, int y) {
+  return ForestBoundarySpanKey{cell.height,
+                               ForestBoundaryVolumeColor(cell, state, x, y),
+                               ForestBoundaryWireColor(state, x, y)};
+}
+
+/**
+ * @brief Checks whether a tile may participate in passable forest boundary batching.
+ */
+bool IsForestBoundarySpanCandidate(const Level3DViewState& state, int x, int y,
+                                   const RuntimeCell& cell) {
+  return IsPassableForestBoundary(cell) && IsSurfaceVisible(cell) &&
+         IsTileRenderable(state, x, y);
+}
+
+/**
+ * @brief Draws one batched horizontal passable forest boundary volume slab.
+ */
+int DrawForestBoundarySpan(const LevelData& level,
+                           const ForestBoundarySpan& span,
+                           const Level3DViewState& state) {
+  const int tile_count = span.end_x - span.start_x + 1;
+  if (tile_count <= 0) {
+    return 0;
+  }
+
+  constexpr float kHeight = 0.62F;
+  Vector3 center = TileWorldCenter(level, span.start_x, span.y,
+                                   span.key.height, state.tile_world_size,
+                                   state.elevation_step);
+  center.x += static_cast<float>(tile_count - 1) * state.tile_world_size *
+              0.5F;
+  center.y += kHeight * 0.5F;
+
+  const float width = std::max(state.tile_world_size * 0.92F,
+                               static_cast<float>(tile_count) *
+                                       state.tile_world_size -
+                                   state.tile_world_size * 0.08F);
+  const float depth = state.tile_world_size * 0.92F;
+  DrawCube(center, width, kHeight, depth, span.key.color);
+  DrawCubeWires(center, width, kHeight, depth, span.key.wire_color);
+  return tile_count;
+}
+
+/**
+ * @brief Draws batched horizontal passable forest boundary volume slabs.
+ */
+void DrawForestBoundarySpans(const LevelData& level,
+                             const Level3DViewState& state,
+                             const TileRange3D& range,
+                             Level3DPerfStats* stats) {
+  for (int y = range.min_y; y <= range.max_y; ++y) {
+    int x = range.min_x;
+    while (x <= range.max_x) {
+      const RuntimeCell* cell = CellAt(level, x, y);
+      if (cell == nullptr ||
+          !IsForestBoundarySpanCandidate(state, x, y, *cell)) {
+        ++x;
+        continue;
+      }
+
+      ForestBoundarySpan span;
+      span.start_x = x;
+      span.end_x = x;
+      span.y = y;
+      span.key = ForestBoundaryKey(*cell, state, x, y);
+
+      int next_x = x + 1;
+      while (next_x <= range.max_x) {
+        const RuntimeCell* next_cell = CellAt(level, next_x, y);
+        if (next_cell == nullptr ||
+            !IsForestBoundarySpanCandidate(state, next_x, y, *next_cell)) {
+          break;
+        }
+        const ForestBoundarySpanKey next_key = ForestBoundaryKey(
+            *next_cell, state, next_x, y);
+        if (!SameForestBoundarySpanKey(span.key, next_key)) {
+          break;
+        }
+        span.end_x = next_x;
+        ++next_x;
+      }
+
+      const int covered_tiles = DrawForestBoundarySpan(level, span, state);
+      if (stats != nullptr) {
+        ++stats->forest_boundary_volumes_drawn;
+        ++stats->forest_boundary_wireframes_drawn;
+        stats->forest_boundary_tiles_covered += covered_tiles;
+      }
+      x = span.end_x + 1;
+    }
+  }
+}
+
+/**
  * @brief Draws elevation wall to neighbor.
  */
 int DrawElevationWallToNeighbor(const LevelData& level, int x, int y,
@@ -1400,22 +1686,10 @@ void DrawTiles(const LevelData& level, const Level3DViewState& state,
         DrawElevationWalls(level, x, y, cell, state);
       });
 
-  ForEachActiveRenderableTile(
-      level, state, [&level, &state, stats](int x, int y, const RuntimeCell& cell) {
-        if (DrawBlockingVolume(level, x, y, cell, state) && stats != nullptr) {
-          ++stats->blocking_volumes_drawn;
-        }
-      });
+  DrawBlockingVolumeSpans(level, state, range, stats);
 
   BeginBlendMode(BLEND_ALPHA);
-  ForEachActiveRenderableTile(
-      level, state, [&level, &state, stats](int x, int y, const RuntimeCell& cell) {
-        if (DrawPassableForestBoundaryVolume(level, x, y, cell, state) &&
-            stats != nullptr) {
-          ++stats->forest_boundary_volumes_drawn;
-          ++stats->forest_boundary_wireframes_drawn;
-        }
-      });
+  DrawForestBoundarySpans(level, state, range, stats);
   EndBlendMode();
 
   DrawElevationDebugOverlay3D(level, state, range, stats);
@@ -1448,14 +1722,16 @@ void DrawRender3DPerfOverlay(const Level3DPerfStats& stats,
                       stats.renderable_tiles),
            x, y, font_size, text);
   y += line_step;
-  DrawText(TextFormat("ground_spans=%d ground_tiles=%d walls=%d blockers=%d",
+  DrawText(TextFormat("ground_spans=%d ground_tiles=%d walls=%d blocker_spans=%d",
                       stats.ground_tiles_drawn, stats.ground_tiles_covered,
                       stats.elevation_wall_faces_drawn,
                       stats.blocking_volumes_drawn),
            x, y, font_size, text);
   y += line_step;
-  DrawText(TextFormat("forest=%d forest_wires=%d",
+  DrawText(TextFormat("blocker_tiles=%d forest_spans=%d forest_tiles=%d forest_wires=%d",
+                      stats.blocking_volume_tiles_covered,
                       stats.forest_boundary_volumes_drawn,
+                      stats.forest_boundary_tiles_covered,
                       stats.forest_boundary_wireframes_drawn),
            x, y, font_size, text);
   y += line_step;

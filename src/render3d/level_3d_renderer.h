@@ -55,8 +55,10 @@ struct Level3DPerfStats {
   int transition_candidates = 0;  ///< Elevation transitions considered in the active range.
   int transitions_drawn = 0;  ///< Elevation transitions submitted this frame.
   int elevation_wall_faces_drawn = 0;  ///< Elevation wall face cubes submitted this frame.
-  int blocking_volumes_drawn = 0;  ///< Blocking volume cubes submitted this frame.
-  int forest_boundary_volumes_drawn = 0;  ///< Passable forest boundary volumes submitted this frame.
+  int blocking_volumes_drawn = 0;  ///< Batched blocking volume primitives submitted this frame.
+  int blocking_volume_tiles_covered = 0;  ///< Blocking tiles covered by batched volume primitives this frame.
+  int forest_boundary_volumes_drawn = 0;  ///< Batched passable forest boundary volumes submitted this frame.
+  int forest_boundary_tiles_covered = 0;  ///< Forest boundary tiles covered by batched volume primitives this frame.
   int forest_boundary_wireframes_drawn = 0;  ///< Forest boundary wireframes submitted this frame.
   int debug_overlay_slabs_drawn = 0;  ///< Elevation debug overlay slabs submitted this frame.
 

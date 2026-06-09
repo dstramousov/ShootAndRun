@@ -575,3 +575,11 @@
 - Kept elevation walls, blockers, passable forest boundary volumes, transitions, player rendering and debug overlays on their existing immediate-mode path.
 - Extended the F8 performance overlay with both batched ground span count and covered ground tile count, making draw-call reduction visible during runtime checks.
 - Preserved current elevation mechanics and temporary F6/F7/F8 diagnostics.
+
+## v0.1.68 -> v0.1.69
+
+- Bumped CMake project and runtime application version to `0.1.69`.
+- Added safe horizontal span batching for static 3D blocking volumes.
+- Added safe horizontal span batching for passable forest boundary volumes and wireframes.
+- Updated the F8 render3d performance overlay to report blocker spans/tiles and forest spans/tiles.
+- Kept player movement, elevation rules, visibility, F6/F7 elevation diagnostics, and ground span batching behavior unchanged.
