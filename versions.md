@@ -566,3 +566,12 @@
 - Collected active chunk counts, active tile candidates, renderable tile count, ground tile submissions, elevation wall faces, blocking volumes, passable forest boundary volumes, transition counts and debug overlay slabs.
 - Added last visibility update timing to the F8 overlay while keeping diagnostics disabled by default.
 - Kept existing F6/F7 elevation diagnostics unchanged.
+
+
+## v0.1.67 -> v0.1.68
+
+- Bumped CMake project and runtime application version to `0.1.68`.
+- Added horizontal ground-surface batching to the 3D renderer so long runs of identical visible terrain tiles are submitted as one slab instead of one cube per tile.
+- Kept elevation walls, blockers, passable forest boundary volumes, transitions, player rendering and debug overlays on their existing immediate-mode path.
+- Extended the F8 performance overlay with both batched ground span count and covered ground tile count, making draw-call reduction visible during runtime checks.
+- Preserved current elevation mechanics and temporary F6/F7/F8 diagnostics.

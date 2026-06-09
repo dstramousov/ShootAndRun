@@ -56,6 +56,26 @@ void CountRenderableTilesInRange(const LevelData& level,
                                  Level3DPerfStats* stats);
 
 /**
+ * @brief Stores a ground tile span key used for safe horizontal batching.
+ */
+struct GroundTileSpanKey {
+  std::int8_t height = 0;
+  TerrainType terrain = TerrainType::kUnknown;
+  Color color = Color{0, 0, 0, 0};
+  bool is_water = false;
+};
+
+/**
+ * @brief Stores one horizontal ground span prepared for batched drawing.
+ */
+struct GroundTileSpan {
+  int start_x = 0;
+  int end_x = 0;
+  int y = 0;
+  GroundTileSpanKey key;
+};
+
+/**
  * @brief Converts a floating tile position to an integer tile index.
  */
 int TileIndexFromPosition(float value) {
@@ -871,25 +891,112 @@ float BlockingVolumeHeight(const RuntimeCell& cell) {
 }
 
 /**
- * @brief Draws ground tile.
+ * @brief Returns whether two colors are byte-identical.
  */
-bool DrawGroundTile(const LevelData& level, int x, int y,
-                    const RuntimeCell& cell, const Level3DViewState& state) {
-  if (!IsSurfaceVisible(cell)) {
-    return false;
+bool SameColor(Color lhs, Color rhs) {
+  return lhs.r == rhs.r && lhs.g == rhs.g && lhs.b == rhs.b &&
+         lhs.a == rhs.a;
+}
+
+/**
+ * @brief Returns whether two ground span keys can be drawn as one slab.
+ */
+bool SameGroundTileSpanKey(const GroundTileSpanKey& lhs,
+                           const GroundTileSpanKey& rhs) {
+  return lhs.height == rhs.height && lhs.terrain == rhs.terrain &&
+         lhs.is_water == rhs.is_water && SameColor(lhs.color, rhs.color);
+}
+
+/**
+ * @brief Builds a safe ground span key for one tile.
+ */
+GroundTileSpanKey GroundTileKey(const RuntimeCell& cell,
+                                const Level3DViewState& state, int x, int y) {
+  return GroundTileSpanKey{cell.height,
+                           cell.terrain,
+                           ApplyVisibilityColor(TileColor(cell, state.mode),
+                                                state, x, y),
+                           cell.terrain == TerrainType::kWater};
+}
+
+/**
+ * @brief Checks whether a tile may participate in ground batching.
+ */
+bool IsGroundSpanCandidate(const Level3DViewState& state, int x, int y,
+                           const RuntimeCell& cell) {
+  return IsSurfaceVisible(cell) && IsTileRenderable(state, x, y);
+}
+
+/**
+ * @brief Draws one batched horizontal ground slab.
+ */
+int DrawGroundTileSpan(const LevelData& level, const GroundTileSpan& span,
+                       const Level3DViewState& state) {
+  const int tile_count = span.end_x - span.start_x + 1;
+  if (tile_count <= 0) {
+    return 0;
   }
 
-  Vector3 center = TileWorldCenter(level, x, y, cell.height,
-                                   state.tile_world_size,
+  Vector3 center = TileWorldCenter(level, span.start_x, span.y,
+                                   span.key.height, state.tile_world_size,
                                    state.elevation_step);
-  const float slab_height = 0.045F;
-  if (cell.terrain == TerrainType::kWater) {
+  center.x += static_cast<float>(tile_count - 1) * state.tile_world_size *
+              0.5F;
+
+  constexpr float kGroundSlabHeight = 0.045F;
+  if (span.key.is_water) {
     center.y -= 0.055F;
   }
 
-  DrawCube(center, state.tile_world_size, slab_height, state.tile_world_size,
-           ApplyVisibilityColor(TileColor(cell, state.mode), state, x, y));
-  return true;
+  DrawCube(center, static_cast<float>(tile_count) * state.tile_world_size,
+           kGroundSlabHeight, state.tile_world_size, span.key.color);
+  return tile_count;
+}
+
+/**
+ * @brief Draws batched horizontal ground slabs for active renderable tiles.
+ */
+void DrawGroundTileSpans(const LevelData& level, const Level3DViewState& state,
+                         const TileRange3D& range, Level3DPerfStats* stats) {
+  for (int y = range.min_y; y <= range.max_y; ++y) {
+    int x = range.min_x;
+    while (x <= range.max_x) {
+      const RuntimeCell* cell = CellAt(level, x, y);
+      if (cell == nullptr || !IsGroundSpanCandidate(state, x, y, *cell)) {
+        ++x;
+        continue;
+      }
+
+      GroundTileSpan span;
+      span.start_x = x;
+      span.end_x = x;
+      span.y = y;
+      span.key = GroundTileKey(*cell, state, x, y);
+
+      int next_x = x + 1;
+      while (next_x <= range.max_x) {
+        const RuntimeCell* next_cell = CellAt(level, next_x, y);
+        if (next_cell == nullptr ||
+            !IsGroundSpanCandidate(state, next_x, y, *next_cell)) {
+          break;
+        }
+        const GroundTileSpanKey next_key = GroundTileKey(*next_cell, state,
+                                                         next_x, y);
+        if (!SameGroundTileSpanKey(span.key, next_key)) {
+          break;
+        }
+        span.end_x = next_x;
+        ++next_x;
+      }
+
+      const int covered_tiles = DrawGroundTileSpan(level, span, state);
+      if (stats != nullptr) {
+        ++stats->ground_tiles_drawn;
+        stats->ground_tiles_covered += covered_tiles;
+      }
+      x = span.end_x + 1;
+    }
+  }
 }
 
 /**
@@ -1279,12 +1386,7 @@ void DrawTiles(const LevelData& level, const Level3DViewState& state,
     CountRenderableTilesInRange(level, state, range, stats);
   }
 
-  ForEachActiveRenderableTile(
-      level, state, [&level, &state, stats](int x, int y, const RuntimeCell& cell) {
-        if (DrawGroundTile(level, x, y, cell, state) && stats != nullptr) {
-          ++stats->ground_tiles_drawn;
-        }
-      });
+  DrawGroundTileSpans(level, state, range, stats);
 
   DrawElevationTransitions(level, state, range, stats);
 
@@ -1346,10 +1448,13 @@ void DrawRender3DPerfOverlay(const Level3DPerfStats& stats,
                       stats.renderable_tiles),
            x, y, font_size, text);
   y += line_step;
-  DrawText(TextFormat("ground=%d walls=%d blockers=%d forest=%d forest_wires=%d",
-                      stats.ground_tiles_drawn,
+  DrawText(TextFormat("ground_spans=%d ground_tiles=%d walls=%d blockers=%d",
+                      stats.ground_tiles_drawn, stats.ground_tiles_covered,
                       stats.elevation_wall_faces_drawn,
-                      stats.blocking_volumes_drawn,
+                      stats.blocking_volumes_drawn),
+           x, y, font_size, text);
+  y += line_step;
+  DrawText(TextFormat("forest=%d forest_wires=%d",
                       stats.forest_boundary_volumes_drawn,
                       stats.forest_boundary_wireframes_drawn),
            x, y, font_size, text);

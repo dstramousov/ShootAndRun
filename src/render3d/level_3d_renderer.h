@@ -50,7 +50,8 @@ struct Level3DPerfStats {
   int active_chunks_total = 0;  ///< Total active chunk count.
   int active_tile_candidates = 0;  ///< Tile candidates inside the active chunk range.
   int renderable_tiles = 0;  ///< Tiles passing the current visibility filter.
-  int ground_tiles_drawn = 0;  ///< Ground tile cube primitives submitted this frame.
+  int ground_tiles_drawn = 0;  ///< Batched ground slab primitives submitted this frame.
+  int ground_tiles_covered = 0;  ///< Ground tiles covered by batched ground slabs this frame.
   int transition_candidates = 0;  ///< Elevation transitions considered in the active range.
   int transitions_drawn = 0;  ///< Elevation transitions submitted this frame.
   int elevation_wall_faces_drawn = 0;  ///< Elevation wall face cubes submitted this frame.
