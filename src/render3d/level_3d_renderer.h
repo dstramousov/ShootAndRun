@@ -37,6 +37,36 @@ enum class Level3DRenderMode {
   kCollision,
 };
 
+
+/**
+ * @brief Lightweight frame counters for the immediate-mode 3D renderer.
+ */
+struct Level3DPerfStats {
+  int fps = 0;  ///< Current raylib FPS value sampled when drawing the overlay.
+  double frame_ms = 0.0;  ///< Current frame time in milliseconds.
+  double visibility_update_ms = 0.0;  ///< Last visibility update duration in milliseconds.
+  int active_chunks_x = 0;  ///< Number of active chunks on the X axis.
+  int active_chunks_y = 0;  ///< Number of active chunks on the Y axis.
+  int active_chunks_total = 0;  ///< Total active chunk count.
+  int active_tile_candidates = 0;  ///< Tile candidates inside the active chunk range.
+  int renderable_tiles = 0;  ///< Tiles passing the current visibility filter.
+  int ground_tiles_drawn = 0;  ///< Ground tile cube primitives submitted this frame.
+  int transition_candidates = 0;  ///< Elevation transitions considered in the active range.
+  int transitions_drawn = 0;  ///< Elevation transitions submitted this frame.
+  int elevation_wall_faces_drawn = 0;  ///< Elevation wall face cubes submitted this frame.
+  int blocking_volumes_drawn = 0;  ///< Blocking volume cubes submitted this frame.
+  int forest_boundary_volumes_drawn = 0;  ///< Passable forest boundary volumes submitted this frame.
+  int forest_boundary_wireframes_drawn = 0;  ///< Forest boundary wireframes submitted this frame.
+  int debug_overlay_slabs_drawn = 0;  ///< Elevation debug overlay slabs submitted this frame.
+
+  /**
+   * @brief Returns an approximate immediate-mode primitive count.
+   *
+   * @return Estimated number of raylib draw submissions for terrain primitives.
+   */
+  [[nodiscard]] int EstimatedPrimitiveSubmissions() const;
+};
+
 /**
  * @brief Aggregated 3D renderer, camera, culling and visibility state.
  */
@@ -66,6 +96,8 @@ struct Level3DViewState {
   bool visibility_state_valid = false;  ///< Visibility state valid value carried by this data structure.
   bool debug_elevation_overlay_enabled = false;  ///< Runtime-only elevation debug overlay toggle.
   bool debug_elevation_move_logs_enabled = false;  ///< Runtime-only elevation movement diagnostics logging toggle.
+  bool debug_render3d_perf_enabled = false;  ///< Runtime-only render3d performance diagnostics toggle.
+  double last_visibility_update_ms = 0.0;  ///< Last visibility update duration in milliseconds.
   int visibility_last_center_x = -1;  ///< Tile, screen, or world coordinate for visibility last center x.
   int visibility_last_center_y = -1;  ///< Tile, screen, or world coordinate for visibility last center y.
   int visibility_last_radius_tiles = -1;  ///< Visibility last radius tiles value carried by this data structure.

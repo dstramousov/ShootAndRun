@@ -37,6 +37,7 @@ InputState InputSystem::Poll() {
   input.debug_view_final_render_pressed = IsKeyPressed(KEY_F4);
   input.debug_elevation_overlay_pressed = IsKeyPressed(KEY_F6);
   input.debug_elevation_logs_pressed = IsKeyPressed(KEY_F7);
+  input.debug_render3d_perf_pressed = IsKeyPressed(KEY_F8);
   input.mouse_wheel_delta = GetMouseWheelMove();
   input.mouse_position.x = static_cast<float>(GetMouseX());
   input.mouse_position.y = static_cast<float>(GetMouseY());

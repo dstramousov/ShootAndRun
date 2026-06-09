@@ -558,3 +558,11 @@
 - Reworked vertical elevation cut walls to use earth/stone cut colors, with thicker `0 -> -1` pit cut faces and no bright rim decoration.
 - Replaced debug-like transition bars with low-profile gameplay primitives: sloped ramp surfaces, stair treads and small Space-step ledge markers.
 - Kept the temporary F6/F7 elevation diagnostics from v0.1.64 available and disabled by default.
+
+## v0.1.65 -> v0.1.67
+
+- Bumped CMake project and runtime application version to `0.1.67` for the active mainline branch.
+- Added a temporary 3D renderer performance diagnostics overlay toggled by `F8`.
+- Collected active chunk counts, active tile candidates, renderable tile count, ground tile submissions, elevation wall faces, blocking volumes, passable forest boundary volumes, transition counts and debug overlay slabs.
+- Added last visibility update timing to the F8 overlay while keeping diagnostics disabled by default.
+- Kept existing F6/F7 elevation diagnostics unchanged.

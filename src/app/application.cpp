@@ -1039,6 +1039,13 @@ void Application::UpdateGameView(const InputState& input) {
                             ? "enabled"
                             : "disabled"));
     }
+    if (input.debug_render3d_perf_pressed) {
+      logger_.Info("debug",
+                   std::string("render3d perf overlay=") +
+                       (level_3d_view_.debug_render3d_perf_enabled
+                            ? "enabled"
+                            : "disabled"));
+    }
     Log3DMovementEvents(input);
     Log3DCameraIntroEvents();
     return;

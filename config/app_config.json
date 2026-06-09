@@ -25,8 +25,8 @@
   "render3d_perf": {
     "render3d_visible_radius_tiles": 48,
     "render3d_culling_deadzone_tiles": 4,
-    "render3d_chunk_size_tiles": 16,
-    "render3d_active_chunk_radius": 3
+    "render3d_chunk_size_tiles": 8,
+    "render3d_active_chunk_radius": 4
   },
   "visual_pipeline": {
     "visual_pipeline_mode": "build_cpp",
@@ -48,8 +48,8 @@
   },
   "render3d_visibility": {
     "render3d_visibility_enabled": true,
-    "render3d_visibility_radius_tiles": 22,
-    "render3d_visibility_memory_enabled": true,
+    "render3d_visibility_radius_tiles": 18,
+    "render3d_visibility_memory_enabled": false,
     "render3d_fog_mode": "circle",
     "render3d_seen_tile_dim_factor": 0.32
   },

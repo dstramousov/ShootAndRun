@@ -11,6 +11,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <sstream>
+#include <string>
 
 #include "level/terrain_type.h"
 
@@ -45,6 +46,14 @@ struct ChunkRange3D {
  * @brief Executes the scale color rgb operation.
  */
 Color ScaleColorRgb(Color color, float scale, unsigned char alpha);
+
+/**
+ * @brief Counts active tile candidates and visible/renderable tiles for diagnostics.
+ */
+void CountRenderableTilesInRange(const LevelData& level,
+                                 const Level3DViewState& state,
+                                 const TileRange3D& range,
+                                 Level3DPerfStats* stats);
 
 /**
  * @brief Converts a floating tile position to an integer tile index.
@@ -749,17 +758,17 @@ void DrawStepTransitionPrimitive(Vector3 from_center, Vector3 to_center,
 /**
  * @brief Draws transition primitive.
  */
-void DrawTransitionPrimitive(const LevelData& level,
+bool DrawTransitionPrimitive(const LevelData& level,
                              const ElevationTransition& transition,
                              const Level3DViewState& state) {
   const RuntimeCell* from = CellAt(level, transition.from_x, transition.from_y);
   const RuntimeCell* to = CellAt(level, transition.to_x, transition.to_y);
   if (from == nullptr || to == nullptr || !IsSurfaceVisible(*from) ||
       !IsSurfaceVisible(*to)) {
-    return;
+    return false;
   }
   if (from->height < 0 || to->height < 0) {
-    return;
+    return false;
   }
 
   const Vector3 from_center = TileWorldCenter(level, transition.from_x,
@@ -774,7 +783,7 @@ void DrawTransitionPrimitive(const LevelData& level,
   const float dz = to_center.z - from_center.z;
   const float distance = std::hypot(dx, dz);
   if (distance <= 0.001F) {
-    return;
+    return false;
   }
 
   const int color_tile_x = IsTileRenderable(state, transition.from_x,
@@ -791,13 +800,13 @@ void DrawTransitionPrimitive(const LevelData& level,
   switch (transition.type) {
     case ElevationTransitionType::kRamp:
       DrawRampTransitionPrimitive(from_center, to_center, state, color);
-      return;
+      return true;
     case ElevationTransitionType::kStairs:
       DrawStairsTransitionPrimitive(from_center, to_center, state, color);
-      return;
+      return true;
     case ElevationTransitionType::kStep:
       DrawStepTransitionPrimitive(from_center, to_center, state, color);
-      return;
+      return true;
     case ElevationTransitionType::kHatch:
     case ElevationTransitionType::kUnknown:
       break;
@@ -813,6 +822,7 @@ void DrawTransitionPrimitive(const LevelData& level,
   const float width = horizontal ? long_axis : short_axis;
   const float depth = horizontal ? short_axis : long_axis;
   DrawCube(center, width, 0.055F, depth, color);
+  return true;
 }
 
 /**
@@ -820,7 +830,8 @@ void DrawTransitionPrimitive(const LevelData& level,
  */
 void DrawElevationTransitions(const LevelData& level,
                               const Level3DViewState& state,
-                              const TileRange3D& range) {
+                              const TileRange3D& range,
+                              Level3DPerfStats* stats) {
   for (const ElevationTransition& transition : level.elevation_transitions) {
     if (!IsTransitionVisibleInRange(transition, range)) {
       continue;
@@ -829,7 +840,13 @@ void DrawElevationTransitions(const LevelData& level,
         !IsTileRenderable(state, transition.to_x, transition.to_y)) {
       continue;
     }
-    DrawTransitionPrimitive(level, transition, state);
+    if (stats != nullptr) {
+      ++stats->transition_candidates;
+    }
+    if (DrawTransitionPrimitive(level, transition, state) &&
+        stats != nullptr) {
+      ++stats->transitions_drawn;
+    }
   }
 }
 
@@ -856,10 +873,10 @@ float BlockingVolumeHeight(const RuntimeCell& cell) {
 /**
  * @brief Draws ground tile.
  */
-void DrawGroundTile(const LevelData& level, int x, int y,
+bool DrawGroundTile(const LevelData& level, int x, int y,
                     const RuntimeCell& cell, const Level3DViewState& state) {
   if (!IsSurfaceVisible(cell)) {
-    return;
+    return false;
   }
 
   Vector3 center = TileWorldCenter(level, x, y, cell.height,
@@ -872,34 +889,35 @@ void DrawGroundTile(const LevelData& level, int x, int y,
 
   DrawCube(center, state.tile_world_size, slab_height, state.tile_world_size,
            ApplyVisibilityColor(TileColor(cell, state.mode), state, x, y));
+  return true;
 }
 
 /**
  * @brief Draws elevation wall to neighbor.
  */
-void DrawElevationWallToNeighbor(const LevelData& level, int x, int y,
+int DrawElevationWallToNeighbor(const LevelData& level, int x, int y,
                                  int neighbor_x, int neighbor_y,
                                  const RuntimeCell& cell,
                                  const Level3DViewState& state) {
   if (!IsSurfaceVisible(cell) || !IsTileRenderable(state, x, y)) {
-    return;
+    return 0;
   }
 
   const RuntimeCell* neighbor = CellAt(level, neighbor_x, neighbor_y);
   if (neighbor == nullptr || !IsSurfaceVisible(*neighbor)) {
-    return;
+    return 0;
   }
 
   const int height_delta = static_cast<int>(cell.height) -
                            static_cast<int>(neighbor->height);
   if (height_delta <= 0) {
-    return;
+    return 0;
   }
 
   const float wall_height = static_cast<float>(height_delta) *
                             state.elevation_step;
   if (wall_height <= 0.01F) {
-    return;
+    return 0;
   }
 
   Vector3 center = TileWorldCenter(level, x, y, cell.height,
@@ -930,33 +948,36 @@ void DrawElevationWallToNeighbor(const LevelData& level, int x, int y,
   DrawCube(center, width, wall_height, depth,
            ApplyVisibilityColor(ElevationWallColor(cell, *neighbor, state.mode),
                                 state, x, y));
+  return 1;
 }
 
 /**
  * @brief Draws elevation walls.
  */
-void DrawElevationWalls(const LevelData& level, int x, int y,
+int DrawElevationWalls(const LevelData& level, int x, int y,
                         const RuntimeCell& cell,
                         const Level3DViewState& state) {
-  DrawElevationWallToNeighbor(level, x, y, x - 1, y, cell, state);
-  DrawElevationWallToNeighbor(level, x, y, x + 1, y, cell, state);
-  DrawElevationWallToNeighbor(level, x, y, x, y - 1, cell, state);
-  DrawElevationWallToNeighbor(level, x, y, x, y + 1, cell, state);
+  int count = 0;
+  count += DrawElevationWallToNeighbor(level, x, y, x - 1, y, cell, state);
+  count += DrawElevationWallToNeighbor(level, x, y, x + 1, y, cell, state);
+  count += DrawElevationWallToNeighbor(level, x, y, x, y - 1, cell, state);
+  count += DrawElevationWallToNeighbor(level, x, y, x, y + 1, cell, state);
+  return count;
 }
 
 /**
  * @brief Draws blocking volume.
  */
-void DrawBlockingVolume(const LevelData& level, int x, int y,
+bool DrawBlockingVolume(const LevelData& level, int x, int y,
                         const RuntimeCell& cell,
                         const Level3DViewState& state) {
   if (IsPassableForestBoundary(cell) || !IsTileRenderable(state, x, y)) {
-    return;
+    return false;
   }
 
   const float height = BlockingVolumeHeight(cell);
   if (height <= 0.0F || !IsSurfaceVisible(cell)) {
-    return;
+    return false;
   }
 
   Vector3 center = TileWorldCenter(level, x, y, cell.height,
@@ -973,17 +994,18 @@ void DrawBlockingVolume(const LevelData& level, int x, int y,
   }
   DrawCube(center, width, height, depth,
            ApplyVisibilityColor(color, state, x, y));
+  return true;
 }
 
 /**
  * @brief Draws passable forest boundary volume.
  */
-void DrawPassableForestBoundaryVolume(const LevelData& level, int x, int y,
+bool DrawPassableForestBoundaryVolume(const LevelData& level, int x, int y,
                                       const RuntimeCell& cell,
                                       const Level3DViewState& state) {
   if (!IsPassableForestBoundary(cell) || !IsSurfaceVisible(cell) ||
       !IsTileRenderable(state, x, y)) {
-    return;
+    return false;
   }
 
   const float height = 0.62F;
@@ -1002,6 +1024,7 @@ void DrawPassableForestBoundaryVolume(const LevelData& level, int x, int y,
   DrawCube(center, width, height, depth, visible_color);
   DrawCubeWires(center, width, height, depth,
                 ApplyVisibilityColor(Color{118, 166, 95, 112}, state, x, y));
+  return true;
 }
 
 /**
@@ -1057,6 +1080,31 @@ void ForEachActiveRenderableTile(const LevelData& level,
 }
 
 /**
+ * @brief Counts active tile candidates and visible/renderable tiles for diagnostics.
+ */
+void CountRenderableTilesInRange(const LevelData& level,
+                                 const Level3DViewState& state,
+                                 const TileRange3D& range,
+                                 Level3DPerfStats* stats) {
+  if (stats == nullptr) {
+    return;
+  }
+
+  stats->active_tile_candidates =
+      std::max(0, range.max_x - range.min_x + 1) *
+      std::max(0, range.max_y - range.min_y + 1);
+  stats->renderable_tiles = 0;
+
+  for (int y = range.min_y; y <= range.max_y; ++y) {
+    for (int x = range.min_x; x <= range.max_x; ++x) {
+      if (CellAt(level, x, y) != nullptr && IsTileRenderable(state, x, y)) {
+        ++stats->renderable_tiles;
+      }
+    }
+  }
+}
+
+/**
  * @brief Returns elevation debug overlay color for a runtime cell.
  */
 Color ElevationDebugTileOverlayColor(const RuntimeCell& cell) {
@@ -1080,11 +1128,11 @@ Color ElevationDebugTileOverlayColor(const RuntimeCell& cell) {
 /**
  * @brief Draws one debug tile overlay slab.
  */
-void DrawElevationDebugTileSlab(const LevelData& level, int x, int y,
+bool DrawElevationDebugTileSlab(const LevelData& level, int x, int y,
                                 const RuntimeCell& cell,
                                 const Level3DViewState& state, Color color) {
   if (color.a == 0 || !IsSurfaceVisible(cell) || !IsTileRenderable(state, x, y)) {
-    return;
+    return false;
   }
   Vector3 center = TileWorldCenter(level, x, y, cell.height,
                                    state.tile_world_size,
@@ -1092,6 +1140,7 @@ void DrawElevationDebugTileSlab(const LevelData& level, int x, int y,
   center.y += 0.085F;
   const float size = state.tile_world_size * 0.84F;
   DrawCube(center, size, 0.035F, size, ApplyVisibilityColor(color, state, x, y));
+  return true;
 }
 
 /**
@@ -1146,24 +1195,31 @@ void DrawElevationDebugTransitionMarkers(const LevelData& level,
  */
 void DrawElevationDebugOverlay3D(const LevelData& level,
                                  const Level3DViewState& state,
-                                 const TileRange3D& range) {
+                                 const TileRange3D& range,
+                                 Level3DPerfStats* stats) {
   if (!state.debug_elevation_overlay_enabled) {
     return;
   }
 
   BeginBlendMode(BLEND_ALPHA);
   ForEachActiveRenderableTile(
-      level, state, [&level, &state](int x, int y, const RuntimeCell& cell) {
-        DrawElevationDebugTileSlab(level, x, y, cell, state,
-                                   ElevationDebugTileOverlayColor(cell));
+      level, state, [&level, &state, stats](int x, int y, const RuntimeCell& cell) {
+        if (DrawElevationDebugTileSlab(level, x, y, cell, state,
+                                      ElevationDebugTileOverlayColor(cell)) &&
+            stats != nullptr) {
+          ++stats->debug_overlay_slabs_drawn;
+        }
       });
 
   const int player_x = TileIndexFromPosition(state.player.tile_x);
   const int player_y = TileIndexFromPosition(state.player.tile_y);
   const RuntimeCell* player_cell = CellAt(level, player_x, player_y);
   if (player_cell != nullptr) {
-    DrawElevationDebugTileSlab(level, player_x, player_y, *player_cell, state,
-                               Color{255, 235, 48, 160});
+    if (DrawElevationDebugTileSlab(level, player_x, player_y, *player_cell,
+                                    state, Color{255, 235, 48, 160}) &&
+        stats != nullptr) {
+      ++stats->debug_overlay_slabs_drawn;
+    }
   }
 
   const Level3DTargetTileDiagnostics target =
@@ -1174,8 +1230,12 @@ void DrawElevationDebugOverlay3D(const LevelData& level,
     const Color color = target.can_enter
                             ? Color{72, 255, 124, 150}
                             : Color{255, 96, 54, 160};
-    DrawElevationDebugTileSlab(level, target.target_tile_x,
-                               target.target_tile_y, *target_cell, state, color);
+    if (DrawElevationDebugTileSlab(level, target.target_tile_x,
+                                    target.target_tile_y, *target_cell, state,
+                                    color) &&
+        stats != nullptr) {
+      ++stats->debug_overlay_slabs_drawn;
+    }
   }
 
   DrawElevationDebugTransitionMarkers(level, state, range);
@@ -1207,38 +1267,113 @@ void DrawPlayer(const LevelData& level, const Level3DViewState& state) {
 /**
  * @brief Draws tiles.
  */
-void DrawTiles(const LevelData& level, const Level3DViewState& state) {
+void DrawTiles(const LevelData& level, const Level3DViewState& state,
+               Level3DPerfStats* stats) {
   const ChunkRange3D chunks = ActiveChunkRange(level, state);
   const TileRange3D range = TileRangeFromChunks(level, state, chunks);
 
+  if (stats != nullptr) {
+    stats->active_chunks_x = chunks.max_x - chunks.min_x + 1;
+    stats->active_chunks_y = chunks.max_y - chunks.min_y + 1;
+    stats->active_chunks_total = stats->active_chunks_x * stats->active_chunks_y;
+    CountRenderableTilesInRange(level, state, range, stats);
+  }
+
   ForEachActiveRenderableTile(
-      level, state, [&level, &state](int x, int y, const RuntimeCell& cell) {
-        DrawGroundTile(level, x, y, cell, state);
+      level, state, [&level, &state, stats](int x, int y, const RuntimeCell& cell) {
+        if (DrawGroundTile(level, x, y, cell, state) && stats != nullptr) {
+          ++stats->ground_tiles_drawn;
+        }
       });
 
-  DrawElevationTransitions(level, state, range);
+  DrawElevationTransitions(level, state, range, stats);
 
   ForEachActiveRenderableTile(
-      level, state, [&level, &state](int x, int y, const RuntimeCell& cell) {
+      level, state, [&level, &state, stats](int x, int y, const RuntimeCell& cell) {
+        if (stats != nullptr) {
+          stats->elevation_wall_faces_drawn +=
+              DrawElevationWalls(level, x, y, cell, state);
+          return;
+        }
         DrawElevationWalls(level, x, y, cell, state);
       });
 
   ForEachActiveRenderableTile(
-      level, state, [&level, &state](int x, int y, const RuntimeCell& cell) {
-        DrawBlockingVolume(level, x, y, cell, state);
+      level, state, [&level, &state, stats](int x, int y, const RuntimeCell& cell) {
+        if (DrawBlockingVolume(level, x, y, cell, state) && stats != nullptr) {
+          ++stats->blocking_volumes_drawn;
+        }
       });
 
   BeginBlendMode(BLEND_ALPHA);
   ForEachActiveRenderableTile(
-      level, state, [&level, &state](int x, int y, const RuntimeCell& cell) {
-        DrawPassableForestBoundaryVolume(level, x, y, cell, state);
+      level, state, [&level, &state, stats](int x, int y, const RuntimeCell& cell) {
+        if (DrawPassableForestBoundaryVolume(level, x, y, cell, state) &&
+            stats != nullptr) {
+          ++stats->forest_boundary_volumes_drawn;
+          ++stats->forest_boundary_wireframes_drawn;
+        }
       });
   EndBlendMode();
 
-  DrawElevationDebugOverlay3D(level, state, range);
+  DrawElevationDebugOverlay3D(level, state, range, stats);
+}
+
+/**
+ * @brief Draws the F8 render3d performance diagnostics overlay.
+ */
+void DrawRender3DPerfOverlay(const Level3DPerfStats& stats,
+                             const WindowState& window) {
+  const int font_size = std::max(10, static_cast<int>(12.0F * window.ui_scale));
+  const int line_step = font_size + std::max(2, static_cast<int>(4.0F * window.ui_scale));
+  const int x = std::max(8, static_cast<int>(16.0F * window.ui_scale));
+  int y = std::max(96, static_cast<int>(112.0F * window.ui_scale));
+  const int width = std::max(520, static_cast<int>(590.0F * window.ui_scale));
+  const int height = line_step * 10 + std::max(12, static_cast<int>(16.0F * window.ui_scale));
+  const Color text = Color{228, 232, 218, 255};
+  const Color title = Color{255, 220, 96, 255};
+
+  DrawRectangle(x - 8, y - 8, width, height, Color{12, 12, 18, 194});
+  DrawText("RENDER3D PERF DEBUG  F8 toggle", x, y, font_size, title);
+  y += line_step;
+  DrawText(TextFormat("fps=%d frame=%.2fms visibility_update=%.3fms",
+                      stats.fps, stats.frame_ms, stats.visibility_update_ms),
+           x, y, font_size, text);
+  y += line_step;
+  DrawText(TextFormat("chunks=%dx%d total=%d tile_candidates=%d renderable=%d",
+                      stats.active_chunks_x, stats.active_chunks_y,
+                      stats.active_chunks_total, stats.active_tile_candidates,
+                      stats.renderable_tiles),
+           x, y, font_size, text);
+  y += line_step;
+  DrawText(TextFormat("ground=%d walls=%d blockers=%d forest=%d forest_wires=%d",
+                      stats.ground_tiles_drawn,
+                      stats.elevation_wall_faces_drawn,
+                      stats.blocking_volumes_drawn,
+                      stats.forest_boundary_volumes_drawn,
+                      stats.forest_boundary_wireframes_drawn),
+           x, y, font_size, text);
+  y += line_step;
+  DrawText(TextFormat("transitions considered=%d drawn=%d debug_slabs=%d",
+                      stats.transition_candidates, stats.transitions_drawn,
+                      stats.debug_overlay_slabs_drawn),
+           x, y, font_size, text);
+  y += line_step;
+  DrawText(TextFormat("estimated primitive submissions=%d",
+                      stats.EstimatedPrimitiveSubmissions()),
+           x, y, font_size, text);
 }
 
 }  // namespace
+
+/**
+ * @brief Implements Level3DPerfStats::EstimatedPrimitiveSubmissions.
+ */
+int Level3DPerfStats::EstimatedPrimitiveSubmissions() const {
+  return ground_tiles_drawn + transitions_drawn + elevation_wall_faces_drawn +
+         blocking_volumes_drawn + forest_boundary_volumes_drawn +
+         forest_boundary_wireframes_drawn + debug_overlay_slabs_drawn;
+}
 
 /**
  * @brief Returns level 3D fog mode name.
@@ -1311,6 +1446,9 @@ void UpdateLevel3DView(const LevelData& level, const InputState& input,
     state->debug_elevation_move_logs_enabled =
         !state->debug_elevation_move_logs_enabled;
   }
+  if (input.debug_render3d_perf_pressed) {
+    state->debug_render3d_perf_enabled = !state->debug_render3d_perf_enabled;
+  }
 
   bool skip_intro_this_frame = false;
   if (Level3DCameraIntroSkipRequested(state->camera, input)) {
@@ -1323,7 +1461,14 @@ void UpdateLevel3DView(const LevelData& level, const InputState& input,
     UpdateLevel3DPlayer(level, input, dt, &state->player);
   }
   UpdateCullingCenter(level, state);
-  UpdateVisibilityState(level, state);
+  if (state->debug_render3d_perf_enabled) {
+    const double visibility_start = GetTime();
+    UpdateVisibilityState(level, state);
+    state->last_visibility_update_ms = (GetTime() - visibility_start) * 1000.0;
+  } else {
+    UpdateVisibilityState(level, state);
+    state->last_visibility_update_ms = 0.0;
+  }
   UpdateLevel3DCamera(level, state->player, input, dt, state->tile_world_size,
                       state->elevation_step, &state->camera);
 }
@@ -1345,6 +1490,8 @@ std::string Level3DViewStateToString(const Level3DViewState& state) {
          << (state.debug_elevation_overlay_enabled ? "on" : "off")
          << "/logs="
          << (state.debug_elevation_move_logs_enabled ? "on" : "off")
+         << " render3d_perf="
+         << (state.debug_render3d_perf_enabled ? "on" : "off")
          << " cull_center=" << state.culling_center_tile_x << ','
          << state.culling_center_tile_y
          << " deadzone=" << state.culling_deadzone_tiles << "  "
@@ -1368,11 +1515,24 @@ void Level3DRenderer::Draw(const LevelData& level,
       level, state.player, state.camera, window, state.tile_world_size,
       state.elevation_step);
 
+  Level3DPerfStats stats;
+  Level3DPerfStats* stats_ptr = nullptr;
+  if (state.debug_render3d_perf_enabled) {
+    stats.fps = GetFPS();
+    stats.frame_ms = static_cast<double>(GetFrameTime()) * 1000.0;
+    stats.visibility_update_ms = state.last_visibility_update_ms;
+    stats_ptr = &stats;
+  }
+
   BeginMode3D(camera);
-  DrawTiles(level, state);
+  DrawTiles(level, state, stats_ptr);
   DrawLevelBounds(level, state);
   DrawPlayer(level, state);
   EndMode3D();
+
+  if (state.debug_render3d_perf_enabled) {
+    DrawRender3DPerfOverlay(stats, window);
+  }
 }
 
 }  // namespace sar::render3d

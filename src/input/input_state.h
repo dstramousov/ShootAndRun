@@ -38,6 +38,7 @@ struct InputState {
   bool debug_view_final_render_pressed = false;  ///< Debug view final render pressed value carried by this data structure.
   bool debug_elevation_overlay_pressed = false;  ///< Debug elevation overlay toggle pressed this frame.
   bool debug_elevation_logs_pressed = false;  ///< Debug elevation movement-log toggle pressed this frame.
+  bool debug_render3d_perf_pressed = false;  ///< Debug 3D render performance overlay toggle pressed this frame.
   float mouse_wheel_delta = 0.0F;  ///< Mouse wheel delta value carried by this data structure.
   Vec2 mouse_position;  ///< Position value for mouse position.
   Vec2 mouse_delta;  ///< Mouse delta value carried by this data structure.
