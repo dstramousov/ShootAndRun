@@ -583,3 +583,14 @@
 - Added safe horizontal span batching for passable forest boundary volumes and wireframes.
 - Updated the F8 render3d performance overlay to report blocker spans/tiles and forest spans/tiles.
 - Kept player movement, elevation rules, visibility, F6/F7 elevation diagnostics, and ground span batching behavior unchanged.
+
+
+## v0.1.69 -> v0.1.70
+
+- Bumped CMake project and runtime application version to `0.1.70`.
+- Added a one-time map package validation report logged after successful level loading.
+- Reported tile totals, walkable/collision/projectile/vision counts, cover/concealment counts, terrain histogram, elevation range and elevation histogram.
+- Added active mainline elevation range validation for `-1..4` in `height_grid`, markers, runtime objects, and elevation transitions.
+- Added transition diagnostics for declared endpoint elevation mismatches and large elevation deltas.
+- Added negative elevation region diagnostics to distinguish open pit/trench regions from closed underground/bunker-like regions.
+- Kept 3D renderer batching optimizations and temporary F6/F7/F8 debug toggles unchanged.

@@ -13,6 +13,7 @@
 #include <fstream>
 #include <map>
 #include <cstdint>
+#include <limits>
 #include <optional>
 #include <sstream>
 #include <string>
@@ -188,6 +189,9 @@ struct WorldGraphLoadResult {
 /**
  * @brief Stores package layout data shared between runtime systems.
  */
+bool ValidateElevationRange(int elevation, std::string_view source,
+                            std::string* error);
+
 struct PackageLayout {
   std::filesystem::path package_path;
   std::filesystem::path terrain_path;
@@ -2490,7 +2494,7 @@ std::int8_t ExtractOptionalElevation(std::string_view object,
   if (!elevation.ok || !elevation.found) {
     return fallback;
   }
-  return static_cast<std::int8_t>(std::clamp(elevation.value, -8, 8));
+  return static_cast<std::int8_t>(elevation.value);
 }
 
 /**
@@ -2560,6 +2564,13 @@ ElevationTransitionLoadResult ParseElevationTransitions(std::string_view text,
         transition_value, "from_elevation", 0);
     transition.to_elevation = ExtractOptionalElevation(
         transition_value, "to_elevation", transition.from_elevation);
+    if (!ValidateElevationRange(transition.from_elevation,
+                                "elevation transition from", &error) ||
+        !ValidateElevationRange(transition.to_elevation,
+                                "elevation transition to", &error)) {
+      return {false, {}, "elevation transition " + transition.id + ": " +
+                             error};
+    }
     transition.bidirectional = !bidirectional.found || bidirectional.value;
     transitions.push_back(std::move(transition));
   }
@@ -2877,7 +2888,286 @@ LevelLoadResult ResolvePackageLayout(const std::filesystem::path& package_path,
   return {true, {}, {}};
 }
 
+
+constexpr int kMainlineMinElevation = -1;
+constexpr int kMainlineMaxElevation = 4;
+
+/**
+ * @brief Formats an integer histogram for one-line diagnostics.
+ */
+std::string FormatIntHistogram(const std::map<int, int>& histogram) {
+  std::ostringstream stream;
+  bool first = true;
+  for (const auto& [key, count] : histogram) {
+    if (!first) {
+      stream << ' ';
+    }
+    first = false;
+    stream << key << '=' << count;
+  }
+  return stream.str();
+}
+
+/**
+ * @brief Formats a string histogram for one-line diagnostics.
+ */
+std::string FormatStringHistogram(const std::map<std::string, int>& histogram) {
+  std::ostringstream stream;
+  bool first = true;
+  for (const auto& [key, count] : histogram) {
+    if (!first) {
+      stream << ' ';
+    }
+    first = false;
+    stream << key << '=' << count;
+  }
+  return stream.str();
+}
+
+/**
+ * @brief Adds a validation warning with a small cap to keep startup logs readable.
+ */
+void AddValidationWarning(const std::string& warning,
+                          LevelPackageValidationReport* report) {
+  if (report == nullptr || report->warnings.size() >= 12) {
+    return;
+  }
+  report->warnings.push_back(warning);
+}
+
+/**
+ * @brief Returns the row-major cell index for a tile coordinate.
+ */
+std::size_t LevelCellIndex(int x, int y, int width) {
+  return static_cast<std::size_t>(y * width + x);
+}
+
+/**
+ * @brief Validates that a loaded elevation belongs to the active mainline range.
+ */
+bool ValidateElevationRange(int elevation, std::string_view source,
+                            std::string* error) {
+  if (elevation < kMainlineMinElevation ||
+      elevation > kMainlineMaxElevation) {
+    *error = std::string(source) + " elevation outside supported range " +
+             std::to_string(kMainlineMinElevation) + ".." +
+             std::to_string(kMainlineMaxElevation) + ": " +
+             std::to_string(elevation);
+    return false;
+  }
+  return true;
+}
+
+/**
+ * @brief Builds the one-time map package validation report.
+ */
+LevelPackageValidationReport BuildValidationReport(const LevelData& level) {
+  LevelPackageValidationReport report;
+  report.total_tiles = level.size.width * level.size.height;
+  report.terrain_histogram = level.terrain_type_counts;
+  report.min_elevation = std::numeric_limits<int>::max();
+  report.max_elevation = std::numeric_limits<int>::min();
+
+  for (const RuntimeCell& cell : level.cells) {
+    if (cell.walkable) {
+      ++report.walkable_tiles;
+    }
+    if (cell.collision) {
+      ++report.collision_tiles;
+    }
+    if (cell.blocks_projectiles) {
+      ++report.projectile_block_tiles;
+    }
+    if (cell.blocks_vision) {
+      ++report.vision_block_tiles;
+    }
+    if (cell.cover > 0) {
+      ++report.cover_tiles;
+    }
+    if (cell.concealment > 0) {
+      ++report.concealment_tiles;
+    }
+
+    const int elevation = cell.height;
+    report.min_elevation = std::min(report.min_elevation, elevation);
+    report.max_elevation = std::max(report.max_elevation, elevation);
+    ++report.elevation_histogram[elevation];
+    if (elevation < 0) {
+      ++report.negative_region_tile_count;
+    }
+  }
+  if (level.cells.empty()) {
+    report.min_elevation = 0;
+    report.max_elevation = 0;
+  }
+
+  for (const ElevationTransition& transition : level.elevation_transitions) {
+    ++report.transition_histogram[ElevationTransitionTypeName(transition.type)];
+    const int from_delta = transition.to_elevation - transition.from_elevation;
+    if (std::abs(from_delta) > 1) {
+      ++report.transition_large_delta_count;
+    }
+
+    if (!IsCoordinateInside(transition.from_x, transition.from_y,
+                            level.size.width, level.size.height) ||
+        !IsCoordinateInside(transition.to_x, transition.to_y,
+                            level.size.width, level.size.height)) {
+      continue;
+    }
+
+    const RuntimeCell& from_cell = level.cells[LevelCellIndex(
+        transition.from_x, transition.from_y, level.size.width)];
+    const RuntimeCell& to_cell = level.cells[LevelCellIndex(
+        transition.to_x, transition.to_y, level.size.width)];
+    if (from_cell.height != transition.from_elevation ||
+        to_cell.height != transition.to_elevation) {
+      ++report.transition_endpoint_mismatch_count;
+      if (report.transition_endpoint_mismatch_count <= 4) {
+        AddValidationWarning(
+            "transition endpoint elevation mismatch id=" + transition.id +
+                " declared=" + std::to_string(transition.from_elevation) +
+                "->" + std::to_string(transition.to_elevation) +
+                " actual=" + std::to_string(from_cell.height) + "->" +
+                std::to_string(to_cell.height),
+            &report);
+      }
+    }
+  }
+
+  for (const Marker& marker : level.markers) {
+    if (!IsCoordinateInside(marker.x, marker.y, level.size.width,
+                            level.size.height)) {
+      continue;
+    }
+    const RuntimeCell& cell = level.cells[LevelCellIndex(marker.x, marker.y,
+                                                        level.size.width)];
+    if (marker.elevation != cell.height) {
+      AddValidationWarning(
+          "marker elevation mismatch id=" + marker.id +
+              " declared=" + std::to_string(marker.elevation) +
+              " actual=" + std::to_string(cell.height),
+          &report);
+    }
+  }
+
+  std::vector<std::uint8_t> visited(level.cells.size(), 0);
+  std::vector<std::pair<int, int>> stack;
+  constexpr int kDx[4] = {1, -1, 0, 0};
+  constexpr int kDy[4] = {0, 0, 1, -1};
+
+  for (int y = 0; y < level.size.height; ++y) {
+    for (int x = 0; x < level.size.width; ++x) {
+      const std::size_t start_index = LevelCellIndex(x, y, level.size.width);
+      if (visited[start_index] != 0 || level.cells[start_index].height >= 0) {
+        continue;
+      }
+
+      ++report.negative_region_count;
+      int region_tiles = 0;
+      int walkable_boundary_entries = 0;
+      stack.clear();
+      stack.emplace_back(x, y);
+      visited[start_index] = 1;
+
+      while (!stack.empty()) {
+        const auto [current_x, current_y] = stack.back();
+        stack.pop_back();
+        ++region_tiles;
+        const RuntimeCell& current_cell = level.cells[LevelCellIndex(
+            current_x, current_y, level.size.width)];
+
+        for (int direction = 0; direction < 4; ++direction) {
+          const int next_x = current_x + kDx[direction];
+          const int next_y = current_y + kDy[direction];
+          if (!IsCoordinateInside(next_x, next_y, level.size.width,
+                                  level.size.height)) {
+            continue;
+          }
+          const std::size_t next_index = LevelCellIndex(next_x, next_y,
+                                                        level.size.width);
+          const RuntimeCell& next_cell = level.cells[next_index];
+          if (next_cell.height < 0) {
+            if (visited[next_index] == 0) {
+              visited[next_index] = 1;
+              stack.emplace_back(next_x, next_y);
+            }
+            continue;
+          }
+
+          if (current_cell.walkable && !current_cell.collision &&
+              next_cell.walkable && !next_cell.collision) {
+            ++walkable_boundary_entries;
+          }
+        }
+      }
+
+      if (walkable_boundary_entries > 0) {
+        ++report.open_negative_region_count;
+      } else {
+        ++report.closed_negative_region_count;
+        AddValidationWarning(
+            "negative elevation region has no walkable boundary entry tiles=" +
+                std::to_string(region_tiles),
+            &report);
+      }
+    }
+  }
+
+  if (report.min_elevation < kMainlineMinElevation ||
+      report.max_elevation > kMainlineMaxElevation) {
+    AddValidationWarning(
+        "height range is outside active mainline range " +
+            std::to_string(kMainlineMinElevation) + ".." +
+            std::to_string(kMainlineMaxElevation),
+        &report);
+  }
+  if (report.transition_endpoint_mismatch_count > 4) {
+    AddValidationWarning(
+        "additional transition endpoint mismatches: " +
+            std::to_string(report.transition_endpoint_mismatch_count - 4),
+        &report);
+  }
+  return report;
+}
+
 }  // namespace
+
+
+/**
+ * @brief Builds a readable multi-line validation report for startup diagnostics.
+ */
+std::string LevelPackageValidationReport::DumpMultiline() const {
+  std::ostringstream stream;
+  stream << "Level package validation report:\n";
+  stream << "  tiles: total=" << total_tiles << " walkable=" << walkable_tiles
+         << " collision=" << collision_tiles
+         << " projectile_block=" << projectile_block_tiles
+         << " vision_block=" << vision_block_tiles << '\n';
+  stream << "  gameplay: cover=" << cover_tiles
+         << " concealment=" << concealment_tiles << '\n';
+  stream << "  elevation: range=" << min_elevation << ".." << max_elevation
+         << " supported=" << kMainlineMinElevation << ".."
+         << kMainlineMaxElevation << " histogram={"
+         << FormatIntHistogram(elevation_histogram) << "}\n";
+  stream << "  terrain: {" << FormatStringHistogram(terrain_histogram)
+         << "}\n";
+  stream << "  transitions: {" << FormatStringHistogram(transition_histogram)
+         << "} endpoint_mismatches=" << transition_endpoint_mismatch_count
+         << " large_delta=" << transition_large_delta_count << '\n';
+  stream << "  negative_regions: total=" << negative_region_count
+         << " open=" << open_negative_region_count
+         << " closed=" << closed_negative_region_count
+         << " tiles=" << negative_region_tile_count << '\n';
+  if (warnings.empty()) {
+    stream << "  warnings: 0";
+  } else {
+    stream << "  warnings: " << warnings.size();
+    for (const std::string& warning : warnings) {
+      stream << "\n    - " << warning;
+    }
+  }
+  return stream.str();
+}
 
 /**
  * @brief Builds a readable diagnostic dump for dump.
@@ -3041,12 +3331,24 @@ LevelLoadResult LevelLoader::LoadBasicPackage(
   if (!markers.ok) {
     return {false, {}, markers.error};
   }
+  for (const Marker& marker : markers.markers) {
+    const std::string marker_source = "marker " + marker.id;
+    if (!ValidateElevationRange(marker.elevation, marker_source, &error)) {
+      return {false, {}, error};
+    }
+  }
   summary.marker_count = static_cast<int>(markers.markers.size());
 
   const RuntimeObjectLoadResult runtime_objects = LoadRuntimeObjectsIfPresent(
       layout.runtime_objects_path, width.value, height.value);
   if (!runtime_objects.ok) {
     return {false, {}, runtime_objects.error};
+  }
+  for (const RuntimeObject& object : runtime_objects.objects) {
+    const std::string object_source = "runtime object " + object.id;
+    if (!ValidateElevationRange(object.elevation, object_source, &error)) {
+      return {false, {}, error};
+    }
   }
   summary.object_count = static_cast<int>(runtime_objects.objects.size());
 
@@ -3129,11 +3431,22 @@ LevelLoadResult LevelLoader::LoadBasicPackage(
                 concealment_grid.values[index] <= 0.0
             ? 0
             : 1);
-    cell.height = static_cast<std::int8_t>(height_grid.present[index] == 0
-                                               ? 0
-                                               : height_grid.values[index]);
+    const double raw_height = height_grid.present[index] == 0
+                                  ? 0.0
+                                  : height_grid.values[index];
+    const int elevation = static_cast<int>(raw_height);
+    if (raw_height != static_cast<double>(elevation)) {
+      return {false, {}, "height_grid contains non-integer elevation at index " +
+                             std::to_string(index)};
+    }
+    if (!ValidateElevationRange(elevation, "height_grid", &error)) {
+      return {false, {}, error + " at index " + std::to_string(index)};
+    }
+    cell.height = static_cast<std::int8_t>(elevation);
     level.cells.push_back(cell);
   }
+
+  summary.validation_report = BuildValidationReport(level);
 
   return {true, summary, {}, level};
 }

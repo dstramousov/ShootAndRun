@@ -1228,6 +1228,16 @@ void TestLevelLoaderBasicPackage() {
          "concealment grid should populate cell concealment");
   Expect(result.level.cells[3].height == -1,
          "height grid should populate negative height");
+  Expect(result.summary.validation_report.total_tiles == 4,
+         "validation report should count all loaded tiles");
+  Expect(result.summary.validation_report.elevation_histogram.at(-1) == 1,
+         "validation report should count negative elevation tiles");
+  Expect(result.summary.validation_report.elevation_histogram.at(0) == 3,
+         "validation report should count base elevation tiles");
+  Expect(result.summary.validation_report.open_negative_region_count == 1,
+         "validation report should detect open negative pit regions");
+  Expect(result.summary.validation_report.closed_negative_region_count == 0,
+         "validation report should not mark open pits as closed bunkers");
 
   std::filesystem::remove_all(package_path);
 }

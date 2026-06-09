@@ -1517,6 +1517,8 @@ bool Application::StartNewGameFromConfig() {
   loaded_level_ = level_result.level;
   prepared_level_.reset();
   logger_.Info("level", loaded_level_summary_->Dump());
+  logger_.Info("map_validation",
+               loaded_level_summary_->validation_report.DumpMultiline());
 
   if (config_.renderer_mode == RuntimeRendererMode::kRenderer3D) {
     visual_pipeline_ = visual_pipeline::VisualPreparationPipeline();

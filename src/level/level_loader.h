@@ -8,12 +8,51 @@
  */
 
 #include <filesystem>
+#include <map>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "level/level_data.h"
 
 namespace sar {
+
+
+/**
+ * @brief Detailed one-time validation report for a loaded map package.
+ *
+ * The report is built during package loading and is intended for integration
+ * diagnostics between the map generator and the runtime client. It does not
+ * affect per-frame gameplay performance.
+ */
+struct LevelPackageValidationReport {
+  int total_tiles = 0;  ///< Total tile count in the loaded map.
+  int walkable_tiles = 0;  ///< Count of tiles that allow movement.
+  int collision_tiles = 0;  ///< Count of tiles that block physical movement.
+  int projectile_block_tiles = 0;  ///< Count of tiles that block projectiles.
+  int vision_block_tiles = 0;  ///< Count of tiles that block vision.
+  int cover_tiles = 0;  ///< Count of tiles with cover.
+  int concealment_tiles = 0;  ///< Count of tiles with concealment.
+  int min_elevation = 0;  ///< Minimum elevation found in the height grid.
+  int max_elevation = 0;  ///< Maximum elevation found in the height grid.
+  std::map<int, int> elevation_histogram;  ///< Tile counts grouped by elevation.
+  std::map<std::string, int> terrain_histogram;  ///< Tile counts grouped by terrain id.
+  std::map<std::string, int> transition_histogram;  ///< Transition counts grouped by type.
+  int transition_endpoint_mismatch_count = 0;  ///< Count of transitions whose declared endpoint elevations differ from height_grid.
+  int transition_large_delta_count = 0;  ///< Count of transitions crossing more than one elevation level.
+  int negative_region_count = 0;  ///< Count of connected regions below elevation 0.
+  int open_negative_region_count = 0;  ///< Count of negative regions with at least one walkable boundary entry.
+  int closed_negative_region_count = 0;  ///< Count of negative regions without walkable boundary entries.
+  int negative_region_tile_count = 0;  ///< Count of all tiles below elevation 0.
+  std::vector<std::string> warnings;  ///< Non-fatal validation warnings.
+
+  /**
+   * @brief Returns a readable multi-line validation report.
+   *
+   * @return Multi-line text suitable for startup logs.
+   */
+  std::string DumpMultiline() const;
+};
 
 /**
  * @brief Compact statistics collected while loading a map package.
@@ -30,6 +69,7 @@ struct LevelPackageSummary {
   int gameplay_zone_count = 0;  ///< Count of gameplay zone count entries or events.
   int graph_node_count = 0;  ///< Count of graph node count entries or events.
   int graph_edge_count = 0;  ///< Count of graph edge count entries or events.
+  LevelPackageValidationReport validation_report;  ///< One-time map validation diagnostics.
 
   /**
    * @brief Returns a readable dump of the loaded level package summary.
