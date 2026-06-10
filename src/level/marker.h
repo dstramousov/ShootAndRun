@@ -25,6 +25,7 @@ struct Marker {
   int x = 0;  ///< Tile, screen, or world coordinate for x.
   int y = 0;  ///< Tile, screen, or world coordinate for y.
   std::int8_t elevation = 0;  ///< Elevation value carried by this data structure.
+  bool has_elevation = false;  ///< True when the source marker explicitly declares elevation.
   std::vector<std::string> tags;  ///< Semantic tags attached to this entity.
 };
 

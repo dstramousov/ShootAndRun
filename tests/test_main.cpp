@@ -652,6 +652,7 @@ void TestLevelLoaderManifestPackage() {
                 "  \"routes\": \"routes.json\",\n"
                 "  \"world_graph\": \"world_graph.json\",\n"
                 "  \"gameplay_zones\": \"gameplay_zones.json\",\n"
+                "  \"elevation_transitions\": \"elevation_transitions.json\",\n"
                 "  \"objects\": {\n"
                 "    \"runtime_objects\": \"objects/runtime_objects.json\",\n"
                 "    \"places\": \"objects/places.json\"\n"
@@ -780,6 +781,25 @@ void TestLevelLoaderManifestPackage() {
                 "  ]\n"
                 "}\n");
 
+  WriteTextFile(package_path / "elevation_transitions.json",
+                "{\n"
+                "  \"items\": [\n"
+                "    {\n"
+                "      \"id\": \"generated_step_down\",\n"
+                "      \"type\": \"step_down\",\n"
+                "      \"from\": { \"x\": 1, \"y\": 0, \"level\": 0 },\n"
+                "      \"to\": { \"x\": 1, \"y\": 1, \"level\": -1 }\n"
+                "    },\n"
+                "    {\n"
+                "      \"id\": \"generated_connector_ramp\",\n"
+                "      \"type\": \"connector_edge\",\n"
+                "      \"suggested_connector\": \"ramp\",\n"
+                "      \"from\": { \"x\": 0, \"y\": 0, \"level\": 0 },\n"
+                "      \"to\": { \"x\": 1, \"y\": 0, \"level\": 0 }\n"
+                "    }\n"
+                "  ]\n"
+                "}\n");
+
   const sar::LevelLoader loader;
   const sar::LevelLoadResult result = loader.LoadBasicPackage(package_path);
   Expect(result.ok, "manifest level package should load successfully");
@@ -805,12 +825,23 @@ void TestLevelLoaderManifestPackage() {
          "manifest graph edges should be loaded");
   Expect(result.summary.gameplay_zone_count == 1,
          "manifest gameplay zones should be loaded");
+  Expect(result.summary.elevation_transition_count == 2,
+         "manifest elevation transitions should be loaded");
+  Expect(result.summary.validation_report.transition_endpoint_mismatch_count ==
+             0,
+         "nested endpoint elevation levels should match height grid");
+  Expect(result.summary.validation_report.transition_histogram.at("step") == 1,
+         "step_down transition should map to step");
+  Expect(result.summary.validation_report.transition_histogram.at("ramp") == 1,
+         "connector_edge ramp suggestion should map to ramp");
   Expect(result.level.markers.size() == 1,
          "manifest marker list should be available");
   Expect(result.level.markers[0].type == "player_spawn",
          "player spawn marker should be parsed");
   Expect(result.level.markers[0].x == 1 && result.level.markers[0].y == 0,
          "player spawn marker coordinates should be parsed");
+  Expect(result.level.markers[0].has_elevation,
+         "explicit marker elevation should be tracked");
   Expect(result.level.objects.size() == 1 &&
              result.level.objects[0].type == "fallen_log",
          "runtime object should be parsed");
@@ -844,9 +875,11 @@ void TestLevelLoaderManifestPackage() {
          "items marker list should be available");
   Expect(items_result.level.markers[0].id == "start",
          "items marker id should be parsed");
-  Expect(items_result.level.markers[0].x == 0 &&
+  Expect(items_result.level.markers[0].x == 1 &&
              items_result.level.markers[0].y == 1,
          "nested marker position should be parsed");
+  Expect(!items_result.level.markers[0].has_elevation,
+         "missing marker elevation should not be treated as declared zero");
 
   Expect(result.level.cells.size() == 4,
          "manifest terrain cells should be loaded");

@@ -2485,16 +2485,110 @@ bool ExtractEndpointCoordinate(std::string_view object,
 }
 
 /**
- * @brief Executes the extract optional elevation operation.
+ * @brief Stores an optional parsed elevation value.
  */
-std::int8_t ExtractOptionalElevation(std::string_view object,
-                                     std::string_view field_name,
-                                     std::int8_t fallback) {
-  const IntFieldResult elevation = ExtractOptionalIntField(object, field_name);
-  if (!elevation.ok || !elevation.found) {
-    return fallback;
+struct OptionalElevationResult {
+  bool ok = true;
+  bool found = false;
+  std::int8_t value = 0;
+  std::string error;
+};
+
+/**
+ * @brief Validates that a loaded elevation belongs to the active mainline range.
+ */
+bool ValidateElevationRange(int elevation, std::string_view source,
+                            std::string* error);
+
+/**
+ * @brief Converts a parsed integer into the runtime elevation type.
+ */
+OptionalElevationResult MakeElevationResult(int value,
+                                            std::string_view source) {
+  std::string error;
+  if (!ValidateElevationRange(value, source, &error)) {
+    return {false, true, 0, error};
   }
-  return static_cast<std::int8_t>(elevation.value);
+  return {true, true, static_cast<std::int8_t>(value), {}};
+}
+
+/**
+ * @brief Extracts an optional elevation from a flat object field.
+ */
+OptionalElevationResult ExtractOptionalElevationField(
+    std::string_view object, std::string_view field_name,
+    std::string_view source) {
+  const IntFieldResult elevation = ExtractOptionalIntField(object, field_name);
+  if (!elevation.ok) {
+    return {false, false, 0, elevation.error};
+  }
+  if (!elevation.found) {
+    return {true, false, 0, {}};
+  }
+  return MakeElevationResult(elevation.value, source);
+}
+
+/**
+ * @brief Extracts endpoint elevation from either legacy flat fields or nested endpoint objects.
+ */
+OptionalElevationResult ExtractEndpointElevation(
+    std::string_view transition_object, std::string_view legacy_field_name,
+    std::string_view endpoint_field_name, std::int8_t fallback) {
+  OptionalElevationResult legacy = ExtractOptionalElevationField(
+      transition_object, legacy_field_name, legacy_field_name);
+  if (!legacy.ok || legacy.found) {
+    return legacy;
+  }
+
+  std::string error;
+  const std::optional<std::string_view> endpoint = ExtractObjectField(
+      transition_object, endpoint_field_name, &error);
+  if (!endpoint.has_value()) {
+    if (!error.empty()) {
+      return {false, false, 0, error};
+    }
+    return {true, false, fallback, {}};
+  }
+
+  OptionalElevationResult nested = ExtractOptionalElevationField(
+      *endpoint, "level", endpoint_field_name);
+  if (!nested.ok || nested.found) {
+    return nested;
+  }
+
+  nested = ExtractOptionalElevationField(*endpoint, "elevation",
+                                         endpoint_field_name);
+  if (!nested.ok || nested.found) {
+    return nested;
+  }
+
+  return {true, false, fallback, {}};
+}
+
+/**
+ * @brief Parses a transition type using both the transition kind and suggested connector.
+ */
+ElevationTransitionType ParseTransitionTypeFromFields(
+    const StringFieldResult& type, const StringFieldResult& suggested_connector) {
+  if (suggested_connector.found && !suggested_connector.value.empty() &&
+      suggested_connector.value != "none") {
+    const ElevationTransitionType connector_type = ParseElevationTransitionType(
+        suggested_connector.value);
+    if (connector_type != ElevationTransitionType::kUnknown) {
+      return connector_type;
+    }
+  }
+
+  if (!type.found) {
+    return ElevationTransitionType::kUnknown;
+  }
+  if (type.value == "connector_edge") {
+    return ElevationTransitionType::kUnknown;
+  }
+  if (type.value == "steep_transition") {
+    return ElevationTransitionType::kUnknown;
+  }
+  return ParseElevationTransitionType(type.value);
 }
 
 /**
@@ -2541,6 +2635,11 @@ ElevationTransitionLoadResult ParseElevationTransitions(std::string_view text,
     if (!type.ok) {
       return {false, {}, type.error};
     }
+    const StringFieldResult suggested_connector = ExtractOptionalStringField(
+        transition_value, "suggested_connector");
+    if (!suggested_connector.ok) {
+      return {false, {}, suggested_connector.error};
+    }
     const BoolFieldResult bidirectional = ExtractOptionalBoolField(
         transition_value, "bidirectional");
     if (!bidirectional.ok) {
@@ -2554,23 +2653,28 @@ ElevationTransitionLoadResult ParseElevationTransitions(std::string_view text,
       transition.id = "elevation_transition_" + std::to_string(fallback_id);
     }
     ++fallback_id;
-    transition.type = type.found ? ParseElevationTransitionType(type.value)
-                                 : ElevationTransitionType::kUnknown;
+    transition.type = ParseTransitionTypeFromFields(type, suggested_connector);
     transition.from_x = from_x;
     transition.from_y = from_y;
     transition.to_x = to_x;
     transition.to_y = to_y;
-    transition.from_elevation = ExtractOptionalElevation(
-        transition_value, "from_elevation", 0);
-    transition.to_elevation = ExtractOptionalElevation(
-        transition_value, "to_elevation", transition.from_elevation);
-    if (!ValidateElevationRange(transition.from_elevation,
-                                "elevation transition from", &error) ||
-        !ValidateElevationRange(transition.to_elevation,
-                                "elevation transition to", &error)) {
+
+    const OptionalElevationResult from_elevation = ExtractEndpointElevation(
+        transition_value, "from_elevation", "from", 0);
+    if (!from_elevation.ok) {
       return {false, {}, "elevation transition " + transition.id + ": " +
-                             error};
+                             from_elevation.error};
     }
+    transition.from_elevation = from_elevation.found ? from_elevation.value : 0;
+
+    const OptionalElevationResult to_elevation = ExtractEndpointElevation(
+        transition_value, "to_elevation", "to", transition.from_elevation);
+    if (!to_elevation.ok) {
+      return {false, {}, "elevation transition " + transition.id + ": " +
+                             to_elevation.error};
+    }
+    transition.to_elevation = to_elevation.found ? to_elevation.value
+                                                 : transition.from_elevation;
     transition.bidirectional = !bidirectional.found || bidirectional.value;
     transitions.push_back(std::move(transition));
   }
@@ -2672,8 +2776,13 @@ MarkerLoadResult ParseMarkers(std::string_view text, int width, int height) {
     marker.type = type.value;
     marker.x = x.value;
     marker.y = y.value;
-    marker.elevation = static_cast<std::int8_t>(
-        elevation.found ? elevation.value : 0);
+    marker.has_elevation = elevation.found;
+    if (elevation.found) {
+      if (!ValidateElevationRange(elevation.value, "marker", &error)) {
+        return {false, {}, "marker " + id.value + ": " + error};
+      }
+      marker.elevation = static_cast<std::int8_t>(elevation.value);
+    }
     markers.push_back(std::move(marker));
   }
 
@@ -3041,7 +3150,7 @@ LevelPackageValidationReport BuildValidationReport(const LevelData& level) {
     }
     const RuntimeCell& cell = level.cells[LevelCellIndex(marker.x, marker.y,
                                                         level.size.width)];
-    if (marker.elevation != cell.height) {
+    if (marker.has_elevation && marker.elevation != cell.height) {
       AddValidationWarning(
           "marker elevation mismatch id=" + marker.id +
               " declared=" + std::to_string(marker.elevation) +

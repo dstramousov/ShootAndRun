@@ -1161,8 +1161,7 @@ void DrawBlockingVolumeSpans(const LevelData& level,
 /**
  * @brief Returns a stable color for a passable forest boundary volume tile.
  */
-Color ForestBoundaryVolumeColor(const RuntimeCell& cell,
-                                const Level3DViewState& state, int x, int y) {
+Color ForestBoundaryVolumeColor(const Level3DViewState& state, int x, int y) {
   Color color = Color{54, 103, 48, 92};
   if (state.mode == Level3DRenderMode::kCollision) {
     color = Color{44, 146, 58, 104};
@@ -1193,7 +1192,7 @@ ForestBoundarySpanKey ForestBoundaryKey(const RuntimeCell& cell,
                                         const Level3DViewState& state,
                                         int x, int y) {
   return ForestBoundarySpanKey{cell.height,
-                               ForestBoundaryVolumeColor(cell, state, x, y),
+                               ForestBoundaryVolumeColor(state, x, y),
                                ForestBoundaryWireColor(state, x, y)};
 }
 
@@ -1356,68 +1355,6 @@ int DrawElevationWalls(const LevelData& level, int x, int y,
   count += DrawElevationWallToNeighbor(level, x, y, x, y - 1, cell, state);
   count += DrawElevationWallToNeighbor(level, x, y, x, y + 1, cell, state);
   return count;
-}
-
-/**
- * @brief Draws blocking volume.
- */
-bool DrawBlockingVolume(const LevelData& level, int x, int y,
-                        const RuntimeCell& cell,
-                        const Level3DViewState& state) {
-  if (IsPassableForestBoundary(cell) || !IsTileRenderable(state, x, y)) {
-    return false;
-  }
-
-  const float height = BlockingVolumeHeight(cell);
-  if (height <= 0.0F || !IsSurfaceVisible(cell)) {
-    return false;
-  }
-
-  Vector3 center = TileWorldCenter(level, x, y, cell.height,
-                                   state.tile_world_size,
-                                   state.elevation_step);
-  center.y += height * 0.5F;
-  const float width = state.tile_world_size * 0.95F;
-  const float depth = state.tile_world_size * 0.95F;
-  Color color = cell.terrain == TerrainType::kForest
-                    ? Color{75, 61, 43, 235}
-                    : Color{72, 62, 52, 235};
-  if (state.mode == Level3DRenderMode::kCollision) {
-    color = Color{105, 77, 54, 238};
-  }
-  DrawCube(center, width, height, depth,
-           ApplyVisibilityColor(color, state, x, y));
-  return true;
-}
-
-/**
- * @brief Draws passable forest boundary volume.
- */
-bool DrawPassableForestBoundaryVolume(const LevelData& level, int x, int y,
-                                      const RuntimeCell& cell,
-                                      const Level3DViewState& state) {
-  if (!IsPassableForestBoundary(cell) || !IsSurfaceVisible(cell) ||
-      !IsTileRenderable(state, x, y)) {
-    return false;
-  }
-
-  const float height = 0.62F;
-  Vector3 center = TileWorldCenter(level, x, y, cell.height,
-                                   state.tile_world_size,
-                                   state.elevation_step);
-  center.y += height * 0.5F;
-  const float width = state.tile_world_size * 0.92F;
-  const float depth = state.tile_world_size * 0.92F;
-  Color color = Color{54, 103, 48, 92};
-  if (state.mode == Level3DRenderMode::kCollision) {
-    color = Color{44, 146, 58, 104};
-  }
-
-  const Color visible_color = ApplyVisibilityColor(color, state, x, y);
-  DrawCube(center, width, height, depth, visible_color);
-  DrawCubeWires(center, width, height, depth,
-                ApplyVisibilityColor(Color{118, 166, 95, 112}, state, x, y));
-  return true;
 }
 
 /**

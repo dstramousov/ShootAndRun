@@ -594,3 +594,16 @@
 - Added transition diagnostics for declared endpoint elevation mismatches and large elevation deltas.
 - Added negative elevation region diagnostics to distinguish open pit/trench regions from closed underground/bunker-like regions.
 - Kept 3D renderer batching optimizations and temporary F6/F7/F8 debug toggles unchanged.
+
+## v0.1.70 -> v0.1.71
+
+- Bumped CMake project and runtime application version to `0.1.71`.
+- Added compatibility with generator elevation transition schema using nested `from.level` / `to.level` endpoint elevations.
+- Mapped generator transition aliases such as `step_down`, `step_up`, `bridge_edge`, and connector suggestions to existing runtime transition types.
+- Marker elevation validation now warns only when marker elevation is explicitly declared and mismatches the loaded height grid.
+## v0.1.71 -> v0.1.72
+
+- Bumped CMake project and runtime application version to `0.1.72`.
+- Removed obsolete per-tile 3D volume draw helpers that were left unused after span batching.
+- Removed the unused `RuntimeCell` parameter from forest boundary span color generation.
+- No gameplay, movement, elevation, loader, or renderer behavior changes.

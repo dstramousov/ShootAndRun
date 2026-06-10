@@ -31,10 +31,12 @@ const char* ElevationTransitionTypeName(ElevationTransitionType type) {
  * @brief Parses elevation transition type from external data.
  */
 ElevationTransitionType ParseElevationTransitionType(const std::string& value) {
-  if (value == "step" || value == "step_up" || value == "ledge") {
+  if (value == "step" || value == "step_up" || value == "step_down" ||
+      value == "ledge") {
     return ElevationTransitionType::kStep;
   }
-  if (value == "ramp" || value == "slope") {
+  if (value == "ramp" || value == "slope" || value == "bridge" ||
+      value == "bridge_edge") {
     return ElevationTransitionType::kRamp;
   }
   if (value == "stairs" || value == "stair" || value == "ladder") {
