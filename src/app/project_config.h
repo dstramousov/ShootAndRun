@@ -135,6 +135,12 @@ struct Player3DMovementConfig {
   float jump_horizontal_speed_multiplier = 1.05F;  ///< Scaling factor for jump horizontal speed multiplier.
   float jump_air_control_multiplier = 0.82F;  ///< Scaling factor for jump air control multiplier.
   float jump_min_running_speed_tiles_per_sec = 1.00F;  ///< Time value for jump min running speed tiles per seconds.
+  float standing_speed_multiplier = 1.0F;  ///< Movement speed multiplier while standing.
+  float crouched_speed_multiplier = 0.62F;  ///< Movement speed multiplier while crouched.
+  float prone_speed_multiplier = 0.32F;  ///< Movement speed multiplier while prone.
+  float standing_visibility_factor = 1.0F;  ///< Visibility factor while standing.
+  float crouched_visibility_factor = 0.65F;  ///< Visibility factor while crouched.
+  float prone_visibility_factor = 0.35F;  ///< Visibility factor while prone.
 };
 
 

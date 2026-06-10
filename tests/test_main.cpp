@@ -1375,6 +1375,79 @@ void TestLevel3DPlayerStepJumpsOutOfNegativePit() {
          "Space step-up from -1 should land on elevation 0");
 }
 
+
+void TestLevel3DPlayerPostureToggles() {
+  const sar::LevelData level = BuildFlatTestLevel(1, 1, {0});
+  sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      0.5F, 0.5F, 0, 1.0F, 0.0F);
+
+  sar::InputState input;
+  input.crouch_pressed = true;
+  sar::render3d::UpdateLevel3DPlayer(level, input, 0.05F, &state);
+  Expect(state.posture == sar::render3d::Level3DPlayerPosture::kCrouched,
+         "C should switch standing player to crouched posture");
+
+  input = sar::InputState{};
+  input.prone_pressed = true;
+  sar::render3d::UpdateLevel3DPlayer(level, input, 0.05F, &state);
+  Expect(state.posture == sar::render3d::Level3DPlayerPosture::kProne,
+         "Z should switch crouched player to prone posture");
+
+  input = sar::InputState{};
+  input.prone_pressed = true;
+  sar::render3d::UpdateLevel3DPlayer(level, input, 0.05F, &state);
+  Expect(state.posture == sar::render3d::Level3DPlayerPosture::kCrouched,
+         "Z should raise prone player back to crouched posture");
+}
+
+void TestLevel3DProneCannotStepJumpOutOfPit() {
+  const sar::LevelData level = BuildFlatTestLevel(2, 1, {0, -1});
+  sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      1.5F, 0.5F, -1, -1.0F, 0.0F);
+  state.posture = sar::render3d::Level3DPlayerPosture::kProne;
+  sar::InputState input;
+  input.up_down = true;
+  input.jump_pressed = true;
+
+  sar::render3d::UpdateLevel3DPlayer(level, input, 0.05F, &state);
+
+  Expect(!state.jump_active,
+         "prone player should not start a Space step-up jump");
+  Expect(state.tile_x > 1.0F,
+         "prone player should remain in the -1 pit when trying to climb out");
+  Expect(state.last_block_reason ==
+             sar::render3d::Level3DMoveBlockReason::kPostureCannotClimb,
+         "prone step-up should be blocked by posture rules");
+
+  const sar::render3d::Level3DTargetTileDiagnostics diagnostics =
+      sar::render3d::FacingLevel3DTargetTileDiagnostics(level, state);
+  Expect(!diagnostics.can_space_step,
+         "target diagnostics should block prone Space step-up");
+}
+
+void TestLevel3DVisibilityScoreUsesPostureAndConcealment() {
+  sar::LevelData level = BuildFlatTestLevel(1, 2, {0, -1});
+  level.cells[0].terrain = sar::TerrainType::kRoad;
+  level.cells[1].terrain = sar::TerrainType::kForest;
+  level.cells[1].concealment = 1;
+  level.cells[1].cover = 1;
+
+  sar::render3d::Level3DPlayerState standing = MakeTestPlayer(
+      0.5F, 0.5F, 0, 1.0F, 0.0F);
+  standing.posture = sar::render3d::Level3DPlayerPosture::kStanding;
+  sar::render3d::RefreshLevel3DPlayerVisibility(level, &standing);
+
+  sar::render3d::Level3DPlayerState prone = MakeTestPlayer(
+      0.5F, 1.5F, -1, 1.0F, 0.0F);
+  prone.posture = sar::render3d::Level3DPlayerPosture::kProne;
+  sar::render3d::RefreshLevel3DPlayerVisibility(level, &prone);
+
+  Expect(prone.visibility_score < standing.visibility_score,
+         "prone player in forest concealment and -1 elevation should be less visible");
+  Expect(prone.visibility_score < 0.15F,
+         "combined prone/concealment/pit visibility should be strongly reduced");
+}
+
 }  // namespace
 
 int main() {
@@ -1403,6 +1476,9 @@ int main() {
   TestLevel3DPlayerCannotWalkOutOfNegativePit();
   TestLevel3DTargetDiagnosticsReportsPitStepUp();
   TestLevel3DPlayerStepJumpsOutOfNegativePit();
+  TestLevel3DPlayerPostureToggles();
+  TestLevel3DProneCannotStepJumpOutOfPit();
+  TestLevel3DVisibilityScoreUsesPostureAndConcealment();
   std::cout << "All tests passed.\n";
   return 0;
 }

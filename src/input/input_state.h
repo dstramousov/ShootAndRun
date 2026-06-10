@@ -32,6 +32,8 @@ struct InputState {
   bool cancel_down = false;  ///< Cancel down value carried by this data structure.
   bool left_mouse_pressed = false;  ///< Left mouse pressed value carried by this data structure.
   bool jump_pressed = false;  ///< Jump pressed value carried by this data structure.
+  bool crouch_pressed = false;  ///< true when the crouch posture toggle was pressed this frame.
+  bool prone_pressed = false;  ///< true when the prone posture toggle was pressed this frame.
   bool debug_view_raw_pressed = false;  ///< Debug view raw pressed value carried by this data structure.
   bool debug_view_analysis_pressed = false;  ///< Debug view analysis pressed value carried by this data structure.
   bool debug_view_visual_pressed = false;  ///< Debug view visual pressed value carried by this data structure.

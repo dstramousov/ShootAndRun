@@ -487,6 +487,18 @@ std::string ProjectConfig::Dump() const {
          std::to_string(player3d_movement.jump_air_control_multiplier) +
          ", jump_run_min: " +
          std::to_string(player3d_movement.jump_min_running_speed_tiles_per_sec) +
+         ", posture_speed: standing=" +
+         std::to_string(player3d_movement.standing_speed_multiplier) +
+         " crouched=" +
+         std::to_string(player3d_movement.crouched_speed_multiplier) +
+         " prone=" +
+         std::to_string(player3d_movement.prone_speed_multiplier) +
+         ", posture_visibility: standing=" +
+         std::to_string(player3d_movement.standing_visibility_factor) +
+         " crouched=" +
+         std::to_string(player3d_movement.crouched_visibility_factor) +
+         " prone=" +
+         std::to_string(player3d_movement.prone_visibility_factor) +
          " }, player3d_health: { initial_hp: " +
          std::to_string(player3d_health.initial_hp) +
          ", max_hp: " + std::to_string(player3d_health.max_hp) +
@@ -1107,6 +1119,84 @@ ProjectConfigResult LoadProjectConfig(
     }
     config.player3d_movement.jump_min_running_speed_tiles_per_sec =
         player3d_jump_run_min.value;
+  }
+
+  ParseFloatResult player3d_standing_speed = ExtractOptionalJsonFloatField(
+      content, "player3d_standing_speed_multiplier");
+  if (!player3d_standing_speed.ok) {
+    return {false, {}, player3d_standing_speed.error};
+  }
+  if (player3d_standing_speed.found) {
+    if (player3d_standing_speed.value <= 0.0F) {
+      return {false, {}, "player3d_standing_speed_multiplier must be positive"};
+    }
+    config.player3d_movement.standing_speed_multiplier =
+        player3d_standing_speed.value;
+  }
+
+  ParseFloatResult player3d_crouched_speed = ExtractOptionalJsonFloatField(
+      content, "player3d_crouched_speed_multiplier");
+  if (!player3d_crouched_speed.ok) {
+    return {false, {}, player3d_crouched_speed.error};
+  }
+  if (player3d_crouched_speed.found) {
+    if (player3d_crouched_speed.value <= 0.0F) {
+      return {false, {}, "player3d_crouched_speed_multiplier must be positive"};
+    }
+    config.player3d_movement.crouched_speed_multiplier =
+        player3d_crouched_speed.value;
+  }
+
+  ParseFloatResult player3d_prone_speed = ExtractOptionalJsonFloatField(
+      content, "player3d_prone_speed_multiplier");
+  if (!player3d_prone_speed.ok) {
+    return {false, {}, player3d_prone_speed.error};
+  }
+  if (player3d_prone_speed.found) {
+    if (player3d_prone_speed.value <= 0.0F) {
+      return {false, {}, "player3d_prone_speed_multiplier must be positive"};
+    }
+    config.player3d_movement.prone_speed_multiplier =
+        player3d_prone_speed.value;
+  }
+
+  ParseFloatResult player3d_standing_visibility = ExtractOptionalJsonFloatField(
+      content, "player3d_standing_visibility_factor");
+  if (!player3d_standing_visibility.ok) {
+    return {false, {}, player3d_standing_visibility.error};
+  }
+  if (player3d_standing_visibility.found) {
+    if (player3d_standing_visibility.value <= 0.0F) {
+      return {false, {}, "player3d_standing_visibility_factor must be positive"};
+    }
+    config.player3d_movement.standing_visibility_factor =
+        player3d_standing_visibility.value;
+  }
+
+  ParseFloatResult player3d_crouched_visibility = ExtractOptionalJsonFloatField(
+      content, "player3d_crouched_visibility_factor");
+  if (!player3d_crouched_visibility.ok) {
+    return {false, {}, player3d_crouched_visibility.error};
+  }
+  if (player3d_crouched_visibility.found) {
+    if (player3d_crouched_visibility.value <= 0.0F) {
+      return {false, {}, "player3d_crouched_visibility_factor must be positive"};
+    }
+    config.player3d_movement.crouched_visibility_factor =
+        player3d_crouched_visibility.value;
+  }
+
+  ParseFloatResult player3d_prone_visibility = ExtractOptionalJsonFloatField(
+      content, "player3d_prone_visibility_factor");
+  if (!player3d_prone_visibility.ok) {
+    return {false, {}, player3d_prone_visibility.error};
+  }
+  if (player3d_prone_visibility.found) {
+    if (player3d_prone_visibility.value <= 0.0F) {
+      return {false, {}, "player3d_prone_visibility_factor must be positive"};
+    }
+    config.player3d_movement.prone_visibility_factor =
+        player3d_prone_visibility.value;
   }
 
   ParseIntResult player3d_max_hp =

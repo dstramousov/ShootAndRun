@@ -162,6 +162,161 @@ std::string_view TerrainShortName(TerrainType terrain) {
 }
 
 /**
+ * @brief Returns posture speed multiplier from player state tuning.
+ */
+float PostureSpeedMultiplier(const Level3DPlayerState& state) {
+  switch (state.posture) {
+    case Level3DPlayerPosture::kStanding:
+      return state.standing_speed_multiplier;
+    case Level3DPlayerPosture::kCrouched:
+      return state.crouched_speed_multiplier;
+    case Level3DPlayerPosture::kProne:
+      return state.prone_speed_multiplier;
+  }
+  return 1.0F;
+}
+
+/**
+ * @brief Returns posture visibility factor from player state tuning.
+ */
+float PostureVisibilityFactor(const Level3DPlayerState& state) {
+  switch (state.posture) {
+    case Level3DPlayerPosture::kStanding:
+      return state.standing_visibility_factor;
+    case Level3DPlayerPosture::kCrouched:
+      return state.crouched_visibility_factor;
+    case Level3DPlayerPosture::kProne:
+      return state.prone_visibility_factor;
+  }
+  return 1.0F;
+}
+
+/**
+ * @brief Returns terrain contribution to player visibility.
+ */
+float TerrainVisibilityFactor(TerrainType terrain) {
+  switch (terrain) {
+    case TerrainType::kRoad:
+      return 1.10F;
+    case TerrainType::kOpenGround:
+      return 1.0F;
+    case TerrainType::kRuins:
+      return 0.85F;
+    case TerrainType::kSwamp:
+    case TerrainType::kWater:
+      return 0.80F;
+    case TerrainType::kForest:
+      return 0.72F;
+    case TerrainType::kWall:
+      return 0.70F;
+    case TerrainType::kUnknown:
+      return 1.0F;
+  }
+  return 1.0F;
+}
+
+/**
+ * @brief Returns concealment and cover contribution to player visibility.
+ */
+float ConcealmentVisibilityFactor(const RuntimeCell& cell) {
+  float factor = 1.0F;
+  if (cell.concealment > 0) {
+    factor *= cell.concealment >= 2 ? 0.42F : 0.55F;
+  }
+  if (cell.cover > 0) {
+    factor *= cell.cover >= 2 ? 0.75F : 0.85F;
+  }
+  if (cell.blocks_vision && !cell.collision) {
+    factor *= 0.70F;
+  }
+  return factor;
+}
+
+/**
+ * @brief Returns elevation contribution to player visibility.
+ */
+float ElevationVisibilityFactor(const Level3DPlayerState& state,
+                                const RuntimeCell& cell) {
+  const int elevation = std::min(static_cast<int>(state.elevation),
+                                 static_cast<int>(cell.height));
+  if (elevation < 0) {
+    return 0.65F;
+  }
+  if (elevation >= 3) {
+    return 1.20F;
+  }
+  if (elevation > 0) {
+    return 1.08F;
+  }
+  return 1.0F;
+}
+
+/**
+ * @brief Returns movement contribution to player visibility.
+ */
+float MovementVisibilityFactor(const Level3DPlayerState& state) {
+  const float speed = std::hypot(state.velocity_x_tiles_per_sec,
+                                 state.velocity_y_tiles_per_sec);
+  if (speed <= 0.05F) {
+    return 1.0F;
+  }
+  switch (state.posture) {
+    case Level3DPlayerPosture::kStanding:
+      return 1.10F;
+    case Level3DPlayerPosture::kCrouched:
+      return 1.0F;
+    case Level3DPlayerPosture::kProne:
+      return 0.95F;
+  }
+  return 1.0F;
+}
+
+/**
+ * @brief Checks whether upward movement is blocked by the current posture.
+ */
+bool PostureBlocksUpwardMovement(const Level3DPlayerState& state,
+                                 int height_delta) {
+  return state.posture == Level3DPlayerPosture::kProne && height_delta > 0;
+}
+
+/**
+ * @brief Checks whether running jumps are allowed for the current posture.
+ */
+bool CanStartRunningJumpFromPosture(const Level3DPlayerState& state) {
+  return state.posture == Level3DPlayerPosture::kStanding;
+}
+
+/**
+ * @brief Applies posture toggle input to the player state.
+ */
+void ApplyPostureInput(const InputState& input, Level3DPlayerState* state) {
+  if (state == nullptr || state->jump_active || state->step_jump_active) {
+    return;
+  }
+
+  if (input.prone_pressed) {
+    state->posture = state->posture == Level3DPlayerPosture::kProne
+                         ? Level3DPlayerPosture::kCrouched
+                         : Level3DPlayerPosture::kProne;
+    return;
+  }
+
+  if (input.crouch_pressed) {
+    switch (state->posture) {
+      case Level3DPlayerPosture::kStanding:
+        state->posture = Level3DPlayerPosture::kCrouched;
+        break;
+      case Level3DPlayerPosture::kCrouched:
+        state->posture = Level3DPlayerPosture::kStanding;
+        break;
+      case Level3DPlayerPosture::kProne:
+        state->posture = Level3DPlayerPosture::kCrouched;
+        break;
+    }
+  }
+}
+
+/**
  * @brief Returns current tile movement multiplier.
  */
 float CurrentTileMovementMultiplier(const LevelData& level,
@@ -205,7 +360,8 @@ void RefreshEffectiveMovementSpeed(const LevelData& level,
   }
   state->target_movement_multiplier = MovementMultiplierForState(level, *state);
   state->effective_move_speed_tiles_per_sec =
-      state->move_speed_tiles_per_sec * state->current_movement_multiplier;
+      state->move_speed_tiles_per_sec * state->current_movement_multiplier *
+      std::clamp(PostureSpeedMultiplier(*state), 0.0F, 1.50F);
 }
 
 /**
@@ -220,7 +376,8 @@ void ResetMovementMultiplier(const LevelData& level,
       level, *state);
   state->current_movement_multiplier = state->target_movement_multiplier;
   state->effective_move_speed_tiles_per_sec =
-      state->move_speed_tiles_per_sec * state->current_movement_multiplier;
+      state->move_speed_tiles_per_sec * state->current_movement_multiplier *
+      std::clamp(PostureSpeedMultiplier(*state), 0.0F, 1.50F);
 }
 
 /**
@@ -241,7 +398,8 @@ void UpdateMovementMultiplier(const LevelData& level, float safe_dt,
   state->current_movement_multiplier = std::clamp(
       state->current_movement_multiplier, 0.0F, 1.50F);
   state->effective_move_speed_tiles_per_sec =
-      state->move_speed_tiles_per_sec * state->current_movement_multiplier;
+      state->move_speed_tiles_per_sec * state->current_movement_multiplier *
+      std::clamp(PostureSpeedMultiplier(*state), 0.0F, 1.50F);
 }
 
 /**
@@ -404,13 +562,18 @@ EnterTileResult CheckEnterTile(const LevelData& level,
   if (!target->walkable || target->movement_multiplier <= 0.0F) {
     return {false, x, y, height_delta, Level3DMoveBlockReason::kNotWalkable};
   }
+  if (PostureBlocksUpwardMovement(state, height_delta)) {
+    return {false, x, y, height_delta,
+            Level3DMoveBlockReason::kPostureCannotClimb};
+  }
   if (transition != nullptr && state.elevation >= 0 && target->height >= 0 &&
       CanUseNormalMovementTransition(*transition, state.elevation,
                                      target->height)) {
     return {true, x, y, height_delta, Level3DMoveBlockReason::kNone,
             true, transition->type};
   }
-  if (height_delta == 1 && IsRunningJumpCandidate(state)) {
+  if (height_delta == 1 && CanStartRunningJumpFromPosture(state) &&
+      IsRunningJumpCandidate(state)) {
     return {true, x, y, height_delta, Level3DMoveBlockReason::kNone,
             false, ElevationTransitionType::kUnknown, true};
   }
@@ -577,6 +740,10 @@ EnterTileResult CheckStepJumpTarget(const LevelData& level,
     return {false, target_x, target_y, height_delta,
             Level3DMoveBlockReason::kNotWalkable};
   }
+  if (PostureBlocksUpwardMovement(state, height_delta)) {
+    return {false, target_x, target_y, height_delta,
+            Level3DMoveBlockReason::kPostureCannotClimb};
+  }
   if (transition != nullptr && state.elevation >= 0 && target->height >= 0 &&
       !CanUseStepJumpTransition(*transition, height_delta)) {
     return {false, target_x, target_y, height_delta,
@@ -658,7 +825,7 @@ void StartRunningJump(Level3DPlayerState* state) {
 bool TryStartRunningJump(const LevelData& level, const InputState& input,
                          Level3DPlayerState* state) {
   if (state == nullptr || !input.jump_pressed || state->jump_active ||
-      state->step_jump_active) {
+      state->step_jump_active || !CanStartRunningJumpFromPosture(*state)) {
     return false;
   }
 
@@ -1034,6 +1201,7 @@ void UpdateVelocityFromInput(const LevelData& level,
   if (state->jump_active && state->jump_kind == Level3DJumpKind::kRun) {
     effective_speed = state->move_speed_tiles_per_sec *
                       state->jump_start_movement_multiplier *
+                      std::clamp(PostureSpeedMultiplier(*state), 0.0F, 1.50F) *
                       state->jump_horizontal_speed_multiplier;
     acceleration *= state->jump_air_control_multiplier;
   }
@@ -1064,6 +1232,23 @@ const char* Level3DMoveBlockReasonName(Level3DMoveBlockReason reason) {
       return "step_up_required";
     case Level3DMoveBlockReason::kHeightStep:
       return "height_step";
+    case Level3DMoveBlockReason::kPostureCannotClimb:
+      return "posture_cannot_climb";
+  }
+  return "unknown";
+}
+
+/**
+ * @brief Returns level 3D player posture name.
+ */
+const char* Level3DPlayerPostureName(Level3DPlayerPosture posture) {
+  switch (posture) {
+    case Level3DPlayerPosture::kStanding:
+      return "standing";
+    case Level3DPlayerPosture::kCrouched:
+      return "crouched";
+    case Level3DPlayerPosture::kProne:
+      return "prone";
   }
   return "unknown";
 }
@@ -1168,7 +1353,9 @@ void InitializeLevel3DPlayer(const LevelData& level,
   state->last_transition_to_tile_y = -1;
   state->last_transition_from_elevation = state->elevation;
   state->last_transition_to_elevation = state->elevation;
+  state->posture = Level3DPlayerPosture::kStanding;
   ResetMovementMultiplier(level, state);
+  RefreshLevel3DPlayerVisibility(level, state);
   state->initialized = true;
 }
 
@@ -1184,11 +1371,15 @@ void UpdateLevel3DPlayer(const LevelData& level, const InputState& input,
 
   const float safe_dt = std::clamp(dt, 0.0F, 0.05F);
   UpdateFacingFromMouse(input, state);
+  ApplyPostureInput(input, state);
+  RefreshLevel3DPlayerVisibility(level, state);
   if (UpdateStepJump(level, safe_dt, state)) {
+    RefreshLevel3DPlayerVisibility(level, state);
     return;
   }
   const bool running_jump_active = UpdateRunningJump(level, safe_dt, state);
   if (TryStartStepJump(level, input, state)) {
+    RefreshLevel3DPlayerVisibility(level, state);
     return;
   }
   if (!running_jump_active) {
@@ -1199,6 +1390,7 @@ void UpdateLevel3DPlayer(const LevelData& level, const InputState& input,
   const float dx = state->velocity_x_tiles_per_sec * safe_dt;
   const float dy = state->velocity_y_tiles_per_sec * safe_dt;
   if (std::abs(dx) <= kVectorEpsilon && std::abs(dy) <= kVectorEpsilon) {
+    RefreshLevel3DPlayerVisibility(level, state);
     return;
   }
 
@@ -1206,6 +1398,7 @@ void UpdateLevel3DPlayer(const LevelData& level, const InputState& input,
       level, *state, state->tile_x + dx, state->tile_y + dy);
   if (full_enter.can_enter) {
     ApplyMovementAxis(level, dx, dy, state);
+    RefreshLevel3DPlayerVisibility(level, state);
     return;
   }
 
@@ -1215,6 +1408,32 @@ void UpdateLevel3DPlayer(const LevelData& level, const InputState& input,
     RecordBlockedTile(full_enter.tile_x, full_enter.tile_y,
                       full_enter.reason, state);
   }
+  RefreshLevel3DPlayerVisibility(level, state);
+}
+
+/**
+ * @brief Refreshes level 3D player visibility score.
+ */
+void RefreshLevel3DPlayerVisibility(const LevelData& level,
+                                    Level3DPlayerState* state) {
+  if (state == nullptr) {
+    return;
+  }
+
+  const RuntimeCell* cell = CellAt(level, TileIndexFromPosition(state->tile_x),
+                                   TileIndexFromPosition(state->tile_y));
+  if (cell == nullptr) {
+    state->visibility_score = std::clamp(PostureVisibilityFactor(*state),
+                                         0.05F, 2.0F);
+    return;
+  }
+
+  const float score = PostureVisibilityFactor(*state) *
+                      TerrainVisibilityFactor(cell->terrain) *
+                      ConcealmentVisibilityFactor(*cell) *
+                      ElevationVisibilityFactor(*state, *cell) *
+                      MovementVisibilityFactor(*state);
+  state->visibility_score = std::clamp(score, 0.05F, 2.0F);
 }
 
 /**
@@ -1245,6 +1464,10 @@ Level3DPlayerTileDiagnostics CurrentLevel3DPlayerTileDiagnostics(
   diagnostics.tile_x = TileIndexFromPosition(state.tile_x);
   diagnostics.tile_y = TileIndexFromPosition(state.tile_y);
   diagnostics.base_speed_tiles_per_sec = state.move_speed_tiles_per_sec;
+  diagnostics.posture = state.posture;
+  diagnostics.posture_speed_multiplier =
+      std::clamp(PostureSpeedMultiplier(state), 0.0F, 1.50F);
+  diagnostics.visibility_score = state.visibility_score;
   diagnostics.effective_speed_tiles_per_sec =
       state.effective_move_speed_tiles_per_sec;
   diagnostics.velocity_x_tiles_per_sec = state.velocity_x_tiles_per_sec;
@@ -1426,7 +1649,10 @@ std::string Level3DPlayerTileDiagnosticsToString(
          << " w=" << (diagnostics.walkable ? 'Y' : 'N')
          << " col=" << (diagnostics.collision ? 'Y' : 'N')
          << " con=" << static_cast<int>(diagnostics.concealment)
+         << " posture=" << Level3DPlayerPostureName(diagnostics.posture)
+         << " vis=" << diagnostics.visibility_score
          << " mov=" << diagnostics.movement_multiplier
+         << " post_mul=" << diagnostics.posture_speed_multiplier
          << " bs=" << diagnostics.base_speed_tiles_per_sec
          << " es=" << diagnostics.effective_speed_tiles_per_sec
          << " vel=" << diagnostics.velocity_x_tiles_per_sec << ','
@@ -1443,10 +1669,13 @@ std::string Level3DPlayerStateToString(const Level3DPlayerState& state) {
   stream << "player3d: tile=" << state.tile_x << ',' << state.tile_y
          << " elevation=" << static_cast<int>(state.elevation)
          << " hp=" << state.current_hp << '/' << state.max_hp
+         << " posture=" << Level3DPlayerPostureName(state.posture)
+         << " visibility=" << state.visibility_score
          << " facing=" << state.facing_x << ',' << state.facing_y
          << " velocity=" << state.velocity_x_tiles_per_sec << ','
          << state.velocity_y_tiles_per_sec
          << " movement_multiplier=" << state.current_movement_multiplier
+         << " posture_speed_multiplier=" << PostureSpeedMultiplier(state)
          << " target_movement_multiplier=" << state.target_movement_multiplier
          << " base_speed=" << state.move_speed_tiles_per_sec
          << " effective_speed=" << state.effective_move_speed_tiles_per_sec

@@ -117,6 +117,12 @@ void ApplyPlayer3DMovementConfig(
   player->jump_air_control_multiplier = config.jump_air_control_multiplier;
   player->jump_min_running_speed_tiles_per_sec =
       config.jump_min_running_speed_tiles_per_sec;
+  player->standing_speed_multiplier = config.standing_speed_multiplier;
+  player->crouched_speed_multiplier = config.crouched_speed_multiplier;
+  player->prone_speed_multiplier = config.prone_speed_multiplier;
+  player->standing_visibility_factor = config.standing_visibility_factor;
+  player->crouched_visibility_factor = config.crouched_visibility_factor;
+  player->prone_visibility_factor = config.prone_visibility_factor;
 }
 
 /**
@@ -1310,7 +1316,9 @@ void Application::Draw3DPlayerHud() const {
                         static_cast<int>(6.0F * window_state_.ui_scale);
   const render3d::Level3DPlayerState& player = level_3d_view_.player;
   const std::string text = "HP: " + std::to_string(player.current_hp) + "/" +
-                           std::to_string(player.max_hp);
+                           std::to_string(player.max_hp) + "  " +
+                           render3d::Level3DPlayerPostureName(player.posture) +
+                           "  VIS: " + std::to_string(player.visibility_score);
   const int text_width = ui_font_.MeasureTextWidth(text, font_size);
   const Color color = player.current_hp <= 0 ? Color{235, 70, 58, 255}
                                              : Color{226, 232, 214, 255};
@@ -1345,7 +1353,7 @@ void Application::Draw3DElevationDebugOverlay() const {
       render3d::FacingLevel3DTargetTileDiagnostics(*loaded_level_,
                                                    level_3d_view_.player);
 
-  ui_font_.DrawTextLine("ELEVATION DEBUG  F6 overlay  F7 logs", x, y,
+  ui_font_.DrawTextLine("ELEVATION DEBUG  F6 overlay  F7 logs  C crouch  Z prone", x, y,
                         font_size, title_color);
   y += line_step;
   ui_font_.DrawTextLine(

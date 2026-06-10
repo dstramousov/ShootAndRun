@@ -1579,9 +1579,38 @@ void DrawPlayer(const LevelData& level, const Level3DViewState& state) {
   Vector3 position = Level3DPlayerWorldPosition(level, state.player,
                                                 state.tile_world_size,
                                                 state.elevation_step);
-  position.y += 0.28F;
-  DrawCube(position, 0.34F, 0.56F, 0.34F, Color{246, 204, 38, 255});
-  DrawCubeWires(position, 0.34F, 0.56F, 0.34F, Color{80, 62, 18, 255});
+  const Color body_color{246, 204, 38, 255};
+  const Color wire_color{80, 62, 18, 255};
+
+  switch (state.player.posture) {
+    case Level3DPlayerPosture::kStanding: {
+      position.y += 0.28F;
+      DrawCube(position, 0.34F, 0.56F, 0.34F, body_color);
+      DrawCubeWires(position, 0.34F, 0.56F, 0.34F, wire_color);
+      break;
+    }
+    case Level3DPlayerPosture::kCrouched: {
+      position.y += 0.18F;
+      DrawCube(position, 0.42F, 0.36F, 0.42F, body_color);
+      DrawCubeWires(position, 0.42F, 0.36F, 0.42F, wire_color);
+      break;
+    }
+    case Level3DPlayerPosture::kProne: {
+      position.y += 0.08F;
+      const float body_offset = state.tile_world_size * 0.18F;
+      const Vector3 front{position.x + state.player.facing_x * body_offset,
+                          position.y,
+                          position.z + state.player.facing_y * body_offset};
+      const Vector3 back{position.x - state.player.facing_x * body_offset,
+                         position.y,
+                         position.z - state.player.facing_y * body_offset};
+      DrawCube(front, 0.36F, 0.16F, 0.36F, body_color);
+      DrawCube(back, 0.36F, 0.16F, 0.36F, body_color);
+      DrawCubeWires(front, 0.36F, 0.16F, 0.36F, wire_color);
+      DrawCubeWires(back, 0.36F, 0.16F, 0.36F, wire_color);
+      break;
+    }
+  }
 
   const Vector3 vertical_end{position.x, position.y + 3.0F, position.z};
   DrawLine3D(position, vertical_end, Color{246, 204, 38, 200});

@@ -607,3 +607,14 @@
 - Removed obsolete per-tile 3D volume draw helpers that were left unused after span batching.
 - Removed the unused `RuntimeCell` parameter from forest boundary span color generation.
 - No gameplay, movement, elevation, loader, or renderer behavior changes.
+
+## v0.1.72 -> v0.1.73
+
+- Bumped CMake project and runtime application version to `0.1.73`.
+- Added 3D player posture states: standing, crouched, and prone.
+- Added C/Z posture controls for crouch and prone transitions.
+- Added posture movement speed multipliers and posture visibility factors.
+- Added player visibility score derived from posture, terrain, concealment, cover, elevation, and movement.
+- Blocked prone upward movement, prone step-up, and prone running jumps while still allowing same-level and downward movement.
+- Updated 3D player debug/HUD output and simple 3D player body rendering for posture readability.
+- Added regression tests for posture toggles, prone climb blocking, and visibility score reduction.

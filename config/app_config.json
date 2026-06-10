@@ -44,7 +44,13 @@
     "player3d_jump_horizontal_speed_multiplier": 1.05,
     "player3d_jump_air_control_multiplier": 0.82,
     "player3d_jump_min_running_speed_tiles_per_sec": 1.0,
-    "player3d_movement_multiplier_smooth_speed": 14.0
+    "player3d_movement_multiplier_smooth_speed": 14.0,
+    "player3d_standing_speed_multiplier": 1.0,
+    "player3d_crouched_speed_multiplier": 0.62,
+    "player3d_prone_speed_multiplier": 0.32,
+    "player3d_standing_visibility_factor": 1.0,
+    "player3d_crouched_visibility_factor": 0.65,
+    "player3d_prone_visibility_factor": 0.35
   },
   "render3d_visibility": {
     "render3d_visibility_enabled": true,

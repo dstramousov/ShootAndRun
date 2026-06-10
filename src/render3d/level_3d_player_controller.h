@@ -29,6 +29,7 @@ enum class Level3DMoveBlockReason {
   kUnderground,
   kStepUpRequired,
   kHeightStep,
+  kPostureCannotClimb,
 };
 
 /**
@@ -51,6 +52,15 @@ enum class Level3DJumpKind {
 };
 
 /**
+ * @brief Physical body posture used by 3D movement, visibility and rendering.
+ */
+enum class Level3DPlayerPosture {
+  kStanding,
+  kCrouched,
+  kProne,
+};
+
+/**
  * @brief Mutable 3D player movement and jump state.
  *
  * Coordinates are stored in tile units. Visual elevation is stored separately
@@ -66,6 +76,14 @@ struct Level3DPlayerState {
   float velocity_x_tiles_per_sec = 0.0F;  ///< Time value for velocity x tiles per seconds.
   float velocity_y_tiles_per_sec = 0.0F;  ///< Time value for velocity y tiles per seconds.
   float move_speed_tiles_per_sec = 4.25F;  ///< Time value for move speed tiles per seconds.
+  Level3DPlayerPosture posture = Level3DPlayerPosture::kStanding;  ///< Current physical body posture.
+  float standing_speed_multiplier = 1.0F;  ///< Movement speed multiplier applied while standing.
+  float crouched_speed_multiplier = 0.62F;  ///< Movement speed multiplier applied while crouched.
+  float prone_speed_multiplier = 0.32F;  ///< Movement speed multiplier applied while prone.
+  float standing_visibility_factor = 1.0F;  ///< Visibility factor applied while standing.
+  float crouched_visibility_factor = 0.65F;  ///< Visibility factor applied while crouched.
+  float prone_visibility_factor = 0.35F;  ///< Visibility factor applied while prone.
+  float visibility_score = 1.0F;  ///< Current combined visibility score in the range [0, 2].
   float current_movement_multiplier = 1.0F;  ///< Scaling factor for current movement multiplier.
   float target_movement_multiplier = 1.0F;  ///< Scaling factor for target movement multiplier.
   float movement_multiplier_smooth_speed = 14.0F;  ///< Scaling factor for movement multiplier smooth speed.
@@ -142,6 +160,9 @@ struct Level3DPlayerTileDiagnostics {
   std::int8_t elevation = 0;  ///< Elevation value carried by this data structure.
   float movement_multiplier = 0.0F;  ///< Movement speed multiplier applied on this tile.
   float base_speed_tiles_per_sec = 0.0F;  ///< Time value for base speed tiles per seconds.
+  Level3DPlayerPosture posture = Level3DPlayerPosture::kStanding;  ///< Current player body posture.
+  float posture_speed_multiplier = 1.0F;  ///< Movement multiplier applied by the current posture.
+  float visibility_score = 1.0F;  ///< Current combined player visibility score.
   float effective_speed_tiles_per_sec = 0.0F;  ///< Time value for effective speed tiles per seconds.
   float velocity_x_tiles_per_sec = 0.0F;  ///< Time value for velocity x tiles per seconds.
   float velocity_y_tiles_per_sec = 0.0F;  ///< Time value for velocity y tiles per seconds.
@@ -180,6 +201,14 @@ struct Level3DTargetTileDiagnostics {
  */
 const char* Level3DMoveBlockReasonName(Level3DMoveBlockReason reason);
 
+
+/**
+ * @brief Returns a stable display name for a player posture.
+ *
+ * @param posture Player body posture.
+ * @return Stable lowercase posture name.
+ */
+const char* Level3DPlayerPostureName(Level3DPlayerPosture posture);
 
 /**
  * @brief Returns a stable display name for a jump kind.
@@ -228,6 +257,15 @@ std::string Level3DFallEventToString(const Level3DPlayerState& state);
  * @return String representation for event logs.
  */
 std::string Level3DHealthEventToString(const Level3DPlayerState& state);
+
+/**
+ * @brief Recomputes the current player visibility score from posture and tile context.
+ *
+ * @param level Loaded level data.
+ * @param state Player state to update.
+ */
+void RefreshLevel3DPlayerVisibility(const LevelData& level,
+                                    Level3DPlayerState* state);
 
 /**
  * @brief Finds a spawn point and initializes the 3D player state.
