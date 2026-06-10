@@ -618,3 +618,12 @@
 - Blocked prone upward movement, prone step-up, and prone running jumps while still allowing same-level and downward movement.
 - Updated 3D player debug/HUD output and simple 3D player body rendering for posture readability.
 - Added regression tests for posture toggles, prone climb blocking, and visibility score reduction.
+
+## v0.1.73 -> v0.1.74
+
+- Bumped CMake project and runtime application version to `0.1.74`.
+- Added configurable player visibility tuning factors for terrain, concealment, cover, elevation, movement, and final clamp range.
+- Added detailed visibility breakdown diagnostics for posture, terrain, concealment, cover, soft vision blockers, elevation, movement, raw score, and final score.
+- Extended the F6 3D debug overlay and movement logs with visibility breakdown data for easier gameplay tuning.
+- Kept posture controls, movement restrictions, renderer batching, and map loader behavior unchanged.
+- Added regression coverage for visibility tuning config parsing and breakdown calculation.

@@ -168,6 +168,14 @@ void TestProjectConfigLoader() {
                 "    \"show_memory\": false,\n"
                 "    \"update_interval_ms\": 2000\n"
                 "  },\n"
+                "  \"player3d_movement\": {\n"
+                "    \"player3d_visibility_forest_factor\": 0.50,\n"
+                "    \"player3d_visibility_concealment_low_factor\": 0.40,\n"
+                "    \"player3d_visibility_below_ground_factor\": 0.60,\n"
+                "    \"player3d_visibility_moving_standing_factor\": 1.20,\n"
+                "    \"player3d_visibility_min_score\": 0.10,\n"
+                "    \"player3d_visibility_max_score\": 1.80\n"
+                "  },\n"
                 "  \"player3d_health\": {\n"
                 "    \"player3d_initial_hp\": 80,\n"
                 "    \"player3d_max_hp\": 120,\n"
@@ -209,6 +217,21 @@ void TestProjectConfigLoader() {
          "service info memory flag should be read from project config");
   Expect(result.config.service_info.update_interval_ms == 2000,
          "service info update interval should be read from project config");
+  Expect(result.config.player3d_movement.visibility_forest_factor == 0.50F,
+         "forest visibility factor should be read from project config");
+  Expect(result.config.player3d_movement.visibility_concealment_low_factor ==
+             0.40F,
+         "concealment visibility factor should be read from project config");
+  Expect(result.config.player3d_movement.visibility_below_ground_factor ==
+             0.60F,
+         "below-ground visibility factor should be read from project config");
+  Expect(result.config.player3d_movement.visibility_moving_standing_factor ==
+             1.20F,
+         "moving visibility factor should be read from project config");
+  Expect(result.config.player3d_movement.visibility_min_score == 0.10F,
+         "visibility min clamp should be read from project config");
+  Expect(result.config.player3d_movement.visibility_max_score == 1.80F,
+         "visibility max clamp should be read from project config");
   Expect(result.config.player3d_health.initial_hp == 80,
          "3D player initial HP should be read from project config");
   Expect(result.config.player3d_health.max_hp == 120,
@@ -1448,6 +1471,38 @@ void TestLevel3DVisibilityScoreUsesPostureAndConcealment() {
          "combined prone/concealment/pit visibility should be strongly reduced");
 }
 
+void TestLevel3DVisibilityBreakdownUsesTuning() {
+  sar::LevelData level = BuildFlatTestLevel(1, 1, {0});
+  level.cells[0].terrain = sar::TerrainType::kForest;
+  level.cells[0].concealment = 1;
+  level.cells[0].cover = 1;
+
+  sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      0.5F, 0.5F, 0, 1.0F, 0.0F);
+  state.posture = sar::render3d::Level3DPlayerPosture::kCrouched;
+  state.crouched_visibility_factor = 0.60F;
+  state.visibility_forest_factor = 0.50F;
+  state.visibility_concealment_low_factor = 0.40F;
+  state.visibility_cover_low_factor = 0.80F;
+  state.visibility_moving_crouched_factor = 0.90F;
+
+  const sar::render3d::Level3DVisibilityBreakdown breakdown =
+      sar::render3d::CurrentLevel3DPlayerVisibilityBreakdown(level, state);
+
+  Expect(breakdown.posture_factor == 0.60F,
+         "visibility breakdown should expose posture factor");
+  Expect(breakdown.terrain_factor == 0.50F,
+         "visibility breakdown should expose terrain factor");
+  Expect(breakdown.concealment_factor == 0.40F,
+         "visibility breakdown should expose concealment factor");
+  Expect(breakdown.cover_factor == 0.80F,
+         "visibility breakdown should expose cover factor");
+  Expect(breakdown.movement_factor == 0.90F,
+         "visibility breakdown should expose movement factor");
+  Expect(breakdown.final_score < 0.09F,
+         "visibility breakdown should use all configured factors");
+}
+
 }  // namespace
 
 int main() {
@@ -1479,6 +1534,7 @@ int main() {
   TestLevel3DPlayerPostureToggles();
   TestLevel3DProneCannotStepJumpOutOfPit();
   TestLevel3DVisibilityScoreUsesPostureAndConcealment();
+  TestLevel3DVisibilityBreakdownUsesTuning();
   std::cout << "All tests passed.\n";
   return 0;
 }

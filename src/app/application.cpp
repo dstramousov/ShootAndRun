@@ -81,6 +81,15 @@ std::string Level3DSpawnFacingLogLine(
 }
 
 /**
+ * @brief Formats a float with fixed precision.
+ */
+std::string FormatFixedFloat(float value, int precision) {
+  std::ostringstream stream;
+  stream << std::fixed << std::setprecision(precision) << value;
+  return stream.str();
+}
+
+/**
  * @brief Converts to level 3D fog mode.
  */
 render3d::Level3DFogMode ToLevel3DFogMode(Render3DFogMode mode) {
@@ -123,6 +132,37 @@ void ApplyPlayer3DMovementConfig(
   player->standing_visibility_factor = config.standing_visibility_factor;
   player->crouched_visibility_factor = config.crouched_visibility_factor;
   player->prone_visibility_factor = config.prone_visibility_factor;
+  player->visibility_road_factor = config.visibility_road_factor;
+  player->visibility_open_ground_factor =
+      config.visibility_open_ground_factor;
+  player->visibility_ruins_factor = config.visibility_ruins_factor;
+  player->visibility_swamp_factor = config.visibility_swamp_factor;
+  player->visibility_water_factor = config.visibility_water_factor;
+  player->visibility_forest_factor = config.visibility_forest_factor;
+  player->visibility_wall_factor = config.visibility_wall_factor;
+  player->visibility_unknown_terrain_factor =
+      config.visibility_unknown_terrain_factor;
+  player->visibility_concealment_low_factor =
+      config.visibility_concealment_low_factor;
+  player->visibility_concealment_high_factor =
+      config.visibility_concealment_high_factor;
+  player->visibility_cover_low_factor = config.visibility_cover_low_factor;
+  player->visibility_cover_high_factor = config.visibility_cover_high_factor;
+  player->visibility_soft_vision_block_factor =
+      config.visibility_soft_vision_block_factor;
+  player->visibility_below_ground_factor =
+      config.visibility_below_ground_factor;
+  player->visibility_elevated_factor = config.visibility_elevated_factor;
+  player->visibility_high_elevation_factor =
+      config.visibility_high_elevation_factor;
+  player->visibility_moving_standing_factor =
+      config.visibility_moving_standing_factor;
+  player->visibility_moving_crouched_factor =
+      config.visibility_moving_crouched_factor;
+  player->visibility_moving_prone_factor =
+      config.visibility_moving_prone_factor;
+  player->visibility_min_score = config.visibility_min_score;
+  player->visibility_max_score = config.visibility_max_score;
 }
 
 /**
@@ -1318,7 +1358,7 @@ void Application::Draw3DPlayerHud() const {
   const std::string text = "HP: " + std::to_string(player.current_hp) + "/" +
                            std::to_string(player.max_hp) + "  " +
                            render3d::Level3DPlayerPostureName(player.posture) +
-                           "  VIS: " + std::to_string(player.visibility_score);
+                           "  VIS: " + FormatFixedFloat(player.visibility_score, 2);
   const int text_width = ui_font_.MeasureTextWidth(text, font_size);
   const Color color = player.current_hp <= 0 ? Color{235, 70, 58, 255}
                                              : Color{226, 232, 214, 255};
@@ -1365,6 +1405,10 @@ void Application::Draw3DElevationDebugOverlay() const {
   ui_font_.DrawTextLine(
       "cur  " + render3d::Level3DPlayerTileDiagnosticsToString(current),
       x, y, font_size, color);
+  y += line_step;
+  ui_font_.DrawTextLine(
+      render3d::Level3DVisibilityBreakdownToString(current.visibility), x, y,
+      font_size, muted_color);
   y += line_step;
   ui_font_.DrawTextLine(
       "face " + render3d::Level3DTargetTileDiagnosticsToString(target),

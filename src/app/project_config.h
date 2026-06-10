@@ -141,6 +141,27 @@ struct Player3DMovementConfig {
   float standing_visibility_factor = 1.0F;  ///< Visibility factor while standing.
   float crouched_visibility_factor = 0.65F;  ///< Visibility factor while crouched.
   float prone_visibility_factor = 0.35F;  ///< Visibility factor while prone.
+  float visibility_road_factor = 1.10F;  ///< Visibility factor applied on road terrain.
+  float visibility_open_ground_factor = 1.0F;  ///< Visibility factor applied on open ground.
+  float visibility_ruins_factor = 0.85F;  ///< Visibility factor applied on ruin terrain.
+  float visibility_swamp_factor = 0.80F;  ///< Visibility factor applied on swamp terrain.
+  float visibility_water_factor = 0.80F;  ///< Visibility factor applied on water terrain.
+  float visibility_forest_factor = 0.72F;  ///< Visibility factor applied on forest terrain.
+  float visibility_wall_factor = 0.70F;  ///< Visibility factor applied on wall terrain.
+  float visibility_unknown_terrain_factor = 1.0F;  ///< Visibility factor for unknown terrain.
+  float visibility_concealment_low_factor = 0.55F;  ///< Visibility factor for low concealment.
+  float visibility_concealment_high_factor = 0.42F;  ///< Visibility factor for high concealment.
+  float visibility_cover_low_factor = 0.85F;  ///< Visibility factor for low cover.
+  float visibility_cover_high_factor = 0.75F;  ///< Visibility factor for high cover.
+  float visibility_soft_vision_block_factor = 0.70F;  ///< Visibility factor for soft vision blockers.
+  float visibility_below_ground_factor = 0.65F;  ///< Visibility factor below surface elevation.
+  float visibility_elevated_factor = 1.08F;  ///< Visibility factor above base elevation.
+  float visibility_high_elevation_factor = 1.20F;  ///< Visibility factor on high elevation.
+  float visibility_moving_standing_factor = 1.10F;  ///< Moving visibility while standing.
+  float visibility_moving_crouched_factor = 1.0F;  ///< Moving visibility while crouched.
+  float visibility_moving_prone_factor = 0.95F;  ///< Moving visibility while prone.
+  float visibility_min_score = 0.05F;  ///< Minimum clamped player visibility score.
+  float visibility_max_score = 2.0F;  ///< Maximum clamped player visibility score.
 };
 
 

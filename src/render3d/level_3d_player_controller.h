@@ -61,6 +61,21 @@ enum class Level3DPlayerPosture {
 };
 
 /**
+ * @brief Detailed player visibility factor breakdown.
+ */
+struct Level3DVisibilityBreakdown {
+  float posture_factor = 1.0F;  ///< Visibility factor selected from player posture.
+  float terrain_factor = 1.0F;  ///< Visibility factor selected from the current terrain.
+  float concealment_factor = 1.0F;  ///< Visibility factor selected from concealment grid.
+  float cover_factor = 1.0F;  ///< Visibility factor selected from cover grid.
+  float vision_factor = 1.0F;  ///< Visibility factor selected from soft vision blockers.
+  float elevation_factor = 1.0F;  ///< Visibility factor selected from current elevation.
+  float movement_factor = 1.0F;  ///< Visibility factor selected from current movement.
+  float raw_score = 1.0F;  ///< Score before min/max clamping.
+  float final_score = 1.0F;  ///< Score after min/max clamping.
+};
+
+/**
  * @brief Mutable 3D player movement and jump state.
  *
  * Coordinates are stored in tile units. Visual elevation is stored separately
@@ -83,6 +98,28 @@ struct Level3DPlayerState {
   float standing_visibility_factor = 1.0F;  ///< Visibility factor applied while standing.
   float crouched_visibility_factor = 0.65F;  ///< Visibility factor applied while crouched.
   float prone_visibility_factor = 0.35F;  ///< Visibility factor applied while prone.
+  float visibility_road_factor = 1.10F;  ///< Visibility factor applied on road terrain.
+  float visibility_open_ground_factor = 1.0F;  ///< Visibility factor applied on open ground.
+  float visibility_ruins_factor = 0.85F;  ///< Visibility factor applied on ruin terrain.
+  float visibility_swamp_factor = 0.80F;  ///< Visibility factor applied on swamp terrain.
+  float visibility_water_factor = 0.80F;  ///< Visibility factor applied on water terrain.
+  float visibility_forest_factor = 0.72F;  ///< Visibility factor applied on forest terrain.
+  float visibility_wall_factor = 0.70F;  ///< Visibility factor applied on wall terrain.
+  float visibility_unknown_terrain_factor = 1.0F;  ///< Visibility factor for unknown terrain.
+  float visibility_concealment_low_factor = 0.55F;  ///< Visibility factor for low concealment.
+  float visibility_concealment_high_factor = 0.42F;  ///< Visibility factor for high concealment.
+  float visibility_cover_low_factor = 0.85F;  ///< Visibility factor for low cover.
+  float visibility_cover_high_factor = 0.75F;  ///< Visibility factor for high cover.
+  float visibility_soft_vision_block_factor = 0.70F;  ///< Visibility factor for soft vision blockers.
+  float visibility_below_ground_factor = 0.65F;  ///< Visibility factor below surface elevation.
+  float visibility_elevated_factor = 1.08F;  ///< Visibility factor above base elevation.
+  float visibility_high_elevation_factor = 1.20F;  ///< Visibility factor on high elevation.
+  float visibility_moving_standing_factor = 1.10F;  ///< Moving visibility while standing.
+  float visibility_moving_crouched_factor = 1.0F;  ///< Moving visibility while crouched.
+  float visibility_moving_prone_factor = 0.95F;  ///< Moving visibility while prone.
+  float visibility_min_score = 0.05F;  ///< Minimum clamped player visibility score.
+  float visibility_max_score = 2.0F;  ///< Maximum clamped player visibility score.
+  Level3DVisibilityBreakdown visibility;  ///< Detailed current visibility factors.
   float visibility_score = 1.0F;  ///< Current combined visibility score in the range [0, 2].
   float current_movement_multiplier = 1.0F;  ///< Scaling factor for current movement multiplier.
   float target_movement_multiplier = 1.0F;  ///< Scaling factor for target movement multiplier.
@@ -162,6 +199,7 @@ struct Level3DPlayerTileDiagnostics {
   float base_speed_tiles_per_sec = 0.0F;  ///< Time value for base speed tiles per seconds.
   Level3DPlayerPosture posture = Level3DPlayerPosture::kStanding;  ///< Current player body posture.
   float posture_speed_multiplier = 1.0F;  ///< Movement multiplier applied by the current posture.
+  Level3DVisibilityBreakdown visibility;  ///< Detailed current visibility factors.
   float visibility_score = 1.0F;  ///< Current combined player visibility score.
   float effective_speed_tiles_per_sec = 0.0F;  ///< Time value for effective speed tiles per seconds.
   float velocity_x_tiles_per_sec = 0.0F;  ///< Time value for velocity x tiles per seconds.
@@ -266,6 +304,25 @@ std::string Level3DHealthEventToString(const Level3DPlayerState& state);
  */
 void RefreshLevel3DPlayerVisibility(const LevelData& level,
                                     Level3DPlayerState* state);
+
+/**
+ * @brief Computes detailed visibility factors for the current player tile.
+ *
+ * @param level Loaded level data.
+ * @param state Current player state and visibility tuning.
+ * @return Detailed visibility factor breakdown.
+ */
+Level3DVisibilityBreakdown CurrentLevel3DPlayerVisibilityBreakdown(
+    const LevelData& level, const Level3DPlayerState& state);
+
+/**
+ * @brief Formats a visibility breakdown for diagnostics and debug overlays.
+ *
+ * @param breakdown Visibility breakdown to format.
+ * @return Compact human-readable diagnostics string.
+ */
+std::string Level3DVisibilityBreakdownToString(
+    const Level3DVisibilityBreakdown& breakdown);
 
 /**
  * @brief Finds a spawn point and initializes the 3D player state.

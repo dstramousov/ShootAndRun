@@ -315,6 +315,29 @@ ParseBoolResult ExtractOptionalJsonBoolField(std::string_view text,
 }
 
 /**
+ * @brief Applies an optional positive JSON float field to a target value.
+ */
+bool ApplyPositiveOptionalFloatField(std::string_view content,
+                                     std::string_view field_name,
+                                     float* target,
+                                     std::string* error) {
+  ParseFloatResult result = ExtractOptionalJsonFloatField(content, field_name);
+  if (!result.ok) {
+    *error = result.error;
+    return false;
+  }
+  if (!result.found) {
+    return true;
+  }
+  if (result.value <= 0.0F) {
+    *error = std::string(field_name) + " must be positive";
+    return false;
+  }
+  *target = result.value;
+  return true;
+}
+
+/**
  * @brief Parses raylib log level from external data.
  */
 std::optional<RaylibLogLevel> ParseRaylibLogLevel(std::string_view value) {
@@ -499,6 +522,20 @@ std::string ProjectConfig::Dump() const {
          std::to_string(player3d_movement.crouched_visibility_factor) +
          " prone=" +
          std::to_string(player3d_movement.prone_visibility_factor) +
+         ", visibility_terrain: road=" +
+         std::to_string(player3d_movement.visibility_road_factor) +
+         " open=" +
+         std::to_string(player3d_movement.visibility_open_ground_factor) +
+         " forest=" +
+         std::to_string(player3d_movement.visibility_forest_factor) +
+         " conceal_low=" +
+         std::to_string(player3d_movement.visibility_concealment_low_factor) +
+         " pit=" +
+         std::to_string(player3d_movement.visibility_below_ground_factor) +
+         " clamp=" +
+         std::to_string(player3d_movement.visibility_min_score) +
+         ".." +
+         std::to_string(player3d_movement.visibility_max_score) +
          " }, player3d_health: { initial_hp: " +
          std::to_string(player3d_health.initial_hp) +
          ", max_hp: " + std::to_string(player3d_health.max_hp) +
@@ -1197,6 +1234,101 @@ ProjectConfigResult LoadProjectConfig(
     }
     config.player3d_movement.prone_visibility_factor =
         player3d_prone_visibility.value;
+  }
+
+  std::string visibility_error;
+  if (!ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_road_factor",
+          &config.player3d_movement.visibility_road_factor,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_open_ground_factor",
+          &config.player3d_movement.visibility_open_ground_factor,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_ruins_factor",
+          &config.player3d_movement.visibility_ruins_factor,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_swamp_factor",
+          &config.player3d_movement.visibility_swamp_factor,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_water_factor",
+          &config.player3d_movement.visibility_water_factor,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_forest_factor",
+          &config.player3d_movement.visibility_forest_factor,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_wall_factor",
+          &config.player3d_movement.visibility_wall_factor,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_unknown_terrain_factor",
+          &config.player3d_movement.visibility_unknown_terrain_factor,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_concealment_low_factor",
+          &config.player3d_movement.visibility_concealment_low_factor,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_concealment_high_factor",
+          &config.player3d_movement.visibility_concealment_high_factor,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_cover_low_factor",
+          &config.player3d_movement.visibility_cover_low_factor,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_cover_high_factor",
+          &config.player3d_movement.visibility_cover_high_factor,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_soft_vision_block_factor",
+          &config.player3d_movement.visibility_soft_vision_block_factor,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_below_ground_factor",
+          &config.player3d_movement.visibility_below_ground_factor,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_elevated_factor",
+          &config.player3d_movement.visibility_elevated_factor,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_high_elevation_factor",
+          &config.player3d_movement.visibility_high_elevation_factor,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_moving_standing_factor",
+          &config.player3d_movement.visibility_moving_standing_factor,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_moving_crouched_factor",
+          &config.player3d_movement.visibility_moving_crouched_factor,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_moving_prone_factor",
+          &config.player3d_movement.visibility_moving_prone_factor,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_min_score",
+          &config.player3d_movement.visibility_min_score,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_max_score",
+          &config.player3d_movement.visibility_max_score,
+          &visibility_error)) {
+    return {false, {}, visibility_error};
+  }
+
+  if (config.player3d_movement.visibility_min_score >=
+      config.player3d_movement.visibility_max_score) {
+    return {false, {},
+            "player3d_visibility_min_score must be lower than "
+            "player3d_visibility_max_score"};
   }
 
   ParseIntResult player3d_max_hp =

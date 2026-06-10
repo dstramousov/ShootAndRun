@@ -194,42 +194,62 @@ float PostureVisibilityFactor(const Level3DPlayerState& state) {
 /**
  * @brief Returns terrain contribution to player visibility.
  */
-float TerrainVisibilityFactor(TerrainType terrain) {
+float TerrainVisibilityFactor(const Level3DPlayerState& state,
+                              TerrainType terrain) {
   switch (terrain) {
     case TerrainType::kRoad:
-      return 1.10F;
+      return state.visibility_road_factor;
     case TerrainType::kOpenGround:
-      return 1.0F;
+      return state.visibility_open_ground_factor;
     case TerrainType::kRuins:
-      return 0.85F;
+      return state.visibility_ruins_factor;
     case TerrainType::kSwamp:
+      return state.visibility_swamp_factor;
     case TerrainType::kWater:
-      return 0.80F;
+      return state.visibility_water_factor;
     case TerrainType::kForest:
-      return 0.72F;
+      return state.visibility_forest_factor;
     case TerrainType::kWall:
-      return 0.70F;
+      return state.visibility_wall_factor;
     case TerrainType::kUnknown:
-      return 1.0F;
+      return state.visibility_unknown_terrain_factor;
   }
-  return 1.0F;
+  return state.visibility_unknown_terrain_factor;
 }
 
 /**
- * @brief Returns concealment and cover contribution to player visibility.
+ * @brief Returns concealment contribution to player visibility.
  */
-float ConcealmentVisibilityFactor(const RuntimeCell& cell) {
-  float factor = 1.0F;
-  if (cell.concealment > 0) {
-    factor *= cell.concealment >= 2 ? 0.42F : 0.55F;
+float ConcealmentVisibilityFactor(const Level3DPlayerState& state,
+                                  const RuntimeCell& cell) {
+  if (cell.concealment <= 0) {
+    return 1.0F;
   }
-  if (cell.cover > 0) {
-    factor *= cell.cover >= 2 ? 0.75F : 0.85F;
+  return cell.concealment >= 2 ? state.visibility_concealment_high_factor
+                               : state.visibility_concealment_low_factor;
+}
+
+/**
+ * @brief Returns cover contribution to player visibility.
+ */
+float CoverVisibilityFactor(const Level3DPlayerState& state,
+                            const RuntimeCell& cell) {
+  if (cell.cover <= 0) {
+    return 1.0F;
   }
+  return cell.cover >= 2 ? state.visibility_cover_high_factor
+                         : state.visibility_cover_low_factor;
+}
+
+/**
+ * @brief Returns soft vision-blocking contribution to player visibility.
+ */
+float VisionVisibilityFactor(const Level3DPlayerState& state,
+                             const RuntimeCell& cell) {
   if (cell.blocks_vision && !cell.collision) {
-    factor *= 0.70F;
+    return state.visibility_soft_vision_block_factor;
   }
-  return factor;
+  return 1.0F;
 }
 
 /**
@@ -240,13 +260,13 @@ float ElevationVisibilityFactor(const Level3DPlayerState& state,
   const int elevation = std::min(static_cast<int>(state.elevation),
                                  static_cast<int>(cell.height));
   if (elevation < 0) {
-    return 0.65F;
+    return state.visibility_below_ground_factor;
   }
   if (elevation >= 3) {
-    return 1.20F;
+    return state.visibility_high_elevation_factor;
   }
   if (elevation > 0) {
-    return 1.08F;
+    return state.visibility_elevated_factor;
   }
   return 1.0F;
 }
@@ -262,13 +282,46 @@ float MovementVisibilityFactor(const Level3DPlayerState& state) {
   }
   switch (state.posture) {
     case Level3DPlayerPosture::kStanding:
-      return 1.10F;
+      return state.visibility_moving_standing_factor;
     case Level3DPlayerPosture::kCrouched:
-      return 1.0F;
+      return state.visibility_moving_crouched_factor;
     case Level3DPlayerPosture::kProne:
-      return 0.95F;
+      return state.visibility_moving_prone_factor;
   }
   return 1.0F;
+}
+
+/**
+ * @brief Returns a fully populated visibility breakdown.
+ */
+Level3DVisibilityBreakdown BuildVisibilityBreakdown(
+    const Level3DPlayerState& state, const RuntimeCell* cell) {
+  Level3DVisibilityBreakdown breakdown;
+  breakdown.posture_factor = PostureVisibilityFactor(state);
+
+  if (cell == nullptr) {
+    breakdown.raw_score = breakdown.posture_factor;
+    breakdown.final_score = std::clamp(breakdown.raw_score,
+                                       state.visibility_min_score,
+                                       state.visibility_max_score);
+    return breakdown;
+  }
+
+  breakdown.terrain_factor = TerrainVisibilityFactor(state, cell->terrain);
+  breakdown.concealment_factor = ConcealmentVisibilityFactor(state, *cell);
+  breakdown.cover_factor = CoverVisibilityFactor(state, *cell);
+  breakdown.vision_factor = VisionVisibilityFactor(state, *cell);
+  breakdown.elevation_factor = ElevationVisibilityFactor(state, *cell);
+  breakdown.movement_factor = MovementVisibilityFactor(state);
+  breakdown.raw_score = breakdown.posture_factor * breakdown.terrain_factor *
+                        breakdown.concealment_factor *
+                        breakdown.cover_factor * breakdown.vision_factor *
+                        breakdown.elevation_factor *
+                        breakdown.movement_factor;
+  breakdown.final_score = std::clamp(breakdown.raw_score,
+                                     state.visibility_min_score,
+                                     state.visibility_max_score);
+  return breakdown;
 }
 
 /**
@@ -1420,20 +1473,18 @@ void RefreshLevel3DPlayerVisibility(const LevelData& level,
     return;
   }
 
-  const RuntimeCell* cell = CellAt(level, TileIndexFromPosition(state->tile_x),
-                                   TileIndexFromPosition(state->tile_y));
-  if (cell == nullptr) {
-    state->visibility_score = std::clamp(PostureVisibilityFactor(*state),
-                                         0.05F, 2.0F);
-    return;
-  }
+  state->visibility = CurrentLevel3DPlayerVisibilityBreakdown(level, *state);
+  state->visibility_score = state->visibility.final_score;
+}
 
-  const float score = PostureVisibilityFactor(*state) *
-                      TerrainVisibilityFactor(cell->terrain) *
-                      ConcealmentVisibilityFactor(*cell) *
-                      ElevationVisibilityFactor(*state, *cell) *
-                      MovementVisibilityFactor(*state);
-  state->visibility_score = std::clamp(score, 0.05F, 2.0F);
+/**
+ * @brief Returns current detailed level 3D player visibility factors.
+ */
+Level3DVisibilityBreakdown CurrentLevel3DPlayerVisibilityBreakdown(
+    const LevelData& level, const Level3DPlayerState& state) {
+  const RuntimeCell* cell = CellAt(level, TileIndexFromPosition(state.tile_x),
+                                   TileIndexFromPosition(state.tile_y));
+  return BuildVisibilityBreakdown(state, cell);
 }
 
 /**
@@ -1467,7 +1518,8 @@ Level3DPlayerTileDiagnostics CurrentLevel3DPlayerTileDiagnostics(
   diagnostics.posture = state.posture;
   diagnostics.posture_speed_multiplier =
       std::clamp(PostureSpeedMultiplier(state), 0.0F, 1.50F);
-  diagnostics.visibility_score = state.visibility_score;
+  diagnostics.visibility = CurrentLevel3DPlayerVisibilityBreakdown(level, state);
+  diagnostics.visibility_score = diagnostics.visibility.final_score;
   diagnostics.effective_speed_tiles_per_sec =
       state.effective_move_speed_tiles_per_sec;
   diagnostics.velocity_x_tiles_per_sec = state.velocity_x_tiles_per_sec;
@@ -1636,6 +1688,26 @@ std::string Level3DHealthEventToString(const Level3DPlayerState& state) {
 }
 
 /**
+ * @brief Returns visibility breakdown to string.
+ */
+std::string Level3DVisibilityBreakdownToString(
+    const Level3DVisibilityBreakdown& breakdown) {
+  std::ostringstream stream;
+  stream << std::fixed << std::setprecision(2);
+  stream << "vis_breakdown="
+         << "post=" << breakdown.posture_factor
+         << " ter=" << breakdown.terrain_factor
+         << " con=" << breakdown.concealment_factor
+         << " cov=" << breakdown.cover_factor
+         << " los=" << breakdown.vision_factor
+         << " elev=" << breakdown.elevation_factor
+         << " mov=" << breakdown.movement_factor
+         << " raw=" << breakdown.raw_score
+         << " final=" << breakdown.final_score;
+  return stream.str();
+}
+
+/**
  * @brief Returns level 3D player tile diagnostics to string.
  */
 std::string Level3DPlayerTileDiagnosticsToString(
@@ -1651,6 +1723,12 @@ std::string Level3DPlayerTileDiagnosticsToString(
          << " con=" << static_cast<int>(diagnostics.concealment)
          << " posture=" << Level3DPlayerPostureName(diagnostics.posture)
          << " vis=" << diagnostics.visibility_score
+         << " vpost=" << diagnostics.visibility.posture_factor
+         << " vter=" << diagnostics.visibility.terrain_factor
+         << " vcon=" << diagnostics.visibility.concealment_factor
+         << " vcov=" << diagnostics.visibility.cover_factor
+         << " velev=" << diagnostics.visibility.elevation_factor
+         << " vmov=" << diagnostics.visibility.movement_factor
          << " mov=" << diagnostics.movement_multiplier
          << " post_mul=" << diagnostics.posture_speed_multiplier
          << " bs=" << diagnostics.base_speed_tiles_per_sec
