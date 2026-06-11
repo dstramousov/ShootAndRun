@@ -673,3 +673,11 @@
 - Fixed standing Space step-up selection: when no movement key is held, the short step-up jump now uses the current facing tile.
 - Preserved walking Space step-up and active-run long jump behavior.
 - Added regression coverage for standing Space step-up without movement input.
+
+## v0.1.79 -> v0.1.80
+
+- Bumped CMake project and runtime application version to `0.1.80`.
+- Added a normal horizontal jump kind for Space jumps while standing or walking on flat ground.
+- Kept short step-up jumps for non-running +1 elevation targets.
+- Kept long run jumps for active Shift-run jumps.
+- Added regression tests for standing and walking normal jumps without active run.

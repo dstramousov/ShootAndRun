@@ -48,6 +48,7 @@ enum class Level3DJumpEventType {
 enum class Level3DJumpKind {
   kNone,
   kStepUp,
+  kNormal,
   kRun,
 };
 

@@ -1666,6 +1666,44 @@ void TestLevel3DStandingStepJumpUsesFacingDirection() {
          "standing Space step-up should use the facing tile as target");
 }
 
+
+void TestLevel3DStandingNormalJumpStartsOnFlatGround() {
+  const sar::LevelData level = BuildFlatTestLevel(3, 1, {0, 0, 0});
+  sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      1.5F, 0.5F, 0, 1.0F, 0.0F);
+
+  sar::InputState input;
+  input.jump_pressed = true;
+
+  sar::render3d::UpdateLevel3DPlayer(level, input, 0.05F, &state);
+
+  Expect(state.jump_active,
+         "standing Space on flat ground should start a normal jump");
+  Expect(!state.step_jump_active,
+         "standing flat Space jump should not use step-up tile interpolation");
+  Expect(state.jump_kind == sar::render3d::Level3DJumpKind::kNormal,
+         "standing flat Space jump should use the normal jump kind");
+}
+
+void TestLevel3DWalkingNormalJumpStartsWithoutRun() {
+  const sar::LevelData level = BuildFlatTestLevel(4, 1, {0, 0, 0, 0});
+  sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      1.5F, 0.5F, 0, 1.0F, 0.0F);
+  state.velocity_x_tiles_per_sec = state.move_speed_tiles_per_sec;
+  state.run_active = false;
+
+  sar::InputState input;
+  input.up_down = true;
+  input.jump_pressed = true;
+
+  sar::render3d::UpdateLevel3DPlayer(level, input, 0.05F, &state);
+
+  Expect(state.jump_active,
+         "walking Space on flat ground should start a normal jump");
+  Expect(state.jump_kind == sar::render3d::Level3DJumpKind::kNormal,
+         "walking flat Space jump should not require active run");
+}
+
 void TestLevel3DRunningStepJumpUsesLongRunJump() {
   const sar::LevelData level = BuildFlatTestLevel(4, 1, {0, 1, 1, 1});
   sar::render3d::Level3DPlayerState state = MakeTestPlayer(
@@ -1729,6 +1767,8 @@ int main() {
   TestLevel3DRunRequiresStandingPosture();
   TestLevel3DWalkingStepJumpIgnoresNormalWalkingSpeed();
   TestLevel3DStandingStepJumpUsesFacingDirection();
+  TestLevel3DStandingNormalJumpStartsOnFlatGround();
+  TestLevel3DWalkingNormalJumpStartsWithoutRun();
   TestLevel3DRunningStepJumpUsesLongRunJump();
   std::cout << "All tests passed.\n";
   return 0;

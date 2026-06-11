@@ -351,6 +351,21 @@ bool CanStartRunningJumpFromPosture(const Level3DPlayerState& state) {
 }
 
 /**
+ * @brief Checks whether normal jumps are allowed for the current posture.
+ */
+bool CanStartNormalJumpFromPosture(const Level3DPlayerState& state) {
+  return state.posture == Level3DPlayerPosture::kStanding;
+}
+
+/**
+ * @brief Returns true for jumps that move by normal velocity instead of tile lerp.
+ */
+bool IsHorizontalJumpKind(Level3DJumpKind kind) {
+  return kind == Level3DJumpKind::kNormal ||
+         kind == Level3DJumpKind::kRun;
+}
+
+/**
  * @brief Returns true when movement input is active this frame.
  */
 bool HasMovementInput(float direction_x, float direction_y) {
@@ -496,7 +511,7 @@ float CurrentTileMovementMultiplier(const LevelData& level,
  */
 float MovementMultiplierForState(const LevelData& level,
                                  const Level3DPlayerState& state) {
-  if (state.jump_active && state.jump_kind == Level3DJumpKind::kRun) {
+  if (state.jump_active && IsHorizontalJumpKind(state.jump_kind)) {
     return std::clamp(state.jump_start_movement_multiplier, 0.0F, 1.50F);
   }
   return CurrentTileMovementMultiplier(level, state);
@@ -961,15 +976,16 @@ void StartStepJump(const EnterTileResult& target,
 }
 
 /**
- * @brief Starts running jump.
+ * @brief Starts a horizontal jump that uses velocity for displacement.
  */
-void StartRunningJump(Level3DPlayerState* state) {
-  if (state == nullptr || state->jump_active || state->step_jump_active) {
+void StartHorizontalJump(Level3DJumpKind kind, Level3DPlayerState* state) {
+  if (state == nullptr || state->jump_active || state->step_jump_active ||
+      !IsHorizontalJumpKind(kind)) {
     return;
   }
 
   state->jump_active = true;
-  state->jump_kind = Level3DJumpKind::kRun;
+  state->jump_kind = kind;
   state->jump_elapsed_sec = 0.0F;
   state->jump_start_movement_multiplier = std::max(
       state->current_movement_multiplier, 0.0F);
@@ -987,6 +1003,20 @@ void StartRunningJump(Level3DPlayerState* state) {
 }
 
 /**
+ * @brief Starts running jump.
+ */
+void StartRunningJump(Level3DPlayerState* state) {
+  StartHorizontalJump(Level3DJumpKind::kRun, state);
+}
+
+/**
+ * @brief Starts normal standing or walking jump.
+ */
+void StartNormalJump(Level3DPlayerState* state) {
+  StartHorizontalJump(Level3DJumpKind::kNormal, state);
+}
+
+/**
  * @brief Executes the try start running jump operation.
  */
 bool TryStartRunningJump(const LevelData& level, const InputState& input,
@@ -999,6 +1029,21 @@ bool TryStartRunningJump(const LevelData& level, const InputState& input,
 
   RefreshEffectiveMovementSpeed(level, state);
   StartRunningJump(state);
+  return true;
+}
+
+/**
+ * @brief Starts a normal standing or walking jump when Space is pressed.
+ */
+bool TryStartNormalJump(const LevelData& level, const InputState& input,
+                        Level3DPlayerState* state) {
+  if (state == nullptr || !input.jump_pressed || state->jump_active ||
+      state->step_jump_active || !CanStartNormalJumpFromPosture(*state)) {
+    return false;
+  }
+
+  RefreshEffectiveMovementSpeed(level, state);
+  StartNormalJump(state);
   return true;
 }
 
@@ -1132,12 +1177,12 @@ void ResetJumpState(Level3DPlayerState* state) {
 }
 
 /**
- * @brief Updates running jump for the current frame.
+ * @brief Updates normal and running horizontal jumps for the current frame.
  */
 bool UpdateRunningJump(const LevelData& level, float safe_dt,
                        Level3DPlayerState* state) {
   if (state == nullptr || !state->jump_active ||
-      state->jump_kind != Level3DJumpKind::kRun) {
+      !IsHorizontalJumpKind(state->jump_kind)) {
     return false;
   }
 
@@ -1222,7 +1267,7 @@ void ApplyMovementAxis(const LevelData& level, float dx, float dy,
   const std::int8_t target_elevation = HeightAtOrZero(
       level, TileIndexFromPosition(state->tile_x),
       TileIndexFromPosition(state->tile_y));
-  if (state->jump_active && state->jump_kind == Level3DJumpKind::kRun) {
+  if (state->jump_active && IsHorizontalJumpKind(state->jump_kind)) {
     state->step_jump_to_tile_x = enter_result.tile_x;
     state->step_jump_to_tile_y = enter_result.tile_y;
     state->step_jump_to_elevation = target_elevation;
@@ -1371,11 +1416,14 @@ void UpdateVelocityFromInput(const LevelData& level,
   float acceleration = (direction_x == 0.0F && direction_y == 0.0F)
                            ? state->deceleration_tiles_per_sec2
                            : state->acceleration_tiles_per_sec2;
-  if (state->jump_active && state->jump_kind == Level3DJumpKind::kRun) {
+  if (state->jump_active && IsHorizontalJumpKind(state->jump_kind)) {
+    const float jump_run_multiplier =
+        state->jump_kind == Level3DJumpKind::kRun ? RunSpeedMultiplier(*state)
+                                                  : 1.0F;
     effective_speed = state->move_speed_tiles_per_sec *
                       state->jump_start_movement_multiplier *
                       std::clamp(PostureSpeedMultiplier(*state), 0.0F, 1.50F) *
-                      RunSpeedMultiplier(*state) *
+                      jump_run_multiplier *
                       state->jump_horizontal_speed_multiplier;
     acceleration *= state->jump_air_control_multiplier;
   }
@@ -1456,6 +1504,8 @@ const char* Level3DJumpKindName(Level3DJumpKind kind) {
       return "none";
     case Level3DJumpKind::kStepUp:
       return "step_up";
+    case Level3DJumpKind::kNormal:
+      return "normal";
     case Level3DJumpKind::kRun:
       return "run";
   }
@@ -1578,13 +1628,16 @@ void UpdateLevel3DPlayer(const LevelData& level, const InputState& input,
     RefreshLevel3DPlayerVisibility(level, state);
     return;
   }
-  const bool running_jump_active = UpdateRunningJump(level, safe_dt, state);
+  const bool horizontal_jump_active = UpdateRunningJump(level, safe_dt, state);
   if (TryStartStepJump(level, input, state)) {
     RefreshLevel3DPlayerVisibility(level, state);
     return;
   }
-  if (!running_jump_active) {
-    TryStartRunningJump(level, input, state);
+  if (!horizontal_jump_active && TryStartRunningJump(level, input, state)) {
+    RefreshLevel3DPlayerVisibility(level, state);
+  } else if (!horizontal_jump_active &&
+             TryStartNormalJump(level, input, state)) {
+    RefreshLevel3DPlayerVisibility(level, state);
   }
   UpdateVelocityFromInput(level, input, safe_dt, state);
 
