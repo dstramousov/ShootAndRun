@@ -1,3 +1,146 @@
 {
-  "models": {}
+  "models": {
+    "tree": {
+      "path": "assets/models/tree.glb",
+      "tags": [
+        "tree",
+        "forest",
+        "broadleaf"
+      ],
+      "default_scale": 1.0,
+      "vertical_offset": 1.0
+    },
+    "tree_large": {
+      "path": "assets/models/tree-large.glb",
+      "tags": [
+        "tree",
+        "forest",
+        "large"
+      ],
+      "default_scale": 1.0,
+      "vertical_offset": 1.0
+    },
+    "tree_crooked": {
+      "path": "assets/models/tree-crooked.glb",
+      "tags": [
+        "tree",
+        "forest",
+        "crooked"
+      ],
+      "default_scale": 1.0,
+      "vertical_offset": 1.0
+    },
+    "tree_high": {
+      "path": "assets/models/tree-high.glb",
+      "tags": [
+        "tree",
+        "forest",
+        "high"
+      ],
+      "default_scale": 1.0,
+      "vertical_offset": 1.0
+    },
+    "tree_high_crooked": {
+      "path": "assets/models/tree-high-crooked.glb",
+      "tags": [
+        "tree",
+        "forest",
+        "high",
+        "crooked"
+      ],
+      "default_scale": 1.0,
+      "vertical_offset": 1.0
+    },
+    "tree_high_round": {
+      "path": "assets/models/tree-high-round.glb",
+      "tags": [
+        "tree",
+        "forest",
+        "high",
+        "round"
+      ],
+      "default_scale": 1.0,
+      "vertical_offset": 1.0
+    },
+    "pine": {
+      "path": "assets/models/pine.glb",
+      "tags": [
+        "tree",
+        "forest",
+        "pine"
+      ],
+      "default_scale": 1.0,
+      "vertical_offset": 1.0
+    },
+    "tree_pine": {
+      "path": "assets/models/tree-pine.glb",
+      "tags": [
+        "tree",
+        "forest",
+        "pine"
+      ],
+      "default_scale": 1.0,
+      "vertical_offset": 1.0
+    },
+    "tree_pine_snow": {
+      "path": "assets/models/tree-pine-snow.glb",
+      "tags": [
+        "tree",
+        "forest",
+        "pine",
+        "snow"
+      ],
+      "default_scale": 1.0,
+      "vertical_offset": 1.0
+    },
+    "tree_pine_small": {
+      "path": "assets/models/tree-pine-small.glb",
+      "tags": [
+        "tree",
+        "forest",
+        "small",
+        "underbrush"
+      ],
+      "default_scale": 1.0,
+      "vertical_offset": 1.0
+    },
+    "grass": {
+      "path": "assets/models/grass.glb",
+      "tags": [
+        "grass",
+        "ground_detail"
+      ],
+      "default_scale": 1.0,
+      "vertical_offset": 1.0
+    },
+    "flowers": {
+      "path": "assets/models/flowers.glb",
+      "tags": [
+        "flowers",
+        "grass",
+        "ground_detail"
+      ],
+      "default_scale": 1.0,
+      "vertical_offset": 1.0
+    },
+    "mushrooms": {
+      "path": "assets/models/mushrooms.glb",
+      "tags": [
+        "mushrooms",
+        "forest",
+        "ground_detail"
+      ],
+      "default_scale": 1.0,
+      "vertical_offset": 1.0
+    },
+    "rocks": {
+      "path": "assets/models/rocks.glb",
+      "tags": [
+        "rocks",
+        "ground_detail"
+      ],
+      "default_scale": 1.0,
+      "vertical_offset": 1.0
+    }
+  }
 }

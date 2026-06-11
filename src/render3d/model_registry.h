@@ -63,6 +63,7 @@ struct ModelAsset3D {
   std::vector<std::string> tags;  ///< Semantic tags attached to this entity.
   float default_scale = 1.0F;  ///< Scaling factor for default scale.
   float vertical_offset = 0.0F;  ///< Vertical offset value carried by this data structure.
+  float spawn_chance = 1.0F;  ///< Deterministic per-tile probability for model placement.
   std::string fallback = "cube_debug";  ///< Fallback value carried by this data structure.
 };
 
@@ -92,6 +93,7 @@ struct ModelBinding3D {
   float offset_min = 0.0F;  ///< Offset min value carried by this data structure.
   float offset_max = 0.0F;  ///< Offset max value carried by this data structure.
   float vertical_offset = 0.0F;  ///< Vertical offset value carried by this data structure.
+  float spawn_chance = 1.0F;  ///< Deterministic per-tile probability for model placement.
   std::string fallback = "cube_debug";  ///< Fallback value carried by this data structure.
 };
 

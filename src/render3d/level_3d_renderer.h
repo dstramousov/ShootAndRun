@@ -8,7 +8,9 @@
  */
 
 #include <cstddef>
+#include <map>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include <raylib.h>
@@ -16,6 +18,7 @@
 #include "level/level_data.h"
 #include "render3d/level_3d_camera.h"
 #include "render3d/level_3d_player_controller.h"
+#include "render3d/model_registry.h"
 #include "window/window_state.h"
 
 namespace sar::render3d {
@@ -60,6 +63,8 @@ struct Level3DPerfStats {
   int forest_boundary_volumes_drawn = 0;  ///< Batched passable forest boundary volumes submitted this frame.
   int forest_boundary_tiles_covered = 0;  ///< Forest boundary tiles covered by batched volume primitives this frame.
   int forest_boundary_wireframes_drawn = 0;  ///< Forest boundary wireframes submitted this frame.
+  int model_instances_drawn = 0;  ///< 3D model instances submitted this frame.
+  int model_load_failures = 0;  ///< Model draw requests skipped because an asset failed to load.
   int debug_overlay_slabs_drawn = 0;  ///< Elevation debug overlay slabs submitted this frame.
 
   /**
@@ -159,6 +164,21 @@ std::string Level3DViewStateToString(const Level3DViewState& state);
 class Level3DRenderer {
  public:
   /**
+   * @brief Creates an empty 3D renderer with no loaded model cache.
+   */
+  Level3DRenderer() = default;
+
+  /**
+   * @brief Releases all raylib models loaded by the renderer cache.
+   */
+  ~Level3DRenderer();
+
+  Level3DRenderer(const Level3DRenderer&) = delete;
+  Level3DRenderer& operator=(const Level3DRenderer&) = delete;
+  Level3DRenderer(Level3DRenderer&&) = delete;
+  Level3DRenderer& operator=(Level3DRenderer&&) = delete;
+
+  /**
    * @brief Draws a loaded level as a simple 3D tile-world.
    *
    * The renderer uses runtime terrain, collision and height data directly. It
@@ -167,9 +187,56 @@ class Level3DRenderer {
    * @param level Loaded level data.
    * @param state Current 3D view state.
    * @param window Current window state.
+   * @param model_registry Optional 3D model registry used for decorative terrain assets.
    */
   void Draw(const LevelData& level, const Level3DViewState& state,
-            const WindowState& window) const;
+            const WindowState& window,
+            const ModelRegistry3D* model_registry = nullptr) const;
+
+ private:
+  /**
+   * @brief Draws deterministic model instances for terrain cells.
+   *
+   * @param level Loaded level data.
+   * @param state Current 3D view state.
+   * @param model_registry Active model registry.
+   * @param stats Optional per-frame diagnostics sink.
+   */
+  void DrawTerrainModelInstances(const LevelData& level,
+                                 const Level3DViewState& state,
+                                 const ModelRegistry3D& model_registry,
+                                 Level3DPerfStats* stats) const;
+
+  /**
+   * @brief Draws one deterministic model instance for a semantic key and tile.
+   *
+   * @param level Loaded level data.
+   * @param state Current 3D view state.
+   * @param model_registry Active model registry.
+   * @param semantic_key Terrain model semantic key.
+   * @param x Tile x coordinate.
+   * @param y Tile y coordinate.
+   * @param cell Runtime tile cell.
+   * @param stats Optional per-frame diagnostics sink.
+   * @return true when a model instance was submitted.
+   */
+  bool DrawTerrainModelInstance(const LevelData& level,
+                                const Level3DViewState& state,
+                                const ModelRegistry3D& model_registry,
+                                std::string_view semantic_key, int x, int y,
+                                const RuntimeCell& cell,
+                                Level3DPerfStats* stats) const;
+
+  /**
+   * @brief Loads or returns a cached raylib model for an asset.
+   *
+   * @param asset Registered model asset.
+   * @return Cached model pointer, or nullptr when loading failed.
+   */
+  const Model* LoadCachedModel(const ModelAsset3D& asset) const;
+
+  mutable std::map<std::string, Model> model_cache_;
+  mutable std::map<std::string, std::string> model_load_errors_;
 };
 
 }  // namespace sar::render3d

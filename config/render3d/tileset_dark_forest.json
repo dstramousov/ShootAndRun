@@ -1,4 +1,121 @@
 {
   "tileset_id": "dark_forest_3d",
-  "bindings": {}
+  "bindings": {
+    "forest_tree_blocker": {
+      "selector": "weighted_random",
+      "placement": "single",
+      "spawn_chance": 1.0,
+      "random_rotation": true,
+      "scale_range": [
+        0.34,
+        0.5
+      ],
+      "offset_range": [
+        0.0,
+        0.1
+      ],
+      "variants": [
+        {
+          "model": "tree",
+          "weight": 8
+        },
+        {
+          "model": "tree_large",
+          "weight": 5
+        },
+        {
+          "model": "tree_crooked",
+          "weight": 5
+        },
+        {
+          "model": "tree_high",
+          "weight": 4
+        },
+        {
+          "model": "tree_high_crooked",
+          "weight": 3
+        },
+        {
+          "model": "tree_high_round",
+          "weight": 3
+        },
+        {
+          "model": "pine",
+          "weight": 5
+        },
+        {
+          "model": "tree_pine",
+          "weight": 6
+        },
+        {
+          "model": "tree_pine_small",
+          "weight": 2
+        }
+      ]
+    },
+    "forest_underbrush": {
+      "selector": "weighted_random",
+      "placement": "single",
+      "spawn_chance": 0.78,
+      "random_rotation": true,
+      "scale_range": [
+        0.16,
+        0.28
+      ],
+      "offset_range": [
+        0.0,
+        0.22
+      ],
+      "variants": [
+        {
+          "model": "tree_pine_small",
+          "weight": 7
+        },
+        {
+          "model": "grass",
+          "weight": 5
+        },
+        {
+          "model": "mushrooms",
+          "weight": 2
+        },
+        {
+          "model": "rocks",
+          "weight": 1
+        }
+      ]
+    },
+    "open_ground_detail": {
+      "selector": "weighted_random",
+      "placement": "single",
+      "spawn_chance": 0.18,
+      "random_rotation": true,
+      "scale_range": [
+        0.08,
+        0.16
+      ],
+      "offset_range": [
+        0.0,
+        0.3
+      ],
+      "variants": [
+        {
+          "model": "grass",
+          "weight": 12
+        },
+        {
+          "model": "flowers",
+          "weight": 2
+        },
+        {
+          "model": "mushrooms",
+          "weight": 1
+        },
+        {
+          "model": "rocks",
+          "weight": 1
+        }
+      ]
+    }
+  }
 }

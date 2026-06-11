@@ -651,6 +651,8 @@ bool LoadTileset(const std::filesystem::path& path,
     }
     binding.random_rotation = BoolField(binding_json, "random_rotation", false);
     binding.vertical_offset = FloatField(binding_json, "vertical_offset", 0.0F);
+    binding.spawn_chance = std::clamp(FloatField(binding_json, "spawn_chance", 1.0F),
+                                      0.0F, 1.0F);
     binding.fallback = StringField(binding_json, "fallback", "cube_debug");
 
     const std::pair<int, int> count_range = IntRangeField(binding_json,

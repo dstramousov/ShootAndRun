@@ -1768,7 +1768,8 @@ void Application::RenderFrame() {
   } else if (screen_ == AppScreen::kGame) {
     if (loaded_level_.has_value()) {
       if (config_.renderer_mode == RuntimeRendererMode::kRenderer3D) {
-        level_3d_renderer_.Draw(*loaded_level_, level_3d_view_, window_state_);
+        level_3d_renderer_.Draw(*loaded_level_, level_3d_view_, window_state_,
+                                &model_registry_3d_);
       } else {
         ClampLevelViewToMap(*loaded_level_, window_state_, &level_view_);
         level_renderer_.Draw(*loaded_level_,

@@ -10,8 +10,10 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
+#include <filesystem>
 #include <sstream>
 #include <string>
+#include <string_view>
 
 #include "level/terrain_type.h"
 
@@ -21,6 +23,9 @@ namespace {
 constexpr unsigned char kVisibilityUnknown = 0;
 constexpr unsigned char kVisibilitySeen = 1;
 constexpr unsigned char kVisibilityVisible = 2;
+constexpr std::string_view kForestTreeModelKey = "forest_tree_blocker";
+constexpr std::string_view kForestUnderbrushModelKey = "forest_underbrush";
+constexpr std::string_view kOpenGroundDetailModelKey = "open_ground_detail";
 
 /**
  * @brief Stores tile range 3D data shared between runtime systems.
@@ -54,6 +59,11 @@ void CountRenderableTilesInRange(const LevelData& level,
                                  const Level3DViewState& state,
                                  const TileRange3D& range,
                                  Level3DPerfStats* stats);
+
+/**
+ * @brief Executes the blocking volume height operation.
+ */
+float BlockingVolumeHeight(const RuntimeCell& cell);
 
 /**
  * @brief Stores a ground tile span key used for safe horizontal batching.
@@ -650,6 +660,80 @@ bool IsPassableForestBoundary(const RuntimeCell& cell) {
 }
 
 /**
+ * @brief Returns a deterministic unit value for model placement.
+ */
+float UnitFloatFromSeed(std::uint64_t seed) {
+  return static_cast<float>(seed % 1000000ULL) / 999999.0F;
+}
+
+/**
+ * @brief Returns a deterministic value in range.
+ */
+float RandomRangeFromSeed(std::uint64_t seed, float min_value,
+                          float max_value) {
+  if (max_value <= min_value) {
+    return min_value;
+  }
+  return min_value + (max_value - min_value) * UnitFloatFromSeed(seed);
+}
+
+/**
+ * @brief Checks whether the registry can select a concrete model for a binding.
+ */
+bool HasConcreteModelBinding(const ModelRegistry3D* registry,
+                             std::string_view semantic_key) {
+  return registry != nullptr &&
+         !registry->SelectModelId(semantic_key, 0x7d3a4f2b19c8e501ULL, 0, 0)
+              .empty();
+}
+
+/**
+ * @brief Returns whether forest blocker cubes should be replaced by model assets.
+ */
+bool UseForestTreeModels(const ModelRegistry3D* registry) {
+  return HasConcreteModelBinding(registry, kForestTreeModelKey);
+}
+
+/**
+ * @brief Returns whether passable forest boundary cubes should be replaced by model assets.
+ */
+bool UseForestUnderbrushModels(const ModelRegistry3D* registry) {
+  return HasConcreteModelBinding(registry, kForestUnderbrushModelKey);
+}
+
+/**
+ * @brief Checks whether a tile should use a tree model instead of a debug cube.
+ */
+bool IsForestTreeModelTile(const RuntimeCell& cell) {
+  return cell.terrain == TerrainType::kForest && !IsPassableForestBoundary(cell) &&
+         BlockingVolumeHeight(cell) > 0.0F;
+}
+
+/**
+ * @brief Checks whether a tile may receive sparse ground detail models.
+ */
+bool IsOpenGroundDetailModelTile(const RuntimeCell& cell) {
+  return cell.terrain == TerrainType::kOpenGround && cell.walkable &&
+         !cell.collision && cell.movement_multiplier > 0.0F && cell.height >= 0;
+}
+
+/**
+ * @brief Returns the model semantic key for a terrain cell.
+ */
+std::string_view TerrainModelSemanticKey(const RuntimeCell& cell) {
+  if (IsForestTreeModelTile(cell)) {
+    return kForestTreeModelKey;
+  }
+  if (IsPassableForestBoundary(cell)) {
+    return kForestUnderbrushModelKey;
+  }
+  if (IsOpenGroundDetailModelTile(cell)) {
+    return kOpenGroundDetailModelKey;
+  }
+  return {};
+}
+
+/**
  * @brief Returns the color used for tile.
  */
 Color TileColor(const RuntimeCell& cell, Level3DRenderMode mode) {
@@ -1077,7 +1161,11 @@ BlockingVolumeSpanKey BlockingVolumeKey(const RuntimeCell& cell,
  * @brief Checks whether a tile may participate in blocking volume batching.
  */
 bool IsBlockingVolumeSpanCandidate(const Level3DViewState& state, int x, int y,
-                                   const RuntimeCell& cell) {
+                                   const RuntimeCell& cell,
+                                   const ModelRegistry3D* model_registry) {
+  if (UseForestTreeModels(model_registry) && IsForestTreeModelTile(cell)) {
+    return false;
+  }
   return !IsPassableForestBoundary(cell) && IsSurfaceVisible(cell) &&
          IsTileRenderable(state, x, y) && BlockingVolumeHeight(cell) > 0.0F;
 }
@@ -1115,13 +1203,14 @@ int DrawBlockingVolumeSpan(const LevelData& level,
 void DrawBlockingVolumeSpans(const LevelData& level,
                              const Level3DViewState& state,
                              const TileRange3D& range,
-                             Level3DPerfStats* stats) {
+                             Level3DPerfStats* stats,
+                             const ModelRegistry3D* model_registry) {
   for (int y = range.min_y; y <= range.max_y; ++y) {
     int x = range.min_x;
     while (x <= range.max_x) {
       const RuntimeCell* cell = CellAt(level, x, y);
       if (cell == nullptr ||
-          !IsBlockingVolumeSpanCandidate(state, x, y, *cell)) {
+          !IsBlockingVolumeSpanCandidate(state, x, y, *cell, model_registry)) {
         ++x;
         continue;
       }
@@ -1136,7 +1225,8 @@ void DrawBlockingVolumeSpans(const LevelData& level,
       while (next_x <= range.max_x) {
         const RuntimeCell* next_cell = CellAt(level, next_x, y);
         if (next_cell == nullptr ||
-            !IsBlockingVolumeSpanCandidate(state, next_x, y, *next_cell)) {
+            !IsBlockingVolumeSpanCandidate(state, next_x, y, *next_cell,
+                                             model_registry)) {
           break;
         }
         const BlockingVolumeSpanKey next_key = BlockingVolumeKey(
@@ -1200,7 +1290,11 @@ ForestBoundarySpanKey ForestBoundaryKey(const RuntimeCell& cell,
  * @brief Checks whether a tile may participate in passable forest boundary batching.
  */
 bool IsForestBoundarySpanCandidate(const Level3DViewState& state, int x, int y,
-                                   const RuntimeCell& cell) {
+                                   const RuntimeCell& cell,
+                                   const ModelRegistry3D* model_registry) {
+  if (UseForestUnderbrushModels(model_registry) && IsPassableForestBoundary(cell)) {
+    return false;
+  }
   return IsPassableForestBoundary(cell) && IsSurfaceVisible(cell) &&
          IsTileRenderable(state, x, y);
 }
@@ -1240,13 +1334,14 @@ int DrawForestBoundarySpan(const LevelData& level,
 void DrawForestBoundarySpans(const LevelData& level,
                              const Level3DViewState& state,
                              const TileRange3D& range,
-                             Level3DPerfStats* stats) {
+                             Level3DPerfStats* stats,
+                             const ModelRegistry3D* model_registry) {
   for (int y = range.min_y; y <= range.max_y; ++y) {
     int x = range.min_x;
     while (x <= range.max_x) {
       const RuntimeCell* cell = CellAt(level, x, y);
       if (cell == nullptr ||
-          !IsForestBoundarySpanCandidate(state, x, y, *cell)) {
+          !IsForestBoundarySpanCandidate(state, x, y, *cell, model_registry)) {
         ++x;
         continue;
       }
@@ -1261,7 +1356,8 @@ void DrawForestBoundarySpans(const LevelData& level,
       while (next_x <= range.max_x) {
         const RuntimeCell* next_cell = CellAt(level, next_x, y);
         if (next_cell == nullptr ||
-            !IsForestBoundarySpanCandidate(state, next_x, y, *next_cell)) {
+            !IsForestBoundarySpanCandidate(state, next_x, y, *next_cell,
+                                             model_registry)) {
           break;
         }
         const ForestBoundarySpanKey next_key = ForestBoundaryKey(
@@ -1627,7 +1723,8 @@ void DrawPlayer(const LevelData& level, const Level3DViewState& state) {
  * @brief Draws tiles.
  */
 void DrawTiles(const LevelData& level, const Level3DViewState& state,
-               Level3DPerfStats* stats) {
+               Level3DPerfStats* stats,
+               const ModelRegistry3D* model_registry) {
   const ChunkRange3D chunks = ActiveChunkRange(level, state);
   const TileRange3D range = TileRangeFromChunks(level, state, chunks);
 
@@ -1652,10 +1749,10 @@ void DrawTiles(const LevelData& level, const Level3DViewState& state,
         DrawElevationWalls(level, x, y, cell, state);
       });
 
-  DrawBlockingVolumeSpans(level, state, range, stats);
+  DrawBlockingVolumeSpans(level, state, range, stats, model_registry);
 
   BeginBlendMode(BLEND_ALPHA);
-  DrawForestBoundarySpans(level, state, range, stats);
+  DrawForestBoundarySpans(level, state, range, stats, model_registry);
   EndBlendMode();
 
   DrawElevationDebugOverlay3D(level, state, range, stats);
@@ -1671,7 +1768,7 @@ void DrawRender3DPerfOverlay(const Level3DPerfStats& stats,
   const int x = std::max(8, static_cast<int>(16.0F * window.ui_scale));
   int y = std::max(96, static_cast<int>(112.0F * window.ui_scale));
   const int width = std::max(520, static_cast<int>(590.0F * window.ui_scale));
-  const int height = line_step * 10 + std::max(12, static_cast<int>(16.0F * window.ui_scale));
+  const int height = line_step * 11 + std::max(12, static_cast<int>(16.0F * window.ui_scale));
   const Color text = Color{228, 232, 218, 255};
   const Color title = Color{255, 220, 96, 255};
 
@@ -1701,9 +1798,13 @@ void DrawRender3DPerfOverlay(const Level3DPerfStats& stats,
                       stats.forest_boundary_wireframes_drawn),
            x, y, font_size, text);
   y += line_step;
-  DrawText(TextFormat("transitions considered=%d drawn=%d debug_slabs=%d",
-                      stats.transition_candidates, stats.transitions_drawn,
+  DrawText(TextFormat("models=%d model_load_failures=%d debug_slabs=%d",
+                      stats.model_instances_drawn, stats.model_load_failures,
                       stats.debug_overlay_slabs_drawn),
+           x, y, font_size, text);
+  y += line_step;
+  DrawText(TextFormat("transitions considered=%d drawn=%d",
+                      stats.transition_candidates, stats.transitions_drawn),
            x, y, font_size, text);
   y += line_step;
   DrawText(TextFormat("estimated primitive submissions=%d",
@@ -1719,7 +1820,8 @@ void DrawRender3DPerfOverlay(const Level3DPerfStats& stats,
 int Level3DPerfStats::EstimatedPrimitiveSubmissions() const {
   return ground_tiles_drawn + transitions_drawn + elevation_wall_faces_drawn +
          blocking_volumes_drawn + forest_boundary_volumes_drawn +
-         forest_boundary_wireframes_drawn + debug_overlay_slabs_drawn;
+         forest_boundary_wireframes_drawn + model_instances_drawn +
+         debug_overlay_slabs_drawn;
 }
 
 /**
@@ -1848,11 +1950,148 @@ std::string Level3DViewStateToString(const Level3DViewState& state) {
 }
 
 /**
+ * @brief Releases cached model assets.
+ */
+Level3DRenderer::~Level3DRenderer() {
+  for (auto& [model_id, model] : model_cache_) {
+    (void)model_id;
+    if (model.meshCount > 0) {
+      UnloadModel(model);
+    }
+  }
+}
+
+/**
+ * @brief Loads or returns a cached raylib model for an asset.
+ */
+const Model* Level3DRenderer::LoadCachedModel(const ModelAsset3D& asset) const {
+  if (asset.id.empty() || asset.path.empty()) {
+    return nullptr;
+  }
+
+  const auto cached = model_cache_.find(asset.id);
+  if (cached != model_cache_.end()) {
+    return &cached->second;
+  }
+  if (model_load_errors_.find(asset.id) != model_load_errors_.end()) {
+    return nullptr;
+  }
+
+  const std::string path = asset.path.string();
+  Model model = LoadModel(path.c_str());
+  if (model.meshCount <= 0) {
+    model_load_errors_[asset.id] = "failed to load model: " + path;
+    return nullptr;
+  }
+
+  auto inserted = model_cache_.emplace(asset.id, model);
+  return &inserted.first->second;
+}
+
+/**
+ * @brief Draws one deterministic model instance for a semantic key and tile.
+ */
+bool Level3DRenderer::DrawTerrainModelInstance(
+    const LevelData& level, const Level3DViewState& state,
+    const ModelRegistry3D& model_registry, std::string_view semantic_key, int x,
+    int y, const RuntimeCell& cell, Level3DPerfStats* stats) const {
+  if (semantic_key.empty()) {
+    return false;
+  }
+
+  const ModelBinding3D* binding = model_registry.FindBinding(semantic_key);
+  if (binding == nullptr) {
+    return false;
+  }
+
+  const std::uint64_t seed = DeterministicAssetSeed(
+      0x5b8d7a6c4f2e1903ULL, semantic_key, x, y);
+  if (UnitFloatFromSeed(seed) > binding->spawn_chance) {
+    return false;
+  }
+
+  const std::string model_id = model_registry.SelectModelId(semantic_key, seed, x, y);
+  const ModelAsset3D* asset = model_registry.FindAsset(model_id);
+  if (asset == nullptr) {
+    return false;
+  }
+
+  const Model* model = LoadCachedModel(*asset);
+  if (model == nullptr) {
+    if (stats != nullptr) {
+      ++stats->model_load_failures;
+    }
+    return false;
+  }
+
+  Vector3 position = TileWorldCenter(level, x, y, cell.height,
+                                     state.tile_world_size,
+                                     state.elevation_step);
+  const float offset_radius = RandomRangeFromSeed(seed ^ 0xa35f92d7c19b440dULL,
+                                                  binding->offset_min,
+                                                  binding->offset_max);
+  const float offset_angle =
+      RandomRangeFromSeed(seed ^ 0x42f0ae351d8c97b1ULL, 0.0F, 6.28318530718F);
+  position.x += std::cos(offset_angle) * offset_radius * state.tile_world_size;
+  position.z += std::sin(offset_angle) * offset_radius * state.tile_world_size;
+
+  const float binding_scale = RandomRangeFromSeed(
+      seed ^ 0x91e3cd0426b8ff51ULL, binding->scale_min, binding->scale_max);
+  const float final_scale = std::max(0.01F, asset->default_scale * binding_scale);
+  position.y += asset->vertical_offset * final_scale + binding->vertical_offset;
+
+  const float rotation_degrees =
+      binding->random_rotation
+          ? RandomRangeFromSeed(seed ^ 0xb7e151628aed2a6bULL, 0.0F, 360.0F)
+          : 0.0F;
+  const Color tint = ApplyVisibilityColor(WHITE, state, x, y);
+  DrawModelEx(*model, position, Vector3{0.0F, 1.0F, 0.0F}, rotation_degrees,
+              Vector3{final_scale, final_scale, final_scale}, tint);
+
+  if (stats != nullptr) {
+    ++stats->model_instances_drawn;
+  }
+  return true;
+}
+
+/**
+ * @brief Draws deterministic model instances for terrain cells.
+ */
+void Level3DRenderer::DrawTerrainModelInstances(
+    const LevelData& level, const Level3DViewState& state,
+    const ModelRegistry3D& model_registry, Level3DPerfStats* stats) const {
+  if (state.mode != Level3DRenderMode::kTerrain) {
+    return;
+  }
+
+  const ChunkRange3D chunks = ActiveChunkRange(level, state);
+  const TileRange3D range = TileRangeFromChunks(level, state, chunks);
+
+  for (int y = range.min_y; y <= range.max_y; ++y) {
+    for (int x = range.min_x; x <= range.max_x; ++x) {
+      const RuntimeCell* cell = CellAt(level, x, y);
+      if (cell == nullptr || !IsSurfaceVisible(*cell) ||
+          !IsTileRenderable(state, x, y)) {
+        continue;
+      }
+
+      const std::string_view semantic_key = TerrainModelSemanticKey(*cell);
+      if (semantic_key.empty()) {
+        continue;
+      }
+      DrawTerrainModelInstance(level, state, model_registry, semantic_key, x, y,
+                               *cell, stats);
+    }
+  }
+}
+
+/**
  * @brief Draws runtime visuals.
  */
 void Level3DRenderer::Draw(const LevelData& level,
                            const Level3DViewState& state,
-                           const WindowState& window) const {
+                           const WindowState& window,
+                           const ModelRegistry3D* model_registry) const {
   if (!state.initialized || level.size.width <= 0 || level.size.height <= 0 ||
       level.cells.empty()) {
     return;
@@ -1872,7 +2111,10 @@ void Level3DRenderer::Draw(const LevelData& level,
   }
 
   BeginMode3D(camera);
-  DrawTiles(level, state, stats_ptr);
+  DrawTiles(level, state, stats_ptr, model_registry);
+  if (model_registry != nullptr) {
+    DrawTerrainModelInstances(level, state, *model_registry, stats_ptr);
+  }
   DrawLevelBounds(level, state);
   DrawPlayer(level, state);
   EndMode3D();

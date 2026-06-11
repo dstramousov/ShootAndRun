@@ -638,3 +638,14 @@
 - Added run/stamina data to HUD, F6 debug overlay, movement logs and player state dumps.
 - Added running visibility factor so active running increases player exposure.
 - Added regression tests for stamina drain, exhaustion, recovery and posture restrictions.
+
+
+## v0.1.75 -> v0.1.76
+
+- Bumped CMake project and runtime application version to `0.1.76`.
+- Registered GLB assets from `assets/models` in the 3D asset library.
+- Added dark forest tileset bindings for random tree blockers, underbrush/small-tree cells, and sparse open-ground grass/detail props.
+- Connected the 3D model registry to the runtime renderer so visible terrain cells can draw deterministic model instances.
+- Replaced debug forest blocker cubes and passable underbrush volumes with configured model instances when valid bindings are available.
+- Kept collision, movement, visibility, elevation, posture and stamina mechanics unchanged.
+- Extended the F8 diagnostics overlay with model instance and model load failure counters.
