@@ -1620,6 +1620,77 @@ void TestLevel3DRunRequiresStandingPosture() {
          "run block reason should report non-standing posture");
 }
 
+
+void TestLevel3DWalkingStepJumpIgnoresNormalWalkingSpeed() {
+  const sar::LevelData level = BuildFlatTestLevel(2, 1, {0, 1});
+  sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      0.5F, 0.5F, 0, 1.0F, 0.0F);
+  state.velocity_x_tiles_per_sec = state.move_speed_tiles_per_sec;
+  state.jump_min_running_speed_tiles_per_sec = 1.0F;
+  state.run_active = false;
+
+  sar::InputState input;
+  input.up_down = true;
+  input.jump_pressed = true;
+
+  sar::render3d::UpdateLevel3DPlayer(level, input, 0.05F, &state);
+
+  Expect(state.jump_active,
+         "walking Space step-up should start even when walking speed is above the old run threshold");
+  Expect(state.step_jump_active,
+         "walking Space step-up should use the short step-up jump state");
+  Expect(state.jump_kind == sar::render3d::Level3DJumpKind::kStepUp,
+         "walking Space step-up should not be converted into a running jump");
+}
+
+void TestLevel3DStandingStepJumpUsesFacingDirection() {
+  const sar::LevelData level = BuildFlatTestLevel(2, 1, {0, 1});
+  sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      0.5F, 0.5F, 0, 1.0F, 0.0F);
+  state.velocity_x_tiles_per_sec = 0.0F;
+  state.velocity_y_tiles_per_sec = 0.0F;
+  state.run_active = false;
+
+  sar::InputState input;
+  input.jump_pressed = true;
+
+  sar::render3d::UpdateLevel3DPlayer(level, input, 0.05F, &state);
+
+  Expect(state.jump_active,
+         "standing Space step-up should start without movement input");
+  Expect(state.step_jump_active,
+         "standing Space step-up should use the short step-up jump state");
+  Expect(state.jump_kind == sar::render3d::Level3DJumpKind::kStepUp,
+         "standing Space step-up should not require run mode");
+  Expect(state.step_jump_to_tile_x == 1 && state.step_jump_to_tile_y == 0,
+         "standing Space step-up should use the facing tile as target");
+}
+
+void TestLevel3DRunningStepJumpUsesLongRunJump() {
+  const sar::LevelData level = BuildFlatTestLevel(4, 1, {0, 1, 1, 1});
+  sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      0.5F, 0.5F, 0, 1.0F, 0.0F);
+  state.velocity_x_tiles_per_sec = state.move_speed_tiles_per_sec *
+                                   state.run_speed_multiplier;
+  state.jump_min_running_speed_tiles_per_sec = 1.0F;
+  state.run_active = true;
+  state.stamina_sec = state.max_stamina_sec;
+
+  sar::InputState input;
+  input.up_down = true;
+  input.run_down = true;
+  input.jump_pressed = true;
+
+  sar::render3d::UpdateLevel3DPlayer(level, input, 0.05F, &state);
+
+  Expect(state.jump_active,
+         "running Space on an upward target should start a jump");
+  Expect(!state.step_jump_active,
+         "running Space on an upward target should not use the short step-up jump");
+  Expect(state.jump_kind == sar::render3d::Level3DJumpKind::kRun,
+         "running Space should use the long running jump kind");
+}
+
 }  // namespace
 
 int main() {
@@ -1656,6 +1727,9 @@ int main() {
   TestLevel3DRunStopsWhenStaminaIsEmpty();
   TestLevel3DRunRecoversAfterDelay();
   TestLevel3DRunRequiresStandingPosture();
+  TestLevel3DWalkingStepJumpIgnoresNormalWalkingSpeed();
+  TestLevel3DStandingStepJumpUsesFacingDirection();
+  TestLevel3DRunningStepJumpUsesLongRunJump();
   std::cout << "All tests passed.\n";
   return 0;
 }

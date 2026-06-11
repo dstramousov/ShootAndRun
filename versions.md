@@ -658,3 +658,18 @@
 - Reset default GLB vertical offsets to `0.0`; per-asset and per-binding offsets now act only as explicit fine tuning.
 - Added controlled 3D model cache release before `CloseWindow()` to avoid unloading raylib models after the graphics context is closed.
 - Made the renderer destructor idempotent and safe if shutdown order changes in the future.
+
+## v0.1.77 -> v0.1.78
+
+- Bumped CMake project and runtime application version to `0.1.78`.
+- Fixed 3D upward Space jump selection after stamina/run introduction.
+- Normal walking step-up jumps no longer get blocked just because walking speed is higher than the old running-jump threshold.
+- Running upward Space jumps still use the longer running-jump path when active run and stamina are available.
+- Added regression tests for walking step-up and running upward jump mode selection.
+
+## v0.1.78 -> v0.1.79
+
+- Bumped CMake project and runtime application version to `0.1.79`.
+- Fixed standing Space step-up selection: when no movement key is held, the short step-up jump now uses the current facing tile.
+- Preserved walking Space step-up and active-run long jump behavior.
+- Added regression coverage for standing Space step-up without movement input.

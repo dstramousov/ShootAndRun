@@ -828,35 +828,6 @@ void ApplyFallDamageIfNeeded(const Level3DPlayerState& previous_state,
 }
 
 /**
- * @brief Executes the step direction from input operation.
- */
-bool StepDirectionFromInput(const InputState& input,
-                            const Level3DPlayerState& state,
-                            int* out_step_x,
-                            int* out_step_y) {
-  if (out_step_x == nullptr || out_step_y == nullptr) {
-    return false;
-  }
-
-  float direction_x = 0.0F;
-  float direction_y = 0.0F;
-  FacingRelativeInputDirection(input, state, &direction_x, &direction_y);
-  if (std::abs(direction_x) <= kVectorEpsilon &&
-      std::abs(direction_y) <= kVectorEpsilon) {
-    return false;
-  }
-
-  *out_step_x = 0;
-  *out_step_y = 0;
-  if (std::abs(direction_x) >= std::abs(direction_y)) {
-    *out_step_x = direction_x > 0.0F ? 1 : -1;
-  } else {
-    *out_step_y = direction_y > 0.0F ? 1 : -1;
-  }
-  return true;
-}
-
-/**
  * @brief Returns a single-tile step matching the current facing direction.
  */
 bool FacingStep(const Level3DPlayerState& state, int* out_step_x,
@@ -875,6 +846,35 @@ bool FacingStep(const Level3DPlayerState& state, int* out_step_x,
     *out_step_x = state.facing_x >= 0.0F ? 1 : -1;
   } else {
     *out_step_y = state.facing_y >= 0.0F ? 1 : -1;
+  }
+  return true;
+}
+
+/**
+ * @brief Returns the jump direction from movement input or facing direction.
+ */
+bool StepDirectionFromInput(const InputState& input,
+                            const Level3DPlayerState& state,
+                            int* out_step_x,
+                            int* out_step_y) {
+  if (out_step_x == nullptr || out_step_y == nullptr) {
+    return false;
+  }
+
+  float direction_x = 0.0F;
+  float direction_y = 0.0F;
+  FacingRelativeInputDirection(input, state, &direction_x, &direction_y);
+  if (std::abs(direction_x) <= kVectorEpsilon &&
+      std::abs(direction_y) <= kVectorEpsilon) {
+    return FacingStep(state, out_step_x, out_step_y);
+  }
+
+  *out_step_x = 0;
+  *out_step_y = 0;
+  if (std::abs(direction_x) >= std::abs(direction_y)) {
+    *out_step_x = direction_x > 0.0F ? 1 : -1;
+  } else {
+    *out_step_y = direction_y > 0.0F ? 1 : -1;
   }
   return true;
 }
@@ -1023,12 +1023,16 @@ bool TryStartStepJump(const LevelData& level, const InputState& input,
   const EnterTileResult target = CheckStepJumpTarget(
       level, *state, current_x + step_x, current_y + step_y);
   if (target.can_enter) {
-    if (CurrentHorizontalSpeed(*state) <
-        state->jump_min_running_speed_tiles_per_sec) {
-      StartStepJump(target, state);
-      return true;
+    const bool should_use_running_jump =
+        state->run_active && CanStartRunningJumpFromPosture(*state) &&
+        state->stamina_sec > kVectorEpsilon &&
+        CurrentHorizontalSpeed(*state) >=
+            state->jump_min_running_speed_tiles_per_sec;
+    if (should_use_running_jump) {
+      return false;
     }
-    return false;
+    StartStepJump(target, state);
+    return true;
   }
 
   if (target.reason != Level3DMoveBlockReason::kNone) {
