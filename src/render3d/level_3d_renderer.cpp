@@ -899,6 +899,26 @@ void DrawStepTransitionPrimitive(Vector3 from_center, Vector3 to_center,
 }
 
 /**
+ * @brief Draws one low-profile hatch or bunker entrance endpoint marker.
+ */
+void DrawHatchEndpointPrimitive(Vector3 center, const Level3DViewState& state,
+                                Color color) {
+  center.y += 0.06F;
+  const float size = state.tile_world_size * 0.58F;
+  DrawCube(center, size, 0.055F, size, color);
+  DrawCubeWires(center, size, 0.055F, size, Color{28, 22, 36, color.a});
+}
+
+/**
+ * @brief Draws explicit action-portal endpoints without connecting them by a movement ramp.
+ */
+void DrawHatchTransitionPrimitive(Vector3 from_center, Vector3 to_center,
+                                  const Level3DViewState& state, Color color) {
+  DrawHatchEndpointPrimitive(from_center, state, color);
+  DrawHatchEndpointPrimitive(to_center, state, color);
+}
+
+/**
  * @brief Draws transition primitive.
  */
 bool DrawTransitionPrimitive(const LevelData& level,
@@ -910,10 +930,6 @@ bool DrawTransitionPrimitive(const LevelData& level,
       !IsSurfaceVisible(*to)) {
     return false;
   }
-  if (from->height < 0 || to->height < 0) {
-    return false;
-  }
-
   const Vector3 from_center = TileWorldCenter(level, transition.from_x,
                                               transition.from_y, from->height,
                                               state.tile_world_size,
@@ -925,9 +941,6 @@ bool DrawTransitionPrimitive(const LevelData& level,
   const float dx = to_center.x - from_center.x;
   const float dz = to_center.z - from_center.z;
   const float distance = std::hypot(dx, dz);
-  if (distance <= 0.001F) {
-    return false;
-  }
 
   const int color_tile_x = IsTileRenderable(state, transition.from_x,
                                             transition.from_y)
@@ -940,6 +953,15 @@ bool DrawTransitionPrimitive(const LevelData& level,
   const Color color = ApplyVisibilityColor(TransitionColor(transition.type),
                                            state, color_tile_x, color_tile_y);
 
+  if (transition.type == ElevationTransitionType::kHatch) {
+    DrawHatchTransitionPrimitive(from_center, to_center, state, color);
+    return true;
+  }
+
+  if (from->height < 0 || to->height < 0 || distance <= 0.001F) {
+    return false;
+  }
+
   switch (transition.type) {
     case ElevationTransitionType::kRamp:
       DrawRampTransitionPrimitive(from_center, to_center, state, color);
@@ -951,6 +973,7 @@ bool DrawTransitionPrimitive(const LevelData& level,
       DrawStepTransitionPrimitive(from_center, to_center, state, color);
       return true;
     case ElevationTransitionType::kHatch:
+      return false;
     case ElevationTransitionType::kUnknown:
       break;
   }

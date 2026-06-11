@@ -681,3 +681,14 @@
 - Kept short step-up jumps for non-running +1 elevation targets.
 - Kept long run jumps for active Shift-run jumps.
 - Added regression tests for standing and walking normal jumps without active run.
+
+## v0.1.80 -> v0.1.81
+
+- Bumped CMake project and runtime application version to `0.1.81`.
+- Added explicit action portals for bunker/hatch elevation transitions.
+- Added `E` interaction input for entering and exiting bunker portals.
+- Portal use moves the player between configured hatch endpoints, including surface `0` and underground `-1` endpoints.
+- Blocked portal use while prone or while a jump is active.
+- Added simple 3D hatch endpoint markers for portal transitions, including transitions whose other endpoint is underground.
+- Extended F6 diagnostics with nearest portal usability and reason.
+- Added regression tests for one-way use, bidirectional return, prone blocking, and portal diagnostics.

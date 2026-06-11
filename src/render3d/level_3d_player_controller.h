@@ -75,6 +75,20 @@ enum class Level3DRunBlockReason {
 };
 
 /**
+ * @brief Reason why an explicit bunker or hatch portal cannot be used.
+ */
+enum class Level3DPortalBlockReason {
+  kNone,
+  kNoPortal,
+  kTooFar,
+  kNotBidirectional,
+  kDestinationBlocked,
+  kDestinationNotWalkable,
+  kProne,
+  kJumpActive,
+};
+
+/**
  * @brief Detailed player visibility factor breakdown.
  */
 struct Level3DVisibilityBreakdown {
@@ -195,6 +209,8 @@ struct Level3DPlayerState {
   Level3DJumpEventType last_jump_event_type = Level3DJumpEventType::kNone;  ///< Semantic type for last jump event.
   Level3DJumpKind last_jump_kind = Level3DJumpKind::kNone;  ///< Last jump kind value carried by this data structure.
   Level3DMoveBlockReason last_jump_block_reason = Level3DMoveBlockReason::kNone;  ///< Last jump block reason value carried by this data structure.
+  Level3DPortalBlockReason last_portal_block_reason = Level3DPortalBlockReason::kNoPortal;  ///< Last reason why a portal interaction failed or succeeded.
+  std::string last_portal_id;  ///< Last used or rejected portal identifier.
   unsigned int transition_event_sequence = 0;  ///< Transition event sequence value carried by this data structure.
   ElevationTransitionType last_transition_type = ElevationTransitionType::kUnknown;  ///< Semantic type for last transition.
   int last_transition_from_tile_x = -1;  ///< Tile, screen, or world coordinate for last transition from tile x.
@@ -242,6 +258,23 @@ struct Level3DPlayerTileDiagnostics {
 
 
 /**
+ * @brief Diagnostics for the closest explicit bunker or hatch portal.
+ */
+struct Level3DPortalDiagnostics {
+  bool has_portal = false;  ///< true when a portal was found near the player.
+  bool can_use = false;  ///< true when the current player can use the portal now.
+  std::string id;  ///< Portal identifier from the map package.
+  int from_tile_x = -1;  ///< Source endpoint tile X.
+  int from_tile_y = -1;  ///< Source endpoint tile Y.
+  int to_tile_x = -1;  ///< Destination endpoint tile X.
+  int to_tile_y = -1;  ///< Destination endpoint tile Y.
+  std::int8_t from_elevation = 0;  ///< Source endpoint elevation.
+  std::int8_t to_elevation = 0;  ///< Destination endpoint elevation.
+  float distance_tiles = 0.0F;  ///< Distance from player to the selected source endpoint.
+  Level3DPortalBlockReason reason = Level3DPortalBlockReason::kNoPortal;  ///< Usability reason.
+};
+
+/**
  * @brief Compact diagnostics for the tile currently faced by the 3D player.
  */
 struct Level3DTargetTileDiagnostics {
@@ -279,6 +312,14 @@ const char* Level3DMoveBlockReasonName(Level3DMoveBlockReason reason);
  * @return Stable lowercase reason name.
  */
 const char* Level3DRunBlockReasonName(Level3DRunBlockReason reason);
+
+/**
+ * @brief Returns a stable display name for a portal interaction block reason.
+ *
+ * @param reason Portal interaction block reason.
+ * @return Stable lowercase reason name.
+ */
+const char* Level3DPortalBlockReasonName(Level3DPortalBlockReason reason);
 
 /**
  * @brief Returns a stable display name for a player posture.
@@ -436,6 +477,25 @@ std::string Level3DPlayerTileDiagnosticsToString(
 Level3DTargetTileDiagnostics FacingLevel3DTargetTileDiagnostics(
     const LevelData& level,
     const Level3DPlayerState& state);
+
+/**
+ * @brief Builds diagnostics for the closest explicit bunker or hatch portal.
+ *
+ * @param level Loaded level data.
+ * @param state Current player state.
+ * @return Portal diagnostics for overlays and logs.
+ */
+Level3DPortalDiagnostics CurrentLevel3DPortalDiagnostics(
+    const LevelData& level, const Level3DPlayerState& state);
+
+/**
+ * @brief Returns a readable dump of a portal diagnostics object.
+ *
+ * @param diagnostics Portal diagnostics object.
+ * @return String representation for event logs and debug overlays.
+ */
+std::string Level3DPortalDiagnosticsToString(
+    const Level3DPortalDiagnostics& diagnostics);
 
 /**
  * @brief Returns a readable dump of a 3D target tile diagnostics object.

@@ -43,7 +43,10 @@ ElevationTransitionType ParseElevationTransitionType(const std::string& value) {
     return ElevationTransitionType::kStairs;
   }
   if (value == "hatch" || value == "entrance" || value == "exit" ||
-      value == "bunker_entrance") {
+      value == "bunker_entrance" || value == "bunker_hatch" ||
+      value == "bunker_exit" || value == "underground_entrance" ||
+      value == "underground_exit" || value == "portal" ||
+      value == "elevation_portal") {
     return ElevationTransitionType::kHatch;
   }
   return ElevationTransitionType::kUnknown;

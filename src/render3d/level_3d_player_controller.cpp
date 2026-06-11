@@ -18,6 +18,7 @@ namespace {
 
 constexpr float kVectorEpsilon = 0.0001F;
 constexpr float kPi = 3.14159265358979323846F;
+constexpr float kPortalActivationRadiusTiles = 1.25F;
 
 /**
  * @brief Stores enter tile result data shared between runtime systems.
@@ -31,6 +32,15 @@ struct EnterTileResult {
   bool used_transition = false;
   ElevationTransitionType transition_type = ElevationTransitionType::kUnknown;
   bool used_running_jump = false;
+};
+
+/**
+ * @brief Candidate explicit portal endpoint selected by distance.
+ */
+struct PortalCandidate {
+  const ElevationTransition* transition = nullptr;
+  bool use_reverse = false;
+  float distance_tiles = 0.0F;
 };
 
 /**
@@ -640,6 +650,153 @@ const ElevationTransition* FindElevationTransition(const LevelData& level,
 }
 
 /**
+ * @brief Checks whether an elevation transition is an explicit action portal.
+ */
+bool IsActionPortalTransition(const ElevationTransition& transition) {
+  return transition.type == ElevationTransitionType::kHatch;
+}
+
+/**
+ * @brief Computes distance from player center to a portal endpoint center.
+ */
+float PortalEndpointDistanceTiles(const Level3DPlayerState& state, int x,
+                                  int y) {
+  const float center_x = static_cast<float>(x) + 0.5F;
+  const float center_y = static_cast<float>(y) + 0.5F;
+  return std::hypot(state.tile_x - center_x, state.tile_y - center_y);
+}
+
+/**
+ * @brief Returns the closest explicit portal candidate within interaction range.
+ */
+PortalCandidate FindNearestPortalCandidate(const LevelData& level,
+                                           const Level3DPlayerState& state) {
+  PortalCandidate best;
+  best.distance_tiles = kPortalActivationRadiusTiles + 0.001F;
+
+  for (const ElevationTransition& transition : level.elevation_transitions) {
+    if (!IsActionPortalTransition(transition)) {
+      continue;
+    }
+
+    const float from_distance = PortalEndpointDistanceTiles(
+        state, transition.from_x, transition.from_y);
+    if (from_distance <= kPortalActivationRadiusTiles &&
+        from_distance < best.distance_tiles) {
+      best.transition = &transition;
+      best.use_reverse = false;
+      best.distance_tiles = from_distance;
+    }
+
+    if (!transition.bidirectional) {
+      continue;
+    }
+
+    const float to_distance = PortalEndpointDistanceTiles(
+        state, transition.to_x, transition.to_y);
+    if (to_distance <= kPortalActivationRadiusTiles &&
+        to_distance < best.distance_tiles) {
+      best.transition = &transition;
+      best.use_reverse = true;
+      best.distance_tiles = to_distance;
+    }
+  }
+
+  return best;
+}
+
+/**
+ * @brief Builds public diagnostics from a portal candidate.
+ */
+Level3DPortalDiagnostics BuildPortalDiagnostics(
+    const LevelData& level, const Level3DPlayerState& state,
+    const PortalCandidate& candidate) {
+  Level3DPortalDiagnostics diagnostics;
+  if (candidate.transition == nullptr) {
+    diagnostics.reason = Level3DPortalBlockReason::kNoPortal;
+    return diagnostics;
+  }
+
+  const ElevationTransition& transition = *candidate.transition;
+  diagnostics.has_portal = true;
+  diagnostics.id = transition.id;
+  diagnostics.distance_tiles = candidate.distance_tiles;
+  diagnostics.from_tile_x = candidate.use_reverse ? transition.to_x
+                                                   : transition.from_x;
+  diagnostics.from_tile_y = candidate.use_reverse ? transition.to_y
+                                                   : transition.from_y;
+  diagnostics.to_tile_x = candidate.use_reverse ? transition.from_x
+                                                 : transition.to_x;
+  diagnostics.to_tile_y = candidate.use_reverse ? transition.from_y
+                                                 : transition.to_y;
+  diagnostics.from_elevation = candidate.use_reverse ? transition.to_elevation
+                                                     : transition.from_elevation;
+  diagnostics.to_elevation = candidate.use_reverse ? transition.from_elevation
+                                                   : transition.to_elevation;
+
+  if (state.jump_active || state.step_jump_active) {
+    diagnostics.reason = Level3DPortalBlockReason::kJumpActive;
+    return diagnostics;
+  }
+  if (state.posture == Level3DPlayerPosture::kProne) {
+    diagnostics.reason = Level3DPortalBlockReason::kProne;
+    return diagnostics;
+  }
+  if (candidate.distance_tiles > kPortalActivationRadiusTiles) {
+    diagnostics.reason = Level3DPortalBlockReason::kTooFar;
+    return diagnostics;
+  }
+
+  const RuntimeCell* destination = CellAt(level, diagnostics.to_tile_x,
+                                          diagnostics.to_tile_y);
+  if (destination == nullptr) {
+    diagnostics.reason = Level3DPortalBlockReason::kDestinationBlocked;
+    return diagnostics;
+  }
+  if (destination->collision) {
+    diagnostics.reason = Level3DPortalBlockReason::kDestinationBlocked;
+    return diagnostics;
+  }
+  if (!destination->walkable || destination->movement_multiplier <= 0.0F) {
+    diagnostics.reason = Level3DPortalBlockReason::kDestinationNotWalkable;
+    return diagnostics;
+  }
+
+  diagnostics.can_use = true;
+  diagnostics.reason = Level3DPortalBlockReason::kNone;
+  return diagnostics;
+}
+
+/**
+ * @brief Applies an explicit portal transition to the player state.
+ */
+void ApplyPortalTransition(const Level3DPortalDiagnostics& portal,
+                           Level3DPlayerState* state) {
+  if (state == nullptr || !portal.can_use) {
+    return;
+  }
+
+  state->tile_x = static_cast<float>(portal.to_tile_x) + 0.5F;
+  state->tile_y = static_cast<float>(portal.to_tile_y) + 0.5F;
+  state->elevation = portal.to_elevation;
+  state->visual_elevation_offset = 0.0F;
+  state->velocity_x_tiles_per_sec = 0.0F;
+  state->velocity_y_tiles_per_sec = 0.0F;
+  state->run_active = false;
+  state->last_run_block_reason = Level3DRunBlockReason::kNotMoving;
+  state->last_portal_id = portal.id;
+  state->last_portal_block_reason = Level3DPortalBlockReason::kNone;
+  state->last_transition_type = ElevationTransitionType::kHatch;
+  state->last_transition_from_tile_x = portal.from_tile_x;
+  state->last_transition_from_tile_y = portal.from_tile_y;
+  state->last_transition_to_tile_x = portal.to_tile_x;
+  state->last_transition_to_tile_y = portal.to_tile_y;
+  state->last_transition_from_elevation = portal.from_elevation;
+  state->last_transition_to_elevation = portal.to_elevation;
+  ++state->transition_event_sequence;
+}
+
+/**
  * @brief Executes the can use normal movement transition operation.
  */
 bool CanUseNormalMovementTransition(const ElevationTransition& transition,
@@ -1014,6 +1171,32 @@ void StartRunningJump(Level3DPlayerState* state) {
  */
 void StartNormalJump(Level3DPlayerState* state) {
   StartHorizontalJump(Level3DJumpKind::kNormal, state);
+}
+
+/**
+ * @brief Tries to use the closest explicit bunker or hatch portal.
+ */
+bool TryUseElevationPortal(const LevelData& level, const InputState& input,
+                           Level3DPlayerState* state) {
+  if (state == nullptr || !input.interact_pressed) {
+    return false;
+  }
+
+  const Level3DPortalDiagnostics portal = CurrentLevel3DPortalDiagnostics(
+      level, *state);
+  state->last_portal_id = portal.id;
+  state->last_portal_block_reason = portal.reason;
+  if (!portal.can_use) {
+    if (portal.reason == Level3DPortalBlockReason::kProne) {
+      RecordBlockedTile(portal.from_tile_x, portal.from_tile_y,
+                        Level3DMoveBlockReason::kPostureCannotClimb, state);
+    }
+    return false;
+  }
+
+  ApplyPortalTransition(portal, state);
+  RefreshEffectiveMovementSpeed(level, state);
+  return true;
 }
 
 /**
@@ -1624,6 +1807,10 @@ void UpdateLevel3DPlayer(const LevelData& level, const InputState& input,
   UpdateFacingFromMouse(input, state);
   ApplyPostureInput(input, state);
   RefreshLevel3DPlayerVisibility(level, state);
+  if (TryUseElevationPortal(level, input, state)) {
+    RefreshLevel3DPlayerVisibility(level, state);
+    return;
+  }
   if (UpdateStepJump(level, safe_dt, state)) {
     RefreshLevel3DPlayerVisibility(level, state);
     return;
@@ -1751,6 +1938,61 @@ Level3DPlayerTileDiagnostics CurrentLevel3DPlayerTileDiagnostics(
 }
 
 /**
+ * @brief Returns current level 3D portal diagnostics.
+ */
+Level3DPortalDiagnostics CurrentLevel3DPortalDiagnostics(
+    const LevelData& level, const Level3DPlayerState& state) {
+  return BuildPortalDiagnostics(level, state,
+                                FindNearestPortalCandidate(level, state));
+}
+
+/**
+ * @brief Returns portal block reason name.
+ */
+const char* Level3DPortalBlockReasonName(Level3DPortalBlockReason reason) {
+  switch (reason) {
+    case Level3DPortalBlockReason::kNone:
+      return "none";
+    case Level3DPortalBlockReason::kNoPortal:
+      return "no_portal";
+    case Level3DPortalBlockReason::kTooFar:
+      return "too_far";
+    case Level3DPortalBlockReason::kNotBidirectional:
+      return "not_bidirectional";
+    case Level3DPortalBlockReason::kDestinationBlocked:
+      return "destination_blocked";
+    case Level3DPortalBlockReason::kDestinationNotWalkable:
+      return "destination_not_walkable";
+    case Level3DPortalBlockReason::kProne:
+      return "prone";
+    case Level3DPortalBlockReason::kJumpActive:
+      return "jump_active";
+  }
+  return "unknown";
+}
+
+/**
+ * @brief Returns level 3D portal diagnostics to string.
+ */
+std::string Level3DPortalDiagnosticsToString(
+    const Level3DPortalDiagnostics& diagnostics) {
+  std::ostringstream stream;
+  stream << std::fixed << std::setprecision(2);
+  stream << "portal=" << (diagnostics.has_portal ? diagnostics.id : "none")
+         << " can_use=" << (diagnostics.can_use ? 'Y' : 'N')
+         << " reason=" << Level3DPortalBlockReasonName(diagnostics.reason);
+  if (diagnostics.has_portal) {
+    stream << " from=" << diagnostics.from_tile_x << ','
+           << diagnostics.from_tile_y
+           << " el=" << static_cast<int>(diagnostics.from_elevation)
+           << " to=" << diagnostics.to_tile_x << ',' << diagnostics.to_tile_y
+           << " el=" << static_cast<int>(diagnostics.to_elevation)
+           << " dist=" << diagnostics.distance_tiles;
+  }
+  return stream.str();
+}
+
+/**
  * @brief Builds facing target diagnostics.
  */
 Level3DTargetTileDiagnostics FacingLevel3DTargetTileDiagnostics(
@@ -1857,8 +2099,12 @@ std::string Level3DTransitionEventToString(
     const Level3DPlayerState& state) {
   std::ostringstream stream;
   stream << "transition type="
-         << ElevationTransitionTypeName(state.last_transition_type)
-         << " from=" << state.last_transition_from_tile_x << ','
+         << ElevationTransitionTypeName(state.last_transition_type);
+  if (state.last_transition_type == ElevationTransitionType::kHatch &&
+      !state.last_portal_id.empty()) {
+    stream << " id=" << state.last_portal_id;
+  }
+  stream << " from=" << state.last_transition_from_tile_x << ','
          << state.last_transition_from_tile_y
          << " el=" << static_cast<int>(state.last_transition_from_elevation)
          << " to=" << state.last_transition_to_tile_x << ','

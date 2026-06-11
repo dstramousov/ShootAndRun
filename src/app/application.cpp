@@ -1407,8 +1407,11 @@ void Application::Draw3DElevationDebugOverlay() const {
   const render3d::Level3DTargetTileDiagnostics target =
       render3d::FacingLevel3DTargetTileDiagnostics(*loaded_level_,
                                                    level_3d_view_.player);
+  const render3d::Level3DPortalDiagnostics portal =
+      render3d::CurrentLevel3DPortalDiagnostics(*loaded_level_,
+                                                level_3d_view_.player);
 
-  ui_font_.DrawTextLine("ELEVATION DEBUG  F6 overlay  F7 logs  C crouch  Z prone  Shift run", x, y,
+  ui_font_.DrawTextLine("ELEVATION DEBUG  F6 overlay  F7 logs  E use  C crouch  Z prone  Shift run", x, y,
                         font_size, title_color);
   y += line_step;
   ui_font_.DrawTextLine(
@@ -1440,6 +1443,11 @@ void Application::Draw3DElevationDebugOverlay() const {
       "face " + render3d::Level3DTargetTileDiagnosticsToString(target),
       x, y, font_size, target.can_enter ? Color{156, 238, 166, 255}
                                         : Color{244, 118, 92, 255});
+  y += line_step;
+  ui_font_.DrawTextLine(
+      render3d::Level3DPortalDiagnosticsToString(portal), x, y, font_size,
+      portal.can_use ? Color{156, 238, 166, 255}
+                     : Color{190, 194, 204, 255});
   y += line_step;
 
   ui_font_.DrawTextLine(

@@ -35,6 +35,7 @@ struct InputState {
   bool crouch_pressed = false;  ///< true when the crouch posture toggle was pressed this frame.
   bool prone_pressed = false;  ///< true when the prone posture toggle was pressed this frame.
   bool run_down = false;  ///< true while the 3D run modifier is held.
+  bool interact_pressed = false;  ///< true when the 3D interaction key was pressed this frame.
   bool debug_view_raw_pressed = false;  ///< Debug view raw pressed value carried by this data structure.
   bool debug_view_analysis_pressed = false;  ///< Debug view analysis pressed value carried by this data structure.
   bool debug_view_visual_pressed = false;  ///< Debug view visual pressed value carried by this data structure.

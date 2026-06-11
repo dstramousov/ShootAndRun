@@ -1729,6 +1729,125 @@ void TestLevel3DRunningStepJumpUsesLongRunJump() {
          "running Space should use the long running jump kind");
 }
 
+
+void TestLevel3DInteractUsesBunkerPortalDown() {
+  sar::LevelData level = BuildFlatTestLevel(3, 1, {0, 0, -1});
+  sar::ElevationTransition portal;
+  portal.id = "test_bunker_entrance";
+  portal.type = sar::ElevationTransitionType::kHatch;
+  portal.from_x = 0;
+  portal.from_y = 0;
+  portal.to_x = 2;
+  portal.to_y = 0;
+  portal.from_elevation = 0;
+  portal.to_elevation = -1;
+  portal.bidirectional = true;
+  level.elevation_transitions.push_back(portal);
+
+  sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      0.5F, 0.5F, 0, 1.0F, 0.0F);
+  sar::InputState input;
+  input.interact_pressed = true;
+
+  sar::render3d::UpdateLevel3DPlayer(level, input, 0.05F, &state);
+
+  Expect(state.tile_x == 2.5F && state.tile_y == 0.5F,
+         "E should move the player to the portal destination center");
+  Expect(state.elevation == -1,
+         "E should move the player to the underground portal elevation");
+  Expect(state.last_transition_type == sar::ElevationTransitionType::kHatch,
+         "portal use should record a hatch transition event");
+  Expect(state.last_portal_block_reason ==
+             sar::render3d::Level3DPortalBlockReason::kNone,
+         "successful portal use should keep portal reason as none");
+}
+
+void TestLevel3DInteractUsesBunkerPortalBackUp() {
+  sar::LevelData level = BuildFlatTestLevel(3, 1, {0, 0, -1});
+  sar::ElevationTransition portal;
+  portal.id = "test_bunker_exit";
+  portal.type = sar::ElevationTransitionType::kHatch;
+  portal.from_x = 0;
+  portal.from_y = 0;
+  portal.to_x = 2;
+  portal.to_y = 0;
+  portal.from_elevation = 0;
+  portal.to_elevation = -1;
+  portal.bidirectional = true;
+  level.elevation_transitions.push_back(portal);
+
+  sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      2.5F, 0.5F, -1, -1.0F, 0.0F);
+  sar::InputState input;
+  input.interact_pressed = true;
+
+  sar::render3d::UpdateLevel3DPlayer(level, input, 0.05F, &state);
+
+  Expect(state.tile_x == 0.5F && state.tile_y == 0.5F,
+         "bidirectional portal should move the player back to the surface endpoint");
+  Expect(state.elevation == 0,
+         "bidirectional portal should restore surface elevation");
+  Expect(state.last_transition_from_elevation == -1 &&
+             state.last_transition_to_elevation == 0,
+         "reverse portal use should record the correct elevation direction");
+}
+
+void TestLevel3DProneCannotUseBunkerPortal() {
+  sar::LevelData level = BuildFlatTestLevel(3, 1, {0, 0, -1});
+  sar::ElevationTransition portal;
+  portal.id = "test_prone_blocked_portal";
+  portal.type = sar::ElevationTransitionType::kHatch;
+  portal.from_x = 0;
+  portal.from_y = 0;
+  portal.to_x = 2;
+  portal.to_y = 0;
+  portal.from_elevation = 0;
+  portal.to_elevation = -1;
+  portal.bidirectional = true;
+  level.elevation_transitions.push_back(portal);
+
+  sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      0.5F, 0.5F, 0, 1.0F, 0.0F);
+  state.posture = sar::render3d::Level3DPlayerPosture::kProne;
+  sar::InputState input;
+  input.interact_pressed = true;
+
+  sar::render3d::UpdateLevel3DPlayer(level, input, 0.05F, &state);
+
+  Expect(state.tile_x == 0.5F && state.elevation == 0,
+         "prone player should not use bunker portal interaction");
+  Expect(state.last_portal_block_reason ==
+             sar::render3d::Level3DPortalBlockReason::kProne,
+         "prone portal interaction should explain posture restriction");
+}
+
+void TestLevel3DPortalDiagnosticsReportsNearestPortal() {
+  sar::LevelData level = BuildFlatTestLevel(3, 1, {0, 0, -1});
+  sar::ElevationTransition portal;
+  portal.id = "test_diagnostics_portal";
+  portal.type = sar::ElevationTransitionType::kHatch;
+  portal.from_x = 0;
+  portal.from_y = 0;
+  portal.to_x = 2;
+  portal.to_y = 0;
+  portal.from_elevation = 0;
+  portal.to_elevation = -1;
+  portal.bidirectional = true;
+  level.elevation_transitions.push_back(portal);
+
+  const sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      0.5F, 0.5F, 0, 1.0F, 0.0F);
+  const sar::render3d::Level3DPortalDiagnostics diagnostics =
+      sar::render3d::CurrentLevel3DPortalDiagnostics(level, state);
+
+  Expect(diagnostics.has_portal,
+         "portal diagnostics should find a nearby hatch transition");
+  Expect(diagnostics.can_use,
+         "portal diagnostics should allow a standing player to use the portal");
+  Expect(diagnostics.to_tile_x == 2 && diagnostics.to_elevation == -1,
+         "portal diagnostics should report the selected destination endpoint");
+}
+
 }  // namespace
 
 int main() {
@@ -1770,6 +1889,10 @@ int main() {
   TestLevel3DStandingNormalJumpStartsOnFlatGround();
   TestLevel3DWalkingNormalJumpStartsWithoutRun();
   TestLevel3DRunningStepJumpUsesLongRunJump();
+  TestLevel3DInteractUsesBunkerPortalDown();
+  TestLevel3DInteractUsesBunkerPortalBackUp();
+  TestLevel3DProneCannotUseBunkerPortal();
+  TestLevel3DPortalDiagnosticsReportsNearestPortal();
   std::cout << "All tests passed.\n";
   return 0;
 }
