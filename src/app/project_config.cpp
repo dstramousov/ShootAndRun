@@ -338,6 +338,29 @@ bool ApplyPositiveOptionalFloatField(std::string_view content,
 }
 
 /**
+ * @brief Applies an optional non-negative JSON float field to a target value.
+ */
+bool ApplyNonNegativeOptionalFloatField(std::string_view content,
+                                        std::string_view field_name,
+                                        float* target,
+                                        std::string* error) {
+  ParseFloatResult result = ExtractOptionalJsonFloatField(content, field_name);
+  if (!result.ok) {
+    *error = result.error;
+    return false;
+  }
+  if (!result.found) {
+    return true;
+  }
+  if (result.value < 0.0F) {
+    *error = std::string(field_name) + " must be non-negative";
+    return false;
+  }
+  *target = result.value;
+  return true;
+}
+
+/**
  * @brief Parses raylib log level from external data.
  */
 std::optional<RaylibLogLevel> ParseRaylibLogLevel(std::string_view value) {
@@ -516,6 +539,18 @@ std::string ProjectConfig::Dump() const {
          std::to_string(player3d_movement.crouched_speed_multiplier) +
          " prone=" +
          std::to_string(player3d_movement.prone_speed_multiplier) +
+         ", run: speed_mul=" +
+         std::to_string(player3d_movement.run_speed_multiplier) +
+         " stamina=" +
+         std::to_string(player3d_movement.max_stamina_sec) +
+         " drain=" +
+         std::to_string(player3d_movement.stamina_drain_per_sec) +
+         " recover=" +
+         std::to_string(player3d_movement.stamina_recover_per_sec) +
+         " delay=" +
+         std::to_string(player3d_movement.stamina_recover_delay_sec) +
+         " min_start=" +
+         std::to_string(player3d_movement.min_stamina_to_start_run_sec) +
          ", posture_visibility: standing=" +
          std::to_string(player3d_movement.standing_visibility_factor) +
          " crouched=" +
@@ -530,6 +565,8 @@ std::string ProjectConfig::Dump() const {
          std::to_string(player3d_movement.visibility_forest_factor) +
          " conceal_low=" +
          std::to_string(player3d_movement.visibility_concealment_low_factor) +
+         " running=" +
+         std::to_string(player3d_movement.visibility_running_factor) +
          " pit=" +
          std::to_string(player3d_movement.visibility_below_ground_factor) +
          " clamp=" +
@@ -1197,6 +1234,35 @@ ProjectConfigResult LoadProjectConfig(
         player3d_prone_speed.value;
   }
 
+  std::string run_error;
+  if (!ApplyPositiveOptionalFloatField(
+          content, "player3d_run_speed_multiplier",
+          &config.player3d_movement.run_speed_multiplier, &run_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_max_stamina_sec",
+          &config.player3d_movement.max_stamina_sec, &run_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_stamina_drain_per_sec",
+          &config.player3d_movement.stamina_drain_per_sec, &run_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_stamina_recover_per_sec",
+          &config.player3d_movement.stamina_recover_per_sec, &run_error) ||
+      !ApplyNonNegativeOptionalFloatField(
+          content, "player3d_stamina_recover_delay_sec",
+          &config.player3d_movement.stamina_recover_delay_sec, &run_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_min_stamina_to_start_run_sec",
+          &config.player3d_movement.min_stamina_to_start_run_sec,
+          &run_error)) {
+    return {false, {}, run_error};
+  }
+  if (config.player3d_movement.min_stamina_to_start_run_sec >
+      config.player3d_movement.max_stamina_sec) {
+    return {false, {},
+            "player3d_min_stamina_to_start_run_sec must be <= "
+            "player3d_max_stamina_sec"};
+  }
+
   ParseFloatResult player3d_standing_visibility = ExtractOptionalJsonFloatField(
       content, "player3d_standing_visibility_factor");
   if (!player3d_standing_visibility.ok) {
@@ -1312,6 +1378,10 @@ ProjectConfigResult LoadProjectConfig(
       !ApplyPositiveOptionalFloatField(
           content, "player3d_visibility_moving_prone_factor",
           &config.player3d_movement.visibility_moving_prone_factor,
+          &visibility_error) ||
+      !ApplyPositiveOptionalFloatField(
+          content, "player3d_visibility_running_factor",
+          &config.player3d_movement.visibility_running_factor,
           &visibility_error) ||
       !ApplyPositiveOptionalFloatField(
           content, "player3d_visibility_min_score",

@@ -129,6 +129,16 @@ void ApplyPlayer3DMovementConfig(
   player->standing_speed_multiplier = config.standing_speed_multiplier;
   player->crouched_speed_multiplier = config.crouched_speed_multiplier;
   player->prone_speed_multiplier = config.prone_speed_multiplier;
+  player->run_speed_multiplier = config.run_speed_multiplier;
+  player->max_stamina_sec = config.max_stamina_sec;
+  player->stamina_sec = config.max_stamina_sec;
+  player->stamina_drain_per_sec = config.stamina_drain_per_sec;
+  player->stamina_recover_per_sec = config.stamina_recover_per_sec;
+  player->stamina_recover_delay_sec = config.stamina_recover_delay_sec;
+  player->min_stamina_to_start_run_sec = config.min_stamina_to_start_run_sec;
+  player->stamina_recover_delay_remaining_sec = 0.0F;
+  player->run_active = false;
+  player->run_exhausted_until_released = false;
   player->standing_visibility_factor = config.standing_visibility_factor;
   player->crouched_visibility_factor = config.crouched_visibility_factor;
   player->prone_visibility_factor = config.prone_visibility_factor;
@@ -161,6 +171,7 @@ void ApplyPlayer3DMovementConfig(
       config.visibility_moving_crouched_factor;
   player->visibility_moving_prone_factor =
       config.visibility_moving_prone_factor;
+  player->visibility_running_factor = config.visibility_running_factor;
   player->visibility_min_score = config.visibility_min_score;
   player->visibility_max_score = config.visibility_max_score;
 }
@@ -1358,6 +1369,9 @@ void Application::Draw3DPlayerHud() const {
   const std::string text = "HP: " + std::to_string(player.current_hp) + "/" +
                            std::to_string(player.max_hp) + "  " +
                            render3d::Level3DPlayerPostureName(player.posture) +
+                           (player.run_active ? "  RUN" : "  WALK") +
+                           "  STA: " + FormatFixedFloat(player.stamina_sec, 1) +
+                           "/" + FormatFixedFloat(player.max_stamina_sec, 1) +
                            "  VIS: " + FormatFixedFloat(player.visibility_score, 2);
   const int text_width = ui_font_.MeasureTextWidth(text, font_size);
   const Color color = player.current_hp <= 0 ? Color{235, 70, 58, 255}
@@ -1393,7 +1407,7 @@ void Application::Draw3DElevationDebugOverlay() const {
       render3d::FacingLevel3DTargetTileDiagnostics(*loaded_level_,
                                                    level_3d_view_.player);
 
-  ui_font_.DrawTextLine("ELEVATION DEBUG  F6 overlay  F7 logs  C crouch  Z prone", x, y,
+  ui_font_.DrawTextLine("ELEVATION DEBUG  F6 overlay  F7 logs  C crouch  Z prone  Shift run", x, y,
                         font_size, title_color);
   y += line_step;
   ui_font_.DrawTextLine(
@@ -1410,13 +1424,23 @@ void Application::Draw3DElevationDebugOverlay() const {
       render3d::Level3DVisibilityBreakdownToString(current.visibility), x, y,
       font_size, muted_color);
   y += line_step;
+  const render3d::Level3DPlayerState& player = level_3d_view_.player;
+  ui_font_.DrawTextLine(
+      std::string("run active=") + (player.run_active ? "Y" : "N") +
+          " reason=" +
+          render3d::Level3DRunBlockReasonName(player.last_run_block_reason) +
+          " stamina=" + FormatFixedFloat(player.stamina_sec, 2) + "/" +
+          FormatFixedFloat(player.max_stamina_sec, 2) +
+          " recover_delay=" +
+          FormatFixedFloat(player.stamina_recover_delay_remaining_sec, 2),
+      x, y, font_size, muted_color);
+  y += line_step;
   ui_font_.DrawTextLine(
       "face " + render3d::Level3DTargetTileDiagnosticsToString(target),
       x, y, font_size, target.can_enter ? Color{156, 238, 166, 255}
                                         : Color{244, 118, 92, 255});
   y += line_step;
 
-  const render3d::Level3DPlayerState& player = level_3d_view_.player;
   ui_font_.DrawTextLine(
       std::string("last block: ") +
           render3d::Level3DMoveBlockReasonName(player.last_block_reason) +

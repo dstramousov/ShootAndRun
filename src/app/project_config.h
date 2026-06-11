@@ -138,6 +138,12 @@ struct Player3DMovementConfig {
   float standing_speed_multiplier = 1.0F;  ///< Movement speed multiplier while standing.
   float crouched_speed_multiplier = 0.62F;  ///< Movement speed multiplier while crouched.
   float prone_speed_multiplier = 0.32F;  ///< Movement speed multiplier while prone.
+  float run_speed_multiplier = 1.65F;  ///< Movement speed multiplier while Shift-run is active.
+  float max_stamina_sec = 3.0F;  ///< Maximum run stamina measured in seconds.
+  float stamina_drain_per_sec = 1.0F;  ///< Stamina seconds drained per second while running.
+  float stamina_recover_per_sec = 0.55F;  ///< Stamina seconds recovered per second while resting.
+  float stamina_recover_delay_sec = 0.75F;  ///< Delay before stamina starts recovering.
+  float min_stamina_to_start_run_sec = 0.30F;  ///< Minimum stamina needed to start running.
   float standing_visibility_factor = 1.0F;  ///< Visibility factor while standing.
   float crouched_visibility_factor = 0.65F;  ///< Visibility factor while crouched.
   float prone_visibility_factor = 0.35F;  ///< Visibility factor while prone.
@@ -160,6 +166,7 @@ struct Player3DMovementConfig {
   float visibility_moving_standing_factor = 1.10F;  ///< Moving visibility while standing.
   float visibility_moving_crouched_factor = 1.0F;  ///< Moving visibility while crouched.
   float visibility_moving_prone_factor = 0.95F;  ///< Moving visibility while prone.
+  float visibility_running_factor = 1.25F;  ///< Moving visibility while actively running.
   float visibility_min_score = 0.05F;  ///< Minimum clamped player visibility score.
   float visibility_max_score = 2.0F;  ///< Maximum clamped player visibility score.
 };

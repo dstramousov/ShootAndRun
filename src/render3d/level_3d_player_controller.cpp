@@ -177,6 +177,14 @@ float PostureSpeedMultiplier(const Level3DPlayerState& state) {
 }
 
 /**
+ * @brief Returns run speed multiplier from player state.
+ */
+float RunSpeedMultiplier(const Level3DPlayerState& state) {
+  return state.run_active ? std::clamp(state.run_speed_multiplier, 1.0F, 3.0F)
+                          : 1.0F;
+}
+
+/**
  * @brief Returns posture visibility factor from player state tuning.
  */
 float PostureVisibilityFactor(const Level3DPlayerState& state) {
@@ -280,6 +288,9 @@ float MovementVisibilityFactor(const Level3DPlayerState& state) {
   if (speed <= 0.05F) {
     return 1.0F;
   }
+  if (state.run_active) {
+    return state.visibility_running_factor;
+  }
   switch (state.posture) {
     case Level3DPlayerPosture::kStanding:
       return state.visibility_moving_standing_factor;
@@ -340,6 +351,100 @@ bool CanStartRunningJumpFromPosture(const Level3DPlayerState& state) {
 }
 
 /**
+ * @brief Returns true when movement input is active this frame.
+ */
+bool HasMovementInput(float direction_x, float direction_y) {
+  return std::abs(direction_x) > kVectorEpsilon ||
+         std::abs(direction_y) > kVectorEpsilon;
+}
+
+/**
+ * @brief Starts stamina recovery delay after run was active or rejected by exhaustion.
+ */
+void StartStaminaRecoveryDelay(Level3DPlayerState* state) {
+  if (state == nullptr) {
+    return;
+  }
+  state->stamina_recover_delay_remaining_sec =
+      std::max(state->stamina_recover_delay_remaining_sec,
+               std::max(0.0F, state->stamina_recover_delay_sec));
+}
+
+/**
+ * @brief Updates run mode and stamina from input and current posture.
+ */
+void UpdateRunState(const InputState& input, bool has_movement_input,
+                    float safe_dt, Level3DPlayerState* state) {
+  if (state == nullptr) {
+    return;
+  }
+
+  state->max_stamina_sec = std::max(0.1F, state->max_stamina_sec);
+  state->stamina_sec = std::clamp(state->stamina_sec, 0.0F,
+                                  state->max_stamina_sec);
+
+  state->last_run_block_reason = Level3DRunBlockReason::kNone;
+
+  if (state->jump_active || state->step_jump_active) {
+    state->last_run_block_reason = Level3DRunBlockReason::kJumpActive;
+    return;
+  }
+
+  const bool was_running = state->run_active;
+  state->run_active = false;
+
+  if (!input.run_down) {
+    state->run_exhausted_until_released = false;
+  }
+
+  if (!input.run_down) {
+    state->last_run_block_reason = Level3DRunBlockReason::kNone;
+  } else if (!has_movement_input) {
+    state->last_run_block_reason = Level3DRunBlockReason::kNotMoving;
+  } else if (state->posture != Level3DPlayerPosture::kStanding) {
+    state->last_run_block_reason = Level3DRunBlockReason::kNotStanding;
+  } else if (state->run_exhausted_until_released) {
+    state->last_run_block_reason =
+        Level3DRunBlockReason::kExhaustedUntilReleased;
+  } else if (state->stamina_sec <= kVectorEpsilon) {
+    state->last_run_block_reason = Level3DRunBlockReason::kStaminaEmpty;
+  } else if (state->stamina_sec < state->min_stamina_to_start_run_sec) {
+    state->last_run_block_reason = Level3DRunBlockReason::kStaminaTooLow;
+  } else {
+    state->run_active = true;
+  }
+
+  if (state->run_active) {
+    state->stamina_sec = std::max(
+        0.0F, state->stamina_sec -
+                  std::max(0.0F, state->stamina_drain_per_sec) * safe_dt);
+    StartStaminaRecoveryDelay(state);
+    if (state->stamina_sec <= kVectorEpsilon) {
+      state->stamina_sec = 0.0F;
+      state->run_active = false;
+      state->run_exhausted_until_released = true;
+      state->last_run_block_reason = Level3DRunBlockReason::kStaminaEmpty;
+    }
+    return;
+  }
+
+  if (was_running) {
+    StartStaminaRecoveryDelay(state);
+  }
+
+  if (state->stamina_recover_delay_remaining_sec > 0.0F) {
+    state->stamina_recover_delay_remaining_sec = std::max(
+        0.0F, state->stamina_recover_delay_remaining_sec - safe_dt);
+    return;
+  }
+
+  state->stamina_sec = std::min(
+      state->max_stamina_sec,
+      state->stamina_sec + std::max(0.0F, state->stamina_recover_per_sec) *
+                               safe_dt);
+}
+
+/**
  * @brief Applies posture toggle input to the player state.
  */
 void ApplyPostureInput(const InputState& input, Level3DPlayerState* state) {
@@ -347,14 +452,13 @@ void ApplyPostureInput(const InputState& input, Level3DPlayerState* state) {
     return;
   }
 
+  const Level3DPlayerPosture old_posture = state->posture;
+
   if (input.prone_pressed) {
     state->posture = state->posture == Level3DPlayerPosture::kProne
                          ? Level3DPlayerPosture::kCrouched
                          : Level3DPlayerPosture::kProne;
-    return;
-  }
-
-  if (input.crouch_pressed) {
+  } else if (input.crouch_pressed) {
     switch (state->posture) {
       case Level3DPlayerPosture::kStanding:
         state->posture = Level3DPlayerPosture::kCrouched;
@@ -366,6 +470,11 @@ void ApplyPostureInput(const InputState& input, Level3DPlayerState* state) {
         state->posture = Level3DPlayerPosture::kCrouched;
         break;
     }
+  }
+
+  if (state->posture != old_posture && state->posture != Level3DPlayerPosture::kStanding) {
+    state->run_active = false;
+    StartStaminaRecoveryDelay(state);
   }
 }
 
@@ -414,7 +523,8 @@ void RefreshEffectiveMovementSpeed(const LevelData& level,
   state->target_movement_multiplier = MovementMultiplierForState(level, *state);
   state->effective_move_speed_tiles_per_sec =
       state->move_speed_tiles_per_sec * state->current_movement_multiplier *
-      std::clamp(PostureSpeedMultiplier(*state), 0.0F, 1.50F);
+      std::clamp(PostureSpeedMultiplier(*state), 0.0F, 1.50F) *
+      RunSpeedMultiplier(*state);
 }
 
 /**
@@ -430,7 +540,8 @@ void ResetMovementMultiplier(const LevelData& level,
   state->current_movement_multiplier = state->target_movement_multiplier;
   state->effective_move_speed_tiles_per_sec =
       state->move_speed_tiles_per_sec * state->current_movement_multiplier *
-      std::clamp(PostureSpeedMultiplier(*state), 0.0F, 1.50F);
+      std::clamp(PostureSpeedMultiplier(*state), 0.0F, 1.50F) *
+      RunSpeedMultiplier(*state);
 }
 
 /**
@@ -452,7 +563,8 @@ void UpdateMovementMultiplier(const LevelData& level, float safe_dt,
       state->current_movement_multiplier, 0.0F, 1.50F);
   state->effective_move_speed_tiles_per_sec =
       state->move_speed_tiles_per_sec * state->current_movement_multiplier *
-      std::clamp(PostureSpeedMultiplier(*state), 0.0F, 1.50F);
+      std::clamp(PostureSpeedMultiplier(*state), 0.0F, 1.50F) *
+      RunSpeedMultiplier(*state);
 }
 
 /**
@@ -585,7 +697,8 @@ float CurrentHorizontalSpeed(const Level3DPlayerState& state) {
  * @brief Checks whether running jump candidate is true.
  */
 bool IsRunningJumpCandidate(const Level3DPlayerState& state) {
-  return state.jump_active && state.jump_kind == Level3DJumpKind::kRun &&
+  return state.run_active && state.jump_active &&
+         state.jump_kind == Level3DJumpKind::kRun &&
          CurrentHorizontalSpeed(state) >= state.jump_min_running_speed_tiles_per_sec;
 }
 
@@ -842,6 +955,7 @@ void StartStepJump(const EnterTileResult& target,
   state->visual_elevation_offset = 0.0F;
   state->velocity_x_tiles_per_sec = 0.0F;
   state->velocity_y_tiles_per_sec = 0.0F;
+  state->run_active = false;
   RecordJumpEvent(Level3DJumpEventType::kStarted,
                   Level3DMoveBlockReason::kNone, state);
 }
@@ -878,7 +992,8 @@ void StartRunningJump(Level3DPlayerState* state) {
 bool TryStartRunningJump(const LevelData& level, const InputState& input,
                          Level3DPlayerState* state) {
   if (state == nullptr || !input.jump_pressed || state->jump_active ||
-      state->step_jump_active || !CanStartRunningJumpFromPosture(*state)) {
+      state->step_jump_active || !CanStartRunningJumpFromPosture(*state) ||
+      !state->run_active || state->stamina_sec <= kVectorEpsilon) {
     return false;
   }
 
@@ -1241,11 +1356,12 @@ void UpdateVelocityFromInput(const LevelData& level,
     return;
   }
 
-  UpdateMovementMultiplier(level, safe_dt, state);
-
   float direction_x = 0.0F;
   float direction_y = 0.0F;
   FacingRelativeInputDirection(input, *state, &direction_x, &direction_y);
+  UpdateRunState(input, HasMovementInput(direction_x, direction_y), safe_dt,
+                 state);
+  UpdateMovementMultiplier(level, safe_dt, state);
 
   float effective_speed = state->effective_move_speed_tiles_per_sec;
   float acceleration = (direction_x == 0.0F && direction_y == 0.0F)
@@ -1255,6 +1371,7 @@ void UpdateVelocityFromInput(const LevelData& level,
     effective_speed = state->move_speed_tiles_per_sec *
                       state->jump_start_movement_multiplier *
                       std::clamp(PostureSpeedMultiplier(*state), 0.0F, 1.50F) *
+                      RunSpeedMultiplier(*state) *
                       state->jump_horizontal_speed_multiplier;
     acceleration *= state->jump_air_control_multiplier;
   }
@@ -1287,6 +1404,26 @@ const char* Level3DMoveBlockReasonName(Level3DMoveBlockReason reason) {
       return "height_step";
     case Level3DMoveBlockReason::kPostureCannotClimb:
       return "posture_cannot_climb";
+  }
+  return "unknown";
+}
+
+const char* Level3DRunBlockReasonName(Level3DRunBlockReason reason) {
+  switch (reason) {
+    case Level3DRunBlockReason::kNone:
+      return "none";
+    case Level3DRunBlockReason::kNotMoving:
+      return "not_moving";
+    case Level3DRunBlockReason::kNotStanding:
+      return "not_standing";
+    case Level3DRunBlockReason::kStaminaTooLow:
+      return "stamina_too_low";
+    case Level3DRunBlockReason::kStaminaEmpty:
+      return "stamina_empty";
+    case Level3DRunBlockReason::kExhaustedUntilReleased:
+      return "exhausted_until_released";
+    case Level3DRunBlockReason::kJumpActive:
+      return "jump_active";
   }
   return "unknown";
 }
@@ -1362,6 +1499,7 @@ void InitializeLevel3DPlayer(const LevelData& level,
   SetInitialFacingTowardMapCenter(level, state);
   state->velocity_x_tiles_per_sec = 0.0F;
   state->velocity_y_tiles_per_sec = 0.0F;
+  state->run_active = false;
   state->current_hp = std::clamp(state->current_hp, 0,
                                   std::max(0, state->max_hp));
   state->last_health_before_hp = state->current_hp;
@@ -1407,6 +1545,12 @@ void InitializeLevel3DPlayer(const LevelData& level,
   state->last_transition_from_elevation = state->elevation;
   state->last_transition_to_elevation = state->elevation;
   state->posture = Level3DPlayerPosture::kStanding;
+  state->run_active = false;
+  state->run_exhausted_until_released = false;
+  state->last_run_block_reason = Level3DRunBlockReason::kNone;
+  state->max_stamina_sec = std::max(0.1F, state->max_stamina_sec);
+  state->stamina_sec = state->max_stamina_sec;
+  state->stamina_recover_delay_remaining_sec = 0.0F;
   ResetMovementMultiplier(level, state);
   RefreshLevel3DPlayerVisibility(level, state);
   state->initialized = true;
@@ -1518,6 +1662,13 @@ Level3DPlayerTileDiagnostics CurrentLevel3DPlayerTileDiagnostics(
   diagnostics.posture = state.posture;
   diagnostics.posture_speed_multiplier =
       std::clamp(PostureSpeedMultiplier(state), 0.0F, 1.50F);
+  diagnostics.run_active = state.run_active;
+  diagnostics.run_block_reason = state.last_run_block_reason;
+  diagnostics.run_speed_multiplier = RunSpeedMultiplier(state);
+  diagnostics.stamina_sec = state.stamina_sec;
+  diagnostics.max_stamina_sec = state.max_stamina_sec;
+  diagnostics.stamina_recover_delay_remaining_sec =
+      state.stamina_recover_delay_remaining_sec;
   diagnostics.visibility = CurrentLevel3DPlayerVisibilityBreakdown(level, state);
   diagnostics.visibility_score = diagnostics.visibility.final_score;
   diagnostics.effective_speed_tiles_per_sec =
@@ -1722,6 +1873,11 @@ std::string Level3DPlayerTileDiagnosticsToString(
          << " col=" << (diagnostics.collision ? 'Y' : 'N')
          << " con=" << static_cast<int>(diagnostics.concealment)
          << " posture=" << Level3DPlayerPostureName(diagnostics.posture)
+         << " run=" << (diagnostics.run_active ? 'Y' : 'N')
+         << " run_reason="
+         << Level3DRunBlockReasonName(diagnostics.run_block_reason)
+         << " sta=" << diagnostics.stamina_sec << '/'
+         << diagnostics.max_stamina_sec
          << " vis=" << diagnostics.visibility_score
          << " vpost=" << diagnostics.visibility.posture_factor
          << " vter=" << diagnostics.visibility.terrain_factor
@@ -1731,6 +1887,7 @@ std::string Level3DPlayerTileDiagnosticsToString(
          << " vmov=" << diagnostics.visibility.movement_factor
          << " mov=" << diagnostics.movement_multiplier
          << " post_mul=" << diagnostics.posture_speed_multiplier
+         << " run_mul=" << diagnostics.run_speed_multiplier
          << " bs=" << diagnostics.base_speed_tiles_per_sec
          << " es=" << diagnostics.effective_speed_tiles_per_sec
          << " vel=" << diagnostics.velocity_x_tiles_per_sec << ','
@@ -1748,12 +1905,17 @@ std::string Level3DPlayerStateToString(const Level3DPlayerState& state) {
          << " elevation=" << static_cast<int>(state.elevation)
          << " hp=" << state.current_hp << '/' << state.max_hp
          << " posture=" << Level3DPlayerPostureName(state.posture)
+         << " run=" << (state.run_active ? "true" : "false")
+         << " run_reason="
+         << Level3DRunBlockReasonName(state.last_run_block_reason)
+         << " stamina=" << state.stamina_sec << '/' << state.max_stamina_sec
          << " visibility=" << state.visibility_score
          << " facing=" << state.facing_x << ',' << state.facing_y
          << " velocity=" << state.velocity_x_tiles_per_sec << ','
          << state.velocity_y_tiles_per_sec
          << " movement_multiplier=" << state.current_movement_multiplier
          << " posture_speed_multiplier=" << PostureSpeedMultiplier(state)
+         << " run_speed_multiplier=" << RunSpeedMultiplier(state)
          << " target_movement_multiplier=" << state.target_movement_multiplier
          << " base_speed=" << state.move_speed_tiles_per_sec
          << " effective_speed=" << state.effective_move_speed_tiles_per_sec

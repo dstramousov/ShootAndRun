@@ -627,3 +627,14 @@
 - Extended the F6 3D debug overlay and movement logs with visibility breakdown data for easier gameplay tuning.
 - Kept posture controls, movement restrictions, renderer batching, and map loader behavior unchanged.
 - Added regression coverage for visibility tuning config parsing and breakdown calculation.
+
+## v0.1.74 -> v0.1.75
+
+- Bumped CMake project and runtime application version to `0.1.75`.
+- Added hold-Shift 3D player run mode with finite stamina.
+- Added configurable stamina drain, recovery delay, recovery rate, run speed multiplier and minimum stamina to start running.
+- Added automatic fallback to walking when stamina is depleted.
+- Restricted run mode to standing posture and movement input.
+- Added run/stamina data to HUD, F6 debug overlay, movement logs and player state dumps.
+- Added running visibility factor so active running increases player exposure.
+- Added regression tests for stamina drain, exhaustion, recovery and posture restrictions.

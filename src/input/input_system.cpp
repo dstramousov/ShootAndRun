@@ -33,6 +33,7 @@ InputState InputSystem::Poll() {
   input.jump_pressed = IsKeyPressed(KEY_SPACE);
   input.crouch_pressed = IsKeyPressed(KEY_C);
   input.prone_pressed = IsKeyPressed(KEY_Z);
+  input.run_down = IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT);
   input.debug_view_raw_pressed = IsKeyPressed(KEY_F1);
   input.debug_view_analysis_pressed = IsKeyPressed(KEY_F2);
   input.debug_view_visual_pressed = IsKeyPressed(KEY_F3);

@@ -61,6 +61,19 @@ enum class Level3DPlayerPosture {
 };
 
 /**
+ * @brief Reason why the 3D player run mode is inactive or rejected.
+ */
+enum class Level3DRunBlockReason {
+  kNone,
+  kNotMoving,
+  kNotStanding,
+  kStaminaTooLow,
+  kStaminaEmpty,
+  kExhaustedUntilReleased,
+  kJumpActive,
+};
+
+/**
  * @brief Detailed player visibility factor breakdown.
  */
 struct Level3DVisibilityBreakdown {
@@ -95,6 +108,17 @@ struct Level3DPlayerState {
   float standing_speed_multiplier = 1.0F;  ///< Movement speed multiplier applied while standing.
   float crouched_speed_multiplier = 0.62F;  ///< Movement speed multiplier applied while crouched.
   float prone_speed_multiplier = 0.32F;  ///< Movement speed multiplier applied while prone.
+  float run_speed_multiplier = 1.65F;  ///< Movement speed multiplier applied while running.
+  float max_stamina_sec = 3.0F;  ///< Maximum run stamina measured in seconds of running.
+  float stamina_sec = 3.0F;  ///< Current run stamina measured in seconds.
+  float stamina_drain_per_sec = 1.0F;  ///< Stamina seconds drained per second while running.
+  float stamina_recover_per_sec = 0.55F;  ///< Stamina seconds recovered per second while resting.
+  float stamina_recover_delay_sec = 0.75F;  ///< Delay before stamina starts recovering after running.
+  float stamina_recover_delay_remaining_sec = 0.0F;  ///< Remaining delay before stamina recovery.
+  float min_stamina_to_start_run_sec = 0.30F;  ///< Minimum stamina required to start running.
+  bool run_active = false;  ///< true when the player is currently running.
+  bool run_exhausted_until_released = false;  ///< true after stamina depletion until run input is released.
+  Level3DRunBlockReason last_run_block_reason = Level3DRunBlockReason::kNone;  ///< Last reason run was inactive.
   float standing_visibility_factor = 1.0F;  ///< Visibility factor applied while standing.
   float crouched_visibility_factor = 0.65F;  ///< Visibility factor applied while crouched.
   float prone_visibility_factor = 0.35F;  ///< Visibility factor applied while prone.
@@ -117,6 +141,7 @@ struct Level3DPlayerState {
   float visibility_moving_standing_factor = 1.10F;  ///< Moving visibility while standing.
   float visibility_moving_crouched_factor = 1.0F;  ///< Moving visibility while crouched.
   float visibility_moving_prone_factor = 0.95F;  ///< Moving visibility while prone.
+  float visibility_running_factor = 1.25F;  ///< Moving visibility while actively running.
   float visibility_min_score = 0.05F;  ///< Minimum clamped player visibility score.
   float visibility_max_score = 2.0F;  ///< Maximum clamped player visibility score.
   Level3DVisibilityBreakdown visibility;  ///< Detailed current visibility factors.
@@ -199,6 +224,12 @@ struct Level3DPlayerTileDiagnostics {
   float base_speed_tiles_per_sec = 0.0F;  ///< Time value for base speed tiles per seconds.
   Level3DPlayerPosture posture = Level3DPlayerPosture::kStanding;  ///< Current player body posture.
   float posture_speed_multiplier = 1.0F;  ///< Movement multiplier applied by the current posture.
+  bool run_active = false;  ///< true when run mode is active.
+  Level3DRunBlockReason run_block_reason = Level3DRunBlockReason::kNone;  ///< Last reason run is inactive.
+  float run_speed_multiplier = 1.0F;  ///< Movement multiplier applied by active run mode.
+  float stamina_sec = 0.0F;  ///< Current run stamina in seconds.
+  float max_stamina_sec = 0.0F;  ///< Maximum run stamina in seconds.
+  float stamina_recover_delay_remaining_sec = 0.0F;  ///< Remaining stamina recovery delay.
   Level3DVisibilityBreakdown visibility;  ///< Detailed current visibility factors.
   float visibility_score = 1.0F;  ///< Current combined player visibility score.
   float effective_speed_tiles_per_sec = 0.0F;  ///< Time value for effective speed tiles per seconds.
@@ -239,6 +270,14 @@ struct Level3DTargetTileDiagnostics {
  */
 const char* Level3DMoveBlockReasonName(Level3DMoveBlockReason reason);
 
+
+/**
+ * @brief Returns a stable display name for a run block reason.
+ *
+ * @param reason Run block reason.
+ * @return Stable lowercase reason name.
+ */
+const char* Level3DRunBlockReasonName(Level3DRunBlockReason reason);
 
 /**
  * @brief Returns a stable display name for a player posture.

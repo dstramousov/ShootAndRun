@@ -169,10 +169,17 @@ void TestProjectConfigLoader() {
                 "    \"update_interval_ms\": 2000\n"
                 "  },\n"
                 "  \"player3d_movement\": {\n"
+                "    \"player3d_run_speed_multiplier\": 1.80,\n"
+                "    \"player3d_max_stamina_sec\": 4.0,\n"
+                "    \"player3d_stamina_drain_per_sec\": 2.0,\n"
+                "    \"player3d_stamina_recover_per_sec\": 1.0,\n"
+                "    \"player3d_stamina_recover_delay_sec\": 0.25,\n"
+                "    \"player3d_min_stamina_to_start_run_sec\": 0.50,\n"
                 "    \"player3d_visibility_forest_factor\": 0.50,\n"
                 "    \"player3d_visibility_concealment_low_factor\": 0.40,\n"
                 "    \"player3d_visibility_below_ground_factor\": 0.60,\n"
                 "    \"player3d_visibility_moving_standing_factor\": 1.20,\n"
+                "    \"player3d_visibility_running_factor\": 1.35,\n"
                 "    \"player3d_visibility_min_score\": 0.10,\n"
                 "    \"player3d_visibility_max_score\": 1.80\n"
                 "  },\n"
@@ -217,6 +224,18 @@ void TestProjectConfigLoader() {
          "service info memory flag should be read from project config");
   Expect(result.config.service_info.update_interval_ms == 2000,
          "service info update interval should be read from project config");
+  Expect(result.config.player3d_movement.run_speed_multiplier == 1.80F,
+         "run speed multiplier should be read from project config");
+  Expect(result.config.player3d_movement.max_stamina_sec == 4.0F,
+         "max stamina should be read from project config");
+  Expect(result.config.player3d_movement.stamina_drain_per_sec == 2.0F,
+         "stamina drain should be read from project config");
+  Expect(result.config.player3d_movement.stamina_recover_per_sec == 1.0F,
+         "stamina recovery should be read from project config");
+  Expect(result.config.player3d_movement.stamina_recover_delay_sec == 0.25F,
+         "stamina recovery delay should be read from project config");
+  Expect(result.config.player3d_movement.min_stamina_to_start_run_sec == 0.50F,
+         "minimum run stamina should be read from project config");
   Expect(result.config.player3d_movement.visibility_forest_factor == 0.50F,
          "forest visibility factor should be read from project config");
   Expect(result.config.player3d_movement.visibility_concealment_low_factor ==
@@ -228,6 +247,8 @@ void TestProjectConfigLoader() {
   Expect(result.config.player3d_movement.visibility_moving_standing_factor ==
              1.20F,
          "moving visibility factor should be read from project config");
+  Expect(result.config.player3d_movement.visibility_running_factor == 1.35F,
+         "running visibility factor should be read from project config");
   Expect(result.config.player3d_movement.visibility_min_score == 0.10F,
          "visibility min clamp should be read from project config");
   Expect(result.config.player3d_movement.visibility_max_score == 1.80F,
@@ -1503,6 +1524,102 @@ void TestLevel3DVisibilityBreakdownUsesTuning() {
          "visibility breakdown should use all configured factors");
 }
 
+void TestLevel3DRunConsumesStaminaAndBoostsSpeed() {
+  const sar::LevelData level = BuildFlatTestLevel(8, 1, {0, 0, 0, 0, 0, 0, 0, 0});
+  sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      1.5F, 0.5F, 0, 1.0F, 0.0F);
+  state.max_stamina_sec = 3.0F;
+  state.stamina_sec = 3.0F;
+  state.stamina_drain_per_sec = 1.0F;
+  state.stamina_recover_per_sec = 1.0F;
+  state.stamina_recover_delay_sec = 0.1F;
+  state.min_stamina_to_start_run_sec = 0.25F;
+  state.run_speed_multiplier = 2.0F;
+
+  sar::InputState input;
+  input.run_down = true;
+  input.up_down = true;
+
+  sar::render3d::UpdateLevel3DPlayer(level, input, 0.05F, &state);
+
+  Expect(state.run_active, "Shift with movement should activate run mode");
+  Expect(state.stamina_sec < 3.0F,
+         "active run should consume stamina");
+  Expect(state.effective_move_speed_tiles_per_sec >
+             state.move_speed_tiles_per_sec,
+         "active run should boost effective speed");
+}
+
+void TestLevel3DRunStopsWhenStaminaIsEmpty() {
+  const sar::LevelData level = BuildFlatTestLevel(8, 1, {0, 0, 0, 0, 0, 0, 0, 0});
+  sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      1.5F, 0.5F, 0, 1.0F, 0.0F);
+  state.max_stamina_sec = 0.20F;
+  state.stamina_sec = 0.20F;
+  state.stamina_drain_per_sec = 10.0F;
+  state.stamina_recover_per_sec = 1.0F;
+  state.stamina_recover_delay_sec = 0.1F;
+  state.min_stamina_to_start_run_sec = 0.05F;
+  state.run_speed_multiplier = 1.8F;
+
+  sar::InputState input;
+  input.run_down = true;
+  input.up_down = true;
+
+  sar::render3d::UpdateLevel3DPlayer(level, input, 0.05F, &state);
+
+  Expect(!state.run_active, "run should stop when stamina reaches zero");
+  Expect(state.stamina_sec == 0.0F, "stamina should clamp at zero");
+  Expect(state.run_exhausted_until_released,
+         "empty stamina should require releasing run before next run");
+  Expect(state.last_run_block_reason ==
+             sar::render3d::Level3DRunBlockReason::kStaminaEmpty,
+         "run block reason should report empty stamina");
+}
+
+void TestLevel3DRunRecoversAfterDelay() {
+  const sar::LevelData level = BuildFlatTestLevel(2, 1, {0, 0});
+  sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      0.5F, 0.5F, 0, 1.0F, 0.0F);
+  state.max_stamina_sec = 1.0F;
+  state.stamina_sec = 0.0F;
+  state.stamina_recover_per_sec = 0.5F;
+  state.stamina_recover_delay_sec = 0.1F;
+  state.stamina_recover_delay_remaining_sec = 0.1F;
+  state.min_stamina_to_start_run_sec = 0.2F;
+  state.run_exhausted_until_released = true;
+
+  sar::InputState input;
+  sar::render3d::UpdateLevel3DPlayer(level, input, 0.05F, &state);
+  Expect(state.stamina_sec == 0.0F,
+         "stamina should wait for recovery delay before recovering");
+  sar::render3d::UpdateLevel3DPlayer(level, input, 0.05F, &state);
+  sar::render3d::UpdateLevel3DPlayer(level, input, 0.05F, &state);
+
+  Expect(state.stamina_sec > 0.0F,
+         "stamina should recover after the delay expires");
+  Expect(!state.run_exhausted_until_released,
+         "releasing run should clear exhaustion latch");
+}
+
+void TestLevel3DRunRequiresStandingPosture() {
+  const sar::LevelData level = BuildFlatTestLevel(2, 1, {0, 0});
+  sar::render3d::Level3DPlayerState state = MakeTestPlayer(
+      0.5F, 0.5F, 0, 1.0F, 0.0F);
+  state.posture = sar::render3d::Level3DPlayerPosture::kCrouched;
+  state.stamina_sec = state.max_stamina_sec;
+
+  sar::InputState input;
+  input.run_down = true;
+  input.up_down = true;
+  sar::render3d::UpdateLevel3DPlayer(level, input, 0.05F, &state);
+
+  Expect(!state.run_active, "crouched player should not run");
+  Expect(state.last_run_block_reason ==
+             sar::render3d::Level3DRunBlockReason::kNotStanding,
+         "run block reason should report non-standing posture");
+}
+
 }  // namespace
 
 int main() {
@@ -1535,6 +1652,10 @@ int main() {
   TestLevel3DProneCannotStepJumpOutOfPit();
   TestLevel3DVisibilityScoreUsesPostureAndConcealment();
   TestLevel3DVisibilityBreakdownUsesTuning();
+  TestLevel3DRunConsumesStaminaAndBoostsSpeed();
+  TestLevel3DRunStopsWhenStaminaIsEmpty();
+  TestLevel3DRunRecoversAfterDelay();
+  TestLevel3DRunRequiresStandingPosture();
   std::cout << "All tests passed.\n";
   return 0;
 }
