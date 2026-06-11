@@ -728,6 +728,7 @@ void Application::ShutdownWindow() {
   if (window_initialized_) {
     SetMouseCapture(false);
     UnloadFinalRenderTexture();
+    level_3d_renderer_.ReleaseCachedModels();
     ui_font_.Reset();
     CloseWindow();
     window_initialized_ = false;

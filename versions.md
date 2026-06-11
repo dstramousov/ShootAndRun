@@ -649,3 +649,12 @@
 - Replaced debug forest blocker cubes and passable underbrush volumes with configured model instances when valid bindings are available.
 - Kept collision, movement, visibility, elevation, posture and stamina mechanics unchanged.
 - Extended the F8 diagnostics overlay with model instance and model load failure counters.
+
+
+## v0.1.76 -> v0.1.77
+
+- Bumped CMake project and runtime application version to `0.1.77`.
+- Fixed GLB terrain model grounding by aligning each model bounding box minimum Y to the tile surface.
+- Reset default GLB vertical offsets to `0.0`; per-asset and per-binding offsets now act only as explicit fine tuning.
+- Added controlled 3D model cache release before `CloseWindow()` to avoid unloading raylib models after the graphics context is closed.
+- Made the renderer destructor idempotent and safe if shutdown order changes in the future.

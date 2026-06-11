@@ -159,6 +159,14 @@ void UpdateLevel3DView(const LevelData& level, const InputState& input,
 std::string Level3DViewStateToString(const Level3DViewState& state);
 
 /**
+ * @brief Cached raylib model with precomputed local-space bounds.
+ */
+struct CachedModel3D {
+  Model model{};  ///< Raylib model handle owned by the renderer cache.
+  BoundingBox bounds{};  ///< Local-space model bounds used for ground anchoring.
+};
+
+/**
  * @brief Draws the loaded level through the standalone 3D renderer path.
  */
 class Level3DRenderer {
@@ -172,6 +180,11 @@ class Level3DRenderer {
    * @brief Releases all raylib models loaded by the renderer cache.
    */
   ~Level3DRenderer();
+
+  /**
+   * @brief Releases cached raylib model resources while the window context is still alive.
+   */
+  void ReleaseCachedModels() const;
 
   Level3DRenderer(const Level3DRenderer&) = delete;
   Level3DRenderer& operator=(const Level3DRenderer&) = delete;
@@ -231,11 +244,11 @@ class Level3DRenderer {
    * @brief Loads or returns a cached raylib model for an asset.
    *
    * @param asset Registered model asset.
-   * @return Cached model pointer, or nullptr when loading failed.
+   * @return Cached model pointer and bounds, or nullptr when loading failed.
    */
-  const Model* LoadCachedModel(const ModelAsset3D& asset) const;
+  const CachedModel3D* LoadCachedModel(const ModelAsset3D& asset) const;
 
-  mutable std::map<std::string, Model> model_cache_;
+  mutable std::map<std::string, CachedModel3D> model_cache_;
   mutable std::map<std::string, std::string> model_load_errors_;
 };
 

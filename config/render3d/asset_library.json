@@ -8,7 +8,7 @@
         "broadleaf"
       ],
       "default_scale": 1.0,
-      "vertical_offset": 1.0
+      "vertical_offset": 0.0
     },
     "tree_large": {
       "path": "assets/models/tree-large.glb",
@@ -18,7 +18,7 @@
         "large"
       ],
       "default_scale": 1.0,
-      "vertical_offset": 1.0
+      "vertical_offset": 0.0
     },
     "tree_crooked": {
       "path": "assets/models/tree-crooked.glb",
@@ -28,7 +28,7 @@
         "crooked"
       ],
       "default_scale": 1.0,
-      "vertical_offset": 1.0
+      "vertical_offset": 0.0
     },
     "tree_high": {
       "path": "assets/models/tree-high.glb",
@@ -38,7 +38,7 @@
         "high"
       ],
       "default_scale": 1.0,
-      "vertical_offset": 1.0
+      "vertical_offset": 0.0
     },
     "tree_high_crooked": {
       "path": "assets/models/tree-high-crooked.glb",
@@ -49,7 +49,7 @@
         "crooked"
       ],
       "default_scale": 1.0,
-      "vertical_offset": 1.0
+      "vertical_offset": 0.0
     },
     "tree_high_round": {
       "path": "assets/models/tree-high-round.glb",
@@ -60,7 +60,7 @@
         "round"
       ],
       "default_scale": 1.0,
-      "vertical_offset": 1.0
+      "vertical_offset": 0.0
     },
     "pine": {
       "path": "assets/models/pine.glb",
@@ -70,7 +70,7 @@
         "pine"
       ],
       "default_scale": 1.0,
-      "vertical_offset": 1.0
+      "vertical_offset": 0.0
     },
     "tree_pine": {
       "path": "assets/models/tree-pine.glb",
@@ -80,7 +80,7 @@
         "pine"
       ],
       "default_scale": 1.0,
-      "vertical_offset": 1.0
+      "vertical_offset": 0.0
     },
     "tree_pine_snow": {
       "path": "assets/models/tree-pine-snow.glb",
@@ -91,7 +91,7 @@
         "snow"
       ],
       "default_scale": 1.0,
-      "vertical_offset": 1.0
+      "vertical_offset": 0.0
     },
     "tree_pine_small": {
       "path": "assets/models/tree-pine-small.glb",
@@ -102,7 +102,7 @@
         "underbrush"
       ],
       "default_scale": 1.0,
-      "vertical_offset": 1.0
+      "vertical_offset": 0.0
     },
     "grass": {
       "path": "assets/models/grass.glb",
@@ -111,7 +111,7 @@
         "ground_detail"
       ],
       "default_scale": 1.0,
-      "vertical_offset": 1.0
+      "vertical_offset": 0.0
     },
     "flowers": {
       "path": "assets/models/flowers.glb",
@@ -121,7 +121,7 @@
         "ground_detail"
       ],
       "default_scale": 1.0,
-      "vertical_offset": 1.0
+      "vertical_offset": 0.0
     },
     "mushrooms": {
       "path": "assets/models/mushrooms.glb",
@@ -131,7 +131,7 @@
         "ground_detail"
       ],
       "default_scale": 1.0,
-      "vertical_offset": 1.0
+      "vertical_offset": 0.0
     },
     "rocks": {
       "path": "assets/models/rocks.glb",
@@ -140,7 +140,7 @@
         "ground_detail"
       ],
       "default_scale": 1.0,
-      "vertical_offset": 1.0
+      "vertical_offset": 0.0
     }
   }
 }

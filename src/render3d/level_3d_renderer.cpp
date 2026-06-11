@@ -1952,19 +1952,34 @@ std::string Level3DViewStateToString(const Level3DViewState& state) {
 /**
  * @brief Releases cached model assets.
  */
-Level3DRenderer::~Level3DRenderer() {
-  for (auto& [model_id, model] : model_cache_) {
+Level3DRenderer::~Level3DRenderer() { ReleaseCachedModels(); }
+
+/**
+ * @brief Releases cached raylib model assets.
+ */
+void Level3DRenderer::ReleaseCachedModels() const {
+  if (!IsWindowReady()) {
+    model_cache_.clear();
+    model_load_errors_.clear();
+    return;
+  }
+
+  for (auto& [model_id, cached_model] : model_cache_) {
     (void)model_id;
-    if (model.meshCount > 0) {
-      UnloadModel(model);
+    if (cached_model.model.meshCount > 0) {
+      UnloadModel(cached_model.model);
+      cached_model.model = Model{};
     }
   }
+  model_cache_.clear();
+  model_load_errors_.clear();
 }
 
 /**
  * @brief Loads or returns a cached raylib model for an asset.
  */
-const Model* Level3DRenderer::LoadCachedModel(const ModelAsset3D& asset) const {
+const CachedModel3D* Level3DRenderer::LoadCachedModel(
+    const ModelAsset3D& asset) const {
   if (asset.id.empty() || asset.path.empty()) {
     return nullptr;
   }
@@ -1984,7 +1999,10 @@ const Model* Level3DRenderer::LoadCachedModel(const ModelAsset3D& asset) const {
     return nullptr;
   }
 
-  auto inserted = model_cache_.emplace(asset.id, model);
+  CachedModel3D cached_model;
+  cached_model.model = model;
+  cached_model.bounds = GetModelBoundingBox(cached_model.model);
+  auto inserted = model_cache_.emplace(asset.id, cached_model);
   return &inserted.first->second;
 }
 
@@ -2016,8 +2034,8 @@ bool Level3DRenderer::DrawTerrainModelInstance(
     return false;
   }
 
-  const Model* model = LoadCachedModel(*asset);
-  if (model == nullptr) {
+  const CachedModel3D* cached_model = LoadCachedModel(*asset);
+  if (cached_model == nullptr) {
     if (stats != nullptr) {
       ++stats->model_load_failures;
     }
@@ -2038,6 +2056,7 @@ bool Level3DRenderer::DrawTerrainModelInstance(
   const float binding_scale = RandomRangeFromSeed(
       seed ^ 0x91e3cd0426b8ff51ULL, binding->scale_min, binding->scale_max);
   const float final_scale = std::max(0.01F, asset->default_scale * binding_scale);
+  position.y -= cached_model->bounds.min.y * final_scale;
   position.y += asset->vertical_offset * final_scale + binding->vertical_offset;
 
   const float rotation_degrees =
@@ -2045,8 +2064,9 @@ bool Level3DRenderer::DrawTerrainModelInstance(
           ? RandomRangeFromSeed(seed ^ 0xb7e151628aed2a6bULL, 0.0F, 360.0F)
           : 0.0F;
   const Color tint = ApplyVisibilityColor(WHITE, state, x, y);
-  DrawModelEx(*model, position, Vector3{0.0F, 1.0F, 0.0F}, rotation_degrees,
-              Vector3{final_scale, final_scale, final_scale}, tint);
+  DrawModelEx(cached_model->model, position, Vector3{0.0F, 1.0F, 0.0F},
+              rotation_degrees, Vector3{final_scale, final_scale, final_scale},
+              tint);
 
   if (stats != nullptr) {
     ++stats->model_instances_drawn;
