@@ -1410,6 +1410,19 @@ void Application::Draw3DElevationDebugOverlay() const {
   const render3d::Level3DPortalDiagnostics portal =
       render3d::CurrentLevel3DPortalDiagnostics(*loaded_level_,
                                                 level_3d_view_.player);
+  const int hatch_portal_count = static_cast<int>(std::count_if(
+      loaded_level_->elevation_transitions.begin(),
+      loaded_level_->elevation_transitions.end(),
+      [](const ElevationTransition& transition) {
+        return transition.type == ElevationTransitionType::kHatch;
+      }));
+  const int synthetic_hatch_portal_count = static_cast<int>(std::count_if(
+      loaded_level_->elevation_transitions.begin(),
+      loaded_level_->elevation_transitions.end(),
+      [](const ElevationTransition& transition) {
+        return transition.type == ElevationTransitionType::kHatch &&
+               transition.synthetic;
+      }));
 
   ui_font_.DrawTextLine("ELEVATION DEBUG  F6 overlay  F7 logs  E use  C crouch  Z prone  Shift run", x, y,
                         font_size, title_color);
@@ -1418,6 +1431,12 @@ void Application::Draw3DElevationDebugOverlay() const {
       std::string("logs: ") +
           (level_3d_view_.debug_elevation_move_logs_enabled ? "on" : "off") +
           "  render: " + render3d::Level3DRenderModeName(level_3d_view_.mode),
+      x, y, font_size, muted_color);
+  y += line_step;
+  ui_font_.DrawTextLine(
+      "portal markers: hatch=" + std::to_string(hatch_portal_count) +
+          " synthetic=" + std::to_string(synthetic_hatch_portal_count) +
+          "  cyan=synthetic yellow=explicit",
       x, y, font_size, muted_color);
   y += line_step;
   ui_font_.DrawTextLine(

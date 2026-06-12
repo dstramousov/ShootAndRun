@@ -702,3 +702,11 @@
 - Extended level load summary and validation diagnostics with synthetic transition counts.
 - Extended F6 portal diagnostics with `synthetic=Y/N`.
 - Added regression coverage for object-seeded synthetic bunker portals.
+
+
+## v0.1.82 -> v0.1.83
+
+- Bumped CMake project and runtime application version to `0.1.83`.
+- Made F6 elevation debug draw tall bunker/hatch portal beacons in the 3D world.
+- Highlighted synthetic fallback portals with distinct endpoint markers so misplaced generated portals are easy to find.
+- Added F6 portal marker counters for total hatch portals and synthetic hatch portals.

@@ -1593,6 +1593,79 @@ bool DrawElevationDebugTileSlab(const LevelData& level, int x, int y,
 }
 
 /**
+ * @brief Returns a debug-only endpoint color for bunker or hatch portals.
+ */
+Color PortalDebugEndpointColor(const ElevationTransition& transition,
+                               bool destination_endpoint) {
+  if (transition.synthetic) {
+    return destination_endpoint ? Color{96, 180, 255, 255}
+                                : Color{72, 255, 216, 255};
+  }
+  return destination_endpoint ? Color{210, 160, 255, 255}
+                              : Color{255, 232, 92, 255};
+}
+
+/**
+ * @brief Draws one tall debug beacon for a bunker or hatch portal endpoint.
+ */
+void DrawPortalDebugEndpointBeacon(Vector3 center, const Level3DViewState& state,
+                                   Color color) {
+  const float ground_y = std::max(center.y, 0.0F) + 0.08F;
+  const float top_y = ground_y + state.tile_world_size * 1.45F;
+  const Vector3 base{center.x, ground_y, center.z};
+  const Vector3 top{center.x, top_y, center.z};
+  const float base_size = state.tile_world_size * 0.42F;
+  const float top_size = state.tile_world_size * 0.30F;
+
+  DrawLine3D(base, top, color);
+  DrawCube(base, base_size, 0.055F, base_size, Color{color.r, color.g, color.b, 150});
+  DrawCubeWires(base, base_size, 0.055F, base_size, Color{18, 18, 24, 210});
+  DrawCube(top, top_size, top_size, top_size, color);
+  DrawCubeWires(top, top_size, top_size, top_size, Color{18, 18, 24, 230});
+}
+
+/**
+ * @brief Draws a prominent debug marker for one bunker or hatch portal.
+ */
+void DrawPortalDebugTransitionMarker(const LevelData& level,
+                                     const ElevationTransition& transition,
+                                     const Level3DViewState& state) {
+  const RuntimeCell* from = CellAt(level, transition.from_x, transition.from_y);
+  const RuntimeCell* to = CellAt(level, transition.to_x, transition.to_y);
+  if (from == nullptr || to == nullptr || !IsSurfaceVisible(*from) ||
+      !IsSurfaceVisible(*to)) {
+    return;
+  }
+
+  Vector3 from_center = TileWorldCenter(level, transition.from_x,
+                                        transition.from_y, from->height,
+                                        state.tile_world_size,
+                                        state.elevation_step);
+  Vector3 to_center = TileWorldCenter(level, transition.to_x, transition.to_y,
+                                      to->height, state.tile_world_size,
+                                      state.elevation_step);
+  const int color_x = IsTileRenderable(state, transition.from_x, transition.from_y)
+                          ? transition.from_x
+                          : transition.to_x;
+  const int color_y = IsTileRenderable(state, transition.from_x, transition.from_y)
+                          ? transition.from_y
+                          : transition.to_y;
+  const Color from_color = ApplyVisibilityColor(
+      PortalDebugEndpointColor(transition, false), state, color_x, color_y);
+  const Color to_color = ApplyVisibilityColor(
+      PortalDebugEndpointColor(transition, true), state, color_x, color_y);
+
+  DrawPortalDebugEndpointBeacon(from_center, state, from_color);
+  DrawPortalDebugEndpointBeacon(to_center, state, to_color);
+
+  from_center.y = std::max(from_center.y, 0.0F) + state.tile_world_size * 1.55F;
+  to_center.y = std::max(to_center.y, 0.0F) + state.tile_world_size * 1.55F;
+  DrawLine3D(from_center, to_center,
+             transition.synthetic ? Color{72, 255, 216, 220}
+                                  : Color{255, 232, 92, 210});
+}
+
+/**
  * @brief Draws debug markers for explicit elevation transitions.
  */
 void DrawElevationDebugTransitionMarkers(const LevelData& level,
@@ -1610,6 +1683,11 @@ void DrawElevationDebugTransitionMarkers(const LevelData& level,
     }
     if (!IsTileRenderable(state, transition.from_x, transition.from_y) &&
         !IsTileRenderable(state, transition.to_x, transition.to_y)) {
+      continue;
+    }
+
+    if (transition.type == ElevationTransitionType::kHatch) {
+      DrawPortalDebugTransitionMarker(level, transition, state);
       continue;
     }
 
