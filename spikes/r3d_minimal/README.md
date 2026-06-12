@@ -78,3 +78,80 @@ This is still a spike. It is allowed to be visually rough. It now answers two qu
 
 1. whether R3D + our existing `.glb` assets can render a believable dense forest slice;
 2. whether a region-aware forest composition pass looks better than direct tile-to-model placement before we integrate anything into the main renderer.
+
+## Advanced R3D comparison profile
+
+The spike can now switch between a plain baseline profile and an advanced R3D profile:
+
+```bash
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --r3d-profile=basic
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --r3d-profile=advanced
+```
+
+The advanced profile enables the R3D-specific features that must be evaluated
+before deciding whether R3D is worth integrating into the main renderer:
+
+- model instancing grouped by model id and map chunk;
+- R3D cluster blocks for coarse chunk culling;
+- simple distance LOD for underbrush and small ground details;
+- directional-light shadow maps;
+- fog, ambient setup, SSAO, tonemapping, and color grading;
+- tuned material roughness/specular values for terrain, ruins, and water.
+
+Useful toggles:
+
+```bash
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --r3d-profile=advanced --no-shadows
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --r3d-profile=advanced --no-fog
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --r3d-profile=advanced --no-instancing
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --r3d-profile=advanced --no-lod
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --r3d-profile=advanced --r3d-chunk-size=16
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --r3d-profile=advanced --r3d-fog-density=0.018
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --r3d-profile=advanced --r3d-shadow-opacity=0.58
+```
+
+Compare `basic` and `advanced` on the same slice and camera angle. If the
+advanced profile does not provide a visible improvement from shadows/fog/lighting
+or does not recover enough CPU cost through instancing/chunk culling, R3D should
+not be promoted into the main renderer yet.
+
+## Feature benchmark modes
+
+The spike also has focused benchmark presets. They are not final gameplay modes;
+they isolate one R3D feature family at a time so the result can be compared
+without guessing what changed.
+
+```bash
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --benchmark=forest
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --benchmark=instancing
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --benchmark=culling
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --benchmark=lighting
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --benchmark=pbr
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --benchmark=terrain-mesh
+```
+
+Recommended comparisons:
+
+```bash
+# Instancing benefit.
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --benchmark=instancing
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --benchmark=instancing --no-instancing
+
+# Chunk / cluster culling benefit.
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --benchmark=culling --r3d-chunk-size=8
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --benchmark=culling --r3d-chunk-size=32
+
+# Visual value from the R3D lighting stack.
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --benchmark=lighting
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --benchmark=lighting --no-shadows
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --benchmark=lighting --no-fog
+
+# Material/PBR visibility on surfaces where it can actually matter.
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --benchmark=pbr
+
+# Coarse terrain chunk surface experiment. This is intentionally visually rough.
+./build/r3d_minimal/bin/sar_r3d_minimal --slice=160 --benchmark=terrain-mesh
+```
+
+The overlay shows the active benchmark, instancing counters, chunk state, LOD
+hidden count, shadow/fog state, coarse terrain mode, and PBR probe state.

@@ -27,6 +27,7 @@ echo "Creating archive: ${archive}"
 zip -r "${archive}" . \
   -x ".git/*" \
      "__pycache__/*" \
+     "external/*" \
      ".deps/*" \
      "*.pyc" \
      ".venv/*" \
