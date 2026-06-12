@@ -38,6 +38,7 @@ struct LevelPackageValidationReport {
   std::map<int, int> elevation_histogram;  ///< Tile counts grouped by elevation.
   std::map<std::string, int> terrain_histogram;  ///< Tile counts grouped by terrain id.
   std::map<std::string, int> transition_histogram;  ///< Transition counts grouped by type.
+  int synthetic_transition_count = 0;  ///< Count of runtime-generated fallback transitions.
   int transition_endpoint_mismatch_count = 0;  ///< Count of transitions whose declared endpoint elevations differ from height_grid.
   int transition_large_delta_count = 0;  ///< Count of transitions crossing more than one elevation level.
   int negative_region_count = 0;  ///< Count of connected regions below elevation 0.
@@ -66,6 +67,7 @@ struct LevelPackageSummary {
   int place_count = 0;  ///< Count of place count entries or events.
   int route_count = 0;  ///< Count of route count entries or events.
   int elevation_transition_count = 0;  ///< Count of elevation transition count entries or events.
+  int synthetic_elevation_transition_count = 0;  ///< Count of generated fallback elevation transitions.
   int gameplay_zone_count = 0;  ///< Count of gameplay zone count entries or events.
   int graph_node_count = 0;  ///< Count of graph node count entries or events.
   int graph_edge_count = 0;  ///< Count of graph edge count entries or events.

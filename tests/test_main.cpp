@@ -1319,6 +1319,105 @@ void TestLevelLoaderBasicPackage() {
   std::filesystem::remove_all(package_path);
 }
 
+void TestLevelLoaderCreatesSyntheticBunkerPortalFromObject() {
+  const std::filesystem::path package_path =
+      std::filesystem::temp_directory_path() /
+      "shoot_and_run_test_synthetic_bunker_portal";
+  std::filesystem::remove_all(package_path);
+  std::filesystem::create_directories(package_path / "objects");
+
+  WriteTextFile(package_path / "terrain.json",
+                "{\n"
+                "  \"width\": 4,\n"
+                "  \"height\": 3,\n"
+                "  \"tile_size\": 16,\n"
+                "  \"terrain_grid\": [\n"
+                "    [\"open_ground\", \"open_ground\", \"open_ground\", \"open_ground\"],\n"
+                "    [\"open_ground\", \"ruins\", \"ruins\", \"open_ground\"],\n"
+                "    [\"open_ground\", \"ruins\", \"ruins\", \"open_ground\"]\n"
+                "  ]\n"
+                "}\n");
+
+  WriteTextFile(package_path / "runtime_grids.json",
+                "{\n"
+                "  \"width\": 4,\n"
+                "  \"height\": 3,\n"
+                "  \"movement_grid\": [[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]],\n"
+                "  \"collision_grid\": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],\n"
+                "  \"projectile_block_grid\": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],\n"
+                "  \"vision_block_grid\": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],\n"
+                "  \"cover_grid\": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],\n"
+                "  \"concealment_grid\": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],\n"
+                "  \"height_grid\": [[0, 0, 0, 0], [0, 0, -1, -1], [0, 0, -1, -1]]\n"
+                "}\n");
+
+  WriteTextFile(package_path / "objects" / "runtime_objects.json",
+                "{\n"
+                "  \"items\": [\n"
+                "    {\n"
+                "      \"id\": \"buried_bunker_alpha\",\n"
+                "      \"type\": \"buried_bunker_2x2\",\n"
+                "      \"family\": \"military_bunker\",\n"
+                "      \"x\": 1,\n"
+                "      \"y\": 1,\n"
+                "      \"visual_bounds\": {\"x\": 1, \"y\": 1, \"width\": 2, \"height\": 2},\n"
+                "      \"blocks_movement\": false,\n"
+                "      \"blocks_projectiles\": false,\n"
+                "      \"blocks_vision\": false,\n"
+                "      \"tags\": [\"bunker\", \"structure\"]\n"
+                "    }\n"
+                "  ]\n"
+                "}\n");
+
+  const sar::LevelLoader loader;
+  const sar::LevelLoadResult result = loader.LoadBasicPackage(package_path);
+  Expect(result.ok, "synthetic bunker package should load successfully");
+  Expect(result.summary.elevation_transition_count == 1,
+         "synthetic bunker portal should count as an elevation transition");
+  Expect(result.summary.synthetic_elevation_transition_count == 1,
+         "one synthetic bunker portal should be reported");
+  Expect(result.summary.validation_report.synthetic_transition_count == 1,
+         "validation report should count synthetic portals");
+  Expect(result.level.elevation_transitions.size() == 1,
+         "synthetic bunker portal should be added to level data");
+
+  const sar::ElevationTransition& portal = result.level.elevation_transitions[0];
+  Expect(portal.type == sar::ElevationTransitionType::kHatch,
+         "synthetic bunker portal should use hatch transition type");
+  Expect(portal.synthetic, "synthetic bunker portal flag should be set");
+  Expect(portal.source_id == "buried_bunker_alpha",
+         "synthetic bunker portal should remember source object id");
+  Expect(portal.from_elevation == 0 && portal.to_elevation == -1,
+         "synthetic bunker portal should connect surface to underground");
+  Expect(portal.bidirectional,
+         "synthetic bunker portal should allow entering and exiting");
+
+  WriteTextFile(package_path / "elevation_transitions.json",
+                "{\n"
+                "  \"items\": [\n"
+                "    {\n"
+                "      \"id\": \"explicit_bunker_hatch\",\n"
+                "      \"type\": \"bunker_entrance\",\n"
+                "      \"from\": {\"x\": 0, \"y\": 0, \"level\": 0},\n"
+                "      \"to\": {\"x\": 2, \"y\": 1, \"level\": -1}\n"
+                "    }\n"
+                "  ]\n"
+                "}\n");
+
+  const sar::LevelLoadResult explicit_result = loader.LoadBasicPackage(
+      package_path);
+  Expect(explicit_result.ok,
+         "explicit bunker portal package should load successfully");
+  Expect(explicit_result.summary.elevation_transition_count == 1,
+         "explicit bunker portal should prevent fallback duplicates");
+  Expect(explicit_result.summary.synthetic_elevation_transition_count == 0,
+         "fallback should not run when an explicit hatch exists");
+  Expect(!explicit_result.level.elevation_transitions[0].synthetic,
+         "explicit bunker portal should not be marked synthetic");
+
+  std::filesystem::remove_all(package_path);
+}
+
 void TestLevel3DPlayerFallsIntoNegativePitWithoutDamage() {
   const sar::LevelData level = BuildFlatTestLevel(2, 1, {0, -1});
   sar::render3d::Level3DPlayerState state = MakeTestPlayer(
@@ -1870,6 +1969,7 @@ int main() {
   TestObjectVisualPlanRemovesGenericObjects();
   TestMicroSceneVisualPlanBuildsDressing();
   TestLevelLoaderBasicPackage();
+  TestLevelLoaderCreatesSyntheticBunkerPortalFromObject();
   TestLevelLoaderManifestPackage();
   TestLevel3DPlayerFallsIntoNegativePitWithoutDamage();
   TestLevel3DPlayerDropIntoNegativePitUsesFallDamageFormula();

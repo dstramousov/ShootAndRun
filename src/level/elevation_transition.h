@@ -36,6 +36,8 @@ struct ElevationTransition {
   std::int8_t from_elevation = 0;  ///< From elevation value carried by this data structure.
   std::int8_t to_elevation = 0;  ///< To elevation value carried by this data structure.
   bool bidirectional = true;  ///< Bidirectional value carried by this data structure.
+  bool synthetic = false;  ///< True when the runtime generated this transition as a fallback.
+  std::string source_id;  ///< Source marker or object identifier for synthetic transitions.
 };
 
 /**

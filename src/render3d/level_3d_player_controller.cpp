@@ -720,6 +720,7 @@ Level3DPortalDiagnostics BuildPortalDiagnostics(
   const ElevationTransition& transition = *candidate.transition;
   diagnostics.has_portal = true;
   diagnostics.id = transition.id;
+  diagnostics.synthetic = transition.synthetic;
   diagnostics.distance_tiles = candidate.distance_tiles;
   diagnostics.from_tile_x = candidate.use_reverse ? transition.to_x
                                                    : transition.from_x;
@@ -1980,6 +1981,7 @@ std::string Level3DPortalDiagnosticsToString(
   stream << std::fixed << std::setprecision(2);
   stream << "portal=" << (diagnostics.has_portal ? diagnostics.id : "none")
          << " can_use=" << (diagnostics.can_use ? 'Y' : 'N')
+         << " synthetic=" << (diagnostics.synthetic ? 'Y' : 'N')
          << " reason=" << Level3DPortalBlockReasonName(diagnostics.reason);
   if (diagnostics.has_portal) {
     stream << " from=" << diagnostics.from_tile_x << ','

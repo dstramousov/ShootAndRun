@@ -692,3 +692,13 @@
 - Added simple 3D hatch endpoint markers for portal transitions, including transitions whose other endpoint is underground.
 - Extended F6 diagnostics with nearest portal usability and reason.
 - Added regression tests for one-way use, bidirectional return, prone blocking, and portal diagnostics.
+
+
+## v0.1.81 -> v0.1.82
+
+- Bumped CMake project and runtime application version to `0.1.82`.
+- Added synthetic bunker portal fallback when map packages do not provide explicit hatch/bunker entrance transitions.
+- Synthetic portals are generated from bunker-like markers or runtime objects by pairing nearby walkable surface `0` and underground `-1` tiles.
+- Extended level load summary and validation diagnostics with synthetic transition counts.
+- Extended F6 portal diagnostics with `synthetic=Y/N`.
+- Added regression coverage for object-seeded synthetic bunker portals.

@@ -28,6 +28,7 @@ zip -r "${archive}" . \
   -x ".git/*" \
      "__pycache__/*" \
      ".deps/*" \
+     "external/*" \
      "*.pyc" \
      ".venv/*" \
      "venv/*" \

@@ -178,6 +178,27 @@ struct ElevationTransitionLoadResult {
 };
 
 /**
+ * @brief Candidate source used for generating a fallback bunker portal.
+ */
+struct SyntheticPortalSeed {
+  std::string source_id;
+  int x = 0;
+  int y = 0;
+};
+
+/**
+ * @brief Pair of surface and underground endpoints selected for a synthetic portal.
+ */
+struct SyntheticPortalEndpointPair {
+  bool found = false;
+  int surface_x = -1;
+  int surface_y = -1;
+  int underground_x = -1;
+  int underground_y = -1;
+  int score = std::numeric_limits<int>::max();
+};
+
+/**
  * @brief Stores world graph load result data shared between runtime systems.
  */
 struct WorldGraphLoadResult {
@@ -2783,6 +2804,11 @@ MarkerLoadResult ParseMarkers(std::string_view text, int width, int height) {
       }
       marker.elevation = static_cast<std::int8_t>(elevation.value);
     }
+    const std::optional<std::vector<std::string>> tags =
+        ExtractStringArrayField(marker_object, "tags");
+    if (tags.has_value()) {
+      marker.tags = *tags;
+    }
     markers.push_back(std::move(marker));
   }
 
@@ -3068,6 +3094,274 @@ bool ValidateElevationRange(int elevation, std::string_view source,
 }
 
 /**
+ * @brief Returns a lowercase copy of a semantic identifier.
+ */
+std::string LowercaseCopy(std::string_view value) {
+  std::string result;
+  result.reserve(value.size());
+  for (const char current : value) {
+    result.push_back(static_cast<char>(
+        std::tolower(static_cast<unsigned char>(current))));
+  }
+  return result;
+}
+
+/**
+ * @brief Checks whether a semantic identifier contains a lowercase token.
+ */
+bool ContainsSemanticToken(std::string_view value, std::string_view token) {
+  return LowercaseCopy(value).find(token) != std::string::npos;
+}
+
+/**
+ * @brief Checks whether any semantic tag contains a lowercase token.
+ */
+bool TagsContainSemanticToken(const std::vector<std::string>& tags,
+                              std::string_view token) {
+  for (const std::string& tag : tags) {
+    if (ContainsSemanticToken(tag, token)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * @brief Checks whether a loaded transition is an explicit or synthetic portal.
+ */
+bool IsPortalTransition(const ElevationTransition& transition) {
+  return transition.type == ElevationTransitionType::kHatch;
+}
+
+/**
+ * @brief Checks whether a loaded level already has a hatch-like portal.
+ */
+bool HasPortalTransitions(const LevelData& level) {
+  for (const ElevationTransition& transition : level.elevation_transitions) {
+    if (IsPortalTransition(transition)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * @brief Checks whether a marker should seed a synthetic bunker portal.
+ */
+bool IsSyntheticPortalMarkerSeed(const Marker& marker) {
+  const bool has_bunker = ContainsSemanticToken(marker.id, "bunker") ||
+                          ContainsSemanticToken(marker.type, "bunker") ||
+                          TagsContainSemanticToken(marker.tags, "bunker");
+  const bool has_hatch = ContainsSemanticToken(marker.id, "hatch") ||
+                         ContainsSemanticToken(marker.type, "hatch") ||
+                         TagsContainSemanticToken(marker.tags, "hatch");
+  const bool has_portal = ContainsSemanticToken(marker.id, "portal") ||
+                          ContainsSemanticToken(marker.type, "portal") ||
+                          TagsContainSemanticToken(marker.tags, "portal");
+  const bool has_underground =
+      ContainsSemanticToken(marker.id, "underground") ||
+      ContainsSemanticToken(marker.type, "underground") ||
+      TagsContainSemanticToken(marker.tags, "underground");
+  const bool has_entry_word = ContainsSemanticToken(marker.id, "entrance") ||
+                              ContainsSemanticToken(marker.type, "entrance") ||
+                              ContainsSemanticToken(marker.id, "exit") ||
+                              ContainsSemanticToken(marker.type, "exit") ||
+                              TagsContainSemanticToken(marker.tags, "entrance") ||
+                              TagsContainSemanticToken(marker.tags, "exit");
+  return has_bunker || has_hatch || has_portal ||
+         (has_underground && has_entry_word);
+}
+
+/**
+ * @brief Checks whether a runtime object should seed a synthetic bunker portal.
+ */
+bool IsSyntheticPortalObjectSeed(const RuntimeObject& object) {
+  return ContainsSemanticToken(object.id, "bunker") ||
+         ContainsSemanticToken(object.type, "bunker") ||
+         ContainsSemanticToken(object.family, "bunker") ||
+         ContainsSemanticToken(object.id, "hatch") ||
+         ContainsSemanticToken(object.type, "hatch") ||
+         ContainsSemanticToken(object.family, "hatch") ||
+         TagsContainSemanticToken(object.tags, "bunker") ||
+         TagsContainSemanticToken(object.tags, "hatch");
+}
+
+/**
+ * @brief Collects semantic sources that can anchor synthetic bunker portals.
+ */
+std::vector<SyntheticPortalSeed> CollectSyntheticPortalSeeds(
+    const LevelData& level) {
+  std::vector<SyntheticPortalSeed> seeds;
+  seeds.reserve(level.markers.size() + level.objects.size());
+
+  for (const Marker& marker : level.markers) {
+    if (IsSyntheticPortalMarkerSeed(marker)) {
+      seeds.push_back(SyntheticPortalSeed{marker.id, marker.x, marker.y});
+    }
+  }
+
+  for (const RuntimeObject& object : level.objects) {
+    if (!IsSyntheticPortalObjectSeed(object)) {
+      continue;
+    }
+    const int center_x = object.x + object.width / 2;
+    const int center_y = object.y + object.height / 2;
+    seeds.push_back(SyntheticPortalSeed{object.id, center_x, center_y});
+  }
+
+  return seeds;
+}
+
+/**
+ * @brief Returns the runtime cell at tile coordinates or nullptr when outside the map.
+ */
+const RuntimeCell* LevelCellAt(const LevelData& level, int x, int y) {
+  if (!IsCoordinateInside(x, y, level.size.width, level.size.height)) {
+    return nullptr;
+  }
+  const std::size_t index = LevelCellIndex(x, y, level.size.width);
+  if (index >= level.cells.size()) {
+    return nullptr;
+  }
+  return &level.cells[index];
+}
+
+/**
+ * @brief Checks whether a tile can be used as a portal endpoint at a required elevation.
+ */
+bool IsWalkableEndpointAtElevation(const LevelData& level, int x, int y,
+                                   std::int8_t elevation) {
+  const RuntimeCell* cell = LevelCellAt(level, x, y);
+  return cell != nullptr && cell->height == elevation && cell->walkable &&
+         !cell->collision && cell->movement_multiplier > 0.0F;
+}
+
+/**
+ * @brief Returns squared tile distance between two coordinates.
+ */
+int DistanceSquared(int ax, int ay, int bx, int by) {
+  const int dx = ax - bx;
+  const int dy = ay - by;
+  return dx * dx + dy * dy;
+}
+
+/**
+ * @brief Finds the best nearby surface and underground endpoint pair.
+ */
+SyntheticPortalEndpointPair FindSyntheticPortalEndpointPair(
+    const LevelData& level, const SyntheticPortalSeed& seed) {
+  constexpr int kSearchRadiusTiles = 10;
+  SyntheticPortalEndpointPair best;
+  const int min_x = std::max(0, seed.x - kSearchRadiusTiles);
+  const int min_y = std::max(0, seed.y - kSearchRadiusTiles);
+  const int max_x = std::min(level.size.width - 1,
+                             seed.x + kSearchRadiusTiles);
+  const int max_y = std::min(level.size.height - 1,
+                             seed.y + kSearchRadiusTiles);
+
+  for (int surface_y = min_y; surface_y <= max_y; ++surface_y) {
+    for (int surface_x = min_x; surface_x <= max_x; ++surface_x) {
+      if (!IsWalkableEndpointAtElevation(level, surface_x, surface_y, 0)) {
+        continue;
+      }
+
+      for (int underground_y = min_y; underground_y <= max_y;
+           ++underground_y) {
+        for (int underground_x = min_x; underground_x <= max_x;
+             ++underground_x) {
+          if (!IsWalkableEndpointAtElevation(level, underground_x,
+                                             underground_y, -1)) {
+            continue;
+          }
+
+          const int surface_score = DistanceSquared(surface_x, surface_y,
+                                                    seed.x, seed.y);
+          const int underground_score = DistanceSquared(
+              underground_x, underground_y, seed.x, seed.y);
+          const int pair_score = DistanceSquared(surface_x, surface_y,
+                                                 underground_x, underground_y);
+          const int score = surface_score * 4 + underground_score + pair_score;
+          if (score >= best.score) {
+            continue;
+          }
+
+          best.found = true;
+          best.surface_x = surface_x;
+          best.surface_y = surface_y;
+          best.underground_x = underground_x;
+          best.underground_y = underground_y;
+          best.score = score;
+        }
+      }
+    }
+  }
+
+  return best;
+}
+
+/**
+ * @brief Checks whether two transitions connect the same endpoint pair.
+ */
+bool HasMatchingPortalEndpoints(const LevelData& level,
+                                const SyntheticPortalEndpointPair& pair) {
+  for (const ElevationTransition& transition : level.elevation_transitions) {
+    if (!IsPortalTransition(transition)) {
+      continue;
+    }
+    const bool same_forward = transition.from_x == pair.surface_x &&
+                              transition.from_y == pair.surface_y &&
+                              transition.to_x == pair.underground_x &&
+                              transition.to_y == pair.underground_y;
+    const bool same_reverse = transition.from_x == pair.underground_x &&
+                              transition.from_y == pair.underground_y &&
+                              transition.to_x == pair.surface_x &&
+                              transition.to_y == pair.surface_y;
+    if (same_forward || same_reverse) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * @brief Adds synthetic bunker portals when the generator did not provide explicit hatches.
+ */
+int AddSyntheticBunkerPortalTransitions(LevelData* level) {
+  if (level == nullptr || HasPortalTransitions(*level)) {
+    return 0;
+  }
+
+  int added_count = 0;
+  const std::vector<SyntheticPortalSeed> seeds = CollectSyntheticPortalSeeds(
+      *level);
+  for (const SyntheticPortalSeed& seed : seeds) {
+    const SyntheticPortalEndpointPair pair = FindSyntheticPortalEndpointPair(
+        *level, seed);
+    if (!pair.found || HasMatchingPortalEndpoints(*level, pair)) {
+      continue;
+    }
+
+    ElevationTransition transition;
+    transition.id = "synthetic_bunker_portal_" +
+                    std::to_string(added_count);
+    transition.type = ElevationTransitionType::kHatch;
+    transition.from_x = pair.surface_x;
+    transition.from_y = pair.surface_y;
+    transition.to_x = pair.underground_x;
+    transition.to_y = pair.underground_y;
+    transition.from_elevation = 0;
+    transition.to_elevation = -1;
+    transition.bidirectional = true;
+    transition.synthetic = true;
+    transition.source_id = seed.source_id;
+    level->elevation_transitions.push_back(std::move(transition));
+    ++added_count;
+  }
+
+  return added_count;
+}
+
+/**
  * @brief Builds the one-time map package validation report.
  */
 LevelPackageValidationReport BuildValidationReport(const LevelData& level) {
@@ -3112,6 +3406,9 @@ LevelPackageValidationReport BuildValidationReport(const LevelData& level) {
 
   for (const ElevationTransition& transition : level.elevation_transitions) {
     ++report.transition_histogram[ElevationTransitionTypeName(transition.type)];
+    if (transition.synthetic) {
+      ++report.synthetic_transition_count;
+    }
     const int from_delta = transition.to_elevation - transition.from_elevation;
     if (std::abs(from_delta) > 1) {
       ++report.transition_large_delta_count;
@@ -3261,7 +3558,8 @@ std::string LevelPackageValidationReport::DumpMultiline() const {
   stream << "  terrain: {" << FormatStringHistogram(terrain_histogram)
          << "}\n";
   stream << "  transitions: {" << FormatStringHistogram(transition_histogram)
-         << "} endpoint_mismatches=" << transition_endpoint_mismatch_count
+         << "} synthetic=" << synthetic_transition_count
+         << " endpoint_mismatches=" << transition_endpoint_mismatch_count
          << " large_delta=" << transition_large_delta_count << '\n';
   stream << "  negative_regions: total=" << negative_region_count
          << " open=" << open_negative_region_count
@@ -3294,6 +3592,8 @@ std::string LevelPackageSummary::Dump() const {
          ", routes: " + std::to_string(route_count) +
          ", elevation_transitions: " +
          std::to_string(elevation_transition_count) +
+         ", synthetic_elevation_transitions: " +
+         std::to_string(synthetic_elevation_transition_count) +
          ", zones: " + std::to_string(gameplay_zone_count) +
          ", graph_nodes: " + std::to_string(graph_node_count) +
          ", graph_edges: " + std::to_string(graph_edge_count) + " }";
@@ -3481,8 +3781,6 @@ LevelLoadResult LevelLoader::LoadBasicPackage(
   if (!elevation_transitions.ok) {
     return {false, {}, elevation_transitions.error};
   }
-  summary.elevation_transition_count = static_cast<int>(
-      elevation_transitions.transitions.size());
 
   const WorldGraphLoadResult world_graph = LoadWorldGraphIfPresent(
       layout.world_graph_path, width.value, height.value);
@@ -3555,6 +3853,10 @@ LevelLoadResult LevelLoader::LoadBasicPackage(
     level.cells.push_back(cell);
   }
 
+  summary.synthetic_elevation_transition_count =
+      AddSyntheticBunkerPortalTransitions(&level);
+  summary.elevation_transition_count = static_cast<int>(
+      level.elevation_transitions.size());
   summary.validation_report = BuildValidationReport(level);
 
   return {true, summary, {}, level};
