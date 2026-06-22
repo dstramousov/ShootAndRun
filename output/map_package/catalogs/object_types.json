@@ -1,0 +1,2865 @@
+{
+  "schema_version": "object-types-catalog-v5",
+  "kind": "object_types",
+  "types": {
+    "abandoned_backpack": {
+      "role": "interest_point",
+      "cover_type": "none",
+      "height": 1,
+      "elevation": 0,
+      "blocks_movement": false,
+      "blocks_projectiles": false,
+      "blocks_vision": false,
+      "interactive": true,
+      "collision_profile": {
+        "movement": "passable",
+        "projectiles": "passable",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.0,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": true
+      },
+      "default_footprint": [
+        [
+          106,
+          54
+        ]
+      ],
+      "default_collision_footprint": [],
+      "default_visual_bounds": {
+        "x": 106,
+        "y": 54,
+        "width": 1,
+        "height": 1
+      },
+      "default_pivot": {
+        "x": 0,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "adjacent_tiles",
+        "points": [
+          [
+            106,
+            53
+          ],
+          [
+            105,
+            54
+          ],
+          [
+            107,
+            54
+          ],
+          [
+            106,
+            55
+          ]
+        ],
+        "source": "footprint_perimeter"
+      },
+      "default_sort_anchor": {
+        "x": 106,
+        "y": 54,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "object",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "camp",
+        "human_trace",
+        "interactive",
+        "interest_point",
+        "loot"
+      ],
+      "instance_count": 4,
+      "max_footprint_tiles": 1,
+      "max_collision_footprint_tiles": 0
+    },
+    "abandoned_cart": {
+      "role": "roadside_debris",
+      "cover_type": "partial",
+      "height": 1,
+      "elevation": 0,
+      "blocks_movement": true,
+      "blocks_projectiles": true,
+      "blocks_vision": false,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "blocked",
+        "projectiles": "blocked",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.4,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          41,
+          180
+        ],
+        [
+          42,
+          180
+        ]
+      ],
+      "default_collision_footprint": [
+        [
+          41,
+          180
+        ],
+        [
+          42,
+          180
+        ]
+      ],
+      "default_visual_bounds": {
+        "x": 41,
+        "y": 180,
+        "width": 2,
+        "height": 1
+      },
+      "default_pivot": {
+        "x": 1,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 42,
+        "y": 180,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "object",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "cover",
+        "debris",
+        "human_trace",
+        "movement_blocker",
+        "roadside",
+        "roadside_debris"
+      ],
+      "instance_count": 3,
+      "max_footprint_tiles": 2,
+      "max_collision_footprint_tiles": 2
+    },
+    "ammo_cache": {
+      "role": "interest_point",
+      "cover_type": "none",
+      "height": 1,
+      "elevation": 0,
+      "blocks_movement": false,
+      "blocks_projectiles": false,
+      "blocks_vision": false,
+      "interactive": true,
+      "collision_profile": {
+        "movement": "passable",
+        "projectiles": "passable",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.0,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": true
+      },
+      "default_footprint": [
+        [
+          79,
+          87
+        ]
+      ],
+      "default_collision_footprint": [],
+      "default_visual_bounds": {
+        "x": 79,
+        "y": 87,
+        "width": 1,
+        "height": 1
+      },
+      "default_pivot": {
+        "x": 0,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "adjacent_tiles",
+        "points": [
+          [
+            79,
+            86
+          ],
+          [
+            78,
+            87
+          ],
+          [
+            80,
+            87
+          ],
+          [
+            79,
+            88
+          ]
+        ],
+        "source": "footprint_perimeter"
+      },
+      "default_sort_anchor": {
+        "x": 79,
+        "y": 87,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "object",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "ammo",
+        "interactive",
+        "interest_point",
+        "loot"
+      ],
+      "instance_count": 4,
+      "max_footprint_tiles": 1,
+      "max_collision_footprint_tiles": 0
+    },
+    "ancient_beacon": {
+      "role": "special_high_landmark",
+      "cover_type": "none",
+      "height": 5,
+      "elevation": 4,
+      "blocks_movement": true,
+      "blocks_projectiles": false,
+      "blocks_vision": true,
+      "interactive": true,
+      "collision_profile": {
+        "movement": "blocked",
+        "projectiles": "passable",
+        "vision": "blocked"
+      },
+      "combat_properties": {
+        "cover_value": 0.1,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          136,
+          180
+        ]
+      ],
+      "default_collision_footprint": [
+        [
+          136,
+          180
+        ]
+      ],
+      "default_visual_bounds": {
+        "x": 136,
+        "y": 180,
+        "width": 1,
+        "height": 5
+      },
+      "default_pivot": {
+        "x": 0,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "adjacent_tiles",
+        "points": [
+          [
+            136,
+            179
+          ],
+          [
+            135,
+            180
+          ],
+          [
+            137,
+            180
+          ],
+          [
+            136,
+            181
+          ]
+        ],
+        "source": "footprint_perimeter"
+      },
+      "default_sort_anchor": {
+        "x": 136,
+        "y": 184,
+        "elevation": 4,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "tall_object",
+      "occlusion_hint": {
+        "occludes_actor": true,
+        "mode": "solid",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": 4,
+      "interior_elevation": null,
+      "tags": [
+        "elevation",
+        "high_ground",
+        "interactive",
+        "landmark",
+        "movement_blocker",
+        "special_high_landmark",
+        "story_marker"
+      ],
+      "instance_count": 2,
+      "max_footprint_tiles": 1,
+      "max_collision_footprint_tiles": 1
+    },
+    "big_dead_tree": {
+      "role": "landmark",
+      "cover_type": "full",
+      "height": 10,
+      "elevation": 0,
+      "blocks_movement": true,
+      "blocks_projectiles": true,
+      "blocks_vision": true,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "blocked",
+        "projectiles": "blocked",
+        "vision": "blocked"
+      },
+      "combat_properties": {
+        "cover_value": 0.8,
+        "concealment_value": 0.25,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          81,
+          51
+        ],
+        [
+          81,
+          52
+        ],
+        [
+          82,
+          51
+        ],
+        [
+          82,
+          52
+        ]
+      ],
+      "default_collision_footprint": [
+        [
+          81,
+          51
+        ],
+        [
+          81,
+          52
+        ],
+        [
+          82,
+          51
+        ],
+        [
+          82,
+          52
+        ]
+      ],
+      "default_visual_bounds": {
+        "x": 81,
+        "y": 51,
+        "width": 2,
+        "height": 3
+      },
+      "default_pivot": {
+        "x": 1,
+        "y": 1,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 82,
+        "y": 53,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "tall_object",
+      "occlusion_hint": {
+        "occludes_actor": true,
+        "mode": "solid",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "cover",
+        "high_cover",
+        "landmark",
+        "movement_blocker",
+        "natural"
+      ],
+      "instance_count": 2,
+      "max_footprint_tiles": 4,
+      "max_collision_footprint_tiles": 4
+    },
+    "broken_generator": {
+      "role": "tech_debris",
+      "cover_type": "partial",
+      "height": 2,
+      "elevation": 0,
+      "blocks_movement": true,
+      "blocks_projectiles": true,
+      "blocks_vision": false,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "blocked",
+        "projectiles": "blocked",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.55,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          77,
+          89
+        ],
+        [
+          78,
+          89
+        ]
+      ],
+      "default_collision_footprint": [
+        [
+          77,
+          89
+        ],
+        [
+          78,
+          89
+        ]
+      ],
+      "default_visual_bounds": {
+        "x": 77,
+        "y": 89,
+        "width": 2,
+        "height": 1
+      },
+      "default_pivot": {
+        "x": 1,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 78,
+        "y": 89,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "object",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "cover",
+        "debris",
+        "human_trace",
+        "movement_blocker",
+        "tech",
+        "tech_debris"
+      ],
+      "instance_count": 2,
+      "max_footprint_tiles": 2,
+      "max_collision_footprint_tiles": 2
+    },
+    "broken_radio_mast": {
+      "role": "landmark",
+      "cover_type": "low",
+      "height": 10,
+      "elevation": 0,
+      "blocks_movement": true,
+      "blocks_projectiles": false,
+      "blocks_vision": false,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "blocked",
+        "projectiles": "passable",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.2,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          133,
+          104
+        ]
+      ],
+      "default_collision_footprint": [
+        [
+          133,
+          104
+        ]
+      ],
+      "default_visual_bounds": {
+        "x": 133,
+        "y": 104,
+        "width": 1,
+        "height": 3
+      },
+      "default_pivot": {
+        "x": 0,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 133,
+        "y": 106,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "tall_object",
+      "occlusion_hint": {
+        "occludes_actor": true,
+        "mode": "visual_only",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "cover",
+        "landmark",
+        "movement_blocker",
+        "navigation_landmark",
+        "signal"
+      ],
+      "instance_count": 1,
+      "max_footprint_tiles": 1,
+      "max_collision_footprint_tiles": 1
+    },
+    "buried_bunker_2x2": {
+      "role": "defensive_position",
+      "cover_type": "full",
+      "height": 2,
+      "elevation": 0,
+      "blocks_movement": true,
+      "blocks_projectiles": true,
+      "blocks_vision": true,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "blocked",
+        "projectiles": "blocked",
+        "vision": "blocked"
+      },
+      "combat_properties": {
+        "cover_value": 0.95,
+        "concealment_value": 0.35,
+        "explosive": false,
+        "loot": false,
+        "firing_ports": true
+      },
+      "default_footprint": [
+        [
+          148,
+          41
+        ],
+        [
+          148,
+          42
+        ],
+        [
+          149,
+          41
+        ],
+        [
+          149,
+          42
+        ]
+      ],
+      "default_collision_footprint": [
+        [
+          148,
+          41
+        ],
+        [
+          148,
+          42
+        ],
+        [
+          149,
+          41
+        ],
+        [
+          149,
+          42
+        ]
+      ],
+      "default_visual_bounds": {
+        "x": 148,
+        "y": 41,
+        "width": 2,
+        "height": 2
+      },
+      "default_pivot": {
+        "x": 1,
+        "y": 1,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "firing_ports",
+        "points": [],
+        "source": "firing_ports"
+      },
+      "default_sort_anchor": {
+        "x": 149,
+        "y": 42,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "structure",
+      "occlusion_hint": {
+        "occludes_actor": true,
+        "mode": "partial",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": [
+        {
+          "side": "north",
+          "positions": [
+            [
+              148,
+              41
+            ],
+            [
+              149,
+              41
+            ]
+          ],
+          "elevation": -1,
+          "arc": "outward"
+        },
+        {
+          "side": "south",
+          "positions": [
+            [
+              148,
+              42
+            ],
+            [
+              149,
+              42
+            ]
+          ],
+          "elevation": -1,
+          "arc": "outward"
+        }
+      ],
+      "surface_elevation": 0,
+      "interior_elevation": -1,
+      "tags": [
+        "below_floor",
+        "bunker",
+        "cover",
+        "defensive",
+        "defensive_position",
+        "firing_ports",
+        "movement_blocker"
+      ],
+      "instance_count": 2,
+      "max_footprint_tiles": 4,
+      "max_collision_footprint_tiles": 4
+    },
+    "buried_bunker_2x3": {
+      "role": "defensive_position",
+      "cover_type": "full",
+      "height": 2,
+      "elevation": 0,
+      "blocks_movement": true,
+      "blocks_projectiles": true,
+      "blocks_vision": true,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "blocked",
+        "projectiles": "blocked",
+        "vision": "blocked"
+      },
+      "combat_properties": {
+        "cover_value": 0.95,
+        "concealment_value": 0.35,
+        "explosive": false,
+        "loot": false,
+        "firing_ports": true
+      },
+      "default_footprint": [
+        [
+          43,
+          144
+        ],
+        [
+          43,
+          145
+        ],
+        [
+          44,
+          144
+        ],
+        [
+          44,
+          145
+        ],
+        [
+          45,
+          144
+        ],
+        [
+          45,
+          145
+        ]
+      ],
+      "default_collision_footprint": [
+        [
+          43,
+          144
+        ],
+        [
+          43,
+          145
+        ],
+        [
+          44,
+          144
+        ],
+        [
+          44,
+          145
+        ],
+        [
+          45,
+          144
+        ],
+        [
+          45,
+          145
+        ]
+      ],
+      "default_visual_bounds": {
+        "x": 43,
+        "y": 144,
+        "width": 3,
+        "height": 2
+      },
+      "default_pivot": {
+        "x": 1,
+        "y": 2,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "firing_ports",
+        "points": [],
+        "source": "firing_ports"
+      },
+      "default_sort_anchor": {
+        "x": 44,
+        "y": 145,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "structure",
+      "occlusion_hint": {
+        "occludes_actor": true,
+        "mode": "partial",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": [
+        {
+          "side": "north",
+          "positions": [
+            [
+              43,
+              144
+            ],
+            [
+              44,
+              144
+            ],
+            [
+              45,
+              144
+            ]
+          ],
+          "elevation": -1,
+          "arc": "outward"
+        },
+        {
+          "side": "south",
+          "positions": [
+            [
+              43,
+              145
+            ],
+            [
+              44,
+              145
+            ],
+            [
+              45,
+              145
+            ]
+          ],
+          "elevation": -1,
+          "arc": "outward"
+        }
+      ],
+      "surface_elevation": 0,
+      "interior_elevation": -1,
+      "tags": [
+        "below_floor",
+        "bunker",
+        "cover",
+        "defensive",
+        "defensive_position",
+        "firing_ports",
+        "movement_blocker"
+      ],
+      "instance_count": 2,
+      "max_footprint_tiles": 6,
+      "max_collision_footprint_tiles": 6
+    },
+    "bush_thicket": {
+      "role": "soft_cover",
+      "cover_type": "soft",
+      "height": 1,
+      "elevation": 0,
+      "blocks_movement": false,
+      "blocks_projectiles": false,
+      "blocks_vision": true,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "passable",
+        "projectiles": "passable",
+        "vision": "soft_blocked"
+      },
+      "combat_properties": {
+        "cover_value": 0.15,
+        "concealment_value": 0.7,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          118,
+          83
+        ]
+      ],
+      "default_collision_footprint": [
+        [
+          118,
+          83
+        ]
+      ],
+      "default_visual_bounds": {
+        "x": 118,
+        "y": 83,
+        "width": 1,
+        "height": 1
+      },
+      "default_pivot": {
+        "x": 0,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 118,
+        "y": 83,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "object",
+      "occlusion_hint": {
+        "occludes_actor": true,
+        "mode": "partial",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "concealment",
+        "cover",
+        "soft_cover",
+        "vegetation"
+      ],
+      "instance_count": 21,
+      "max_footprint_tiles": 1,
+      "max_collision_footprint_tiles": 1
+    },
+    "cable_spool": {
+      "role": "tech_debris",
+      "cover_type": "low",
+      "height": 1,
+      "elevation": 0,
+      "blocks_movement": true,
+      "blocks_projectiles": true,
+      "blocks_vision": false,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "blocked",
+        "projectiles": "blocked",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.35,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          84,
+          140
+        ]
+      ],
+      "default_collision_footprint": [
+        [
+          84,
+          140
+        ]
+      ],
+      "default_visual_bounds": {
+        "x": 84,
+        "y": 140,
+        "width": 1,
+        "height": 1
+      },
+      "default_pivot": {
+        "x": 0,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 84,
+        "y": 140,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "object",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "cover",
+        "human_trace",
+        "movement_blocker",
+        "tech",
+        "tech_debris"
+      ],
+      "instance_count": 3,
+      "max_footprint_tiles": 1,
+      "max_collision_footprint_tiles": 1
+    },
+    "car_wreck": {
+      "role": "roadside_debris",
+      "cover_type": "partial",
+      "height": 2,
+      "elevation": 0,
+      "blocks_movement": true,
+      "blocks_projectiles": true,
+      "blocks_vision": false,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "blocked",
+        "projectiles": "blocked",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.6,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          131,
+          85
+        ],
+        [
+          132,
+          85
+        ]
+      ],
+      "default_collision_footprint": [
+        [
+          131,
+          85
+        ],
+        [
+          132,
+          85
+        ]
+      ],
+      "default_visual_bounds": {
+        "x": 131,
+        "y": 85,
+        "width": 2,
+        "height": 1
+      },
+      "default_pivot": {
+        "x": 1,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 132,
+        "y": 85,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "object",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "cover",
+        "debris",
+        "human_trace",
+        "movement_blocker",
+        "roadside",
+        "roadside_debris",
+        "vehicle"
+      ],
+      "instance_count": 3,
+      "max_footprint_tiles": 2,
+      "max_collision_footprint_tiles": 2
+    },
+    "dead_campfire": {
+      "role": "camp_object",
+      "cover_type": "none",
+      "height": 0,
+      "elevation": 0,
+      "blocks_movement": false,
+      "blocks_projectiles": false,
+      "blocks_vision": false,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "passable",
+        "projectiles": "passable",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.0,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          43,
+          44
+        ]
+      ],
+      "default_collision_footprint": [],
+      "default_visual_bounds": {
+        "x": 43,
+        "y": 44,
+        "width": 1,
+        "height": 1
+      },
+      "default_pivot": {
+        "x": 0,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 43,
+        "y": 44,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "object",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "camp",
+        "camp_object",
+        "human_trace",
+        "story_marker"
+      ],
+      "instance_count": 3,
+      "max_footprint_tiles": 1,
+      "max_collision_footprint_tiles": 0
+    },
+    "earth_berm": {
+      "role": "terrain_cover",
+      "cover_type": "low",
+      "height": 1,
+      "elevation": 1,
+      "blocks_movement": false,
+      "blocks_projectiles": true,
+      "blocks_vision": false,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "passable",
+        "projectiles": "blocked",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.45,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          105,
+          103
+        ],
+        [
+          105,
+          104
+        ]
+      ],
+      "default_collision_footprint": [],
+      "default_visual_bounds": {
+        "x": 105,
+        "y": 103,
+        "width": 1,
+        "height": 2
+      },
+      "default_pivot": {
+        "x": 1,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 105,
+        "y": 104,
+        "elevation": 1,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "terrain_overlay",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "cover",
+        "earthwork",
+        "elevation",
+        "raised_ground",
+        "terrain_cover",
+        "terrain_feature"
+      ],
+      "instance_count": 4,
+      "max_footprint_tiles": 2,
+      "max_collision_footprint_tiles": 0
+    },
+    "fallen_log": {
+      "role": "hard_cover",
+      "cover_type": "low",
+      "height": 1,
+      "elevation": 0,
+      "blocks_movement": true,
+      "blocks_projectiles": true,
+      "blocks_vision": false,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "blocked",
+        "projectiles": "blocked",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.55,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          168,
+          106
+        ],
+        [
+          169,
+          106
+        ]
+      ],
+      "default_collision_footprint": [
+        [
+          168,
+          106
+        ],
+        [
+          169,
+          106
+        ]
+      ],
+      "default_visual_bounds": {
+        "x": 168,
+        "y": 106,
+        "width": 2,
+        "height": 1
+      },
+      "default_pivot": {
+        "x": 1,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 169,
+        "y": 106,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "object",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "cover",
+        "hard_cover",
+        "movement_blocker",
+        "natural"
+      ],
+      "instance_count": 12,
+      "max_footprint_tiles": 2,
+      "max_collision_footprint_tiles": 2
+    },
+    "field_tent": {
+      "role": "camp_object",
+      "cover_type": "soft",
+      "height": 2,
+      "elevation": 0,
+      "blocks_movement": true,
+      "blocks_projectiles": false,
+      "blocks_vision": true,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "blocked",
+        "projectiles": "passable",
+        "vision": "soft_blocked"
+      },
+      "combat_properties": {
+        "cover_value": 0.1,
+        "concealment_value": 0.45,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          45,
+          180
+        ],
+        [
+          45,
+          181
+        ],
+        [
+          46,
+          180
+        ],
+        [
+          46,
+          181
+        ]
+      ],
+      "default_collision_footprint": [
+        [
+          45,
+          180
+        ],
+        [
+          45,
+          181
+        ],
+        [
+          46,
+          180
+        ],
+        [
+          46,
+          181
+        ]
+      ],
+      "default_visual_bounds": {
+        "x": 45,
+        "y": 180,
+        "width": 2,
+        "height": 2
+      },
+      "default_pivot": {
+        "x": 1,
+        "y": 1,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 46,
+        "y": 181,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "object",
+      "occlusion_hint": {
+        "occludes_actor": true,
+        "mode": "partial",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "camp",
+        "camp_object",
+        "cover",
+        "human_trace",
+        "movement_blocker",
+        "shelter"
+      ],
+      "instance_count": 3,
+      "max_footprint_tiles": 4,
+      "max_collision_footprint_tiles": 4
+    },
+    "hill": {
+      "role": "raised_ground",
+      "cover_type": "none",
+      "height": 1,
+      "elevation": 1,
+      "blocks_movement": false,
+      "blocks_projectiles": false,
+      "blocks_vision": false,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "passable",
+        "projectiles": "passable",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.1,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          101,
+          111
+        ],
+        [
+          101,
+          112
+        ],
+        [
+          101,
+          113
+        ],
+        [
+          102,
+          111
+        ],
+        [
+          102,
+          112
+        ],
+        [
+          102,
+          113
+        ],
+        [
+          103,
+          111
+        ],
+        [
+          103,
+          112
+        ],
+        [
+          103,
+          113
+        ]
+      ],
+      "default_collision_footprint": [],
+      "default_visual_bounds": {
+        "x": 101,
+        "y": 111,
+        "width": 3,
+        "height": 3
+      },
+      "default_pivot": {
+        "x": 1,
+        "y": 2,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 102,
+        "y": 113,
+        "elevation": 1,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "terrain_overlay",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "elevation",
+        "hill",
+        "raised_ground",
+        "terrain_feature"
+      ],
+      "instance_count": 4,
+      "max_footprint_tiles": 9,
+      "max_collision_footprint_tiles": 0
+    },
+    "medkit_cache": {
+      "role": "interest_point",
+      "cover_type": "none",
+      "height": 1,
+      "elevation": 0,
+      "blocks_movement": false,
+      "blocks_projectiles": false,
+      "blocks_vision": false,
+      "interactive": true,
+      "collision_profile": {
+        "movement": "passable",
+        "projectiles": "passable",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.0,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": true
+      },
+      "default_footprint": [
+        [
+          118,
+          143
+        ]
+      ],
+      "default_collision_footprint": [],
+      "default_visual_bounds": {
+        "x": 118,
+        "y": 143,
+        "width": 1,
+        "height": 1
+      },
+      "default_pivot": {
+        "x": 0,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "adjacent_tiles",
+        "points": [
+          [
+            118,
+            142
+          ],
+          [
+            117,
+            143
+          ],
+          [
+            119,
+            143
+          ],
+          [
+            118,
+            144
+          ]
+        ],
+        "source": "footprint_perimeter"
+      },
+      "default_sort_anchor": {
+        "x": 118,
+        "y": 143,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "object",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "healing",
+        "interactive",
+        "interest_point",
+        "loot"
+      ],
+      "instance_count": 3,
+      "max_footprint_tiles": 1,
+      "max_collision_footprint_tiles": 0
+    },
+    "old_checkpoint": {
+      "role": "defensive_landmark",
+      "cover_type": "full",
+      "height": 4,
+      "elevation": 0,
+      "blocks_movement": true,
+      "blocks_projectiles": true,
+      "blocks_vision": true,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "blocked",
+        "projectiles": "blocked",
+        "vision": "blocked"
+      },
+      "combat_properties": {
+        "cover_value": 0.85,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          79,
+          137
+        ],
+        [
+          79,
+          138
+        ],
+        [
+          80,
+          137
+        ],
+        [
+          80,
+          138
+        ],
+        [
+          81,
+          137
+        ],
+        [
+          81,
+          138
+        ]
+      ],
+      "default_collision_footprint": [
+        [
+          79,
+          137
+        ],
+        [
+          79,
+          138
+        ],
+        [
+          80,
+          137
+        ],
+        [
+          80,
+          138
+        ],
+        [
+          81,
+          137
+        ],
+        [
+          81,
+          138
+        ]
+      ],
+      "default_visual_bounds": {
+        "x": 79,
+        "y": 137,
+        "width": 3,
+        "height": 2
+      },
+      "default_pivot": {
+        "x": 1,
+        "y": 1,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 80,
+        "y": 138,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "tall_object",
+      "occlusion_hint": {
+        "occludes_actor": true,
+        "mode": "solid",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "checkpoint",
+        "cover",
+        "defensive_landmark",
+        "landmark",
+        "movement_blocker",
+        "ruin"
+      ],
+      "instance_count": 1,
+      "max_footprint_tiles": 6,
+      "max_collision_footprint_tiles": 6
+    },
+    "old_grave_marker": {
+      "role": "story_marker",
+      "cover_type": "none",
+      "height": 1,
+      "elevation": 0,
+      "blocks_movement": false,
+      "blocks_projectiles": false,
+      "blocks_vision": false,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "passable",
+        "projectiles": "passable",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.0,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          12,
+          172
+        ]
+      ],
+      "default_collision_footprint": [],
+      "default_visual_bounds": {
+        "x": 12,
+        "y": 172,
+        "width": 1,
+        "height": 1
+      },
+      "default_pivot": {
+        "x": 0,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 12,
+        "y": 172,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "object",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "grave",
+        "human_trace",
+        "story_marker"
+      ],
+      "instance_count": 2,
+      "max_footprint_tiles": 1,
+      "max_collision_footprint_tiles": 0
+    },
+    "old_well": {
+      "role": "story_landmark",
+      "cover_type": "partial",
+      "height": 1,
+      "elevation": 0,
+      "blocks_movement": true,
+      "blocks_projectiles": true,
+      "blocks_vision": false,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "blocked",
+        "projectiles": "blocked",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.5,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          99,
+          81
+        ],
+        [
+          99,
+          82
+        ],
+        [
+          100,
+          81
+        ],
+        [
+          100,
+          82
+        ]
+      ],
+      "default_collision_footprint": [
+        [
+          99,
+          81
+        ],
+        [
+          99,
+          82
+        ],
+        [
+          100,
+          81
+        ],
+        [
+          100,
+          82
+        ]
+      ],
+      "default_visual_bounds": {
+        "x": 99,
+        "y": 81,
+        "width": 2,
+        "height": 2
+      },
+      "default_pivot": {
+        "x": 1,
+        "y": 1,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 100,
+        "y": 82,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "tall_object",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "cover",
+        "human_trace",
+        "landmark",
+        "movement_blocker",
+        "story_landmark",
+        "story_marker"
+      ],
+      "instance_count": 2,
+      "max_footprint_tiles": 4,
+      "max_collision_footprint_tiles": 4
+    },
+    "pit": {
+      "role": "depression",
+      "cover_type": "none",
+      "height": 0,
+      "elevation": -1,
+      "blocks_movement": false,
+      "blocks_projectiles": false,
+      "blocks_vision": false,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "passable",
+        "projectiles": "passable",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.25,
+        "concealment_value": 0.15,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          111,
+          130
+        ],
+        [
+          111,
+          131
+        ],
+        [
+          112,
+          130
+        ],
+        [
+          112,
+          131
+        ]
+      ],
+      "default_collision_footprint": [],
+      "default_visual_bounds": {
+        "x": 111,
+        "y": 130,
+        "width": 2,
+        "height": 2
+      },
+      "default_pivot": {
+        "x": 1,
+        "y": 1,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 112,
+        "y": 131,
+        "elevation": -1,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "terrain_overlay",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "below_floor",
+        "depression",
+        "elevation",
+        "terrain_feature"
+      ],
+      "instance_count": 3,
+      "max_footprint_tiles": 4,
+      "max_collision_footprint_tiles": 0
+    },
+    "ruin_platform": {
+      "role": "high_ground",
+      "cover_type": "partial",
+      "height": 1,
+      "elevation": 2,
+      "blocks_movement": false,
+      "blocks_projectiles": false,
+      "blocks_vision": false,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "passable",
+        "projectiles": "passable",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.35,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          140,
+          82
+        ],
+        [
+          140,
+          83
+        ],
+        [
+          141,
+          82
+        ],
+        [
+          141,
+          83
+        ],
+        [
+          142,
+          82
+        ],
+        [
+          142,
+          83
+        ]
+      ],
+      "default_collision_footprint": [],
+      "default_visual_bounds": {
+        "x": 140,
+        "y": 82,
+        "width": 3,
+        "height": 2
+      },
+      "default_pivot": {
+        "x": 1,
+        "y": 1,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 141,
+        "y": 83,
+        "elevation": 2,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "object",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": 2,
+      "interior_elevation": null,
+      "tags": [
+        "cover",
+        "elevation",
+        "high_ground",
+        "platform",
+        "ruins"
+      ],
+      "instance_count": 2,
+      "max_footprint_tiles": 6,
+      "max_collision_footprint_tiles": 0
+    },
+    "rusted_barrel": {
+      "role": "risky_cover",
+      "cover_type": "full",
+      "height": 2,
+      "elevation": 0,
+      "blocks_movement": true,
+      "blocks_projectiles": true,
+      "blocks_vision": false,
+      "interactive": true,
+      "collision_profile": {
+        "movement": "blocked",
+        "projectiles": "blocked",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.5,
+        "concealment_value": 0.0,
+        "explosive": true,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          146,
+          39
+        ]
+      ],
+      "default_collision_footprint": [
+        [
+          146,
+          39
+        ]
+      ],
+      "default_visual_bounds": {
+        "x": 146,
+        "y": 39,
+        "width": 1,
+        "height": 1
+      },
+      "default_pivot": {
+        "x": 0,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "adjacent_tiles",
+        "points": [
+          [
+            146,
+            38
+          ],
+          [
+            145,
+            39
+          ],
+          [
+            147,
+            39
+          ],
+          [
+            146,
+            40
+          ]
+        ],
+        "source": "footprint_perimeter"
+      },
+      "default_sort_anchor": {
+        "x": 146,
+        "y": 39,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "object",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "cover",
+        "explosive",
+        "explosive_candidate",
+        "interactive",
+        "metal",
+        "movement_blocker",
+        "risky_cover"
+      ],
+      "instance_count": 8,
+      "max_footprint_tiles": 1,
+      "max_collision_footprint_tiles": 1
+    },
+    "scrap_pile": {
+      "role": "partial_cover",
+      "cover_type": "low",
+      "height": 1,
+      "elevation": 0,
+      "blocks_movement": true,
+      "blocks_projectiles": true,
+      "blocks_vision": false,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "blocked",
+        "projectiles": "blocked",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.45,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          78,
+          141
+        ],
+        [
+          78,
+          142
+        ]
+      ],
+      "default_collision_footprint": [
+        [
+          78,
+          141
+        ],
+        [
+          78,
+          142
+        ]
+      ],
+      "default_visual_bounds": {
+        "x": 78,
+        "y": 141,
+        "width": 1,
+        "height": 2
+      },
+      "default_pivot": {
+        "x": 1,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 78,
+        "y": 142,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "object",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "cover",
+        "movement_blocker",
+        "partial_cover",
+        "ruins",
+        "scrap"
+      ],
+      "instance_count": 10,
+      "max_footprint_tiles": 2,
+      "max_collision_footprint_tiles": 2
+    },
+    "stone_chunk": {
+      "role": "hard_cover",
+      "cover_type": "full",
+      "height": 2,
+      "elevation": 0,
+      "blocks_movement": true,
+      "blocks_projectiles": true,
+      "blocks_vision": true,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "blocked",
+        "projectiles": "blocked",
+        "vision": "blocked"
+      },
+      "combat_properties": {
+        "cover_value": 0.9,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          180,
+          17
+        ]
+      ],
+      "default_collision_footprint": [
+        [
+          180,
+          17
+        ]
+      ],
+      "default_visual_bounds": {
+        "x": 180,
+        "y": 17,
+        "width": 1,
+        "height": 1
+      },
+      "default_pivot": {
+        "x": 0,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 180,
+        "y": 17,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "object",
+      "occlusion_hint": {
+        "occludes_actor": true,
+        "mode": "partial",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "cover",
+        "hard_cover",
+        "movement_blocker",
+        "stone"
+      ],
+      "instance_count": 15,
+      "max_footprint_tiles": 1,
+      "max_collision_footprint_tiles": 1
+    },
+    "stone_ramp": {
+      "role": "elevation_transition",
+      "cover_type": "none",
+      "height": 0,
+      "elevation": 1,
+      "blocks_movement": false,
+      "blocks_projectiles": false,
+      "blocks_vision": false,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "passable",
+        "projectiles": "passable",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.0,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          142,
+          37
+        ],
+        [
+          143,
+          37
+        ]
+      ],
+      "default_collision_footprint": [],
+      "default_visual_bounds": {
+        "x": 142,
+        "y": 37,
+        "width": 2,
+        "height": 1
+      },
+      "default_pivot": {
+        "x": 1,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 143,
+        "y": 37,
+        "elevation": 1,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "terrain_overlay",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": 1,
+      "interior_elevation": null,
+      "tags": [
+        "elevation",
+        "elevation_transition",
+        "ramp",
+        "transition",
+        "traversal"
+      ],
+      "instance_count": 3,
+      "max_footprint_tiles": 2,
+      "max_collision_footprint_tiles": 0
+    },
+    "stone_stairs": {
+      "role": "elevation_transition",
+      "cover_type": "none",
+      "height": 0,
+      "elevation": 1,
+      "blocks_movement": false,
+      "blocks_projectiles": false,
+      "blocks_vision": false,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "passable",
+        "projectiles": "passable",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.0,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          86,
+          171
+        ],
+        [
+          87,
+          171
+        ]
+      ],
+      "default_collision_footprint": [],
+      "default_visual_bounds": {
+        "x": 86,
+        "y": 171,
+        "width": 2,
+        "height": 1
+      },
+      "default_pivot": {
+        "x": 1,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 87,
+        "y": 171,
+        "elevation": 1,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "terrain_overlay",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": 1,
+      "interior_elevation": null,
+      "tags": [
+        "elevation",
+        "elevation_transition",
+        "stairs",
+        "transition",
+        "traversal"
+      ],
+      "instance_count": 3,
+      "max_footprint_tiles": 2,
+      "max_collision_footprint_tiles": 0
+    },
+    "trench": {
+      "role": "defensive_position",
+      "cover_type": "trench",
+      "height": 0,
+      "elevation": -1,
+      "blocks_movement": false,
+      "blocks_projectiles": false,
+      "blocks_vision": false,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "passable",
+        "projectiles": "passable",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.8,
+        "concealment_value": 0.25,
+        "explosive": false,
+        "loot": false,
+        "stance_dependent": true
+      },
+      "default_footprint": [
+        [
+          137,
+          82
+        ],
+        [
+          136,
+          82
+        ],
+        [
+          135,
+          82
+        ],
+        [
+          134,
+          82
+        ],
+        [
+          137,
+          81
+        ]
+      ],
+      "default_collision_footprint": [
+        [
+          137,
+          82
+        ],
+        [
+          136,
+          82
+        ],
+        [
+          135,
+          82
+        ],
+        [
+          134,
+          82
+        ],
+        [
+          137,
+          81
+        ]
+      ],
+      "default_visual_bounds": {
+        "x": 137,
+        "y": 82,
+        "width": 1,
+        "height": 1
+      },
+      "default_pivot": {
+        "x": 0,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 137,
+        "y": 82,
+        "elevation": -1,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "terrain_overlay",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "below_floor",
+        "cover",
+        "defensive_position",
+        "elevation"
+      ],
+      "instance_count": 6,
+      "max_footprint_tiles": 6,
+      "max_collision_footprint_tiles": 6
+    },
+    "warning_sign": {
+      "role": "marker",
+      "cover_type": "none",
+      "height": 2,
+      "elevation": 0,
+      "blocks_movement": false,
+      "blocks_projectiles": false,
+      "blocks_vision": false,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "passable",
+        "projectiles": "passable",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.0,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          33,
+          46
+        ]
+      ],
+      "default_collision_footprint": [],
+      "default_visual_bounds": {
+        "x": 33,
+        "y": 46,
+        "width": 1,
+        "height": 1
+      },
+      "default_pivot": {
+        "x": 0,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 33,
+        "y": 46,
+        "elevation": 0,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "object",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": null,
+      "interior_elevation": null,
+      "tags": [
+        "human_trace",
+        "marker",
+        "warning"
+      ],
+      "instance_count": 3,
+      "max_footprint_tiles": 1,
+      "max_collision_footprint_tiles": 0
+    },
+    "watchtower": {
+      "role": "high_landmark",
+      "cover_type": "partial",
+      "height": 4,
+      "elevation": 3,
+      "blocks_movement": true,
+      "blocks_projectiles": false,
+      "blocks_vision": false,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "blocked",
+        "projectiles": "passable",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.65,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          180,
+          144
+        ],
+        [
+          180,
+          145
+        ],
+        [
+          181,
+          144
+        ],
+        [
+          181,
+          145
+        ]
+      ],
+      "default_collision_footprint": [
+        [
+          180,
+          144
+        ],
+        [
+          180,
+          145
+        ],
+        [
+          181,
+          144
+        ],
+        [
+          181,
+          145
+        ]
+      ],
+      "default_visual_bounds": {
+        "x": 180,
+        "y": 144,
+        "width": 2,
+        "height": 4
+      },
+      "default_pivot": {
+        "x": 1,
+        "y": 1,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 181,
+        "y": 147,
+        "elevation": 3,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "tall_object",
+      "occlusion_hint": {
+        "occludes_actor": true,
+        "mode": "visual_only",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": 3,
+      "interior_elevation": null,
+      "tags": [
+        "cover",
+        "elevation",
+        "high_ground",
+        "high_landmark",
+        "high_platform",
+        "landmark",
+        "movement_blocker",
+        "tower"
+      ],
+      "instance_count": 2,
+      "max_footprint_tiles": 4,
+      "max_collision_footprint_tiles": 4
+    },
+    "wooden_bridge": {
+      "role": "traversal_structure",
+      "cover_type": "none",
+      "height": 1,
+      "elevation": 2,
+      "blocks_movement": false,
+      "blocks_projectiles": false,
+      "blocks_vision": false,
+      "interactive": false,
+      "collision_profile": {
+        "movement": "passable",
+        "projectiles": "passable",
+        "vision": "passable"
+      },
+      "combat_properties": {
+        "cover_value": 0.0,
+        "concealment_value": 0.0,
+        "explosive": false,
+        "loot": false
+      },
+      "default_footprint": [
+        [
+          61,
+          155
+        ],
+        [
+          62,
+          155
+        ],
+        [
+          63,
+          155
+        ],
+        [
+          64,
+          155
+        ]
+      ],
+      "default_collision_footprint": [],
+      "default_visual_bounds": {
+        "x": 61,
+        "y": 155,
+        "width": 4,
+        "height": 1
+      },
+      "default_pivot": {
+        "x": 2,
+        "y": 0,
+        "space": "tile_offset"
+      },
+      "default_interaction_shape": {
+        "type": "none",
+        "points": [],
+        "source": "none"
+      },
+      "default_sort_anchor": {
+        "x": 63,
+        "y": 155,
+        "elevation": 2,
+        "space": "tile",
+        "rule": "y_then_elevation_then_x"
+      },
+      "draw_layer": "terrain_overlay",
+      "occlusion_hint": {
+        "occludes_actor": false,
+        "mode": "none",
+        "source": "object_height_and_vision_profile"
+      },
+      "default_firing_ports": null,
+      "surface_elevation": 2,
+      "interior_elevation": null,
+      "tags": [
+        "bridge",
+        "elevation",
+        "platform",
+        "traversal",
+        "traversal_structure"
+      ],
+      "instance_count": 2,
+      "max_footprint_tiles": 4,
+      "max_collision_footprint_tiles": 0
+    }
+  }
+}

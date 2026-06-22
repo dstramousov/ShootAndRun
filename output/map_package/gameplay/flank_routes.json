@@ -1,0 +1,1106 @@
+{
+  "schema_version": "gameplay-layer-v1",
+  "kind": "flank_routes",
+  "items": [
+    {
+      "id": "flank_route_9",
+      "from_zone": "central_ruins_combat_0",
+      "to_zone": "side_ruin_encounter_17",
+      "entry": [
+        120,
+        81
+      ],
+      "exit": [
+        117,
+        52
+      ],
+      "cost": 41.0,
+      "risk": 0.278,
+      "concealment": 0.927,
+      "waypoints": [
+        [
+          120,
+          81
+        ],
+        [
+          120,
+          80
+        ],
+        [
+          118,
+          80
+        ],
+        [
+          118,
+          78
+        ],
+        [
+          117,
+          78
+        ],
+        [
+          117,
+          70
+        ],
+        [
+          115,
+          70
+        ],
+        [
+          115,
+          69
+        ],
+        [
+          114,
+          69
+        ],
+        [
+          114,
+          68
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_28",
+      "from_zone": "forest_ambush_2",
+      "to_zone": "side_ruin_encounter_16",
+      "entry": [
+        62,
+        74
+      ],
+      "exit": [
+        65,
+        116
+      ],
+      "cost": 62.0,
+      "risk": 0.317,
+      "concealment": 0.933,
+      "waypoints": [
+        [
+          62,
+          74
+        ],
+        [
+          62,
+          78
+        ],
+        [
+          61,
+          80
+        ],
+        [
+          60,
+          81
+        ],
+        [
+          59,
+          82
+        ],
+        [
+          57,
+          83
+        ],
+        [
+          55,
+          108
+        ],
+        [
+          62,
+          109
+        ],
+        [
+          63,
+          110
+        ],
+        [
+          64,
+          113
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_18",
+      "from_zone": "forest_ambush_0",
+      "to_zone": "forest_ambush_3",
+      "entry": [
+        125,
+        119
+      ],
+      "exit": [
+        125,
+        146
+      ],
+      "cost": 47.0,
+      "risk": 0.391,
+      "concealment": 0.844,
+      "waypoints": [
+        [
+          125,
+          119
+        ],
+        [
+          125,
+          122
+        ],
+        [
+          123,
+          122
+        ],
+        [
+          123,
+          128
+        ],
+        [
+          124,
+          128
+        ],
+        [
+          124,
+          146
+        ],
+        [
+          125,
+          146
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_30",
+      "from_zone": "forest_ambush_3",
+      "to_zone": "side_ruin_encounter_9",
+      "entry": [
+        125,
+        146
+      ],
+      "exit": [
+        97,
+        174
+      ],
+      "cost": 65.0,
+      "risk": 0.461,
+      "concealment": 0.789,
+      "waypoints": [
+        [
+          125,
+          146
+        ],
+        [
+          124,
+          146
+        ],
+        [
+          123,
+          147
+        ],
+        [
+          120,
+          150
+        ],
+        [
+          111,
+          151
+        ],
+        [
+          110,
+          152
+        ],
+        [
+          109,
+          160
+        ],
+        [
+          108,
+          162
+        ],
+        [
+          107,
+          164
+        ],
+        [
+          106,
+          168
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_29",
+      "from_zone": "forest_ambush_3",
+      "to_zone": "side_ruin_encounter_7",
+      "entry": [
+        125,
+        146
+      ],
+      "exit": [
+        126,
+        83
+      ],
+      "cost": 94.0,
+      "risk": 0.469,
+      "concealment": 0.781,
+      "waypoints": [
+        [
+          125,
+          146
+        ],
+        [
+          124,
+          146
+        ],
+        [
+          124,
+          128
+        ],
+        [
+          123,
+          128
+        ],
+        [
+          123,
+          122
+        ],
+        [
+          124,
+          122
+        ],
+        [
+          124,
+          118
+        ],
+        [
+          125,
+          118
+        ],
+        [
+          125,
+          113
+        ],
+        [
+          124,
+          113
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_34",
+      "from_zone": "side_ruin_encounter_2",
+      "to_zone": "side_ruin_encounter_5",
+      "entry": [
+        24,
+        118
+      ],
+      "exit": [
+        21,
+        137
+      ],
+      "cost": 25.0,
+      "risk": 0.473,
+      "concealment": 0.652,
+      "waypoints": [
+        [
+          24,
+          118
+        ],
+        [
+          24,
+          119
+        ],
+        [
+          23,
+          119
+        ],
+        [
+          23,
+          125
+        ],
+        [
+          21,
+          125
+        ],
+        [
+          21,
+          137
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_19",
+      "from_zone": "forest_ambush_0",
+      "to_zone": "side_ruin_encounter_7",
+      "entry": [
+        125,
+        119
+      ],
+      "exit": [
+        126,
+        83
+      ],
+      "cost": 52.0,
+      "risk": 0.512,
+      "concealment": 0.738,
+      "waypoints": [
+        [
+          125,
+          119
+        ],
+        [
+          125,
+          113
+        ],
+        [
+          124,
+          113
+        ],
+        [
+          124,
+          111
+        ],
+        [
+          123,
+          111
+        ],
+        [
+          123,
+          84
+        ],
+        [
+          126,
+          84
+        ],
+        [
+          126,
+          83
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_35",
+      "from_zone": "side_ruin_encounter_2",
+      "to_zone": "side_ruin_encounter_8",
+      "entry": [
+        24,
+        118
+      ],
+      "exit": [
+        21,
+        77
+      ],
+      "cost": 77.0,
+      "risk": 0.519,
+      "concealment": 0.731,
+      "waypoints": [
+        [
+          24,
+          118
+        ],
+        [
+          24,
+          117
+        ],
+        [
+          22,
+          116
+        ],
+        [
+          20,
+          115
+        ],
+        [
+          19,
+          114
+        ],
+        [
+          18,
+          113
+        ],
+        [
+          15,
+          111
+        ],
+        [
+          16,
+          95
+        ],
+        [
+          15,
+          90
+        ],
+        [
+          12,
+          85
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_16",
+      "from_zone": "side_ruin_encounter_0",
+      "to_zone": "side_ruin_encounter_18",
+      "entry": [
+        150,
+        110
+      ],
+      "exit": [
+        148,
+        82
+      ],
+      "cost": 36.0,
+      "risk": 0.574,
+      "concealment": 0.606,
+      "waypoints": [
+        [
+          150,
+          110
+        ],
+        [
+          148,
+          110
+        ],
+        [
+          148,
+          94
+        ],
+        [
+          147,
+          94
+        ],
+        [
+          147,
+          88
+        ],
+        [
+          148,
+          88
+        ],
+        [
+          148,
+          82
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_5",
+      "from_zone": "central_ruins_combat_0",
+      "to_zone": "forest_ambush_0",
+      "entry": [
+        120,
+        81
+      ],
+      "exit": [
+        125,
+        119
+      ],
+      "cost": 54.0,
+      "risk": 0.636,
+      "concealment": 0.614,
+      "waypoints": [
+        [
+          120,
+          81
+        ],
+        [
+          123,
+          81
+        ],
+        [
+          123,
+          111
+        ],
+        [
+          124,
+          111
+        ],
+        [
+          124,
+          113
+        ],
+        [
+          125,
+          113
+        ],
+        [
+          125,
+          119
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_22",
+      "from_zone": "forest_ambush_1",
+      "to_zone": "side_ruin_encounter_6",
+      "entry": [
+        177,
+        109
+      ],
+      "exit": [
+        179,
+        82
+      ],
+      "cost": 30.0,
+      "risk": 0.683,
+      "concealment": 0.467,
+      "waypoints": [
+        [
+          177,
+          109
+        ],
+        [
+          177,
+          108
+        ],
+        [
+          179,
+          108
+        ],
+        [
+          179,
+          82
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_23",
+      "from_zone": "forest_ambush_1",
+      "to_zone": "side_ruin_encounter_18",
+      "entry": [
+        177,
+        109
+      ],
+      "exit": [
+        148,
+        82
+      ],
+      "cost": 57.0,
+      "risk": 0.759,
+      "concealment": 0.491,
+      "waypoints": [
+        [
+          177,
+          109
+        ],
+        [
+          166,
+          109
+        ],
+        [
+          166,
+          102
+        ],
+        [
+          165,
+          102
+        ],
+        [
+          165,
+          101
+        ],
+        [
+          164,
+          101
+        ],
+        [
+          164,
+          87
+        ],
+        [
+          148,
+          87
+        ],
+        [
+          148,
+          82
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_6",
+      "from_zone": "central_ruins_combat_0",
+      "to_zone": "forest_ambush_2",
+      "entry": [
+        120,
+        81
+      ],
+      "exit": [
+        62,
+        74
+      ],
+      "cost": 78.0,
+      "risk": 0.763,
+      "concealment": 0.487,
+      "waypoints": [
+        [
+          120,
+          81
+        ],
+        [
+          120,
+          80
+        ],
+        [
+          118,
+          80
+        ],
+        [
+          118,
+          78
+        ],
+        [
+          108,
+          78
+        ],
+        [
+          108,
+          76
+        ],
+        [
+          101,
+          76
+        ],
+        [
+          101,
+          70
+        ],
+        [
+          93,
+          70
+        ],
+        [
+          93,
+          72
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_33",
+      "from_zone": "side_ruin_encounter_1",
+      "to_zone": "side_ruin_encounter_10",
+      "entry": [
+        184,
+        44
+      ],
+      "exit": [
+        159,
+        41
+      ],
+      "cost": 41.0,
+      "risk": 0.776,
+      "concealment": 0.429,
+      "waypoints": [
+        [
+          184,
+          44
+        ],
+        [
+          184,
+          43
+        ],
+        [
+          165,
+          43
+        ],
+        [
+          165,
+          38
+        ],
+        [
+          163,
+          38
+        ],
+        [
+          163,
+          40
+        ],
+        [
+          159,
+          40
+        ],
+        [
+          159,
+          41
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_15",
+      "from_zone": "side_ruin_encounter_0",
+      "to_zone": "side_ruin_encounter_7",
+      "entry": [
+        150,
+        110
+      ],
+      "exit": [
+        126,
+        83
+      ],
+      "cost": 62.0,
+      "risk": 0.798,
+      "concealment": 0.452,
+      "waypoints": [
+        [
+          150,
+          110
+        ],
+        [
+          146,
+          110
+        ],
+        [
+          146,
+          104
+        ],
+        [
+          142,
+          104
+        ],
+        [
+          142,
+          84
+        ],
+        [
+          136,
+          84
+        ],
+        [
+          136,
+          78
+        ],
+        [
+          126,
+          78
+        ],
+        [
+          126,
+          83
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_27",
+      "from_zone": "forest_ambush_2",
+      "to_zone": "side_ruin_encounter_14",
+      "entry": [
+        62,
+        74
+      ],
+      "exit": [
+        22,
+        50
+      ],
+      "cost": 87.0,
+      "risk": 0.836,
+      "concealment": 0.414,
+      "waypoints": [
+        [
+          62,
+          74
+        ],
+        [
+          58,
+          74
+        ],
+        [
+          58,
+          51
+        ],
+        [
+          60,
+          51
+        ],
+        [
+          60,
+          47
+        ],
+        [
+          59,
+          47
+        ],
+        [
+          59,
+          43
+        ],
+        [
+          43,
+          43
+        ],
+        [
+          43,
+          42
+        ],
+        [
+          25,
+          42
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_21",
+      "from_zone": "forest_ambush_1",
+      "to_zone": "side_ruin_encounter_1",
+      "entry": [
+        177,
+        109
+      ],
+      "exit": [
+        184,
+        44
+      ],
+      "cost": 77.0,
+      "risk": 0.908,
+      "concealment": 0.342,
+      "waypoints": [
+        [
+          177,
+          109
+        ],
+        [
+          177,
+          108
+        ],
+        [
+          179,
+          108
+        ],
+        [
+          179,
+          93
+        ],
+        [
+          180,
+          93
+        ],
+        [
+          180,
+          90
+        ],
+        [
+          181,
+          90
+        ],
+        [
+          181,
+          88
+        ],
+        [
+          182,
+          88
+        ],
+        [
+          182,
+          70
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_14",
+      "from_zone": "side_ruin_encounter_0",
+      "to_zone": "side_ruin_encounter_6",
+      "entry": [
+        150,
+        110
+      ],
+      "exit": [
+        179,
+        82
+      ],
+      "cost": 60.0,
+      "risk": 0.922,
+      "concealment": 0.328,
+      "waypoints": [
+        [
+          150,
+          110
+        ],
+        [
+          175,
+          110
+        ],
+        [
+          175,
+          109
+        ],
+        [
+          177,
+          109
+        ],
+        [
+          177,
+          108
+        ],
+        [
+          179,
+          108
+        ],
+        [
+          179,
+          82
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_3",
+      "from_zone": "goal_encounter_0",
+      "to_zone": "side_ruin_encounter_14",
+      "entry": [
+        21,
+        20
+      ],
+      "exit": [
+        22,
+        50
+      ],
+      "cost": 34.0,
+      "risk": 0.935,
+      "concealment": 0.235,
+      "waypoints": [
+        [
+          21,
+          20
+        ],
+        [
+          21,
+          23
+        ],
+        [
+          20,
+          23
+        ],
+        [
+          20,
+          27
+        ],
+        [
+          22,
+          27
+        ],
+        [
+          22,
+          50
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_0",
+      "from_zone": "goal_encounter_0",
+      "to_zone": "forest_ambush_4",
+      "entry": [
+        21,
+        20
+      ],
+      "exit": [
+        51,
+        19
+      ],
+      "cost": 38.0,
+      "risk": 1.0,
+      "concealment": 0.0,
+      "waypoints": [
+        [
+          21,
+          20
+        ],
+        [
+          51,
+          20
+        ],
+        [
+          51,
+          19
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_32",
+      "from_zone": "side_ruin_encounter_1",
+      "to_zone": "side_ruin_encounter_6",
+      "entry": [
+        184,
+        44
+      ],
+      "exit": [
+        179,
+        82
+      ],
+      "cost": 48.0,
+      "risk": 1.0,
+      "concealment": 0.091,
+      "waypoints": [
+        [
+          184,
+          44
+        ],
+        [
+          184,
+          45
+        ],
+        [
+          183,
+          45
+        ],
+        [
+          183,
+          50
+        ],
+        [
+          179,
+          50
+        ],
+        [
+          179,
+          82
+        ]
+      ]
+    },
+    {
+      "id": "flank_route_1",
+      "from_zone": "goal_encounter_0",
+      "to_zone": "side_ruin_encounter_4",
+      "entry": [
+        21,
+        20
+      ],
+      "exit": [
+        57,
+        44
+      ],
+      "cost": 61.0,
+      "risk": 1.0,
+      "concealment": 0.213,
+      "waypoints": [
+        [
+          21,
+          20
+        ],
+        [
+          31,
+          20
+        ],
+        [
+          31,
+          23
+        ],
+        [
+          32,
+          23
+        ],
+        [
+          32,
+          25
+        ],
+        [
+          47,
+          25
+        ],
+        [
+          47,
+          40
+        ],
+        [
+          57,
+          40
+        ],
+        [
+          57,
+          44
+        ]
+      ]
+    }
+  ]
+}

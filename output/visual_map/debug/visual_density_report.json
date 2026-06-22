@@ -1,0 +1,143 @@
+{
+  "schema_version": "visual-density-report-v1",
+  "kind": "visual_density_report",
+  "profile": "dark_forest",
+  "map": {
+    "width": 192,
+    "height": 192,
+    "area_tiles": 36864
+  },
+  "visual_objects": {
+    "total": 2340,
+    "per_1000_tiles": 63.48,
+    "target_min": 40.0,
+    "target_max": 90.0,
+    "critical_max": 120.0,
+    "status": "ok"
+  },
+  "by_source": {
+    "runtime": 140,
+    "decorations": 1538,
+    "place_treatment": 10,
+    "elevation_visual": 211,
+    "boundary_visual": 441
+  },
+  "decorations": {
+    "total": 1538,
+    "per_1000_tiles": 41.72,
+    "target_min": 35.0,
+    "target_max": 55.0,
+    "critical_max": 90.0,
+    "status": "ok"
+  },
+  "place_treatment": {
+    "places_total": 7,
+    "objects_total": 10,
+    "objects_per_place": 1.43,
+    "target_min": 1.0,
+    "target_max": 4.0,
+    "critical_max": 8.0,
+    "status": "ok"
+  },
+  "by_category": {
+    "boundary": 441,
+    "elevation": 211,
+    "place": 10,
+    "road": 481,
+    "ruins": 410,
+    "runtime": 140,
+    "swamp": 647
+  },
+  "top_sprites": [
+    {
+      "id": "boundary.dark_tree_wall",
+      "count": 276
+    },
+    {
+      "id": "decor.small_stone_01",
+      "count": 170
+    },
+    {
+      "id": "decor.mud_patch_01",
+      "count": 159
+    },
+    {
+      "id": "decor.reeds_01",
+      "count": 153
+    },
+    {
+      "id": "boundary.dense_forest_wall",
+      "count": 132
+    },
+    {
+      "id": "decor.wet_grass_01",
+      "count": 125
+    },
+    {
+      "id": "decor.road_grass_tuft_01",
+      "count": 121
+    },
+    {
+      "id": "object.generic",
+      "count": 105
+    },
+    {
+      "id": "decor.fallen_bricks_01",
+      "count": 88
+    },
+    {
+      "id": "decor.small_stone_02",
+      "count": 83
+    }
+  ],
+  "autotiling": {
+    "groups": {
+      "forest": 16589,
+      "road": 1739,
+      "swamp": 1496
+    },
+    "fallback_total": 0,
+    "status": "ok"
+  },
+  "unmapped_terrain": {
+    "total": 0,
+    "status": "ok"
+  },
+  "elevation_visual": {
+    "lowlands": 61,
+    "raised": 84,
+    "high": 8,
+    "transitions": 64,
+    "landmarks": 2,
+    "failed_placements": 0,
+    "sampled_markers": 192,
+    "status": "ok"
+  },
+  "boundary_visual": {
+    "total": 441,
+    "by_boundary_type": {
+      "cliff_wall": 11,
+      "dark_tree_wall": 84,
+      "dense_forest_wall": 309,
+      "ruin_barrier": 22,
+      "swamp_barrier": 15
+    },
+    "by_edge": {
+      "east": 105,
+      "north": 117,
+      "south": 109,
+      "west": 110
+    },
+    "failed_placements": 0,
+    "sampled_markers": 1079,
+    "status": "ok"
+  },
+  "source_reports": {
+    "decoration_total": 1538,
+    "place_treatment_total": 10,
+    "boundary_visual_total": 441
+  },
+  "quality": {
+    "status": "ok"
+  }
+}

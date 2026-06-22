@@ -1,0 +1,856 @@
+{
+  "schema_version": "routes-v1",
+  "kind": "routes",
+  "coordinate_space": "tile",
+  "items": [
+    {
+      "id": "main_road_000",
+      "type": "main_road",
+      "source": "world_graph.main_path",
+      "node_ids": [
+        "marker:start",
+        "old_defensive_position_005",
+        "bunker_inner_area_003",
+        "bunker_outer_area_002",
+        "marker:goal"
+      ],
+      "edge_ids": [
+        "edge_023",
+        "edge_008",
+        "edge_024",
+        "edge_025"
+      ],
+      "waypoints": [
+        {
+          "x": 182,
+          "y": 176
+        },
+        {
+          "x": 136,
+          "y": 82
+        },
+        {
+          "x": 148,
+          "y": 42
+        },
+        {
+          "x": 44,
+          "y": 144
+        },
+        {
+          "x": 9,
+          "y": 20
+        }
+      ],
+      "cost_tiles": 557,
+      "bidirectional": true,
+      "tags": [
+        "guidance",
+        "main_road",
+        "primary"
+      ]
+    },
+    {
+      "id": "side_path_000",
+      "type": "side_path",
+      "source": "world_graph.side_paths",
+      "node_ids": [
+        "bunker_outer_area_002",
+        "abandoned_checkpoint_000"
+      ],
+      "edge_ids": [],
+      "waypoints": [
+        {
+          "x": 44,
+          "y": 144
+        },
+        {
+          "x": 80,
+          "y": 138
+        }
+      ],
+      "cost_tiles": 42,
+      "bidirectional": true,
+      "tags": [
+        "optional",
+        "side_path"
+      ]
+    },
+    {
+      "id": "side_path_001",
+      "type": "side_path",
+      "source": "world_graph.side_paths",
+      "node_ids": [
+        "old_defensive_position_005",
+        "ambush_clearing_001"
+      ],
+      "edge_ids": [],
+      "waypoints": [
+        {
+          "x": 136,
+          "y": 82
+        },
+        {
+          "x": 118,
+          "y": 83
+        }
+      ],
+      "cost_tiles": 19,
+      "bidirectional": true,
+      "tags": [
+        "optional",
+        "side_path"
+      ]
+    },
+    {
+      "id": "side_path_002",
+      "type": "side_path",
+      "source": "world_graph.side_paths",
+      "node_ids": [
+        "old_defensive_position_005",
+        "dangerous_lowland_004"
+      ],
+      "edge_ids": [],
+      "waypoints": [
+        {
+          "x": 136,
+          "y": 82
+        },
+        {
+          "x": 112,
+          "y": 130
+        }
+      ],
+      "cost_tiles": 72,
+      "bidirectional": true,
+      "tags": [
+        "optional",
+        "side_path"
+      ]
+    },
+    {
+      "id": "side_path_003",
+      "type": "side_path",
+      "source": "world_graph.side_paths",
+      "node_ids": [
+        "bunker_inner_area_003",
+        "small_ruin_site_006"
+      ],
+      "edge_ids": [],
+      "waypoints": [
+        {
+          "x": 148,
+          "y": 42
+        },
+        {
+          "x": 108,
+          "y": 12
+        }
+      ],
+      "cost_tiles": 70,
+      "bidirectional": true,
+      "tags": [
+        "optional",
+        "side_path"
+      ]
+    },
+    {
+      "id": "patrol_route_000",
+      "type": "patrol_route",
+      "source": "world_graph.edges",
+      "node_ids": [
+        "abandoned_checkpoint_000",
+        "dangerous_lowland_004"
+      ],
+      "edge_ids": [
+        "edge_000"
+      ],
+      "waypoints": [
+        {
+          "x": 80,
+          "y": 138
+        },
+        {
+          "x": 112,
+          "y": 130
+        }
+      ],
+      "cost_tiles": 40,
+      "bidirectional": true,
+      "tags": [
+        "ai",
+        "derived",
+        "patrol_route"
+      ]
+    },
+    {
+      "id": "patrol_route_001",
+      "type": "patrol_route",
+      "source": "world_graph.edges",
+      "node_ids": [
+        "abandoned_checkpoint_000",
+        "bunker_outer_area_002"
+      ],
+      "edge_ids": [
+        "edge_001"
+      ],
+      "waypoints": [
+        {
+          "x": 80,
+          "y": 138
+        },
+        {
+          "x": 44,
+          "y": 144
+        }
+      ],
+      "cost_tiles": 42,
+      "bidirectional": true,
+      "tags": [
+        "ai",
+        "derived",
+        "patrol_route"
+      ]
+    },
+    {
+      "id": "patrol_route_002",
+      "type": "patrol_route",
+      "source": "world_graph.edges",
+      "node_ids": [
+        "abandoned_checkpoint_000",
+        "ambush_clearing_001"
+      ],
+      "edge_ids": [
+        "edge_002"
+      ],
+      "waypoints": [
+        {
+          "x": 80,
+          "y": 138
+        },
+        {
+          "x": 118,
+          "y": 83
+        }
+      ],
+      "cost_tiles": 93,
+      "bidirectional": true,
+      "tags": [
+        "ai",
+        "derived",
+        "patrol_route"
+      ]
+    },
+    {
+      "id": "patrol_route_003",
+      "type": "patrol_route",
+      "source": "world_graph.edges",
+      "node_ids": [
+        "ambush_clearing_001",
+        "old_defensive_position_005"
+      ],
+      "edge_ids": [
+        "edge_003"
+      ],
+      "waypoints": [
+        {
+          "x": 118,
+          "y": 83
+        },
+        {
+          "x": 136,
+          "y": 82
+        }
+      ],
+      "cost_tiles": 19,
+      "bidirectional": true,
+      "tags": [
+        "ai",
+        "derived",
+        "patrol_route"
+      ]
+    },
+    {
+      "id": "patrol_route_004",
+      "type": "patrol_route",
+      "source": "world_graph.edges",
+      "node_ids": [
+        "ambush_clearing_001",
+        "dangerous_lowland_004"
+      ],
+      "edge_ids": [
+        "edge_004"
+      ],
+      "waypoints": [
+        {
+          "x": 118,
+          "y": 83
+        },
+        {
+          "x": 112,
+          "y": 130
+        }
+      ],
+      "cost_tiles": 53,
+      "bidirectional": true,
+      "tags": [
+        "ai",
+        "derived",
+        "patrol_route"
+      ]
+    },
+    {
+      "id": "patrol_route_005",
+      "type": "patrol_route",
+      "source": "world_graph.edges",
+      "node_ids": [
+        "ambush_clearing_001",
+        "bunker_inner_area_003"
+      ],
+      "edge_ids": [
+        "edge_005"
+      ],
+      "waypoints": [
+        {
+          "x": 118,
+          "y": 83
+        },
+        {
+          "x": 148,
+          "y": 42
+        }
+      ],
+      "cost_tiles": 71,
+      "bidirectional": true,
+      "tags": [
+        "ai",
+        "derived",
+        "patrol_route"
+      ]
+    },
+    {
+      "id": "patrol_route_006",
+      "type": "patrol_route",
+      "source": "world_graph.edges",
+      "node_ids": [
+        "bunker_outer_area_002",
+        "dangerous_lowland_004"
+      ],
+      "edge_ids": [
+        "edge_006"
+      ],
+      "waypoints": [
+        {
+          "x": 44,
+          "y": 144
+        },
+        {
+          "x": 112,
+          "y": 130
+        }
+      ],
+      "cost_tiles": 82,
+      "bidirectional": true,
+      "tags": [
+        "ai",
+        "derived",
+        "patrol_route"
+      ]
+    },
+    {
+      "id": "patrol_route_007",
+      "type": "patrol_route",
+      "source": "world_graph.edges",
+      "node_ids": [
+        "bunker_outer_area_002",
+        "ambush_clearing_001"
+      ],
+      "edge_ids": [
+        "edge_007"
+      ],
+      "waypoints": [
+        {
+          "x": 44,
+          "y": 144
+        },
+        {
+          "x": 118,
+          "y": 83
+        }
+      ],
+      "cost_tiles": 135,
+      "bidirectional": true,
+      "tags": [
+        "ai",
+        "derived",
+        "patrol_route"
+      ]
+    },
+    {
+      "id": "patrol_route_008",
+      "type": "patrol_route",
+      "source": "world_graph.edges",
+      "node_ids": [
+        "bunker_inner_area_003",
+        "old_defensive_position_005"
+      ],
+      "edge_ids": [
+        "edge_008"
+      ],
+      "waypoints": [
+        {
+          "x": 148,
+          "y": 42
+        },
+        {
+          "x": 136,
+          "y": 82
+        }
+      ],
+      "cost_tiles": 52,
+      "bidirectional": true,
+      "tags": [
+        "ai",
+        "derived",
+        "patrol_route"
+      ]
+    },
+    {
+      "id": "patrol_route_009",
+      "type": "patrol_route",
+      "source": "world_graph.edges",
+      "node_ids": [
+        "bunker_inner_area_003",
+        "small_ruin_site_006"
+      ],
+      "edge_ids": [
+        "edge_009"
+      ],
+      "waypoints": [
+        {
+          "x": 148,
+          "y": 42
+        },
+        {
+          "x": 108,
+          "y": 12
+        }
+      ],
+      "cost_tiles": 70,
+      "bidirectional": true,
+      "tags": [
+        "ai",
+        "derived",
+        "patrol_route"
+      ]
+    },
+    {
+      "id": "patrol_route_010",
+      "type": "patrol_route",
+      "source": "world_graph.edges",
+      "node_ids": [
+        "dangerous_lowland_004",
+        "old_defensive_position_005"
+      ],
+      "edge_ids": [
+        "edge_010"
+      ],
+      "waypoints": [
+        {
+          "x": 112,
+          "y": 130
+        },
+        {
+          "x": 136,
+          "y": 82
+        }
+      ],
+      "cost_tiles": 72,
+      "bidirectional": true,
+      "tags": [
+        "ai",
+        "derived",
+        "patrol_route"
+      ]
+    },
+    {
+      "id": "patrol_route_011",
+      "type": "patrol_route",
+      "source": "world_graph.edges",
+      "node_ids": [
+        "small_ruin_site_006",
+        "ambush_clearing_001"
+      ],
+      "edge_ids": [
+        "edge_011"
+      ],
+      "waypoints": [
+        {
+          "x": 108,
+          "y": 12
+        },
+        {
+          "x": 118,
+          "y": 83
+        }
+      ],
+      "cost_tiles": 81,
+      "bidirectional": true,
+      "tags": [
+        "ai",
+        "derived",
+        "patrol_route"
+      ]
+    },
+    {
+      "id": "patrol_route_012",
+      "type": "patrol_route",
+      "source": "world_graph.edges",
+      "node_ids": [
+        "small_ruin_site_006",
+        "old_defensive_position_005"
+      ],
+      "edge_ids": [
+        "edge_012"
+      ],
+      "waypoints": [
+        {
+          "x": 108,
+          "y": 12
+        },
+        {
+          "x": 136,
+          "y": 82
+        }
+      ],
+      "cost_tiles": 98,
+      "bidirectional": true,
+      "tags": [
+        "ai",
+        "derived",
+        "patrol_route"
+      ]
+    },
+    {
+      "id": "escape_route_021",
+      "type": "escape_route",
+      "source": "world_graph.edges",
+      "node_ids": [
+        "marker:start",
+        "dangerous_lowland_004"
+      ],
+      "edge_ids": [
+        "edge_021"
+      ],
+      "waypoints": [
+        {
+          "x": 182,
+          "y": 176
+        },
+        {
+          "x": 112,
+          "y": 130
+        }
+      ],
+      "cost_tiles": 116,
+      "bidirectional": false,
+      "tags": [
+        "ai",
+        "derived",
+        "escape_route"
+      ]
+    },
+    {
+      "id": "escape_route_022",
+      "type": "escape_route",
+      "source": "world_graph.edges",
+      "node_ids": [
+        "small_ruin_site_006",
+        "marker:goal"
+      ],
+      "edge_ids": [
+        "edge_022"
+      ],
+      "waypoints": [
+        {
+          "x": 108,
+          "y": 12
+        },
+        {
+          "x": 9,
+          "y": 20
+        }
+      ],
+      "cost_tiles": 107,
+      "bidirectional": false,
+      "tags": [
+        "ai",
+        "derived",
+        "escape_route"
+      ]
+    },
+    {
+      "id": "hidden_path_secret_000",
+      "type": "hidden_path",
+      "source": "world_graph.secret_areas",
+      "node_ids": [
+        "marker:marker_abandoned_backpack_000"
+      ],
+      "edge_ids": [],
+      "waypoints": [
+        {
+          "x": 106,
+          "y": 54
+        }
+      ],
+      "cost_tiles": 0,
+      "bidirectional": true,
+      "tags": [
+        "hidden_path",
+        "optional",
+        "secret"
+      ]
+    },
+    {
+      "id": "hidden_path_secret_001",
+      "type": "hidden_path",
+      "source": "world_graph.secret_areas",
+      "node_ids": [
+        "marker:marker_abandoned_backpack_001"
+      ],
+      "edge_ids": [],
+      "waypoints": [
+        {
+          "x": 28,
+          "y": 177
+        }
+      ],
+      "cost_tiles": 0,
+      "bidirectional": true,
+      "tags": [
+        "hidden_path",
+        "optional",
+        "secret"
+      ]
+    },
+    {
+      "id": "hidden_path_secret_002",
+      "type": "hidden_path",
+      "source": "world_graph.secret_areas",
+      "node_ids": [
+        "marker:marker_abandoned_backpack_002"
+      ],
+      "edge_ids": [],
+      "waypoints": [
+        {
+          "x": 131,
+          "y": 120
+        }
+      ],
+      "cost_tiles": 0,
+      "bidirectional": true,
+      "tags": [
+        "hidden_path",
+        "optional",
+        "secret"
+      ]
+    },
+    {
+      "id": "hidden_path_secret_003",
+      "type": "hidden_path",
+      "source": "world_graph.secret_areas",
+      "node_ids": [
+        "marker:marker_abandoned_backpack_003"
+      ],
+      "edge_ids": [],
+      "waypoints": [
+        {
+          "x": 171,
+          "y": 114
+        }
+      ],
+      "cost_tiles": 0,
+      "bidirectional": true,
+      "tags": [
+        "hidden_path",
+        "optional",
+        "secret"
+      ]
+    },
+    {
+      "id": "hidden_path_secret_004",
+      "type": "hidden_path",
+      "source": "world_graph.secret_areas",
+      "node_ids": [
+        "marker:marker_ammo_cache_000"
+      ],
+      "edge_ids": [],
+      "waypoints": [
+        {
+          "x": 79,
+          "y": 87
+        }
+      ],
+      "cost_tiles": 0,
+      "bidirectional": true,
+      "tags": [
+        "hidden_path",
+        "optional",
+        "secret"
+      ]
+    },
+    {
+      "id": "hidden_path_secret_005",
+      "type": "hidden_path",
+      "source": "world_graph.secret_areas",
+      "node_ids": [
+        "marker:marker_ammo_cache_001"
+      ],
+      "edge_ids": [],
+      "waypoints": [
+        {
+          "x": 79,
+          "y": 91
+        }
+      ],
+      "cost_tiles": 0,
+      "bidirectional": true,
+      "tags": [
+        "hidden_path",
+        "optional",
+        "secret"
+      ]
+    },
+    {
+      "id": "hidden_path_secret_006",
+      "type": "hidden_path",
+      "source": "world_graph.secret_areas",
+      "node_ids": [
+        "marker:marker_ammo_cache_002"
+      ],
+      "edge_ids": [],
+      "waypoints": [
+        {
+          "x": 136,
+          "y": 85
+        }
+      ],
+      "cost_tiles": 0,
+      "bidirectional": true,
+      "tags": [
+        "hidden_path",
+        "optional",
+        "secret"
+      ]
+    },
+    {
+      "id": "hidden_path_secret_007",
+      "type": "hidden_path",
+      "source": "world_graph.secret_areas",
+      "node_ids": [
+        "marker:marker_ammo_cache_003"
+      ],
+      "edge_ids": [],
+      "waypoints": [
+        {
+          "x": 102,
+          "y": 14
+        }
+      ],
+      "cost_tiles": 0,
+      "bidirectional": true,
+      "tags": [
+        "hidden_path",
+        "optional",
+        "secret"
+      ]
+    },
+    {
+      "id": "hidden_path_secret_008",
+      "type": "hidden_path",
+      "source": "world_graph.secret_areas",
+      "node_ids": [
+        "marker:marker_medkit_cache_000"
+      ],
+      "edge_ids": [],
+      "waypoints": [
+        {
+          "x": 118,
+          "y": 143
+        }
+      ],
+      "cost_tiles": 0,
+      "bidirectional": true,
+      "tags": [
+        "hidden_path",
+        "optional",
+        "secret"
+      ]
+    },
+    {
+      "id": "hidden_path_secret_009",
+      "type": "hidden_path",
+      "source": "world_graph.secret_areas",
+      "node_ids": [
+        "marker:marker_medkit_cache_001"
+      ],
+      "edge_ids": [],
+      "waypoints": [
+        {
+          "x": 13,
+          "y": 115
+        }
+      ],
+      "cost_tiles": 0,
+      "bidirectional": true,
+      "tags": [
+        "hidden_path",
+        "optional",
+        "secret"
+      ]
+    },
+    {
+      "id": "hidden_path_secret_010",
+      "type": "hidden_path",
+      "source": "world_graph.secret_areas",
+      "node_ids": [
+        "marker:marker_medkit_cache_002"
+      ],
+      "edge_ids": [],
+      "waypoints": [
+        {
+          "x": 74,
+          "y": 137
+        }
+      ],
+      "cost_tiles": 0,
+      "bidirectional": true,
+      "tags": [
+        "hidden_path",
+        "optional",
+        "secret"
+      ]
+    }
+  ],
+  "route_types": {
+    "main_road": "Primary intended route from start toward goal.",
+    "side_path": "Optional branch route to a secondary place.",
+    "hidden_path": "Secret or hard-to-notice optional route.",
+    "patrol_route": "AI/NPC route derived from risky place connections.",
+    "escape_route": "Retreat or exit route derived from start/goal connections."
+  },
+  "summary": {
+    "total": 31,
+    "by_type": {
+      "escape_route": 2,
+      "hidden_path": 11,
+      "main_road": 1,
+      "patrol_route": 13,
+      "side_path": 4
+    }
+  },
+  "notes": [
+    "Routes describe semantic intent, not exact tile-by-tile paths.",
+    "Use runtime_grids for exact pathfinding and collision checks."
+  ]
+}

@@ -1,0 +1,199 @@
+{
+  "schema_version": "world-density-report-v1",
+  "kind": "world_density_report",
+  "map": {
+    "width": 192,
+    "height": 192,
+    "area_tiles": 36864,
+    "seed": 11073698844260551338,
+    "profile": "clear_map"
+  },
+  "terrain": {
+    "forest": {
+      "tiles": 16589,
+      "percent": 45.0,
+      "target_min": 35.0,
+      "target_max": 55.0,
+      "critical_max": 75.0,
+      "status": "ok"
+    },
+    "road": {
+      "tiles": 1739,
+      "percent": 4.72,
+      "target_min": 3.0,
+      "target_max": 8.0,
+      "critical_max": 14.0,
+      "status": "ok"
+    },
+    "swamp": {
+      "tiles": 1496,
+      "percent": 4.06,
+      "target_min": 2.0,
+      "target_max": 7.0,
+      "critical_max": 14.0,
+      "status": "ok"
+    },
+    "ruins": {
+      "tiles": 1067,
+      "percent": 2.89,
+      "target_min": 2.0,
+      "target_max": 8.0,
+      "critical_max": 14.0,
+      "status": "ok"
+    },
+    "open_ground": {
+      "tiles": 15973,
+      "percent": 43.33,
+      "target_min": 30.0,
+      "target_max": 55.0,
+      "critical_max": 75.0,
+      "status": "ok"
+    }
+  },
+  "terrain_counts": {
+    "bush_slow_concealment": 499,
+    "cracked_ground": 762,
+    "flower_decor": 326,
+    "goal": 1,
+    "grass": 14753,
+    "mushroom_decor": 130,
+    "old_overgrown_road": 1739,
+    "ruin_floor": 177,
+    "ruin_wall_blocker": 890,
+    "start": 1,
+    "tree_blocker": 16090,
+    "water_slow": 1496
+  },
+  "collision": {
+    "blocked": {
+      "tiles": 16980,
+      "percent": 46.06,
+      "target_min": 35.0,
+      "target_max": 60.0,
+      "critical_max": 80.0,
+      "status": "ok"
+    },
+    "walkable": {
+      "tiles": 19884,
+      "percent": 53.94
+    }
+  },
+  "movement": {
+    "normal": {
+      "tiles": 17889,
+      "percent": 48.53
+    },
+    "slow": {
+      "tiles": 1995,
+      "percent": 5.41,
+      "target_min": 4.0,
+      "target_max": 14.0,
+      "critical_max": 25.0,
+      "status": "ok"
+    },
+    "blocked": {
+      "tiles": 16980,
+      "percent": 46.06
+    }
+  },
+  "elevation": {
+    "levels": {
+      "-1": 61,
+      "0": 36717,
+      "1": 56,
+      "2": 20,
+      "3": 8,
+      "4": 2
+    },
+    "lowlands": {
+      "tiles": 61,
+      "percent": 0.17,
+      "target_min": 0.1,
+      "target_max": 3.0,
+      "critical_max": 8.0,
+      "status": "ok"
+    },
+    "ground": {
+      "tiles": 36717,
+      "percent": 99.6
+    },
+    "raised": {
+      "tiles": 86,
+      "percent": 0.23,
+      "target_min": 0.1,
+      "target_max": 2.0,
+      "critical_max": 8.0,
+      "status": "ok"
+    },
+    "high": {
+      "tiles": 30,
+      "percent": 0.08,
+      "target_min": 0.05,
+      "target_max": 1.0,
+      "critical_max": 4.0,
+      "status": "ok"
+    },
+    "towers": {
+      "tiles": 10,
+      "percent": 0.03,
+      "target_min": 0.01,
+      "target_max": 0.2,
+      "critical_max": 1.0,
+      "status": "ok"
+    },
+    "landmarks": {
+      "tiles": 2,
+      "percent": 0.01
+    }
+  },
+  "elevation_transitions": {
+    "total": {
+      "count": 256,
+      "target_min": 20.0,
+      "target_max": 300.0,
+      "critical_max": 500.0,
+      "status": "ok"
+    },
+    "by_type": {
+      "bridge_edge": 30,
+      "connector_edge": 24,
+      "steep_transition": 20,
+      "step_down": 91,
+      "step_up": 91
+    },
+    "by_connector": {
+      "bridge": 30,
+      "ladder_or_scripted": 20,
+      "none": 122,
+      "ramp": 12,
+      "slope": 60,
+      "stairs": 12
+    },
+    "movement_allowed": 114,
+    "movement_blocked": 142
+  },
+  "world_structure": {
+    "places": {
+      "total": 7,
+      "target_min": 4.0,
+      "target_max": 35.0,
+      "critical_max": 60.0,
+      "status": "ok"
+    },
+    "routes": {
+      "total": 31,
+      "status": "ok"
+    },
+    "markers": {
+      "total": 32,
+      "status": "ok"
+    },
+    "runtime_objects": {
+      "total": 140,
+      "status": "ok"
+    }
+  },
+  "quality": {
+    "status": "ok"
+  }
+}

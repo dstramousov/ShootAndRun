@@ -1,0 +1,1113 @@
+{
+  "schema_version": "elevation-features-v3",
+  "kind": "elevation_features",
+  "coordinate_space": "tile",
+  "width": 192,
+  "height": 192,
+  "items": [
+    {
+      "id": "elevation_feature_000",
+      "type": "trench",
+      "object_ref": "trench_000",
+      "object_type": "trench",
+      "surface_elevation": -1,
+      "interior_elevation": null,
+      "elevation": -1,
+      "footprint": [
+        [
+          137,
+          82
+        ],
+        [
+          136,
+          82
+        ],
+        [
+          135,
+          82
+        ],
+        [
+          134,
+          82
+        ],
+        [
+          137,
+          81
+        ]
+      ],
+      "transition_hint": "drop_or_step_down",
+      "recommended_transition": "stairs_ramp_or_drop"
+    },
+    {
+      "id": "elevation_feature_001",
+      "type": "trench",
+      "object_ref": "trench_001",
+      "object_type": "trench",
+      "surface_elevation": -1,
+      "interior_elevation": null,
+      "elevation": -1,
+      "footprint": [
+        [
+          10,
+          75
+        ],
+        [
+          10,
+          76
+        ],
+        [
+          10,
+          77
+        ],
+        [
+          10,
+          78
+        ]
+      ],
+      "transition_hint": "drop_or_step_down",
+      "recommended_transition": "stairs_ramp_or_drop"
+    },
+    {
+      "id": "elevation_feature_002",
+      "type": "trench",
+      "object_ref": "trench_002",
+      "object_type": "trench",
+      "surface_elevation": -1,
+      "interior_elevation": null,
+      "elevation": -1,
+      "footprint": [
+        [
+          173,
+          44
+        ],
+        [
+          174,
+          44
+        ],
+        [
+          175,
+          44
+        ],
+        [
+          173,
+          43
+        ]
+      ],
+      "transition_hint": "drop_or_step_down",
+      "recommended_transition": "stairs_ramp_or_drop"
+    },
+    {
+      "id": "elevation_feature_003",
+      "type": "trench",
+      "object_ref": "trench_003",
+      "object_type": "trench",
+      "surface_elevation": -1,
+      "interior_elevation": null,
+      "elevation": -1,
+      "footprint": [
+        [
+          168,
+          80
+        ],
+        [
+          168,
+          81
+        ],
+        [
+          168,
+          82
+        ],
+        [
+          168,
+          83
+        ],
+        [
+          168,
+          84
+        ]
+      ],
+      "transition_hint": "drop_or_step_down",
+      "recommended_transition": "stairs_ramp_or_drop"
+    },
+    {
+      "id": "elevation_feature_004",
+      "type": "trench",
+      "object_ref": "trench_004",
+      "object_type": "trench",
+      "surface_elevation": -1,
+      "interior_elevation": null,
+      "elevation": -1,
+      "footprint": [
+        [
+          166,
+          109
+        ],
+        [
+          167,
+          109
+        ],
+        [
+          168,
+          109
+        ],
+        [
+          169,
+          109
+        ],
+        [
+          170,
+          109
+        ]
+      ],
+      "transition_hint": "drop_or_step_down",
+      "recommended_transition": "stairs_ramp_or_drop"
+    },
+    {
+      "id": "elevation_feature_005",
+      "type": "trench",
+      "object_ref": "trench_005",
+      "object_type": "trench",
+      "surface_elevation": -1,
+      "interior_elevation": null,
+      "elevation": -1,
+      "footprint": [
+        [
+          53,
+          74
+        ],
+        [
+          54,
+          74
+        ],
+        [
+          55,
+          74
+        ],
+        [
+          56,
+          74
+        ],
+        [
+          53,
+          73
+        ],
+        [
+          53,
+          72
+        ]
+      ],
+      "transition_hint": "drop_or_step_down",
+      "recommended_transition": "stairs_ramp_or_drop"
+    },
+    {
+      "id": "elevation_feature_006",
+      "type": "bunker_interior",
+      "object_ref": "buried_bunker_2x2_000",
+      "object_type": "buried_bunker_2x2",
+      "surface_elevation": 0,
+      "interior_elevation": -1,
+      "elevation": 0,
+      "footprint": [
+        [
+          148,
+          41
+        ],
+        [
+          148,
+          42
+        ],
+        [
+          149,
+          41
+        ],
+        [
+          149,
+          42
+        ]
+      ],
+      "transition_hint": "entrance_or_stairs_required",
+      "recommended_transition": "stairs_ramp_or_drop"
+    },
+    {
+      "id": "elevation_feature_007",
+      "type": "bunker_interior",
+      "object_ref": "buried_bunker_2x2_001",
+      "object_type": "buried_bunker_2x2",
+      "surface_elevation": 0,
+      "interior_elevation": -1,
+      "elevation": 0,
+      "footprint": [
+        [
+          13,
+          118
+        ],
+        [
+          13,
+          119
+        ],
+        [
+          14,
+          118
+        ],
+        [
+          14,
+          119
+        ]
+      ],
+      "transition_hint": "entrance_or_stairs_required",
+      "recommended_transition": "stairs_ramp_or_drop"
+    },
+    {
+      "id": "elevation_feature_008",
+      "type": "bunker_interior",
+      "object_ref": "buried_bunker_2x3_000",
+      "object_type": "buried_bunker_2x3",
+      "surface_elevation": 0,
+      "interior_elevation": -1,
+      "elevation": 0,
+      "footprint": [
+        [
+          43,
+          144
+        ],
+        [
+          43,
+          145
+        ],
+        [
+          44,
+          144
+        ],
+        [
+          44,
+          145
+        ],
+        [
+          45,
+          144
+        ],
+        [
+          45,
+          145
+        ]
+      ],
+      "transition_hint": "entrance_or_stairs_required",
+      "recommended_transition": "stairs_ramp_or_drop"
+    },
+    {
+      "id": "elevation_feature_009",
+      "type": "bunker_interior",
+      "object_ref": "buried_bunker_2x3_001",
+      "object_type": "buried_bunker_2x3",
+      "surface_elevation": 0,
+      "interior_elevation": -1,
+      "elevation": 0,
+      "footprint": [
+        [
+          41,
+          19
+        ],
+        [
+          41,
+          20
+        ],
+        [
+          41,
+          21
+        ],
+        [
+          42,
+          19
+        ],
+        [
+          42,
+          20
+        ],
+        [
+          42,
+          21
+        ]
+      ],
+      "transition_hint": "entrance_or_stairs_required",
+      "recommended_transition": "stairs_ramp_or_drop"
+    },
+    {
+      "id": "elevation_feature_010",
+      "type": "pit",
+      "object_ref": "pit_000",
+      "object_type": "pit",
+      "surface_elevation": -1,
+      "interior_elevation": null,
+      "elevation": -1,
+      "footprint": [
+        [
+          111,
+          130
+        ],
+        [
+          111,
+          131
+        ],
+        [
+          112,
+          130
+        ],
+        [
+          112,
+          131
+        ]
+      ],
+      "transition_hint": "drop_or_step_down",
+      "recommended_transition": "stairs_ramp_or_drop"
+    },
+    {
+      "id": "elevation_feature_011",
+      "type": "pit",
+      "object_ref": "pit_001",
+      "object_type": "pit",
+      "surface_elevation": -1,
+      "interior_elevation": null,
+      "elevation": -1,
+      "footprint": [
+        [
+          11,
+          51
+        ],
+        [
+          11,
+          52
+        ],
+        [
+          12,
+          51
+        ],
+        [
+          12,
+          52
+        ]
+      ],
+      "transition_hint": "drop_or_step_down",
+      "recommended_transition": "stairs_ramp_or_drop"
+    },
+    {
+      "id": "elevation_feature_012",
+      "type": "pit",
+      "object_ref": "pit_002",
+      "object_type": "pit",
+      "surface_elevation": -1,
+      "interior_elevation": null,
+      "elevation": -1,
+      "footprint": [
+        [
+          86,
+          174
+        ],
+        [
+          86,
+          175
+        ],
+        [
+          87,
+          174
+        ],
+        [
+          87,
+          175
+        ]
+      ],
+      "transition_hint": "drop_or_step_down",
+      "recommended_transition": "stairs_ramp_or_drop"
+    },
+    {
+      "id": "elevation_feature_013",
+      "type": "raised_berm",
+      "object_ref": "earth_berm_000",
+      "object_type": "earth_berm",
+      "surface_elevation": 1,
+      "interior_elevation": null,
+      "elevation": 1,
+      "footprint": [
+        [
+          105,
+          103
+        ],
+        [
+          105,
+          104
+        ]
+      ],
+      "transition_hint": null,
+      "recommended_transition": "ramp_or_slope"
+    },
+    {
+      "id": "elevation_feature_014",
+      "type": "raised_berm",
+      "object_ref": "earth_berm_001",
+      "object_type": "earth_berm",
+      "surface_elevation": 1,
+      "interior_elevation": null,
+      "elevation": 1,
+      "footprint": [
+        [
+          177,
+          136
+        ],
+        [
+          178,
+          136
+        ]
+      ],
+      "transition_hint": null,
+      "recommended_transition": "ramp_or_slope"
+    },
+    {
+      "id": "elevation_feature_015",
+      "type": "raised_berm",
+      "object_ref": "earth_berm_002",
+      "object_type": "earth_berm",
+      "surface_elevation": 1,
+      "interior_elevation": null,
+      "elevation": 1,
+      "footprint": [
+        [
+          115,
+          83
+        ],
+        [
+          115,
+          84
+        ]
+      ],
+      "transition_hint": null,
+      "recommended_transition": "ramp_or_slope"
+    },
+    {
+      "id": "elevation_feature_016",
+      "type": "raised_berm",
+      "object_ref": "earth_berm_003",
+      "object_type": "earth_berm",
+      "surface_elevation": 1,
+      "interior_elevation": null,
+      "elevation": 1,
+      "footprint": [
+        [
+          106,
+          51
+        ],
+        [
+          107,
+          51
+        ]
+      ],
+      "transition_hint": null,
+      "recommended_transition": "ramp_or_slope"
+    },
+    {
+      "id": "elevation_feature_017",
+      "type": "hill",
+      "object_ref": "hill_000",
+      "object_type": "hill",
+      "surface_elevation": 1,
+      "interior_elevation": null,
+      "elevation": 1,
+      "footprint": [
+        [
+          101,
+          111
+        ],
+        [
+          101,
+          112
+        ],
+        [
+          101,
+          113
+        ],
+        [
+          102,
+          111
+        ],
+        [
+          102,
+          112
+        ],
+        [
+          102,
+          113
+        ],
+        [
+          103,
+          111
+        ],
+        [
+          103,
+          112
+        ],
+        [
+          103,
+          113
+        ]
+      ],
+      "transition_hint": null,
+      "recommended_transition": "ramp_or_slope"
+    },
+    {
+      "id": "elevation_feature_018",
+      "type": "hill",
+      "object_ref": "hill_001",
+      "object_type": "hill",
+      "surface_elevation": 1,
+      "interior_elevation": null,
+      "elevation": 1,
+      "footprint": [
+        [
+          117,
+          121
+        ],
+        [
+          117,
+          122
+        ],
+        [
+          117,
+          123
+        ],
+        [
+          118,
+          121
+        ],
+        [
+          118,
+          122
+        ],
+        [
+          118,
+          123
+        ],
+        [
+          119,
+          121
+        ],
+        [
+          119,
+          122
+        ],
+        [
+          119,
+          123
+        ]
+      ],
+      "transition_hint": null,
+      "recommended_transition": "ramp_or_slope"
+    },
+    {
+      "id": "elevation_feature_019",
+      "type": "hill",
+      "object_ref": "hill_002",
+      "object_type": "hill",
+      "surface_elevation": 1,
+      "interior_elevation": null,
+      "elevation": 1,
+      "footprint": [
+        [
+          168,
+          157
+        ],
+        [
+          168,
+          158
+        ],
+        [
+          168,
+          159
+        ],
+        [
+          169,
+          157
+        ],
+        [
+          169,
+          158
+        ],
+        [
+          169,
+          159
+        ],
+        [
+          170,
+          157
+        ],
+        [
+          170,
+          158
+        ],
+        [
+          170,
+          159
+        ]
+      ],
+      "transition_hint": null,
+      "recommended_transition": "ramp_or_slope"
+    },
+    {
+      "id": "elevation_feature_020",
+      "type": "hill",
+      "object_ref": "hill_003",
+      "object_type": "hill",
+      "surface_elevation": 1,
+      "interior_elevation": null,
+      "elevation": 1,
+      "footprint": [
+        [
+          11,
+          135
+        ],
+        [
+          11,
+          136
+        ],
+        [
+          11,
+          137
+        ],
+        [
+          12,
+          135
+        ],
+        [
+          12,
+          136
+        ],
+        [
+          12,
+          137
+        ],
+        [
+          13,
+          135
+        ],
+        [
+          13,
+          136
+        ],
+        [
+          13,
+          137
+        ]
+      ],
+      "transition_hint": null,
+      "recommended_transition": "ramp_or_slope"
+    },
+    {
+      "id": "elevation_feature_021",
+      "type": "bridge",
+      "object_ref": "wooden_bridge_000",
+      "object_type": "wooden_bridge",
+      "surface_elevation": 2,
+      "interior_elevation": null,
+      "elevation": 2,
+      "footprint": [
+        [
+          61,
+          155
+        ],
+        [
+          62,
+          155
+        ],
+        [
+          63,
+          155
+        ],
+        [
+          64,
+          155
+        ]
+      ],
+      "transition_hint": "bridge",
+      "recommended_transition": "ramp_stairs_or_edge_connector"
+    },
+    {
+      "id": "elevation_feature_022",
+      "type": "bridge",
+      "object_ref": "wooden_bridge_001",
+      "object_type": "wooden_bridge",
+      "surface_elevation": 2,
+      "interior_elevation": null,
+      "elevation": 2,
+      "footprint": [
+        [
+          39,
+          9
+        ],
+        [
+          40,
+          9
+        ],
+        [
+          41,
+          9
+        ],
+        [
+          42,
+          9
+        ]
+      ],
+      "transition_hint": "bridge",
+      "recommended_transition": "ramp_stairs_or_edge_connector"
+    },
+    {
+      "id": "elevation_feature_023",
+      "type": "ramp",
+      "object_ref": "stone_ramp_000",
+      "object_type": "stone_ramp",
+      "surface_elevation": 1,
+      "interior_elevation": null,
+      "elevation": 1,
+      "footprint": [
+        [
+          142,
+          37
+        ],
+        [
+          143,
+          37
+        ]
+      ],
+      "transition_hint": "ramp",
+      "recommended_transition": "ramp"
+    },
+    {
+      "id": "elevation_feature_024",
+      "type": "ramp",
+      "object_ref": "stone_ramp_001",
+      "object_type": "stone_ramp",
+      "surface_elevation": 1,
+      "interior_elevation": null,
+      "elevation": 1,
+      "footprint": [
+        [
+          118,
+          146
+        ],
+        [
+          118,
+          147
+        ]
+      ],
+      "transition_hint": "ramp",
+      "recommended_transition": "ramp"
+    },
+    {
+      "id": "elevation_feature_025",
+      "type": "ramp",
+      "object_ref": "stone_ramp_002",
+      "object_type": "stone_ramp",
+      "surface_elevation": 1,
+      "interior_elevation": null,
+      "elevation": 1,
+      "footprint": [
+        [
+          158,
+          154
+        ],
+        [
+          159,
+          154
+        ]
+      ],
+      "transition_hint": "ramp",
+      "recommended_transition": "ramp"
+    },
+    {
+      "id": "elevation_feature_026",
+      "type": "stairs",
+      "object_ref": "stone_stairs_000",
+      "object_type": "stone_stairs",
+      "surface_elevation": 1,
+      "interior_elevation": null,
+      "elevation": 1,
+      "footprint": [
+        [
+          86,
+          171
+        ],
+        [
+          87,
+          171
+        ]
+      ],
+      "transition_hint": "stairs",
+      "recommended_transition": "stairs"
+    },
+    {
+      "id": "elevation_feature_027",
+      "type": "stairs",
+      "object_ref": "stone_stairs_001",
+      "object_type": "stone_stairs",
+      "surface_elevation": 1,
+      "interior_elevation": null,
+      "elevation": 1,
+      "footprint": [
+        [
+          159,
+          91
+        ],
+        [
+          160,
+          91
+        ]
+      ],
+      "transition_hint": "stairs",
+      "recommended_transition": "stairs"
+    },
+    {
+      "id": "elevation_feature_028",
+      "type": "stairs",
+      "object_ref": "stone_stairs_002",
+      "object_type": "stone_stairs",
+      "surface_elevation": 1,
+      "interior_elevation": null,
+      "elevation": 1,
+      "footprint": [
+        [
+          9,
+          138
+        ],
+        [
+          9,
+          139
+        ]
+      ],
+      "transition_hint": "stairs",
+      "recommended_transition": "stairs"
+    },
+    {
+      "id": "elevation_feature_029",
+      "type": "platform",
+      "object_ref": "ruin_platform_000",
+      "object_type": "ruin_platform",
+      "surface_elevation": 2,
+      "interior_elevation": null,
+      "elevation": 2,
+      "footprint": [
+        [
+          140,
+          82
+        ],
+        [
+          140,
+          83
+        ],
+        [
+          141,
+          82
+        ],
+        [
+          141,
+          83
+        ],
+        [
+          142,
+          82
+        ],
+        [
+          142,
+          83
+        ]
+      ],
+      "transition_hint": "platform",
+      "recommended_transition": "ramp_stairs_or_edge_connector"
+    },
+    {
+      "id": "elevation_feature_030",
+      "type": "platform",
+      "object_ref": "ruin_platform_001",
+      "object_type": "ruin_platform",
+      "surface_elevation": 2,
+      "interior_elevation": null,
+      "elevation": 2,
+      "footprint": [
+        [
+          144,
+          41
+        ],
+        [
+          144,
+          42
+        ],
+        [
+          144,
+          43
+        ],
+        [
+          145,
+          41
+        ],
+        [
+          145,
+          42
+        ],
+        [
+          145,
+          43
+        ]
+      ],
+      "transition_hint": "platform",
+      "recommended_transition": "ramp_stairs_or_edge_connector"
+    },
+    {
+      "id": "elevation_feature_031",
+      "type": "tower",
+      "object_ref": "watchtower_000",
+      "object_type": "watchtower",
+      "surface_elevation": 3,
+      "interior_elevation": null,
+      "elevation": 3,
+      "footprint": [
+        [
+          180,
+          144
+        ],
+        [
+          180,
+          145
+        ],
+        [
+          181,
+          144
+        ],
+        [
+          181,
+          145
+        ]
+      ],
+      "transition_hint": "tower",
+      "recommended_transition": "stairs_ladder_or_scripted"
+    },
+    {
+      "id": "elevation_feature_032",
+      "type": "tower",
+      "object_ref": "watchtower_001",
+      "object_type": "watchtower",
+      "surface_elevation": 3,
+      "interior_elevation": null,
+      "elevation": 3,
+      "footprint": [
+        [
+          53,
+          77
+        ],
+        [
+          53,
+          78
+        ],
+        [
+          54,
+          77
+        ],
+        [
+          54,
+          78
+        ]
+      ],
+      "transition_hint": "tower",
+      "recommended_transition": "stairs_ladder_or_scripted"
+    },
+    {
+      "id": "elevation_feature_033",
+      "type": "special_high_landmark",
+      "object_ref": "ancient_beacon_000",
+      "object_type": "ancient_beacon",
+      "surface_elevation": 4,
+      "interior_elevation": null,
+      "elevation": 4,
+      "footprint": [
+        [
+          136,
+          180
+        ]
+      ],
+      "transition_hint": "special_high_landmark",
+      "recommended_transition": "scripted_or_blocked"
+    },
+    {
+      "id": "elevation_feature_034",
+      "type": "special_high_landmark",
+      "object_ref": "ancient_beacon_001",
+      "object_type": "ancient_beacon",
+      "surface_elevation": 4,
+      "interior_elevation": null,
+      "elevation": 4,
+      "footprint": [
+        [
+          45,
+          45
+        ]
+      ],
+      "transition_hint": "special_high_landmark",
+      "recommended_transition": "scripted_or_blocked"
+    }
+  ],
+  "feature_types": {
+    "pit": "Below-ground depression, usually level -1.",
+    "trench": "Below-ground defensive or traversal structure, usually level -1.",
+    "bunker_interior": "Surface structure with an interior level below ground.",
+    "raised_berm": "Raised earthwork or hill-like local feature, usually level +1.",
+    "hill": "Raised natural high ground, usually level +1.",
+    "bridge": "Raised walkable span crossing an obstacle or lower area, usually level +2.",
+    "ramp": "Smooth traversal connector between nearby levels.",
+    "stairs": "Discrete traversal connector between nearby levels.",
+    "platform": "Constructed or ruin deck high ground, usually level +2.",
+    "tower": "Tall landmark or vantage point, usually level +3.",
+    "special_high_landmark": "Exceptional high point or scripted landmark, usually level +4.",
+    "object_elevation_feature": "Generic object-derived elevation feature."
+  },
+  "v1_completion": {
+    "required_feature_types": [
+      "bridge",
+      "bunker_interior",
+      "hill",
+      "pit",
+      "platform",
+      "raised_berm",
+      "ramp",
+      "special_high_landmark",
+      "stairs",
+      "tower",
+      "trench"
+    ],
+    "feature_types_present": [
+      "bridge",
+      "bunker_interior",
+      "hill",
+      "pit",
+      "platform",
+      "raised_berm",
+      "ramp",
+      "special_high_landmark",
+      "stairs",
+      "tower",
+      "trench"
+    ],
+    "missing_feature_types": []
+  },
+  "summary": {
+    "total": 35,
+    "by_type": {
+      "bridge": 2,
+      "bunker_interior": 4,
+      "hill": 4,
+      "pit": 3,
+      "platform": 2,
+      "raised_berm": 4,
+      "ramp": 3,
+      "special_high_landmark": 2,
+      "stairs": 3,
+      "tower": 2,
+      "trench": 6
+    },
+    "below_ground_count": 13,
+    "raised_count": 22
+  }
+}

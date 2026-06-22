@@ -1,0 +1,33 @@
+INFO: visual_map=output/visual_map/visual_map.json
+INFO: visual_layers=output/visual_map/visual_layers.json
+INFO: visual_objects=output/visual_map/visual_objects.json
+INFO: visual_chunks=output/visual_map/visual_chunks.json
+INFO: preview=output/visual_map/preview.png
+INFO: final_render=output/visual_map/final_render.png
+INFO: Visual density:
+INFO:   objects       63.5 / 1000 tiles [ok, target 40-90]
+INFO:   decorations   41.7 / 1000 tiles [ok, target 35-55]
+INFO:   place          1.4 / place      [ok, target 1-4]
+INFO: 
+INFO: By source:
+INFO:   boundary_visual: 441, decorations: 1538, elevation_visual: 211, place_treatment: 10, runtime: 140
+INFO: 
+INFO: By category:
+INFO:   boundary: 441, elevation: 211, place: 10, road: 481, ruins: 410, runtime: 140, swamp: 647
+INFO: 
+INFO: Top sprites:
+INFO:   boundary.dark_tree_wall: 276
+INFO:   decor.small_stone_01: 170
+INFO:   decor.mud_patch_01: 159
+INFO:   decor.reeds_01: 153
+INFO:   boundary.dense_forest_wall: 132
+INFO: 
+INFO: Autotiling:
+INFO:   fallbacks: 0 [ok]
+INFO:   unmapped terrain: 0 [ok]
+INFO: 
+INFO: Elevation visual:
+INFO:   lowlands: 61, raised: 84, transitions: 64 [ok]
+INFO: 
+INFO: Boundary visual:
+INFO:   markers: 441 [ok]

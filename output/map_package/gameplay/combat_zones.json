@@ -1,0 +1,1471 @@
+{
+  "schema_version": "gameplay-layer-v1",
+  "kind": "combat_zones",
+  "items": [
+    {
+      "id": "safe_start_0",
+      "type": "safe_start",
+      "center": [
+        182,
+        176
+      ],
+      "radius": 10,
+      "difficulty": "none",
+      "enemy_spawns_allowed": false,
+      "cover_point_ids": [
+        "cover_4682",
+        "cover_4709",
+        "cover_4740",
+        "cover_4757",
+        "cover_4683",
+        "cover_4647",
+        "cover_4648",
+        "cover_4741",
+        "cover_4646",
+        "cover_4436",
+        "cover_4456",
+        "cover_4710",
+        "cover_4742",
+        "cover_4758",
+        "cover_4764",
+        "cover_4782"
+      ],
+      "estimated_entrances": [
+        [
+          191,
+          176
+        ],
+        [
+          172,
+          176
+        ],
+        [
+          182,
+          185
+        ],
+        [
+          182,
+          166
+        ],
+        [
+          188,
+          185
+        ],
+        [
+          172,
+          166
+        ]
+      ],
+      "openness": 0.909
+    },
+    {
+      "id": "goal_encounter_0",
+      "type": "goal_encounter",
+      "center": [
+        9,
+        20
+      ],
+      "radius": 12,
+      "difficulty": "high",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_157",
+        "cover_353",
+        "cover_194",
+        "cover_199",
+        "cover_226",
+        "cover_229",
+        "cover_253",
+        "cover_254",
+        "cover_275",
+        "cover_305",
+        "cover_413",
+        "cover_455",
+        "cover_469",
+        "cover_274",
+        "cover_306",
+        "cover_323"
+      ],
+      "estimated_entrances": [
+        [
+          21,
+          20
+        ],
+        [
+          1,
+          20
+        ],
+        [
+          9,
+          32
+        ],
+        [
+          9,
+          12
+        ],
+        [
+          21,
+          32
+        ],
+        [
+          5,
+          32
+        ]
+      ],
+      "openness": 0.829
+    },
+    {
+      "id": "central_ruins_combat_0",
+      "type": "central_ruins_combat",
+      "center": [
+        99,
+        81
+      ],
+      "radius": 20,
+      "difficulty": "high",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_1659",
+        "cover_1773",
+        "cover_1894",
+        "cover_1994",
+        "cover_2029",
+        "cover_2049",
+        "cover_2052",
+        "cover_2078",
+        "cover_2115",
+        "cover_2116",
+        "cover_2156",
+        "cover_2164",
+        "cover_2191",
+        "cover_2221",
+        "cover_2291",
+        "cover_2321"
+      ],
+      "estimated_entrances": [
+        [
+          120,
+          81
+        ],
+        [
+          79,
+          81
+        ],
+        [
+          99,
+          101
+        ],
+        [
+          99,
+          61
+        ],
+        [
+          119,
+          101
+        ],
+        [
+          79,
+          61
+        ]
+      ],
+      "openness": 0.879
+    },
+    {
+      "id": "side_ruin_encounter_0",
+      "type": "side_ruin_encounter",
+      "center": [
+        139,
+        110
+      ],
+      "radius": 11,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_2843",
+        "cover_2818",
+        "cover_2835",
+        "cover_2885",
+        "cover_2699",
+        "cover_2713",
+        "cover_2884",
+        "cover_3170",
+        "cover_3171",
+        "cover_2727",
+        "cover_2778",
+        "cover_2779",
+        "cover_2780",
+        "cover_2781",
+        "cover_2782",
+        "cover_2819"
+      ],
+      "estimated_entrances": [
+        [
+          150,
+          110
+        ],
+        [
+          128,
+          110
+        ],
+        [
+          141,
+          121
+        ],
+        [
+          140,
+          99
+        ],
+        [
+          150,
+          121
+        ],
+        [
+          123,
+          99
+        ]
+      ],
+      "openness": 0.819
+    },
+    {
+      "id": "forest_ambush_0",
+      "type": "forest_ambush",
+      "center": [
+        116,
+        119
+      ],
+      "radius": 9,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_3165",
+        "cover_3194",
+        "cover_3223"
+      ],
+      "estimated_entrances": [
+        [
+          125,
+          119
+        ],
+        [
+          107,
+          119
+        ],
+        [
+          116,
+          128
+        ],
+        [
+          116,
+          110
+        ],
+        [
+          124,
+          128
+        ],
+        [
+          107,
+          110
+        ]
+      ],
+      "openness": 1.0
+    },
+    {
+      "id": "forest_ambush_1",
+      "type": "forest_ambush",
+      "center": [
+        168,
+        109
+      ],
+      "radius": 9,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_3010",
+        "cover_3074",
+        "cover_3089",
+        "cover_3004",
+        "cover_3005",
+        "cover_3071",
+        "cover_3072",
+        "cover_3073",
+        "cover_2982",
+        "cover_3038",
+        "cover_2920",
+        "cover_2945",
+        "cover_3009",
+        "cover_3003",
+        "cover_3006",
+        "cover_3037"
+      ],
+      "estimated_entrances": [
+        [
+          177,
+          109
+        ],
+        [
+          159,
+          109
+        ],
+        [
+          171,
+          115
+        ],
+        [
+          168,
+          100
+        ],
+        [
+          159,
+          104
+        ],
+        [
+          177,
+          100
+        ]
+      ],
+      "openness": 0.829
+    },
+    {
+      "id": "forest_ambush_2",
+      "type": "forest_ambush",
+      "center": [
+        53,
+        74
+      ],
+      "radius": 9,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [],
+      "estimated_entrances": [
+        [
+          62,
+          74
+        ],
+        [
+          44,
+          74
+        ],
+        [
+          53,
+          83
+        ],
+        [
+          53,
+          65
+        ],
+        [
+          59,
+          82
+        ],
+        [
+          47,
+          66
+        ]
+      ],
+      "openness": 1.0
+    },
+    {
+      "id": "forest_ambush_3",
+      "type": "forest_ambush",
+      "center": [
+        118,
+        146
+      ],
+      "radius": 9,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_3817",
+        "cover_3818",
+        "cover_3720",
+        "cover_3889",
+        "cover_3918",
+        "cover_3951",
+        "cover_3721",
+        "cover_3741",
+        "cover_3695",
+        "cover_3740",
+        "cover_3755",
+        "cover_3757",
+        "cover_3771",
+        "cover_3772",
+        "cover_3787",
+        "cover_3788"
+      ],
+      "estimated_entrances": [
+        [
+          125,
+          146
+        ],
+        [
+          111,
+          146
+        ],
+        [
+          118,
+          155
+        ],
+        [
+          118,
+          137
+        ],
+        [
+          112,
+          137
+        ],
+        [
+          124,
+          137
+        ]
+      ],
+      "openness": 0.912
+    },
+    {
+      "id": "side_ruin_encounter_1",
+      "type": "side_ruin_encounter",
+      "center": [
+        173,
+        44
+      ],
+      "radius": 11,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_739",
+        "cover_776",
+        "cover_777",
+        "cover_780",
+        "cover_781",
+        "cover_1080",
+        "cover_1085",
+        "cover_1087",
+        "cover_1088",
+        "cover_1130",
+        "cover_1131",
+        "cover_1132",
+        "cover_1133",
+        "cover_1177",
+        "cover_1178",
+        "cover_1274"
+      ],
+      "estimated_entrances": [
+        [
+          184,
+          44
+        ],
+        [
+          162,
+          44
+        ],
+        [
+          173,
+          55
+        ],
+        [
+          173,
+          33
+        ],
+        [
+          184,
+          55
+        ],
+        [
+          164,
+          36
+        ]
+      ],
+      "openness": 0.83
+    },
+    {
+      "id": "side_ruin_encounter_2",
+      "type": "side_ruin_encounter",
+      "center": [
+        13,
+        118
+      ],
+      "radius": 11,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_2863",
+        "cover_2983",
+        "cover_2984",
+        "cover_3077",
+        "cover_3094",
+        "cover_3261",
+        "cover_3288",
+        "cover_2949",
+        "cover_2950",
+        "cover_2951",
+        "cover_2952",
+        "cover_2985",
+        "cover_2986",
+        "cover_3013",
+        "cover_3014",
+        "cover_3015"
+      ],
+      "estimated_entrances": [
+        [
+          24,
+          118
+        ],
+        [
+          2,
+          118
+        ],
+        [
+          13,
+          129
+        ],
+        [
+          13,
+          108
+        ],
+        [
+          24,
+          129
+        ],
+        [
+          24,
+          107
+        ]
+      ],
+      "openness": 0.879
+    },
+    {
+      "id": "forest_ambush_4",
+      "type": "forest_ambush",
+      "center": [
+        42,
+        19
+      ],
+      "radius": 9,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_203",
+        "cover_234",
+        "cover_204",
+        "cover_235",
+        "cover_259",
+        "cover_159",
+        "cover_258"
+      ],
+      "estimated_entrances": [
+        [
+          51,
+          19
+        ],
+        [
+          33,
+          19
+        ],
+        [
+          42,
+          28
+        ],
+        [
+          42,
+          10
+        ],
+        [
+          51,
+          28
+        ],
+        [
+          34,
+          12
+        ]
+      ],
+      "openness": 1.0
+    },
+    {
+      "id": "side_ruin_encounter_3",
+      "type": "side_ruin_encounter",
+      "center": [
+        46,
+        180
+      ],
+      "radius": 11,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_4526",
+        "cover_4593",
+        "cover_4690",
+        "cover_4693",
+        "cover_4748",
+        "cover_4754",
+        "cover_4761",
+        "cover_4766",
+        "cover_4821",
+        "cover_4587",
+        "cover_4657",
+        "cover_4691",
+        "cover_4746",
+        "cover_4788",
+        "cover_4473",
+        "cover_4474"
+      ],
+      "estimated_entrances": [
+        [
+          57,
+          180
+        ],
+        [
+          38,
+          180
+        ],
+        [
+          46,
+          187
+        ],
+        [
+          46,
+          169
+        ],
+        [
+          57,
+          188
+        ],
+        [
+          35,
+          169
+        ]
+      ],
+      "openness": 0.732
+    },
+    {
+      "id": "side_ruin_encounter_4",
+      "type": "side_ruin_encounter",
+      "center": [
+        46,
+        44
+      ],
+      "radius": 11,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_823",
+        "cover_824",
+        "cover_912",
+        "cover_993",
+        "cover_1018",
+        "cover_1019",
+        "cover_1020",
+        "cover_1021",
+        "cover_1022",
+        "cover_1023",
+        "cover_1024",
+        "cover_1025",
+        "cover_1065",
+        "cover_1066",
+        "cover_1067",
+        "cover_1068"
+      ],
+      "estimated_entrances": [
+        [
+          57,
+          44
+        ],
+        [
+          35,
+          44
+        ],
+        [
+          46,
+          52
+        ],
+        [
+          46,
+          33
+        ],
+        [
+          57,
+          55
+        ],
+        [
+          35,
+          33
+        ]
+      ],
+      "openness": 0.717
+    },
+    {
+      "id": "side_ruin_encounter_5",
+      "type": "side_ruin_encounter",
+      "center": [
+        10,
+        137
+      ],
+      "radius": 11,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_3497",
+        "cover_3564",
+        "cover_3590",
+        "cover_3679",
+        "cover_3684",
+        "cover_3701",
+        "cover_3702",
+        "cover_3703",
+        "cover_3727",
+        "cover_3765",
+        "cover_3780",
+        "cover_3491",
+        "cover_3677",
+        "cover_3746",
+        "cover_3446",
+        "cover_3447"
+      ],
+      "estimated_entrances": [
+        [
+          21,
+          137
+        ],
+        [
+          3,
+          137
+        ],
+        [
+          10,
+          144
+        ],
+        [
+          10,
+          126
+        ],
+        [
+          21,
+          148
+        ],
+        [
+          2,
+          126
+        ]
+      ],
+      "openness": 0.727
+    },
+    {
+      "id": "side_ruin_encounter_6",
+      "type": "side_ruin_encounter",
+      "center": [
+        168,
+        82
+      ],
+      "radius": 11,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_2172",
+        "cover_2173",
+        "cover_2208",
+        "cover_2038",
+        "cover_2064",
+        "cover_2141",
+        "cover_2142",
+        "cover_2143",
+        "cover_2144",
+        "cover_2174",
+        "cover_2207",
+        "cover_2209",
+        "cover_2210",
+        "cover_2211",
+        "cover_2233",
+        "cover_2234"
+      ],
+      "estimated_entrances": [
+        [
+          179,
+          82
+        ],
+        [
+          157,
+          82
+        ],
+        [
+          168,
+          93
+        ],
+        [
+          168,
+          71
+        ],
+        [
+          179,
+          93
+        ],
+        [
+          157,
+          71
+        ]
+      ],
+      "openness": 0.917
+    },
+    {
+      "id": "side_ruin_encounter_7",
+      "type": "side_ruin_encounter",
+      "center": [
+        115,
+        83
+      ],
+      "radius": 11,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_2164",
+        "cover_2191",
+        "cover_2416",
+        "cover_2448",
+        "cover_1957",
+        "cover_2001",
+        "cover_2002",
+        "cover_2034",
+        "cover_2035",
+        "cover_2059",
+        "cover_2060",
+        "cover_2061",
+        "cover_2062",
+        "cover_2080",
+        "cover_2081",
+        "cover_2082"
+      ],
+      "estimated_entrances": [
+        [
+          126,
+          83
+        ],
+        [
+          104,
+          83
+        ],
+        [
+          115,
+          94
+        ],
+        [
+          115,
+          72
+        ],
+        [
+          123,
+          94
+        ],
+        [
+          104,
+          72
+        ]
+      ],
+      "openness": 0.891
+    },
+    {
+      "id": "side_ruin_encounter_8",
+      "type": "side_ruin_encounter",
+      "center": [
+        10,
+        77
+      ],
+      "radius": 11,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_1763",
+        "cover_1917",
+        "cover_1939",
+        "cover_2040",
+        "cover_2068",
+        "cover_2148",
+        "cover_2242",
+        "cover_2243",
+        "cover_2276",
+        "cover_1865",
+        "cover_1866",
+        "cover_1867",
+        "cover_1868",
+        "cover_1869",
+        "cover_1914",
+        "cover_1915"
+      ],
+      "estimated_entrances": [
+        [
+          21,
+          77
+        ],
+        [
+          0,
+          77
+        ],
+        [
+          10,
+          88
+        ],
+        [
+          10,
+          66
+        ],
+        [
+          15,
+          88
+        ],
+        [
+          4,
+          68
+        ]
+      ],
+      "openness": 0.879
+    },
+    {
+      "id": "side_ruin_encounter_9",
+      "type": "side_ruin_encounter",
+      "center": [
+        86,
+        174
+      ],
+      "radius": 11,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_4286",
+        "cover_4287",
+        "cover_4317",
+        "cover_4318",
+        "cover_4337",
+        "cover_4346",
+        "cover_4415",
+        "cover_4668",
+        "cover_4293",
+        "cover_4292",
+        "cover_4209",
+        "cover_4227",
+        "cover_4247",
+        "cover_4210",
+        "cover_4288",
+        "cover_4289"
+      ],
+      "estimated_entrances": [
+        [
+          97,
+          174
+        ],
+        [
+          75,
+          174
+        ],
+        [
+          86,
+          185
+        ],
+        [
+          87,
+          165
+        ],
+        [
+          97,
+          185
+        ],
+        [
+          75,
+          163
+        ]
+      ],
+      "openness": 0.823
+    },
+    {
+      "id": "side_ruin_encounter_10",
+      "type": "side_ruin_encounter",
+      "center": [
+        148,
+        41
+      ],
+      "radius": 11,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_618",
+        "cover_729",
+        "cover_771",
+        "cover_797",
+        "cover_798",
+        "cover_804",
+        "cover_963",
+        "cover_735",
+        "cover_805",
+        "cover_839",
+        "cover_640",
+        "cover_645",
+        "cover_668",
+        "cover_669",
+        "cover_692",
+        "cover_730"
+      ],
+      "estimated_entrances": [
+        [
+          159,
+          41
+        ],
+        [
+          137,
+          41
+        ],
+        [
+          148,
+          52
+        ],
+        [
+          148,
+          33
+        ],
+        [
+          160,
+          50
+        ],
+        [
+          138,
+          52
+        ]
+      ],
+      "openness": 0.758
+    },
+    {
+      "id": "side_ruin_encounter_11",
+      "type": "side_ruin_encounter",
+      "center": [
+        82,
+        20
+      ],
+      "radius": 11,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_124",
+        "cover_312",
+        "cover_403",
+        "cover_421",
+        "cover_125",
+        "cover_211",
+        "cover_212",
+        "cover_288",
+        "cover_289",
+        "cover_290",
+        "cover_291",
+        "cover_292",
+        "cover_293",
+        "cover_294",
+        "cover_311",
+        "cover_313"
+      ],
+      "estimated_entrances": [
+        [
+          93,
+          20
+        ],
+        [
+          71,
+          20
+        ],
+        [
+          82,
+          31
+        ],
+        [
+          82,
+          11
+        ],
+        [
+          93,
+          31
+        ],
+        [
+          71,
+          11
+        ]
+      ],
+      "openness": 0.891
+    },
+    {
+      "id": "side_ruin_encounter_12",
+      "type": "side_ruin_encounter",
+      "center": [
+        106,
+        14
+      ],
+      "radius": 11,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_83",
+        "cover_145",
+        "cover_172",
+        "cover_316",
+        "cover_143",
+        "cover_144",
+        "cover_181",
+        "cover_297",
+        "cover_359",
+        "cover_383",
+        "cover_173",
+        "cover_174",
+        "cover_175",
+        "cover_176",
+        "cover_177",
+        "cover_178"
+      ],
+      "estimated_entrances": [
+        [
+          95,
+          14
+        ],
+        [
+          106,
+          25
+        ],
+        [
+          117,
+          25
+        ],
+        [
+          93,
+          25
+        ]
+      ],
+      "openness": 0.577
+    },
+    {
+      "id": "side_ruin_encounter_13",
+      "type": "side_ruin_encounter",
+      "center": [
+        43,
+        144
+      ],
+      "radius": 11,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_3799",
+        "cover_3814",
+        "cover_3829",
+        "cover_3847",
+        "cover_3849",
+        "cover_3851",
+        "cover_3853",
+        "cover_3856",
+        "cover_3857",
+        "cover_3858",
+        "cover_3859",
+        "cover_3882",
+        "cover_3883",
+        "cover_3884",
+        "cover_3885",
+        "cover_3967"
+      ],
+      "estimated_entrances": [
+        [
+          54,
+          144
+        ],
+        [
+          32,
+          144
+        ],
+        [
+          43,
+          155
+        ],
+        [
+          43,
+          133
+        ],
+        [
+          54,
+          155
+        ],
+        [
+          32,
+          133
+        ]
+      ],
+      "openness": 0.857
+    },
+    {
+      "id": "side_ruin_encounter_14",
+      "type": "side_ruin_encounter",
+      "center": [
+        11,
+        50
+      ],
+      "radius": 11,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_904",
+        "cover_926",
+        "cover_927",
+        "cover_932",
+        "cover_1011",
+        "cover_1142",
+        "cover_1287",
+        "cover_1291",
+        "cover_1292",
+        "cover_1334",
+        "cover_1335",
+        "cover_1373",
+        "cover_1374",
+        "cover_1380",
+        "cover_1455",
+        "cover_1520"
+      ],
+      "estimated_entrances": [
+        [
+          22,
+          50
+        ],
+        [
+          0,
+          50
+        ],
+        [
+          11,
+          61
+        ],
+        [
+          11,
+          39
+        ],
+        [
+          22,
+          61
+        ],
+        [
+          1,
+          39
+        ]
+      ],
+      "openness": 0.811
+    },
+    {
+      "id": "side_ruin_encounter_15",
+      "type": "side_ruin_encounter",
+      "center": [
+        78,
+        137
+      ],
+      "radius": 11,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_3508",
+        "cover_3580",
+        "cover_3694",
+        "cover_3718",
+        "cover_3482",
+        "cover_3669",
+        "cover_3693",
+        "cover_3717",
+        "cover_3420",
+        "cover_3435",
+        "cover_3738",
+        "cover_3754",
+        "cover_3479",
+        "cover_3480",
+        "cover_3481",
+        "cover_3507"
+      ],
+      "estimated_entrances": [
+        [
+          83,
+          137
+        ],
+        [
+          67,
+          137
+        ],
+        [
+          75,
+          148
+        ],
+        [
+          77,
+          130
+        ],
+        [
+          67,
+          126
+        ],
+        [
+          67,
+          148
+        ]
+      ],
+      "openness": 0.54
+    },
+    {
+      "id": "side_ruin_encounter_16",
+      "type": "side_ruin_encounter",
+      "center": [
+        54,
+        116
+      ],
+      "radius": 11,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_3096",
+        "cover_3162",
+        "cover_3187",
+        "cover_3188",
+        "cover_3220",
+        "cover_3240",
+        "cover_3275",
+        "cover_3293",
+        "cover_3321",
+        "cover_3334",
+        "cover_3354",
+        "cover_2961",
+        "cover_2962",
+        "cover_2963",
+        "cover_2964",
+        "cover_2994"
+      ],
+      "estimated_entrances": [
+        [
+          65,
+          116
+        ],
+        [
+          43,
+          116
+        ],
+        [
+          54,
+          127
+        ],
+        [
+          54,
+          105
+        ],
+        [
+          65,
+          127
+        ],
+        [
+          43,
+          105
+        ]
+      ],
+      "openness": 0.917
+    },
+    {
+      "id": "side_ruin_encounter_17",
+      "type": "side_ruin_encounter",
+      "center": [
+        106,
+        52
+      ],
+      "radius": 11,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_1033",
+        "cover_1257",
+        "cover_1303",
+        "cover_1316",
+        "cover_1350",
+        "cover_1396",
+        "cover_1405",
+        "cover_1444",
+        "cover_1468",
+        "cover_1469",
+        "cover_1470",
+        "cover_1498",
+        "cover_1662",
+        "cover_1663",
+        "cover_1694",
+        "cover_1347"
+      ],
+      "estimated_entrances": [
+        [
+          117,
+          52
+        ],
+        [
+          95,
+          52
+        ],
+        [
+          106,
+          63
+        ],
+        [
+          106,
+          41
+        ],
+        [
+          117,
+          63
+        ],
+        [
+          95,
+          41
+        ]
+      ],
+      "openness": 0.762
+    },
+    {
+      "id": "side_ruin_encounter_18",
+      "type": "side_ruin_encounter",
+      "center": [
+        137,
+        82
+      ],
+      "radius": 11,
+      "difficulty": "medium",
+      "enemy_spawns_allowed": true,
+      "cover_point_ids": [
+        "cover_2166",
+        "cover_2199",
+        "cover_2385",
+        "cover_2387",
+        "cover_2419",
+        "cover_2340",
+        "cover_2386",
+        "cover_2420",
+        "cover_2451",
+        "cover_2130",
+        "cover_2131",
+        "cover_2132",
+        "cover_2133",
+        "cover_2134",
+        "cover_2135",
+        "cover_2136"
+      ],
+      "estimated_entrances": [
+        [
+          148,
+          82
+        ],
+        [
+          126,
+          82
+        ],
+        [
+          138,
+          93
+        ],
+        [
+          137,
+          71
+        ],
+        [
+          148,
+          93
+        ],
+        [
+          126,
+          74
+        ]
+      ],
+      "openness": 0.792
+    }
+  ]
+}

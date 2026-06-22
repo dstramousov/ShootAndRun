@@ -1,0 +1,6 @@
+Asset registry preview: OK
+  entries: 266
+  tiles:   92
+  sprites: 174
+  json:    output/visual_map/debug/asset_registry_report.json
+  html:    output/visual_map/debug/asset_registry_preview.html

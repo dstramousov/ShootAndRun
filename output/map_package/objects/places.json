@@ -1,0 +1,689 @@
+{
+  "schema_version": "places-v3",
+  "kind": "places",
+  "items": [
+    {
+      "schema_version": "places-v3",
+      "id": "abandoned_checkpoint_000",
+      "type": "abandoned_checkpoint",
+      "role": "roadside_landmark",
+      "story_role": "old_control_point",
+      "encounter_type": "roadside_encounter",
+      "danger_level": 0.45,
+      "loot_level": 0.35,
+      "center": {
+        "x": 80,
+        "y": 138
+      },
+      "radius": 6,
+      "bounds": {
+        "min_x": 78,
+        "min_y": 137,
+        "max_x": 81,
+        "max_y": 142
+      },
+      "entrances": [
+        {
+          "id": "entrance_north",
+          "side": "north",
+          "position": {
+            "x": 80,
+            "y": 136
+          }
+        },
+        {
+          "id": "entrance_south",
+          "side": "south",
+          "position": {
+            "x": 80,
+            "y": 143
+          }
+        },
+        {
+          "id": "entrance_west",
+          "side": "west",
+          "position": {
+            "x": 77,
+            "y": 140
+          }
+        },
+        {
+          "id": "entrance_east",
+          "side": "east",
+          "position": {
+            "x": 82,
+            "y": 140
+          }
+        }
+      ],
+      "object_ids": [
+        "old_checkpoint_000",
+        "scrap_pile_000"
+      ],
+      "object_refs": [
+        {
+          "id": "old_checkpoint_000",
+          "type": "old_checkpoint",
+          "center": {
+            "x": 80,
+            "y": 138
+          }
+        },
+        {
+          "id": "scrap_pile_000",
+          "type": "scrap_pile",
+          "center": {
+            "x": 78,
+            "y": 142
+          }
+        }
+      ],
+      "anchor_object_id": "old_checkpoint_000",
+      "marker_refs": [],
+      "route_refs": [],
+      "connected_places": [
+        "dangerous_lowland_004",
+        "bunker_outer_area_002",
+        "ambush_clearing_001"
+      ],
+      "tags": [
+        "checkpoint",
+        "human_trace",
+        "roadside"
+      ],
+      "biome_tags": [
+        "abandoned",
+        "ruins"
+      ]
+    },
+    {
+      "schema_version": "places-v3",
+      "id": "ambush_clearing_001",
+      "type": "ambush_clearing",
+      "role": "ambush_location",
+      "story_role": "natural_ambush_spot",
+      "encounter_type": "flank_attack",
+      "danger_level": 0.7,
+      "loot_level": 0.15,
+      "center": {
+        "x": 118,
+        "y": 83
+      },
+      "radius": 6,
+      "bounds": {
+        "min_x": 114,
+        "min_y": 81,
+        "max_x": 130,
+        "max_y": 83
+      },
+      "entrances": [
+        {
+          "id": "entrance_north",
+          "side": "north",
+          "position": {
+            "x": 122,
+            "y": 80
+          }
+        },
+        {
+          "id": "entrance_south",
+          "side": "south",
+          "position": {
+            "x": 122,
+            "y": 84
+          }
+        },
+        {
+          "id": "entrance_west",
+          "side": "west",
+          "position": {
+            "x": 113,
+            "y": 82
+          }
+        },
+        {
+          "id": "entrance_east",
+          "side": "east",
+          "position": {
+            "x": 131,
+            "y": 82
+          }
+        }
+      ],
+      "object_ids": [
+        "bush_thicket_000",
+        "fallen_log_008",
+        "stone_chunk_013"
+      ],
+      "object_refs": [
+        {
+          "id": "bush_thicket_000",
+          "type": "bush_thicket",
+          "center": {
+            "x": 118,
+            "y": 83
+          }
+        },
+        {
+          "id": "fallen_log_008",
+          "type": "fallen_log",
+          "center": {
+            "x": 130,
+            "y": 82
+          }
+        },
+        {
+          "id": "stone_chunk_013",
+          "type": "stone_chunk",
+          "center": {
+            "x": 114,
+            "y": 81
+          }
+        }
+      ],
+      "anchor_object_id": "bush_thicket_000",
+      "marker_refs": [],
+      "route_refs": [],
+      "connected_places": [
+        "old_defensive_position_005",
+        "dangerous_lowland_004",
+        "bunker_inner_area_003"
+      ],
+      "tags": [
+        "ambush",
+        "clearing",
+        "cover",
+        "forest"
+      ],
+      "biome_tags": [
+        "forest",
+        "open_field"
+      ]
+    },
+    {
+      "schema_version": "places-v3",
+      "id": "bunker_outer_area_002",
+      "type": "bunker_outer_area",
+      "role": "defensive_site",
+      "story_role": "bunker_approach",
+      "encounter_type": "bunker_encounter",
+      "danger_level": 0.75,
+      "loot_level": 0.35,
+      "center": {
+        "x": 44,
+        "y": 144
+      },
+      "radius": 6,
+      "bounds": {
+        "min_x": 41,
+        "min_y": 143,
+        "max_x": 45,
+        "max_y": 145
+      },
+      "entrances": [
+        {
+          "id": "entrance_north",
+          "side": "north",
+          "position": {
+            "x": 43,
+            "y": 142
+          }
+        },
+        {
+          "id": "entrance_south",
+          "side": "south",
+          "position": {
+            "x": 43,
+            "y": 146
+          }
+        },
+        {
+          "id": "entrance_west",
+          "side": "west",
+          "position": {
+            "x": 40,
+            "y": 144
+          }
+        },
+        {
+          "id": "entrance_east",
+          "side": "east",
+          "position": {
+            "x": 46,
+            "y": 144
+          }
+        }
+      ],
+      "object_ids": [
+        "buried_bunker_2x3_000",
+        "stone_chunk_012"
+      ],
+      "object_refs": [
+        {
+          "id": "buried_bunker_2x3_000",
+          "type": "buried_bunker_2x3",
+          "center": {
+            "x": 44,
+            "y": 144
+          }
+        },
+        {
+          "id": "stone_chunk_012",
+          "type": "stone_chunk",
+          "center": {
+            "x": 41,
+            "y": 143
+          }
+        }
+      ],
+      "anchor_object_id": "buried_bunker_2x3_000",
+      "marker_refs": [],
+      "route_refs": [],
+      "connected_places": [
+        "abandoned_checkpoint_000",
+        "dangerous_lowland_004",
+        "ambush_clearing_001"
+      ],
+      "tags": [
+        "bunker",
+        "defense",
+        "human_trace",
+        "outer_area"
+      ],
+      "biome_tags": [
+        "abandoned",
+        "ruins"
+      ]
+    },
+    {
+      "schema_version": "places-v3",
+      "id": "bunker_inner_area_003",
+      "type": "bunker_inner_area",
+      "role": "below_ground_site",
+      "story_role": "bunker_interior",
+      "encounter_type": "bunker_room",
+      "danger_level": 0.65,
+      "loot_level": 0.5,
+      "center": {
+        "x": 148,
+        "y": 42
+      },
+      "radius": 6,
+      "bounds": {
+        "min_x": 148,
+        "min_y": 41,
+        "max_x": 149,
+        "max_y": 42
+      },
+      "entrances": [
+        {
+          "id": "entrance_north",
+          "side": "north",
+          "position": {
+            "x": 148,
+            "y": 40
+          }
+        },
+        {
+          "id": "entrance_south",
+          "side": "south",
+          "position": {
+            "x": 148,
+            "y": 43
+          }
+        },
+        {
+          "id": "entrance_west",
+          "side": "west",
+          "position": {
+            "x": 147,
+            "y": 42
+          }
+        },
+        {
+          "id": "entrance_east",
+          "side": "east",
+          "position": {
+            "x": 150,
+            "y": 42
+          }
+        }
+      ],
+      "object_ids": [
+        "buried_bunker_2x2_000"
+      ],
+      "object_refs": [
+        {
+          "id": "buried_bunker_2x2_000",
+          "type": "buried_bunker_2x2",
+          "center": {
+            "x": 148,
+            "y": 42
+          }
+        }
+      ],
+      "anchor_object_id": "buried_bunker_2x2_000",
+      "marker_refs": [],
+      "route_refs": [],
+      "connected_places": [
+        "old_defensive_position_005",
+        "small_ruin_site_006",
+        "ambush_clearing_001"
+      ],
+      "tags": [
+        "below_floor",
+        "bunker",
+        "defense",
+        "interior"
+      ],
+      "biome_tags": [
+        "abandoned",
+        "underground"
+      ]
+    },
+    {
+      "schema_version": "places-v3",
+      "id": "dangerous_lowland_004",
+      "type": "dangerous_lowland",
+      "role": "hazard_low_ground",
+      "story_role": "hazardous_lowland",
+      "encounter_type": "hazard_encounter",
+      "danger_level": 0.8,
+      "loot_level": 0.2,
+      "center": {
+        "x": 112,
+        "y": 130
+      },
+      "radius": 6,
+      "bounds": {
+        "min_x": 111,
+        "min_y": 119,
+        "max_x": 113,
+        "max_y": 131
+      },
+      "entrances": [
+        {
+          "id": "entrance_north",
+          "side": "north",
+          "position": {
+            "x": 112,
+            "y": 118
+          }
+        },
+        {
+          "id": "entrance_south",
+          "side": "south",
+          "position": {
+            "x": 112,
+            "y": 132
+          }
+        },
+        {
+          "id": "entrance_west",
+          "side": "west",
+          "position": {
+            "x": 110,
+            "y": 125
+          }
+        },
+        {
+          "id": "entrance_east",
+          "side": "east",
+          "position": {
+            "x": 114,
+            "y": 125
+          }
+        }
+      ],
+      "object_ids": [
+        "pit_000",
+        "bush_thicket_013"
+      ],
+      "object_refs": [
+        {
+          "id": "pit_000",
+          "type": "pit",
+          "center": {
+            "x": 112,
+            "y": 130
+          }
+        },
+        {
+          "id": "bush_thicket_013",
+          "type": "bush_thicket",
+          "center": {
+            "x": 113,
+            "y": 119
+          }
+        }
+      ],
+      "anchor_object_id": "pit_000",
+      "marker_refs": [],
+      "route_refs": [],
+      "connected_places": [
+        "abandoned_checkpoint_000",
+        "ambush_clearing_001",
+        "old_defensive_position_005"
+      ],
+      "tags": [
+        "danger",
+        "hazard",
+        "low_ground",
+        "traversal"
+      ],
+      "biome_tags": [
+        "swamp",
+        "wet"
+      ]
+    },
+    {
+      "schema_version": "places-v3",
+      "id": "old_defensive_position_005",
+      "type": "old_defensive_position",
+      "role": "defensive_site",
+      "story_role": "old_battle_position",
+      "encounter_type": "defensive_encounter",
+      "danger_level": 0.65,
+      "loot_level": 0.4,
+      "center": {
+        "x": 136,
+        "y": 82
+      },
+      "radius": 6,
+      "bounds": {
+        "min_x": 134,
+        "min_y": 81,
+        "max_x": 137,
+        "max_y": 85
+      },
+      "entrances": [
+        {
+          "id": "entrance_north",
+          "side": "north",
+          "position": {
+            "x": 136,
+            "y": 80
+          }
+        },
+        {
+          "id": "entrance_south",
+          "side": "south",
+          "position": {
+            "x": 136,
+            "y": 86
+          }
+        },
+        {
+          "id": "entrance_west",
+          "side": "west",
+          "position": {
+            "x": 133,
+            "y": 83
+          }
+        },
+        {
+          "id": "entrance_east",
+          "side": "east",
+          "position": {
+            "x": 138,
+            "y": 83
+          }
+        }
+      ],
+      "object_ids": [
+        "trench_000",
+        "ammo_cache_002"
+      ],
+      "object_refs": [
+        {
+          "id": "trench_000",
+          "type": "trench",
+          "center": {
+            "x": 136,
+            "y": 82
+          }
+        },
+        {
+          "id": "ammo_cache_002",
+          "type": "ammo_cache",
+          "center": {
+            "x": 136,
+            "y": 85
+          }
+        }
+      ],
+      "anchor_object_id": "trench_000",
+      "marker_refs": [],
+      "route_refs": [],
+      "connected_places": [
+        "ambush_clearing_001",
+        "bunker_inner_area_003",
+        "dangerous_lowland_004"
+      ],
+      "tags": [
+        "defense",
+        "human_trace",
+        "trench"
+      ],
+      "biome_tags": [
+        "open_field",
+        "ruins"
+      ]
+    },
+    {
+      "schema_version": "places-v3",
+      "id": "small_ruin_site_006",
+      "type": "small_ruin_site",
+      "role": "ruin_micro_location",
+      "story_role": "minor_ruins",
+      "encounter_type": "ruin_encounter",
+      "danger_level": 0.45,
+      "loot_level": 0.35,
+      "center": {
+        "x": 108,
+        "y": 12
+      },
+      "radius": 6,
+      "bounds": {
+        "min_x": 104,
+        "min_y": 12,
+        "max_x": 108,
+        "max_y": 12
+      },
+      "entrances": [
+        {
+          "id": "entrance_north",
+          "side": "north",
+          "position": {
+            "x": 106,
+            "y": 11
+          }
+        },
+        {
+          "id": "entrance_south",
+          "side": "south",
+          "position": {
+            "x": 106,
+            "y": 13
+          }
+        },
+        {
+          "id": "entrance_west",
+          "side": "west",
+          "position": {
+            "x": 103,
+            "y": 12
+          }
+        },
+        {
+          "id": "entrance_east",
+          "side": "east",
+          "position": {
+            "x": 109,
+            "y": 12
+          }
+        }
+      ],
+      "object_ids": [
+        "scrap_pile_001",
+        "rusted_barrel_006"
+      ],
+      "object_refs": [
+        {
+          "id": "scrap_pile_001",
+          "type": "scrap_pile",
+          "center": {
+            "x": 108,
+            "y": 12
+          }
+        },
+        {
+          "id": "rusted_barrel_006",
+          "type": "rusted_barrel",
+          "center": {
+            "x": 104,
+            "y": 12
+          }
+        }
+      ],
+      "anchor_object_id": "scrap_pile_001",
+      "marker_refs": [],
+      "route_refs": [],
+      "connected_places": [
+        "bunker_inner_area_003",
+        "ambush_clearing_001",
+        "old_defensive_position_005"
+      ],
+      "tags": [
+        "human_trace",
+        "ruin",
+        "scrap"
+      ],
+      "biome_tags": [
+        "abandoned",
+        "ruins"
+      ]
+    }
+  ],
+  "summary": {
+    "total": 7,
+    "by_type": {
+      "abandoned_checkpoint": 1,
+      "ambush_clearing": 1,
+      "bunker_inner_area": 1,
+      "bunker_outer_area": 1,
+      "dangerous_lowland": 1,
+      "old_defensive_position": 1,
+      "small_ruin_site": 1
+    },
+    "by_encounter_type": {
+      "bunker_encounter": 1,
+      "bunker_room": 1,
+      "defensive_encounter": 1,
+      "flank_attack": 1,
+      "hazard_encounter": 1,
+      "roadside_encounter": 1,
+      "ruin_encounter": 1
+    }
+  }
+}

@@ -1,0 +1,155 @@
+2026-06-22 13:43:04,077 INFO top_down_worldgen.cli: CLI args config=configs/default.json out=output render=False debug_layers=False tile_size_px=16 log_file=None verbose=False
+2026-06-22 13:43:04,077 INFO top_down_worldgen.cli: START cli.main
+2026-06-22 13:43:04,077 INFO top_down_worldgen.pipeline: Pipeline requested config=configs/default.json output_map=output tile_size_px=16 render=False debug_images=False
+2026-06-22 13:43:04,077 INFO top_down_worldgen.pipeline: START pipeline.load_config config_path=configs/default.json
+2026-06-22 13:43:04,077 INFO top_down_worldgen.config: START PublicConfig.from_file path=configs/default.json
+2026-06-22 13:43:04,077 INFO top_down_worldgen.utils.json_io: START read_json path=configs/default.json
+2026-06-22 13:43:04,077 INFO top_down_worldgen.utils.json_io: DONE read_json duration_ms=0.05 keys=8 generation_tuning_count=11
+2026-06-22 13:43:04,077 INFO top_down_worldgen.config: DONE PublicConfig.from_file duration_ms=0.12 seed=random resolved_seed=11073698844260551338 map_width_tiles=192 map_height_tiles=192 chunk_width_tiles=16 chunk_height_tiles=16 biome_profile=forest_ruins objective_profile=clear_map generation_tuning={'water_scale': 5.0, 'water_patch_count_scale': 1.0, 'water_patch_size_scale': 2.0, 'water_patch_density': 0.62, 'forest_scale': 1.0, 'open_space_scale': 1.0, 'ruins_scale': 1.0, 'buildings_scale': 1.0, 'road_width_scale': 1.0, 'decoration_scale': 1.0, 'bunker_scale': 1.0}
+2026-06-22 13:43:04,077 INFO top_down_worldgen.pipeline: DONE pipeline.load_config duration_ms=0.17 seed=random resolved_seed=11073698844260551338 map_width_tiles=192 map_height_tiles=192 chunk_width_tiles=16 chunk_height_tiles=16 biome_profile=forest_ruins objective_profile=clear_map generation_tuning={'water_scale': 5.0, 'water_patch_count_scale': 1.0, 'water_patch_size_scale': 2.0, 'water_patch_density': 0.62, 'forest_scale': 1.0, 'open_space_scale': 1.0, 'ruins_scale': 1.0, 'buildings_scale': 1.0, 'road_width_scale': 1.0, 'decoration_scale': 1.0, 'bunker_scale': 1.0}
+2026-06-22 13:43:04,077 INFO top_down_worldgen.pipeline: START pipeline.prepare_outputs output_target=output
+2026-06-22 13:43:04,077 INFO top_down_worldgen.config: START PublicConfig.write_engine_config path=output/_engine_config.json
+2026-06-22 13:43:04,077 INFO top_down_worldgen.utils.json_io: START write_json path=output/_engine_config.json
+2026-06-22 13:43:04,077 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.08 keys=7 generation_tuning_count=11 bytes=524
+2026-06-22 13:43:04,077 INFO top_down_worldgen.config: DONE PublicConfig.write_engine_config duration_ms=0.13 field_count=7
+2026-06-22 13:43:04,077 INFO top_down_worldgen.pipeline: DONE pipeline.prepare_outputs duration_ms=0.26 output_dir=output generated_map=output/generated_map.txt engine_config=output/_engine_config.json
+2026-06-22 13:43:04,077 INFO top_down_worldgen.pipeline: START pipeline.legacy_engine
+2026-06-22 13:43:04,078 INFO top_down_worldgen.legacy_runner: START LegacyEngineRunner.run engine_path=/home/user/projects/TopDownMapGen_v0.0.75_clean/top_down_worldgen/legacy/engine.py config_path=output/_engine_config.json map_out=output/generated_map.txt tactical_out=output/_raw_tactical_map.json
+2026-06-22 13:43:05,759 INFO top_down_worldgen.legacy_runner: DONE LegacyEngineRunner.run duration_ms=1681.53 returncode=0 stdout_chars=0 stderr_chars=17323
+2026-06-22 13:43:05,759 INFO top_down_worldgen.pipeline: DONE pipeline.legacy_engine duration_ms=1681.72 map_rows=192 map_cols=192 raw_tactical_map=output/_raw_tactical_map.json
+2026-06-22 13:43:05,759 INFO top_down_worldgen.pipeline: START pipeline.tactical_processing
+2026-06-22 13:43:05,759 INFO top_down_worldgen.utils.json_io: START read_json path=output/_raw_tactical_map.json
+2026-06-22 13:43:05,766 INFO top_down_worldgen.utils.json_io: DONE read_json duration_ms=6.77 keys=10 map_count=3 movement_costs_count=10 combat_zones_count=27 cover_points_count=4856 notes_count=6 choke_points_count=32 flank_routes_count=36 enemy_spawn_zones_count=75 connectivity_repair_count=6
+2026-06-22 13:43:05,766 INFO top_down_worldgen.utils.json_io: START write_json path=output/_raw_tactical_map.json
+2026-06-22 13:43:05,797 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=30.37 keys=13 map_count=3 movement_costs_count=10 combat_zones_count=27 cover_points_count=4856 notes_count=6 choke_points_count=32 flank_routes_count=36 enemy_spawn_zones_count=75 connectivity_repair_count=6 bytes=1404529
+2026-06-22 13:43:05,797 INFO top_down_worldgen.pipeline: Raw tactical counts combat_zones=27 cover_points=4856 choke_points=32 flank_routes=36 enemy_spawn_zones=75
+2026-06-22 13:43:05,797 INFO top_down_worldgen.tactical.optimizer: START TacticalOptimizer.optimize raw_combat_zones=27 raw_cover_points=4856 raw_flank_routes=36 raw_enemy_spawn_zones=75
+2026-06-22 13:43:05,800 INFO top_down_worldgen.tactical.optimizer: DONE TacticalOptimizer.optimize duration_ms=3.69 selected_cover_points=480 selected_combat_zones=27 selected_flank_routes=22 selected_enemy_spawn_zones=75
+2026-06-22 13:43:05,800 INFO top_down_worldgen.tactical.fallback: START FallbackPositionBuilder.add combat_zones=27 cover_points=480 flank_routes=22
+2026-06-22 13:43:05,817 INFO top_down_worldgen.tactical.fallback: DONE FallbackPositionBuilder.add duration_ms=16.04 fallback_positions=70 runtime_fallback_positions=70
+2026-06-22 13:43:05,817 INFO top_down_worldgen.tactical.objectives: START ObjectiveProfileSelector.apply objective_profile=clear_map
+2026-06-22 13:43:05,817 INFO top_down_worldgen.tactical.objectives: DONE ObjectiveProfileSelector.apply duration_ms=0.08 objective_profile=clear_map candidate_spawn_count=75 selected_spawn_count=26 spawn_selection_policy=one_initial_spawn_per_combat_zone
+2026-06-22 13:43:08,511 INFO top_down_worldgen.utils.json_io: START write_json path=output/tactical_map.json
+2026-06-22 13:43:08,523 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=11.27 keys=20 map_count=6 movement_costs_count=10 combat_zones_count=27 cover_points_count=480 choke_points_count=32 flank_routes_count=22 enemy_spawn_zones_count=26 optimization_count=7 connectivity_repair_count=6 fallback_positions_count=70 fallback_generation_count=3 objective_count=4 runtime_object_schema_count=7 elevation_count=2 runtime_objects_count=140 runtime_objects_summary_count=4 place_schema_count=8 places_count=7 places_summary_count=3 bytes=524939
+2026-06-22 13:43:08,523 INFO top_down_worldgen.utils.json_io: START write_json path=output/tactical_map_debug.json
+2026-06-22 13:43:08,527 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=4.63 keys=18 map_count=3 movement_costs_count=10 combat_zones_count=27 cover_points_count=480 notes_count=6 choke_points_count=32 flank_routes_count=22 enemy_spawn_zones_count=26 connectivity_repair_count=6 optimization_count=7 fallback_positions_count=70 fallback_generation_count=3 enemy_spawn_candidates_count=75 objective_count=4 bytes=240024
+2026-06-22 13:43:08,531 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/layers/tile_grid.json
+2026-06-22 13:43:08,531 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.22 keys=8 tile_legend_count=12 tile_counts_count=12 rows_count=192 bytes=39057
+2026-06-22 13:43:08,531 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/layers/terrain.json
+2026-06-22 13:43:08,536 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=4.70 keys=7 type_by_tile_count=12 rows_count=192 bytes=728299
+2026-06-22 13:43:08,536 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/layers/movement_costs.json
+2026-06-22 13:43:08,536 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.07 keys=6 costs_by_tile_count=10 costs_by_type_count=10 bytes=498
+2026-06-22 13:43:08,536 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/layers/collision.json
+2026-06-22 13:43:08,536 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.16 keys=12 legend_count=2 rows_count=192 blocked_tile_types_count=2 passable_tile_types_count=10 legacy_blocked_tiles_count=2 legacy_passable_tiles_count=10 bytes=39105
+2026-06-22 13:43:08,536 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/layers/elevation.json
+2026-06-22 13:43:08,537 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.31 keys=5 elevation_count=2 bytes=10673
+2026-06-22 13:43:08,537 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/layers/start_goal.json
+2026-06-22 13:43:08,537 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.05 keys=7 start_count=2 goal_count=2 bytes=220
+2026-06-22 13:43:08,554 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/markers.json
+2026-06-22 13:43:08,554 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.25 keys=5 items_count=32 summary_count=2 bytes=10450
+2026-06-22 13:43:08,554 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/runtime_grids.json
+2026-06-22 13:43:08,591 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=36.80 keys=6 grids_count=7 bytes=2249449
+2026-06-22 13:43:08,592 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/world_graph.json
+2026-06-22 13:43:08,592 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.61 keys=15 nodes_count=39 edges_count=30 main_path_count=4 side_paths_count=4 dead_ends_count=0 secret_areas_count=11 summary_count=9 quality_count=8 notes_count=3 bytes=32245
+2026-06-22 13:43:08,593 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/routes.json
+2026-06-22 13:43:08,593 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.38 keys=7 items_count=31 route_types_count=5 summary_count=2 notes_count=2 bytes=16508
+2026-06-22 13:43:08,594 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/gameplay_zones.json
+2026-06-22 13:43:08,595 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.81 keys=9 items_count=20 zone_types_count=11 summary_count=5 notes_count=2 bytes=31981
+2026-06-22 13:43:08,604 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/elevation_model.json
+2026-06-22 13:43:08,606 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=2.54 keys=13 levels_count=6 transition_types_count=5 v1_completion_count=9 rules_count=4 features_count=35 transitions_count=256 summary_count=9 notes_count=2 bytes=155406
+2026-06-22 13:43:08,606 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/elevation_features.json
+2026-06-22 13:43:08,607 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.46 keys=9 items_count=35 feature_types_count=12 v1_completion_count=3 summary_count=4 bytes=21610
+2026-06-22 13:43:08,607 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/elevation_transitions.json
+2026-06-22 13:43:08,609 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=2.35 keys=10 items_count=256 transition_types_count=5 connector_types_count=6 v1_completion_count=4 summary_count=5 bytes=132625
+2026-06-22 13:43:08,609 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/gameplay/combat_zones.json
+2026-06-22 13:43:08,610 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.52 keys=3 items_count=27 bytes=25068
+2026-06-22 13:43:08,610 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/gameplay/cover_points.json
+2026-06-22 13:43:08,612 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=1.70 keys=3 items_count=480 bytes=67614
+2026-06-22 13:43:08,612 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/gameplay/choke_points.json
+2026-06-22 13:43:08,612 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.21 keys=3 items_count=32 bytes=6365
+2026-06-22 13:43:08,612 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/gameplay/flank_routes.json
+2026-06-22 13:43:08,612 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.44 keys=3 items_count=22 bytes=15787
+2026-06-22 13:43:08,612 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/gameplay/enemy_spawn_zones.json
+2026-06-22 13:43:08,613 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.23 keys=3 items_count=26 bytes=9646
+2026-06-22 13:43:08,613 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/gameplay/fallback_positions.json
+2026-06-22 13:43:08,613 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.52 keys=3 items_count=70 bytes=24020
+2026-06-22 13:43:08,613 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/objects/runtime_objects.json
+2026-06-22 13:43:08,618 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=4.84 keys=4 items_count=140 summary_count=4 bytes=255363
+2026-06-22 13:43:08,618 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/objects/places.json
+2026-06-22 13:43:08,619 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.36 keys=4 items_count=7 summary_count=3 bytes=14513
+2026-06-22 13:43:08,619 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/catalogs/tile_types.json
+2026-06-22 13:43:08,619 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.09 keys=3 types_count=12 bytes=2228
+2026-06-22 13:43:08,619 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/catalogs/object_types.json
+2026-06-22 13:43:08,621 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=1.10 keys=3 types_count=32 bytes=61975
+2026-06-22 13:43:08,621 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/render/render_profile.json
+2026-06-22 13:43:08,621 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.07 keys=8 dimensions_count=3 draw_order_count=6 inputs_count=6 notes_count=2 bytes=885
+2026-06-22 13:43:08,621 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/render/tile_render_hints.json
+2026-06-22 13:43:08,621 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.08 keys=4 hints_count=12 fallback_count=3 bytes=3092
+2026-06-22 13:43:08,621 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/render/object_render_hints.json
+2026-06-22 13:43:08,621 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.21 keys=4 hints_count=32 fallback_count=5 bytes=20928
+2026-06-22 13:43:08,621 INFO top_down_worldgen.utils.json_io: START write_json path=output/map_package/map.json
+2026-06-22 13:43:08,621 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.09 keys=25 generation_tuning_count=11 dimensions_count=3 coordinates_count=4 points_count=2 layers_count=6 gameplay_count=6 objects_count=2 catalogs_count=2 render_count=3 legacy_outputs_count=3 bytes=2447
+2026-06-22 13:43:08,622 INFO top_down_worldgen.pipeline: DONE pipeline.tactical_processing duration_ms=2862.61 runtime_combat_zones=27 runtime_cover_points=480 runtime_choke_points=32 runtime_flank_routes=22 runtime_enemy_spawn_zones=26 runtime_fallback_positions=70 runtime_objects=140 runtime_object_types=32 places=7 place_types=7 elevation_cells=147
+2026-06-22 13:43:08,622 INFO top_down_worldgen.pipeline: Render skipped by CLI flag
+2026-06-22 13:43:08,622 INFO top_down_worldgen.pipeline: START pipeline.write_metrics metrics_path=output/metrics.txt
+2026-06-22 13:43:08,622 INFO top_down_worldgen.pipeline: DONE pipeline.write_metrics duration_ms=0.05 metrics_count=36
+2026-06-22 13:43:08,622 INFO top_down_worldgen.pipeline: START pipeline.write_object_catalog object_catalog_path=output/object_catalog.md
+2026-06-22 13:43:08,622 INFO top_down_worldgen.pipeline: DONE pipeline.write_object_catalog duration_ms=0.29 runtime_object_types=32 place_types=7 size_bytes=12262
+2026-06-22 13:43:08,686 INFO top_down_worldgen.pipeline: START pipeline.write_validation_report validation_report_path=output/validation_report.json
+2026-06-22 13:43:08,686 INFO top_down_worldgen.utils.json_io: START write_json path=output/validation_report.json
+2026-06-22 13:43:08,687 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.15 keys=6 checks_count=124 errors_count=0 warnings_count=2 metadata_count=4 bytes=6129
+2026-06-22 13:43:08,687 INFO top_down_worldgen.pipeline: DONE pipeline.write_validation_report duration_ms=0.21 status=passed_with_warnings checks=124 errors=0 warnings=2
+2026-06-22 13:43:08,688 INFO top_down_worldgen.pipeline: START pipeline.write_manifest manifest_path=output/_manifest.json
+2026-06-22 13:43:08,688 INFO top_down_worldgen.utils.json_io: START write_json path=output/_manifest.json
+2026-06-22 13:43:08,688 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.41 keys=18 versions_count=4 generation_tuning_count=11 dimensions_count=3 timings_ms_count=4 render_count=2 debug_layers_count=3 enabled_layers_count=0 validation_summary_count=4 primary_outputs_count=32 debug_outputs_count=4 files_count=37 metrics_count=36 bytes=28624
+2026-06-22 13:43:08,688 INFO top_down_worldgen.pipeline: DONE pipeline.write_manifest duration_ms=0.46 files=37 primary_outputs=32 debug_outputs=4
+2026-06-22 13:43:08,688 INFO top_down_worldgen.pipeline: Pipeline completed total_time_ms=4544.96
+2026-06-22 13:43:08,689 INFO top_down_worldgen.cli: DONE cli.main duration_ms=4612.33
+2026-06-22 13:43:08,689 INFO top_down_worldgen.cli: Output root: output
+2026-06-22 13:43:08,689 INFO top_down_worldgen.cli: Generated map: output/generated_map.txt
+2026-06-22 13:43:08,689 INFO top_down_worldgen.cli: Runtime tactical map: output/tactical_map.json
+2026-06-22 13:43:08,689 INFO top_down_worldgen.cli: Debug tactical map: output/tactical_map_debug.json
+2026-06-22 13:43:08,689 INFO top_down_worldgen.cli: Generation manifest: output/_manifest.json
+2026-06-22 13:43:08,689 INFO top_down_worldgen.utils.json_io: START read_json path=output/map_package/map.json
+2026-06-22 13:43:08,689 INFO top_down_worldgen.utils.json_io: DONE read_json duration_ms=0.05 keys=25 generation_tuning_count=11 dimensions_count=3 coordinates_count=4 points_count=2 layers_count=6 gameplay_count=6 objects_count=2 catalogs_count=2 render_count=3 legacy_outputs_count=3
+2026-06-22 13:43:08,689 INFO top_down_worldgen.utils.json_io: START read_json path=output/map_package/layers/terrain.json
+2026-06-22 13:43:08,691 INFO top_down_worldgen.utils.json_io: DONE read_json duration_ms=1.33 keys=7 type_by_tile_count=12 rows_count=192
+2026-06-22 13:43:08,691 INFO top_down_worldgen.utils.json_io: START read_json path=output/map_package/runtime_grids.json
+2026-06-22 13:43:08,699 INFO top_down_worldgen.utils.json_io: DONE read_json duration_ms=7.93 keys=6 grids_count=7
+2026-06-22 13:43:08,699 INFO top_down_worldgen.utils.json_io: START read_json path=output/map_package/objects/places.json
+2026-06-22 13:43:08,699 INFO top_down_worldgen.utils.json_io: DONE read_json duration_ms=0.12 keys=4 items_count=7 summary_count=3
+2026-06-22 13:43:08,699 INFO top_down_worldgen.utils.json_io: START read_json path=output/map_package/routes.json
+2026-06-22 13:43:08,699 INFO top_down_worldgen.utils.json_io: DONE read_json duration_ms=0.08 keys=7 items_count=31 route_types_count=5 summary_count=2 notes_count=2
+2026-06-22 13:43:08,699 INFO top_down_worldgen.utils.json_io: START read_json path=output/map_package/markers.json
+2026-06-22 13:43:08,699 INFO top_down_worldgen.utils.json_io: DONE read_json duration_ms=0.06 keys=5 items_count=32 summary_count=2
+2026-06-22 13:43:08,699 INFO top_down_worldgen.utils.json_io: START read_json path=output/map_package/objects/runtime_objects.json
+2026-06-22 13:43:08,700 INFO top_down_worldgen.utils.json_io: DONE read_json duration_ms=0.98 keys=4 items_count=140 summary_count=4
+2026-06-22 13:43:08,700 INFO top_down_worldgen.utils.json_io: START read_json path=output/map_package/elevation_transitions.json
+2026-06-22 13:43:08,701 INFO top_down_worldgen.utils.json_io: DONE read_json duration_ms=0.55 keys=10 items_count=256 transition_types_count=5 connector_types_count=6 v1_completion_count=4 summary_count=5
+2026-06-22 13:43:08,711 INFO top_down_worldgen.utils.json_io: START write_json path=output/world_density_report.json
+2026-06-22 13:43:08,711 INFO top_down_worldgen.utils.json_io: DONE write_json duration_ms=0.19 keys=11 map_count=5 terrain_count=5 terrain_counts_count=12 collision_count=2 movement_count=3 elevation_count=7 elevation_transitions_count=5 world_structure_count=4 quality_count=1 bytes=3861
+2026-06-22 13:43:08,711 INFO top_down_worldgen.cli: World density report: output/world_density_report.json
+2026-06-22 13:43:08,711 INFO top_down_worldgen.cli: World density:
+2026-06-22 13:43:08,711 INFO top_down_worldgen.cli:   map: 192 x 192 = 36864 tiles
+2026-06-22 13:43:08,711 INFO top_down_worldgen.cli:   terrain:
+2026-06-22 13:43:08,711 INFO top_down_worldgen.cli:     forest         16589 tiles =  45.0% [ok, target 35-55]
+2026-06-22 13:43:08,711 INFO top_down_worldgen.cli:     road            1739 tiles =   4.7% [ok, target 3-8]
+2026-06-22 13:43:08,711 INFO top_down_worldgen.cli:     swamp           1496 tiles =   4.1% [ok, target 2-7]
+2026-06-22 13:43:08,712 INFO top_down_worldgen.cli:     ruins           1067 tiles =   2.9% [ok, target 2-8]
+2026-06-22 13:43:08,712 INFO top_down_worldgen.cli:     open_ground    15973 tiles =  43.3% [ok, target 30-55]
+2026-06-22 13:43:08,712 INFO top_down_worldgen.cli:   collision:
+2026-06-22 13:43:08,712 INFO top_down_worldgen.cli:     blocked        16980 tiles =  46.1% [ok, target 35-60]
+2026-06-22 13:43:08,712 INFO top_down_worldgen.cli:   movement:
+2026-06-22 13:43:08,712 INFO top_down_worldgen.cli:     slow            1995 tiles =   5.4% [ok, target 4-14]
+2026-06-22 13:43:08,712 INFO top_down_worldgen.cli:   elevation:
+2026-06-22 13:43:08,712 INFO top_down_worldgen.cli:     lowlands -1       61 tiles =   0.2% [ok, target 0.1-3]
+2026-06-22 13:43:08,712 INFO top_down_worldgen.cli:     raised 1+         86 tiles =   0.2% [ok, target 0.1-2]
+2026-06-22 13:43:08,712 INFO top_down_worldgen.cli:     high 2+           30 tiles =   0.1% [ok, target 0.05-1]
+2026-06-22 13:43:08,712 INFO top_down_worldgen.cli:     towers 3+         10 tiles =   0.0% [ok, target 0.01-0.2]
+2026-06-22 13:43:08,712 INFO top_down_worldgen.cli:   elevation transitions:
+2026-06-22 13:43:08,712 INFO top_down_worldgen.cli:     total              256 [ok, target 20-300]
+2026-06-22 13:43:08,712 INFO top_down_worldgen.cli:   world structure:
+2026-06-22 13:43:08,712 INFO top_down_worldgen.cli:     places               7 [ok, target 4-35]
+2026-06-22 13:43:08,712 INFO top_down_worldgen.cli:     routes              31 [ok]
+2026-06-22 13:43:08,712 INFO top_down_worldgen.cli:     markers             32 [ok]
+2026-06-22 13:43:08,712 INFO top_down_worldgen.cli:     runtime objects    140 [ok]

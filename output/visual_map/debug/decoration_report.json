@@ -1,0 +1,55 @@
+{
+  "schema_version": "visual-debug-decoration-report-v1",
+  "kind": "visual_debug_decoration_report",
+  "source_layer": "terrain_base",
+  "rules_enabled": true,
+  "summary": {
+    "total": 1538,
+    "by_rule": {
+      "road_end_debris": 105,
+      "road_influence_edge_grass": 220,
+      "road_influence_stones": 99,
+      "road_overgrown_patches": 57,
+      "ruin_floor_mossy_stones": 18,
+      "ruin_floor_rubble": 32,
+      "ruin_influence_cracked_ground": 149,
+      "ruin_wall_debris": 211,
+      "swamp_edge_reeds": 226,
+      "swamp_fill_mud": 9,
+      "swamp_influence_mud_edge": 100,
+      "swamp_influence_reeds_sparse": 8,
+      "swamp_influence_wet_grass": 181,
+      "swamp_isolated_reeds": 123
+    },
+    "by_sprite_id": {
+      "decor.broken_block_01": 55,
+      "decor.broken_plank_01": 60,
+      "decor.cracked_stone_01": 64,
+      "decor.cracked_stone_02": 9,
+      "decor.dead_branch_01": 36,
+      "decor.fallen_bricks_01": 88,
+      "decor.mossy_stone_01": 65,
+      "decor.mud_patch_01": 159,
+      "decor.mud_patch_02": 35,
+      "decor.reeds_01": 153,
+      "decor.reeds_02": 76,
+      "decor.reeds_03": 2,
+      "decor.road_dirt_noise_01": 18,
+      "decor.road_grass_tuft_01": 121,
+      "decor.road_grass_tuft_02": 74,
+      "decor.ruin_rubble_01": 71,
+      "decor.ruin_rubble_02": 13,
+      "decor.small_stone_01": 170,
+      "decor.small_stone_02": 83,
+      "decor.wet_grass_01": 125,
+      "decor.wet_grass_02": 61
+    },
+    "skipped": {
+      "blocked_terrain": 892,
+      "chance_miss": 20789
+    }
+  },
+  "quality": {
+    "status": "ok"
+  }
+}

@@ -1,0 +1,948 @@
+{
+  "schema_version": "generation-manifest-v39",
+  "versions": {
+    "generator": "0.0.75",
+    "pipeline": "pipeline-v1",
+    "schemas": {
+      "manifest": "generation-manifest-v39",
+      "ascii_map": "ascii-map-v1",
+      "tactical_map": "tactical-map-v0.32",
+      "tactical_debug": "tactical-debug-v0.20",
+      "raw_tactical_map": "raw-tactical-map-v1",
+      "validation_report": "validation-report-v35",
+      "runtime_objects": "runtime-objects-v13",
+      "places": "places-v3",
+      "object_catalog": "object-catalog-v3",
+      "metrics": "metrics-text-v1",
+      "engine_config": "legacy-engine-config-v2",
+      "png_layer": "png-layer-v1",
+      "map_package": "map-package-v1",
+      "map_package_map": "map-package-map-v11",
+      "tile_grid_layer": "tile-grid-layer-v1",
+      "terrain_layer": "terrain-layer-v1",
+      "movement_layer": "movement-layer-v1",
+      "collision_layer": "collision-layer-v2",
+      "elevation_layer": "elevation-layer-v1",
+      "elevation_model": "elevation-model-v5",
+      "elevation_features": "elevation-features-v3",
+      "elevation_transitions": "elevation-transitions-v4",
+      "start_goal_layer": "start-goal-layer-v1",
+      "gameplay_layer": "gameplay-layer-v1",
+      "object_instances": "object-instances-v4",
+      "tile_types_catalog": "tile-types-catalog-v1",
+      "object_types_catalog": "object-types-catalog-v5",
+      "render_profile": "render-profile-v1",
+      "tile_render_hints": "tile-render-hints-v1",
+      "object_render_hints": "object-render-hints-v5",
+      "markers": "markers-v1",
+      "runtime_grids": "runtime-grids-v1",
+      "world_graph": "world-graph-v2",
+      "routes": "routes-v1",
+      "gameplay_zones": "gameplay-zones-v1"
+    },
+    "debug": "debug-layers-v2"
+  },
+  "seed": "random",
+  "resolved_seed": 11073698844260551338,
+  "profile": "clear_map",
+  "generation_tuning": {
+    "water_scale": 5.0,
+    "water_patch_count_scale": 1.0,
+    "water_patch_size_scale": 2.0,
+    "water_patch_density": 0.62,
+    "forest_scale": 1.0,
+    "open_space_scale": 1.0,
+    "ruins_scale": 1.0,
+    "buildings_scale": 1.0,
+    "road_width_scale": 1.0,
+    "decoration_scale": 1.0,
+    "bunker_scale": 1.0
+  },
+  "dimensions": {
+    "width_tiles": 192,
+    "height_tiles": 192,
+    "tile_size_px": 16
+  },
+  "generation_time_ms": 4544.96,
+  "timings_ms": {
+    "engine": 1681.77,
+    "tactical": 2862.65,
+    "render": 0.0,
+    "total": 4544.96
+  },
+  "render": {
+    "enabled": false,
+    "debug_images_enabled": false
+  },
+  "debug_layers": {
+    "enabled": false,
+    "available": [
+      "combat",
+      "cover",
+      "choke",
+      "flank",
+      "spawn",
+      "fallback",
+      "runtime_objects",
+      "all"
+    ],
+    "generated": []
+  },
+  "enabled_layers": [],
+  "validation_summary": {
+    "status": "passed_with_warnings",
+    "checks": {
+      "ascii_map_exists": true,
+      "ascii_map_non_empty": true,
+      "ascii_map_rectangular": true,
+      "dimensions_match": true,
+      "tactical_map_exists": true,
+      "tactical_debug_exists": true,
+      "tile_grid_embedded": true,
+      "metrics_exists": true,
+      "object_catalog_exists": true,
+      "map_package_index_exists": true,
+      "map_package_markers_exists": true,
+      "map_package_runtime_grids_exists": true,
+      "map_package_world_graph_exists": true,
+      "map_package_routes_exists": true,
+      "map_package_gameplay_zones_exists": true,
+      "map_package_elevation_model_exists": true,
+      "map_package_elevation_features_exists": true,
+      "map_package_elevation_transitions_exists": true,
+      "map_package_tile_grid_exists": true,
+      "map_package_terrain_exists": true,
+      "map_package_movement_costs_exists": true,
+      "map_package_collision_exists": true,
+      "map_package_elevation_exists": true,
+      "map_package_start_goal_exists": true,
+      "map_package_gameplay_exists": true,
+      "map_package_objects_exist": true,
+      "map_package_catalogs_exist": true,
+      "map_package_render_hints_exist": true,
+      "single_start_exists": true,
+      "single_goal_exists": true,
+      "tile_grid_matches_dimensions": true,
+      "tile_counts_match_grid": true,
+      "combat_zones_non_empty": true,
+      "enemy_spawns_match_allowed_zones": true,
+      "fallbacks_have_zone_refs": true,
+      "flank_routes_have_waypoints": true,
+      "zone_cover_refs_valid": true,
+      "runtime_objects_non_empty": true,
+      "runtime_objects_have_unique_ids": true,
+      "runtime_objects_inside_map": true,
+      "runtime_objects_have_valid_types": true,
+      "runtime_objects_have_valid_cover": true,
+      "runtime_objects_have_valid_heights": true,
+      "runtime_objects_have_valid_elevation": true,
+      "runtime_objects_have_footprints": true,
+      "runtime_objects_have_collision_footprints": true,
+      "runtime_objects_have_visual_bounds": true,
+      "runtime_objects_have_pivots": true,
+      "runtime_objects_have_interaction_shapes": true,
+      "runtime_objects_have_sort_anchors": true,
+      "runtime_objects_have_draw_layers": true,
+      "runtime_objects_have_occlusion_hints": true,
+      "runtime_object_collision_footprints_inside_map": true,
+      "runtime_objects_have_collision_profiles": true,
+      "runtime_objects_have_combat_properties": true,
+      "cover_values_in_range": true,
+      "concealment_values_in_range": true,
+      "trench_objects_have_stance_hints": true,
+      "bunker_objects_have_firing_ports": true,
+      "explosive_objects_tagged": true,
+      "loot_objects_tagged": true,
+      "runtime_objects_do_not_overlap_start_goal": true,
+      "runtime_objects_do_not_overlap": true,
+      "runtime_objects_avoid_blocked_tiles": true,
+      "runtime_objects_counts_within_limits": true,
+      "interest_points_non_empty": true,
+      "ammo_caches_within_limits": true,
+      "medkit_caches_within_limits": true,
+      "interest_points_inside_map": true,
+      "interest_points_do_not_overlap": true,
+      "interest_points_avoid_start_goal": true,
+      "interest_points_do_not_overlap_cover": true,
+      "trenches_non_empty": true,
+      "trenches_within_limits": true,
+      "trench_cells_have_negative_elevation": true,
+      "trench_footprints_inside_map": true,
+      "trenches_do_not_overlap_start_goal": true,
+      "trenches_do_not_overlap_blocked_tiles": true,
+      "elevation_cells_match_trench_footprints": true,
+      "trench_shapes_valid": true,
+      "trench_footprints_connected": true,
+      "l_shaped_trenches_have_corner": true,
+      "landmarks_within_limits": true,
+      "landmarks_inside_map": true,
+      "landmarks_do_not_overlap": true,
+      "landmarks_avoid_start_goal": true,
+      "landmarks_min_distance": true,
+      "elevation_cells_inside_map": true,
+      "elevation_levels_valid": true,
+      "places_non_empty": true,
+      "places_have_unique_ids": true,
+      "places_have_valid_types": true,
+      "places_have_valid_object_refs": true,
+      "places_have_v2_metadata": true,
+      "places_have_bounds": true,
+      "places_have_entrances": true,
+      "places_have_connections": true,
+      "places_inside_map": true,
+      "places_counts_within_limits": true,
+      "places_min_distance": true,
+      "map_package_files_have_schema_versions": true,
+      "map_package_dimensions_match_layers": true,
+      "map_package_runtime_grids_have_required_grids": true,
+      "map_package_runtime_grids_match_dimensions": true,
+      "map_package_markers_inside_map": true,
+      "map_package_start_goal_markers_match_layer": true,
+      "map_package_start_goal_not_blocked": true,
+      "map_package_runtime_object_refs_valid": true,
+      "map_package_places_reference_existing_objects": true,
+      "map_package_places_reference_existing_markers": true,
+      "map_package_places_entrances_inside_map": true,
+      "map_package_world_graph_refs_valid": true,
+      "map_package_world_graph_main_path_valid": true,
+      "map_package_routes_refs_valid": true,
+      "map_package_gameplay_zones_valid": true,
+      "map_package_route_waypoints_inside_map": true,
+      "map_package_elevation_model_valid": true,
+      "map_package_elevation_features_valid": true,
+      "map_package_elevation_transitions_valid": true,
+      "map_package_height_grid_levels_valid": true,
+      "map_package_elevation_transitions_match_height_grid": true,
+      "map_package_elevation_transitions_have_movement_rules": true,
+      "map_package_start_goal_elevation_reachable": true,
+      "map_package_main_path_elevation_reachable": false
+    },
+    "errors": [],
+    "warnings": [
+      {
+        "code": "tactical_points_near_map_edge",
+        "level": "warning",
+        "details": {
+          "cover_points_near_edge": 4,
+          "choke_points_near_edge": 0,
+          "enemy_spawns_near_edge": 0,
+          "fallbacks_near_edge": 1
+        }
+      },
+      {
+        "code": "quality.map_package_main_path_elevation_reachable",
+        "level": "warning",
+        "message": "Soft validation check failed: map_package_main_path_elevation_reachable"
+      }
+    ]
+  },
+  "validation_report": "validation_report.json",
+  "primary_outputs": [
+    {
+      "path": "generated_map.txt",
+      "kind": "ascii_map",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "ascii-map-v1",
+      "size_bytes": 37056
+    },
+    {
+      "path": "tactical_map.json",
+      "kind": "tactical_map",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "tactical-map-v0.32",
+      "size_bytes": 524939
+    },
+    {
+      "path": "metrics.txt",
+      "kind": "metrics",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "metrics-text-v1",
+      "size_bytes": 2370
+    },
+    {
+      "path": "validation_report.json",
+      "kind": "validation_report",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "validation-report-v35",
+      "size_bytes": 6129
+    },
+    {
+      "path": "map_package/map.json",
+      "kind": "map_package:index",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "map-package-map-v11",
+      "size_bytes": 2447
+    },
+    {
+      "path": "map_package/markers.json",
+      "kind": "map_package:markers",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "markers-v1",
+      "size_bytes": 10450
+    },
+    {
+      "path": "map_package/runtime_grids.json",
+      "kind": "map_package:runtime_grids",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "runtime-grids-v1",
+      "size_bytes": 2249449
+    },
+    {
+      "path": "map_package/world_graph.json",
+      "kind": "map_package:world_graph",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "world-graph-v2",
+      "size_bytes": 32245
+    },
+    {
+      "path": "map_package/routes.json",
+      "kind": "map_package:routes",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "routes-v1",
+      "size_bytes": 16508
+    },
+    {
+      "path": "map_package/gameplay_zones.json",
+      "kind": "map_package:gameplay_zones",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "gameplay-zones-v1",
+      "size_bytes": 31981
+    },
+    {
+      "path": "map_package/elevation_model.json",
+      "kind": "map_package:elevation_model",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "elevation-model-v5",
+      "size_bytes": 155406
+    },
+    {
+      "path": "map_package/elevation_features.json",
+      "kind": "map_package:elevation_features",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "elevation-features-v3",
+      "size_bytes": 21610
+    },
+    {
+      "path": "map_package/elevation_transitions.json",
+      "kind": "map_package:elevation_transitions",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "elevation-transitions-v4",
+      "size_bytes": 132625
+    },
+    {
+      "path": "map_package/layers/tile_grid.json",
+      "kind": "map_package:tile_grid",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "tile-grid-layer-v1",
+      "size_bytes": 39057
+    },
+    {
+      "path": "map_package/layers/terrain.json",
+      "kind": "map_package:terrain",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "terrain-layer-v1",
+      "size_bytes": 728299
+    },
+    {
+      "path": "map_package/layers/movement_costs.json",
+      "kind": "map_package:movement_costs",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "movement-layer-v1",
+      "size_bytes": 498
+    },
+    {
+      "path": "map_package/layers/collision.json",
+      "kind": "map_package:collision",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "collision-layer-v2",
+      "size_bytes": 39105
+    },
+    {
+      "path": "map_package/layers/elevation.json",
+      "kind": "map_package:elevation",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "elevation-layer-v1",
+      "size_bytes": 10673
+    },
+    {
+      "path": "map_package/layers/start_goal.json",
+      "kind": "map_package:start_goal",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "start-goal-layer-v1",
+      "size_bytes": 220
+    },
+    {
+      "path": "map_package/gameplay/combat_zones.json",
+      "kind": "map_package:combat_zones",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "gameplay-layer-v1",
+      "size_bytes": 25068
+    },
+    {
+      "path": "map_package/gameplay/cover_points.json",
+      "kind": "map_package:cover_points",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "gameplay-layer-v1",
+      "size_bytes": 67614
+    },
+    {
+      "path": "map_package/gameplay/choke_points.json",
+      "kind": "map_package:choke_points",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "gameplay-layer-v1",
+      "size_bytes": 6365
+    },
+    {
+      "path": "map_package/gameplay/flank_routes.json",
+      "kind": "map_package:flank_routes",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "gameplay-layer-v1",
+      "size_bytes": 15787
+    },
+    {
+      "path": "map_package/gameplay/enemy_spawn_zones.json",
+      "kind": "map_package:enemy_spawn_zones",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "gameplay-layer-v1",
+      "size_bytes": 9646
+    },
+    {
+      "path": "map_package/gameplay/fallback_positions.json",
+      "kind": "map_package:fallback_positions",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "gameplay-layer-v1",
+      "size_bytes": 24020
+    },
+    {
+      "path": "map_package/objects/runtime_objects.json",
+      "kind": "map_package:runtime_objects",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "object-instances-v4",
+      "size_bytes": 255363
+    },
+    {
+      "path": "map_package/objects/places.json",
+      "kind": "map_package:places",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "places-v3",
+      "size_bytes": 14513
+    },
+    {
+      "path": "map_package/catalogs/tile_types.json",
+      "kind": "map_package:tile_types",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "tile-types-catalog-v1",
+      "size_bytes": 2228
+    },
+    {
+      "path": "map_package/catalogs/object_types.json",
+      "kind": "map_package:object_types",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "object-types-catalog-v5",
+      "size_bytes": 61975
+    },
+    {
+      "path": "map_package/render/render_profile.json",
+      "kind": "map_package:render_profile",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "render-profile-v1",
+      "size_bytes": 885
+    },
+    {
+      "path": "map_package/render/tile_render_hints.json",
+      "kind": "map_package:tile_render_hints",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "tile-render-hints-v1",
+      "size_bytes": 3092
+    },
+    {
+      "path": "map_package/render/object_render_hints.json",
+      "kind": "map_package:object_render_hints",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "object-render-hints-v5",
+      "size_bytes": 20928
+    }
+  ],
+  "debug_outputs": [
+    {
+      "path": "_raw_tactical_map.json",
+      "kind": "raw_tactical_map",
+      "primary": false,
+      "debug_only": true,
+      "schema_version": "raw-tactical-map-v1",
+      "size_bytes": 1404529
+    },
+    {
+      "path": "tactical_map_debug.json",
+      "kind": "tactical_debug",
+      "primary": false,
+      "debug_only": true,
+      "schema_version": "tactical-debug-v0.20",
+      "size_bytes": 240024
+    },
+    {
+      "path": "_engine_config.json",
+      "kind": "engine_config",
+      "primary": false,
+      "debug_only": true,
+      "schema_version": "legacy-engine-config-v2",
+      "size_bytes": 524
+    },
+    {
+      "path": "generation.log",
+      "kind": "generation_log",
+      "primary": false,
+      "debug_only": true,
+      "schema_version": "metrics-text-v1",
+      "size_bytes": 17323
+    }
+  ],
+  "files": [
+    {
+      "path": "generated_map.txt",
+      "kind": "ascii_map",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "ascii-map-v1",
+      "size_bytes": 37056
+    },
+    {
+      "path": "tactical_map.json",
+      "kind": "tactical_map",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "tactical-map-v0.32",
+      "size_bytes": 524939
+    },
+    {
+      "path": "metrics.txt",
+      "kind": "metrics",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "metrics-text-v1",
+      "size_bytes": 2370
+    },
+    {
+      "path": "_raw_tactical_map.json",
+      "kind": "raw_tactical_map",
+      "primary": false,
+      "debug_only": true,
+      "schema_version": "raw-tactical-map-v1",
+      "size_bytes": 1404529
+    },
+    {
+      "path": "tactical_map_debug.json",
+      "kind": "tactical_debug",
+      "primary": false,
+      "debug_only": true,
+      "schema_version": "tactical-debug-v0.20",
+      "size_bytes": 240024
+    },
+    {
+      "path": "validation_report.json",
+      "kind": "validation_report",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "validation-report-v35",
+      "size_bytes": 6129
+    },
+    {
+      "path": "object_catalog.md",
+      "kind": "object_catalog",
+      "primary": false,
+      "debug_only": false,
+      "schema_version": "object-catalog-v3",
+      "size_bytes": 12262
+    },
+    {
+      "path": "_engine_config.json",
+      "kind": "engine_config",
+      "primary": false,
+      "debug_only": true,
+      "schema_version": "legacy-engine-config-v2",
+      "size_bytes": 524
+    },
+    {
+      "path": "generation.log",
+      "kind": "generation_log",
+      "primary": false,
+      "debug_only": true,
+      "schema_version": "metrics-text-v1",
+      "size_bytes": 17323
+    },
+    {
+      "path": "map_package/map.json",
+      "kind": "map_package:index",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "map-package-map-v11",
+      "size_bytes": 2447
+    },
+    {
+      "path": "map_package/markers.json",
+      "kind": "map_package:markers",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "markers-v1",
+      "size_bytes": 10450
+    },
+    {
+      "path": "map_package/runtime_grids.json",
+      "kind": "map_package:runtime_grids",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "runtime-grids-v1",
+      "size_bytes": 2249449
+    },
+    {
+      "path": "map_package/world_graph.json",
+      "kind": "map_package:world_graph",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "world-graph-v2",
+      "size_bytes": 32245
+    },
+    {
+      "path": "map_package/routes.json",
+      "kind": "map_package:routes",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "routes-v1",
+      "size_bytes": 16508
+    },
+    {
+      "path": "map_package/gameplay_zones.json",
+      "kind": "map_package:gameplay_zones",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "gameplay-zones-v1",
+      "size_bytes": 31981
+    },
+    {
+      "path": "map_package/elevation_model.json",
+      "kind": "map_package:elevation_model",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "elevation-model-v5",
+      "size_bytes": 155406
+    },
+    {
+      "path": "map_package/elevation_features.json",
+      "kind": "map_package:elevation_features",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "elevation-features-v3",
+      "size_bytes": 21610
+    },
+    {
+      "path": "map_package/elevation_transitions.json",
+      "kind": "map_package:elevation_transitions",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "elevation-transitions-v4",
+      "size_bytes": 132625
+    },
+    {
+      "path": "map_package/layers/tile_grid.json",
+      "kind": "map_package:tile_grid",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "tile-grid-layer-v1",
+      "size_bytes": 39057
+    },
+    {
+      "path": "map_package/layers/terrain.json",
+      "kind": "map_package:terrain",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "terrain-layer-v1",
+      "size_bytes": 728299
+    },
+    {
+      "path": "map_package/layers/movement_costs.json",
+      "kind": "map_package:movement_costs",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "movement-layer-v1",
+      "size_bytes": 498
+    },
+    {
+      "path": "map_package/layers/collision.json",
+      "kind": "map_package:collision",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "collision-layer-v2",
+      "size_bytes": 39105
+    },
+    {
+      "path": "map_package/layers/elevation.json",
+      "kind": "map_package:elevation",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "elevation-layer-v1",
+      "size_bytes": 10673
+    },
+    {
+      "path": "map_package/layers/start_goal.json",
+      "kind": "map_package:start_goal",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "start-goal-layer-v1",
+      "size_bytes": 220
+    },
+    {
+      "path": "map_package/gameplay/combat_zones.json",
+      "kind": "map_package:combat_zones",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "gameplay-layer-v1",
+      "size_bytes": 25068
+    },
+    {
+      "path": "map_package/gameplay/cover_points.json",
+      "kind": "map_package:cover_points",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "gameplay-layer-v1",
+      "size_bytes": 67614
+    },
+    {
+      "path": "map_package/gameplay/choke_points.json",
+      "kind": "map_package:choke_points",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "gameplay-layer-v1",
+      "size_bytes": 6365
+    },
+    {
+      "path": "map_package/gameplay/flank_routes.json",
+      "kind": "map_package:flank_routes",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "gameplay-layer-v1",
+      "size_bytes": 15787
+    },
+    {
+      "path": "map_package/gameplay/enemy_spawn_zones.json",
+      "kind": "map_package:enemy_spawn_zones",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "gameplay-layer-v1",
+      "size_bytes": 9646
+    },
+    {
+      "path": "map_package/gameplay/fallback_positions.json",
+      "kind": "map_package:fallback_positions",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "gameplay-layer-v1",
+      "size_bytes": 24020
+    },
+    {
+      "path": "map_package/objects/runtime_objects.json",
+      "kind": "map_package:runtime_objects",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "object-instances-v4",
+      "size_bytes": 255363
+    },
+    {
+      "path": "map_package/objects/places.json",
+      "kind": "map_package:places",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "places-v3",
+      "size_bytes": 14513
+    },
+    {
+      "path": "map_package/catalogs/tile_types.json",
+      "kind": "map_package:tile_types",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "tile-types-catalog-v1",
+      "size_bytes": 2228
+    },
+    {
+      "path": "map_package/catalogs/object_types.json",
+      "kind": "map_package:object_types",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "object-types-catalog-v5",
+      "size_bytes": 61975
+    },
+    {
+      "path": "map_package/render/render_profile.json",
+      "kind": "map_package:render_profile",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "render-profile-v1",
+      "size_bytes": 885
+    },
+    {
+      "path": "map_package/render/tile_render_hints.json",
+      "kind": "map_package:tile_render_hints",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "tile-render-hints-v1",
+      "size_bytes": 3092
+    },
+    {
+      "path": "map_package/render/object_render_hints.json",
+      "kind": "map_package:object_render_hints",
+      "primary": true,
+      "debug_only": false,
+      "schema_version": "object-render-hints-v5",
+      "size_bytes": 20928
+    }
+  ],
+  "metrics": {
+    "version": "clean_refactor",
+    "map_width_tiles": 192,
+    "map_height_tiles": 192,
+    "resolved_seed": 11073698844260551338,
+    "tile_size_px": 16,
+    "engine_time_ms": 1681.77,
+    "tactical_time_ms": 2862.65,
+    "render_time_ms": 0.0,
+    "total_time_ms": 4544.96,
+    "render_enabled": false,
+    "debug_images_enabled": false,
+    "rendered_layers": [],
+    "objective_profile": "clear_map",
+    "generation_tuning": {
+      "water_scale": 5.0,
+      "water_patch_count_scale": 1.0,
+      "water_patch_size_scale": 2.0,
+      "water_patch_density": 0.62,
+      "forest_scale": 1.0,
+      "open_space_scale": 1.0,
+      "ruins_scale": 1.0,
+      "buildings_scale": 1.0,
+      "road_width_scale": 1.0,
+      "decoration_scale": 1.0,
+      "bunker_scale": 1.0
+    },
+    "spawn_selection_policy": "one_initial_spawn_per_combat_zone",
+    "candidate_spawn_count": 75,
+    "selected_spawn_count": 26,
+    "combat_zones": 27,
+    "cover_points": 480,
+    "choke_points": 32,
+    "flank_routes": 22,
+    "enemy_spawn_zones": 26,
+    "fallback_positions": 70,
+    "runtime_objects": 140,
+    "runtime_object_types": 32,
+    "runtime_objects_summary": {
+      "total": 140,
+      "by_type": {
+        "abandoned_backpack": 4,
+        "abandoned_cart": 3,
+        "ammo_cache": 4,
+        "ancient_beacon": 2,
+        "big_dead_tree": 2,
+        "broken_generator": 2,
+        "broken_radio_mast": 1,
+        "buried_bunker_2x2": 2,
+        "buried_bunker_2x3": 2,
+        "bush_thicket": 21,
+        "cable_spool": 3,
+        "car_wreck": 3,
+        "dead_campfire": 3,
+        "earth_berm": 4,
+        "fallen_log": 12,
+        "field_tent": 3,
+        "hill": 4,
+        "medkit_cache": 3,
+        "old_checkpoint": 1,
+        "old_grave_marker": 2,
+        "old_well": 2,
+        "pit": 3,
+        "ruin_platform": 2,
+        "rusted_barrel": 8,
+        "scrap_pile": 10,
+        "stone_chunk": 15,
+        "stone_ramp": 3,
+        "stone_stairs": 3,
+        "trench": 6,
+        "warning_sign": 3,
+        "watchtower": 2,
+        "wooden_bridge": 2
+      },
+      "trench_shapes": {
+        "l_shape": 3,
+        "line": 3
+      },
+      "landmarks": {
+        "total": 4,
+        "by_type": {
+          "big_dead_tree": 2,
+          "broken_radio_mast": 1,
+          "old_checkpoint": 1
+        }
+      }
+    },
+    "places": 7,
+    "places_summary": {
+      "total": 7,
+      "by_type": {
+        "abandoned_checkpoint": 1,
+        "ambush_clearing": 1,
+        "bunker_inner_area": 1,
+        "bunker_outer_area": 1,
+        "dangerous_lowland": 1,
+        "old_defensive_position": 1,
+        "small_ruin_site": 1
+      },
+      "by_encounter_type": {
+        "bunker_encounter": 1,
+        "bunker_room": 1,
+        "defensive_encounter": 1,
+        "flank_attack": 1,
+        "hazard_encounter": 1,
+        "roadside_encounter": 1,
+        "ruin_encounter": 1
+      }
+    },
+    "elevation_cells": 147,
+    "original_cover_points": 4856,
+    "selected_cover_points": 480,
+    "connectivity_components_before": 1,
+    "connectivity_components_after": 1,
+    "connectivity_filled_components": 0,
+    "connectivity_connected_components": 0,
+    "connectivity_tiles_changed": 0
+  }
+}

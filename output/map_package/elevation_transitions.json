@@ -1,0 +1,5948 @@
+{
+  "schema_version": "elevation-transitions-v4",
+  "kind": "elevation_transitions",
+  "coordinate_space": "tile",
+  "width": 192,
+  "height": 192,
+  "items": [
+    {
+      "id": "elevation_transition_000",
+      "type": "bridge_edge",
+      "from": {
+        "x": 39,
+        "y": 8,
+        "level": 0
+      },
+      "to": {
+        "x": 39,
+        "y": 9,
+        "level": 2
+      },
+      "delta": 2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_022"
+      ]
+    },
+    {
+      "id": "elevation_transition_001",
+      "type": "bridge_edge",
+      "from": {
+        "x": 40,
+        "y": 8,
+        "level": 0
+      },
+      "to": {
+        "x": 40,
+        "y": 9,
+        "level": 2
+      },
+      "delta": 2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_022"
+      ]
+    },
+    {
+      "id": "elevation_transition_002",
+      "type": "bridge_edge",
+      "from": {
+        "x": 41,
+        "y": 8,
+        "level": 0
+      },
+      "to": {
+        "x": 41,
+        "y": 9,
+        "level": 2
+      },
+      "delta": 2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_022"
+      ]
+    },
+    {
+      "id": "elevation_transition_003",
+      "type": "bridge_edge",
+      "from": {
+        "x": 42,
+        "y": 8,
+        "level": 0
+      },
+      "to": {
+        "x": 42,
+        "y": 9,
+        "level": 2
+      },
+      "delta": 2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_022"
+      ]
+    },
+    {
+      "id": "elevation_transition_004",
+      "type": "bridge_edge",
+      "from": {
+        "x": 38,
+        "y": 9,
+        "level": 0
+      },
+      "to": {
+        "x": 39,
+        "y": 9,
+        "level": 2
+      },
+      "delta": 2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_022"
+      ]
+    },
+    {
+      "id": "elevation_transition_005",
+      "type": "bridge_edge",
+      "from": {
+        "x": 39,
+        "y": 9,
+        "level": 2
+      },
+      "to": {
+        "x": 39,
+        "y": 10,
+        "level": 0
+      },
+      "delta": -2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_022"
+      ]
+    },
+    {
+      "id": "elevation_transition_006",
+      "type": "bridge_edge",
+      "from": {
+        "x": 40,
+        "y": 9,
+        "level": 2
+      },
+      "to": {
+        "x": 40,
+        "y": 10,
+        "level": 0
+      },
+      "delta": -2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_022"
+      ]
+    },
+    {
+      "id": "elevation_transition_007",
+      "type": "bridge_edge",
+      "from": {
+        "x": 41,
+        "y": 9,
+        "level": 2
+      },
+      "to": {
+        "x": 41,
+        "y": 10,
+        "level": 0
+      },
+      "delta": -2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_022"
+      ]
+    },
+    {
+      "id": "elevation_transition_008",
+      "type": "bridge_edge",
+      "from": {
+        "x": 42,
+        "y": 9,
+        "level": 2
+      },
+      "to": {
+        "x": 43,
+        "y": 9,
+        "level": 0
+      },
+      "delta": -2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_022"
+      ]
+    },
+    {
+      "id": "elevation_transition_009",
+      "type": "bridge_edge",
+      "from": {
+        "x": 42,
+        "y": 9,
+        "level": 2
+      },
+      "to": {
+        "x": 42,
+        "y": 10,
+        "level": 0
+      },
+      "delta": -2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_022"
+      ]
+    },
+    {
+      "id": "elevation_transition_010",
+      "type": "step_down",
+      "from": {
+        "x": 41,
+        "y": 18,
+        "level": 0
+      },
+      "to": {
+        "x": 41,
+        "y": 19,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_009"
+      ]
+    },
+    {
+      "id": "elevation_transition_011",
+      "type": "step_down",
+      "from": {
+        "x": 42,
+        "y": 18,
+        "level": 0
+      },
+      "to": {
+        "x": 42,
+        "y": 19,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_009"
+      ]
+    },
+    {
+      "id": "elevation_transition_012",
+      "type": "step_down",
+      "from": {
+        "x": 40,
+        "y": 19,
+        "level": 0
+      },
+      "to": {
+        "x": 41,
+        "y": 19,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_009"
+      ]
+    },
+    {
+      "id": "elevation_transition_013",
+      "type": "step_up",
+      "from": {
+        "x": 42,
+        "y": 19,
+        "level": -1
+      },
+      "to": {
+        "x": 43,
+        "y": 19,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_009"
+      ]
+    },
+    {
+      "id": "elevation_transition_014",
+      "type": "step_down",
+      "from": {
+        "x": 40,
+        "y": 20,
+        "level": 0
+      },
+      "to": {
+        "x": 41,
+        "y": 20,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_009"
+      ]
+    },
+    {
+      "id": "elevation_transition_015",
+      "type": "step_up",
+      "from": {
+        "x": 42,
+        "y": 20,
+        "level": -1
+      },
+      "to": {
+        "x": 43,
+        "y": 20,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_009"
+      ]
+    },
+    {
+      "id": "elevation_transition_016",
+      "type": "step_down",
+      "from": {
+        "x": 40,
+        "y": 21,
+        "level": 0
+      },
+      "to": {
+        "x": 41,
+        "y": 21,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_009"
+      ]
+    },
+    {
+      "id": "elevation_transition_017",
+      "type": "step_up",
+      "from": {
+        "x": 41,
+        "y": 21,
+        "level": -1
+      },
+      "to": {
+        "x": 41,
+        "y": 22,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_009"
+      ]
+    },
+    {
+      "id": "elevation_transition_018",
+      "type": "step_up",
+      "from": {
+        "x": 42,
+        "y": 21,
+        "level": -1
+      },
+      "to": {
+        "x": 43,
+        "y": 21,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_009"
+      ]
+    },
+    {
+      "id": "elevation_transition_019",
+      "type": "step_up",
+      "from": {
+        "x": 42,
+        "y": 21,
+        "level": -1
+      },
+      "to": {
+        "x": 42,
+        "y": 22,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_009"
+      ]
+    },
+    {
+      "id": "elevation_transition_020",
+      "type": "connector_edge",
+      "from": {
+        "x": 142,
+        "y": 36,
+        "level": 0
+      },
+      "to": {
+        "x": 142,
+        "y": 37,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ramp",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_ramp",
+      "feature_refs": [
+        "elevation_feature_023"
+      ]
+    },
+    {
+      "id": "elevation_transition_021",
+      "type": "connector_edge",
+      "from": {
+        "x": 143,
+        "y": 36,
+        "level": 0
+      },
+      "to": {
+        "x": 143,
+        "y": 37,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ramp",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_ramp",
+      "feature_refs": [
+        "elevation_feature_023"
+      ]
+    },
+    {
+      "id": "elevation_transition_022",
+      "type": "connector_edge",
+      "from": {
+        "x": 141,
+        "y": 37,
+        "level": 0
+      },
+      "to": {
+        "x": 142,
+        "y": 37,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ramp",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_ramp",
+      "feature_refs": [
+        "elevation_feature_023"
+      ]
+    },
+    {
+      "id": "elevation_transition_023",
+      "type": "connector_edge",
+      "from": {
+        "x": 142,
+        "y": 37,
+        "level": 1
+      },
+      "to": {
+        "x": 142,
+        "y": 38,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ramp",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_ramp",
+      "feature_refs": [
+        "elevation_feature_023"
+      ]
+    },
+    {
+      "id": "elevation_transition_024",
+      "type": "connector_edge",
+      "from": {
+        "x": 143,
+        "y": 37,
+        "level": 1
+      },
+      "to": {
+        "x": 144,
+        "y": 37,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ramp",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_ramp",
+      "feature_refs": [
+        "elevation_feature_023"
+      ]
+    },
+    {
+      "id": "elevation_transition_025",
+      "type": "connector_edge",
+      "from": {
+        "x": 143,
+        "y": 37,
+        "level": 1
+      },
+      "to": {
+        "x": 143,
+        "y": 38,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ramp",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_ramp",
+      "feature_refs": [
+        "elevation_feature_023"
+      ]
+    },
+    {
+      "id": "elevation_transition_026",
+      "type": "bridge_edge",
+      "from": {
+        "x": 144,
+        "y": 40,
+        "level": 0
+      },
+      "to": {
+        "x": 144,
+        "y": 41,
+        "level": 2
+      },
+      "delta": 2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_030"
+      ]
+    },
+    {
+      "id": "elevation_transition_027",
+      "type": "bridge_edge",
+      "from": {
+        "x": 145,
+        "y": 40,
+        "level": 0
+      },
+      "to": {
+        "x": 145,
+        "y": 41,
+        "level": 2
+      },
+      "delta": 2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_030"
+      ]
+    },
+    {
+      "id": "elevation_transition_028",
+      "type": "step_down",
+      "from": {
+        "x": 148,
+        "y": 40,
+        "level": 0
+      },
+      "to": {
+        "x": 148,
+        "y": 41,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_006"
+      ]
+    },
+    {
+      "id": "elevation_transition_029",
+      "type": "step_down",
+      "from": {
+        "x": 149,
+        "y": 40,
+        "level": 0
+      },
+      "to": {
+        "x": 149,
+        "y": 41,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_006"
+      ]
+    },
+    {
+      "id": "elevation_transition_030",
+      "type": "bridge_edge",
+      "from": {
+        "x": 143,
+        "y": 41,
+        "level": 0
+      },
+      "to": {
+        "x": 144,
+        "y": 41,
+        "level": 2
+      },
+      "delta": 2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_030"
+      ]
+    },
+    {
+      "id": "elevation_transition_031",
+      "type": "bridge_edge",
+      "from": {
+        "x": 145,
+        "y": 41,
+        "level": 2
+      },
+      "to": {
+        "x": 146,
+        "y": 41,
+        "level": 0
+      },
+      "delta": -2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_030"
+      ]
+    },
+    {
+      "id": "elevation_transition_032",
+      "type": "step_down",
+      "from": {
+        "x": 147,
+        "y": 41,
+        "level": 0
+      },
+      "to": {
+        "x": 148,
+        "y": 41,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_006"
+      ]
+    },
+    {
+      "id": "elevation_transition_033",
+      "type": "step_up",
+      "from": {
+        "x": 149,
+        "y": 41,
+        "level": -1
+      },
+      "to": {
+        "x": 150,
+        "y": 41,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_006"
+      ]
+    },
+    {
+      "id": "elevation_transition_034",
+      "type": "bridge_edge",
+      "from": {
+        "x": 143,
+        "y": 42,
+        "level": 0
+      },
+      "to": {
+        "x": 144,
+        "y": 42,
+        "level": 2
+      },
+      "delta": 2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_030"
+      ]
+    },
+    {
+      "id": "elevation_transition_035",
+      "type": "bridge_edge",
+      "from": {
+        "x": 145,
+        "y": 42,
+        "level": 2
+      },
+      "to": {
+        "x": 146,
+        "y": 42,
+        "level": 0
+      },
+      "delta": -2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_030"
+      ]
+    },
+    {
+      "id": "elevation_transition_036",
+      "type": "step_down",
+      "from": {
+        "x": 147,
+        "y": 42,
+        "level": 0
+      },
+      "to": {
+        "x": 148,
+        "y": 42,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_006"
+      ]
+    },
+    {
+      "id": "elevation_transition_037",
+      "type": "step_up",
+      "from": {
+        "x": 148,
+        "y": 42,
+        "level": -1
+      },
+      "to": {
+        "x": 148,
+        "y": 43,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_006"
+      ]
+    },
+    {
+      "id": "elevation_transition_038",
+      "type": "step_up",
+      "from": {
+        "x": 149,
+        "y": 42,
+        "level": -1
+      },
+      "to": {
+        "x": 150,
+        "y": 42,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_006"
+      ]
+    },
+    {
+      "id": "elevation_transition_039",
+      "type": "step_up",
+      "from": {
+        "x": 149,
+        "y": 42,
+        "level": -1
+      },
+      "to": {
+        "x": 149,
+        "y": 43,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_006"
+      ]
+    },
+    {
+      "id": "elevation_transition_040",
+      "type": "step_down",
+      "from": {
+        "x": 173,
+        "y": 42,
+        "level": 0
+      },
+      "to": {
+        "x": 173,
+        "y": 43,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_002"
+      ]
+    },
+    {
+      "id": "elevation_transition_041",
+      "type": "bridge_edge",
+      "from": {
+        "x": 143,
+        "y": 43,
+        "level": 0
+      },
+      "to": {
+        "x": 144,
+        "y": 43,
+        "level": 2
+      },
+      "delta": 2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_030"
+      ]
+    },
+    {
+      "id": "elevation_transition_042",
+      "type": "bridge_edge",
+      "from": {
+        "x": 144,
+        "y": 43,
+        "level": 2
+      },
+      "to": {
+        "x": 144,
+        "y": 44,
+        "level": 0
+      },
+      "delta": -2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_030"
+      ]
+    },
+    {
+      "id": "elevation_transition_043",
+      "type": "bridge_edge",
+      "from": {
+        "x": 145,
+        "y": 43,
+        "level": 2
+      },
+      "to": {
+        "x": 146,
+        "y": 43,
+        "level": 0
+      },
+      "delta": -2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_030"
+      ]
+    },
+    {
+      "id": "elevation_transition_044",
+      "type": "bridge_edge",
+      "from": {
+        "x": 145,
+        "y": 43,
+        "level": 2
+      },
+      "to": {
+        "x": 145,
+        "y": 44,
+        "level": 0
+      },
+      "delta": -2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_030"
+      ]
+    },
+    {
+      "id": "elevation_transition_045",
+      "type": "step_down",
+      "from": {
+        "x": 172,
+        "y": 43,
+        "level": 0
+      },
+      "to": {
+        "x": 173,
+        "y": 43,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_002"
+      ]
+    },
+    {
+      "id": "elevation_transition_046",
+      "type": "step_up",
+      "from": {
+        "x": 173,
+        "y": 43,
+        "level": -1
+      },
+      "to": {
+        "x": 174,
+        "y": 43,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_002"
+      ]
+    },
+    {
+      "id": "elevation_transition_047",
+      "type": "step_down",
+      "from": {
+        "x": 174,
+        "y": 43,
+        "level": 0
+      },
+      "to": {
+        "x": 174,
+        "y": 44,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_002"
+      ]
+    },
+    {
+      "id": "elevation_transition_048",
+      "type": "step_down",
+      "from": {
+        "x": 175,
+        "y": 43,
+        "level": 0
+      },
+      "to": {
+        "x": 175,
+        "y": 44,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_002"
+      ]
+    },
+    {
+      "id": "elevation_transition_049",
+      "type": "steep_transition",
+      "from": {
+        "x": 45,
+        "y": 44,
+        "level": 0
+      },
+      "to": {
+        "x": 45,
+        "y": 45,
+        "level": 4
+      },
+      "delta": 4,
+      "abs_delta": 4,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ladder_or_scripted",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ladder_or_scripted_connector",
+      "feature_refs": [
+        "elevation_feature_034"
+      ]
+    },
+    {
+      "id": "elevation_transition_050",
+      "type": "step_down",
+      "from": {
+        "x": 172,
+        "y": 44,
+        "level": 0
+      },
+      "to": {
+        "x": 173,
+        "y": 44,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_002"
+      ]
+    },
+    {
+      "id": "elevation_transition_051",
+      "type": "step_up",
+      "from": {
+        "x": 173,
+        "y": 44,
+        "level": -1
+      },
+      "to": {
+        "x": 173,
+        "y": 45,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_002"
+      ]
+    },
+    {
+      "id": "elevation_transition_052",
+      "type": "step_up",
+      "from": {
+        "x": 174,
+        "y": 44,
+        "level": -1
+      },
+      "to": {
+        "x": 174,
+        "y": 45,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_002"
+      ]
+    },
+    {
+      "id": "elevation_transition_053",
+      "type": "step_up",
+      "from": {
+        "x": 175,
+        "y": 44,
+        "level": -1
+      },
+      "to": {
+        "x": 176,
+        "y": 44,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_002"
+      ]
+    },
+    {
+      "id": "elevation_transition_054",
+      "type": "step_up",
+      "from": {
+        "x": 175,
+        "y": 44,
+        "level": -1
+      },
+      "to": {
+        "x": 175,
+        "y": 45,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_002"
+      ]
+    },
+    {
+      "id": "elevation_transition_055",
+      "type": "steep_transition",
+      "from": {
+        "x": 44,
+        "y": 45,
+        "level": 0
+      },
+      "to": {
+        "x": 45,
+        "y": 45,
+        "level": 4
+      },
+      "delta": 4,
+      "abs_delta": 4,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ladder_or_scripted",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ladder_or_scripted_connector",
+      "feature_refs": [
+        "elevation_feature_034"
+      ]
+    },
+    {
+      "id": "elevation_transition_056",
+      "type": "steep_transition",
+      "from": {
+        "x": 45,
+        "y": 45,
+        "level": 4
+      },
+      "to": {
+        "x": 46,
+        "y": 45,
+        "level": 0
+      },
+      "delta": -4,
+      "abs_delta": 4,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ladder_or_scripted",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ladder_or_scripted_connector",
+      "feature_refs": [
+        "elevation_feature_034"
+      ]
+    },
+    {
+      "id": "elevation_transition_057",
+      "type": "steep_transition",
+      "from": {
+        "x": 45,
+        "y": 45,
+        "level": 4
+      },
+      "to": {
+        "x": 45,
+        "y": 46,
+        "level": 0
+      },
+      "delta": -4,
+      "abs_delta": 4,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ladder_or_scripted",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ladder_or_scripted_connector",
+      "feature_refs": [
+        "elevation_feature_034"
+      ]
+    },
+    {
+      "id": "elevation_transition_058",
+      "type": "step_down",
+      "from": {
+        "x": 11,
+        "y": 50,
+        "level": 0
+      },
+      "to": {
+        "x": 11,
+        "y": 51,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_011"
+      ]
+    },
+    {
+      "id": "elevation_transition_059",
+      "type": "step_down",
+      "from": {
+        "x": 12,
+        "y": 50,
+        "level": 0
+      },
+      "to": {
+        "x": 12,
+        "y": 51,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_011"
+      ]
+    },
+    {
+      "id": "elevation_transition_060",
+      "type": "step_up",
+      "from": {
+        "x": 106,
+        "y": 50,
+        "level": 0
+      },
+      "to": {
+        "x": 106,
+        "y": 51,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_016"
+      ]
+    },
+    {
+      "id": "elevation_transition_061",
+      "type": "step_up",
+      "from": {
+        "x": 107,
+        "y": 50,
+        "level": 0
+      },
+      "to": {
+        "x": 107,
+        "y": 51,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_016"
+      ]
+    },
+    {
+      "id": "elevation_transition_062",
+      "type": "step_down",
+      "from": {
+        "x": 10,
+        "y": 51,
+        "level": 0
+      },
+      "to": {
+        "x": 11,
+        "y": 51,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_011"
+      ]
+    },
+    {
+      "id": "elevation_transition_063",
+      "type": "step_up",
+      "from": {
+        "x": 12,
+        "y": 51,
+        "level": -1
+      },
+      "to": {
+        "x": 13,
+        "y": 51,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_011"
+      ]
+    },
+    {
+      "id": "elevation_transition_064",
+      "type": "step_up",
+      "from": {
+        "x": 105,
+        "y": 51,
+        "level": 0
+      },
+      "to": {
+        "x": 106,
+        "y": 51,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_016"
+      ]
+    },
+    {
+      "id": "elevation_transition_065",
+      "type": "step_down",
+      "from": {
+        "x": 106,
+        "y": 51,
+        "level": 1
+      },
+      "to": {
+        "x": 106,
+        "y": 52,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_016"
+      ]
+    },
+    {
+      "id": "elevation_transition_066",
+      "type": "step_down",
+      "from": {
+        "x": 107,
+        "y": 51,
+        "level": 1
+      },
+      "to": {
+        "x": 108,
+        "y": 51,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_016"
+      ]
+    },
+    {
+      "id": "elevation_transition_067",
+      "type": "step_down",
+      "from": {
+        "x": 107,
+        "y": 51,
+        "level": 1
+      },
+      "to": {
+        "x": 107,
+        "y": 52,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_016"
+      ]
+    },
+    {
+      "id": "elevation_transition_068",
+      "type": "step_down",
+      "from": {
+        "x": 10,
+        "y": 52,
+        "level": 0
+      },
+      "to": {
+        "x": 11,
+        "y": 52,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_011"
+      ]
+    },
+    {
+      "id": "elevation_transition_069",
+      "type": "step_up",
+      "from": {
+        "x": 11,
+        "y": 52,
+        "level": -1
+      },
+      "to": {
+        "x": 11,
+        "y": 53,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_011"
+      ]
+    },
+    {
+      "id": "elevation_transition_070",
+      "type": "step_up",
+      "from": {
+        "x": 12,
+        "y": 52,
+        "level": -1
+      },
+      "to": {
+        "x": 13,
+        "y": 52,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_011"
+      ]
+    },
+    {
+      "id": "elevation_transition_071",
+      "type": "step_up",
+      "from": {
+        "x": 12,
+        "y": 52,
+        "level": -1
+      },
+      "to": {
+        "x": 12,
+        "y": 53,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_011"
+      ]
+    },
+    {
+      "id": "elevation_transition_072",
+      "type": "step_down",
+      "from": {
+        "x": 53,
+        "y": 71,
+        "level": 0
+      },
+      "to": {
+        "x": 53,
+        "y": 72,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_005"
+      ]
+    },
+    {
+      "id": "elevation_transition_073",
+      "type": "step_down",
+      "from": {
+        "x": 52,
+        "y": 72,
+        "level": 0
+      },
+      "to": {
+        "x": 53,
+        "y": 72,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_005"
+      ]
+    },
+    {
+      "id": "elevation_transition_074",
+      "type": "step_up",
+      "from": {
+        "x": 53,
+        "y": 72,
+        "level": -1
+      },
+      "to": {
+        "x": 54,
+        "y": 72,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_005"
+      ]
+    },
+    {
+      "id": "elevation_transition_075",
+      "type": "step_down",
+      "from": {
+        "x": 52,
+        "y": 73,
+        "level": 0
+      },
+      "to": {
+        "x": 53,
+        "y": 73,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_005"
+      ]
+    },
+    {
+      "id": "elevation_transition_076",
+      "type": "step_up",
+      "from": {
+        "x": 53,
+        "y": 73,
+        "level": -1
+      },
+      "to": {
+        "x": 54,
+        "y": 73,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_005"
+      ]
+    },
+    {
+      "id": "elevation_transition_077",
+      "type": "step_down",
+      "from": {
+        "x": 54,
+        "y": 73,
+        "level": 0
+      },
+      "to": {
+        "x": 54,
+        "y": 74,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_005"
+      ]
+    },
+    {
+      "id": "elevation_transition_078",
+      "type": "step_down",
+      "from": {
+        "x": 55,
+        "y": 73,
+        "level": 0
+      },
+      "to": {
+        "x": 55,
+        "y": 74,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_005"
+      ]
+    },
+    {
+      "id": "elevation_transition_079",
+      "type": "step_down",
+      "from": {
+        "x": 56,
+        "y": 73,
+        "level": 0
+      },
+      "to": {
+        "x": 56,
+        "y": 74,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_005"
+      ]
+    },
+    {
+      "id": "elevation_transition_080",
+      "type": "step_down",
+      "from": {
+        "x": 10,
+        "y": 74,
+        "level": 0
+      },
+      "to": {
+        "x": 10,
+        "y": 75,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_001"
+      ]
+    },
+    {
+      "id": "elevation_transition_081",
+      "type": "step_down",
+      "from": {
+        "x": 52,
+        "y": 74,
+        "level": 0
+      },
+      "to": {
+        "x": 53,
+        "y": 74,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_005"
+      ]
+    },
+    {
+      "id": "elevation_transition_082",
+      "type": "step_up",
+      "from": {
+        "x": 53,
+        "y": 74,
+        "level": -1
+      },
+      "to": {
+        "x": 53,
+        "y": 75,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_005"
+      ]
+    },
+    {
+      "id": "elevation_transition_083",
+      "type": "step_up",
+      "from": {
+        "x": 54,
+        "y": 74,
+        "level": -1
+      },
+      "to": {
+        "x": 54,
+        "y": 75,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_005"
+      ]
+    },
+    {
+      "id": "elevation_transition_084",
+      "type": "step_up",
+      "from": {
+        "x": 55,
+        "y": 74,
+        "level": -1
+      },
+      "to": {
+        "x": 55,
+        "y": 75,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_005"
+      ]
+    },
+    {
+      "id": "elevation_transition_085",
+      "type": "step_up",
+      "from": {
+        "x": 56,
+        "y": 74,
+        "level": -1
+      },
+      "to": {
+        "x": 57,
+        "y": 74,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_005"
+      ]
+    },
+    {
+      "id": "elevation_transition_086",
+      "type": "step_up",
+      "from": {
+        "x": 56,
+        "y": 74,
+        "level": -1
+      },
+      "to": {
+        "x": 56,
+        "y": 75,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_005"
+      ]
+    },
+    {
+      "id": "elevation_transition_087",
+      "type": "step_down",
+      "from": {
+        "x": 9,
+        "y": 75,
+        "level": 0
+      },
+      "to": {
+        "x": 10,
+        "y": 75,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_001"
+      ]
+    },
+    {
+      "id": "elevation_transition_088",
+      "type": "step_up",
+      "from": {
+        "x": 10,
+        "y": 75,
+        "level": -1
+      },
+      "to": {
+        "x": 11,
+        "y": 75,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_001"
+      ]
+    },
+    {
+      "id": "elevation_transition_089",
+      "type": "step_down",
+      "from": {
+        "x": 9,
+        "y": 76,
+        "level": 0
+      },
+      "to": {
+        "x": 10,
+        "y": 76,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_001"
+      ]
+    },
+    {
+      "id": "elevation_transition_090",
+      "type": "step_up",
+      "from": {
+        "x": 10,
+        "y": 76,
+        "level": -1
+      },
+      "to": {
+        "x": 11,
+        "y": 76,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_001"
+      ]
+    },
+    {
+      "id": "elevation_transition_091",
+      "type": "steep_transition",
+      "from": {
+        "x": 53,
+        "y": 76,
+        "level": 0
+      },
+      "to": {
+        "x": 53,
+        "y": 77,
+        "level": 3
+      },
+      "delta": 3,
+      "abs_delta": 3,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ladder_or_scripted",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ladder_or_scripted_connector",
+      "feature_refs": [
+        "elevation_feature_032"
+      ]
+    },
+    {
+      "id": "elevation_transition_092",
+      "type": "steep_transition",
+      "from": {
+        "x": 54,
+        "y": 76,
+        "level": 0
+      },
+      "to": {
+        "x": 54,
+        "y": 77,
+        "level": 3
+      },
+      "delta": 3,
+      "abs_delta": 3,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ladder_or_scripted",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ladder_or_scripted_connector",
+      "feature_refs": [
+        "elevation_feature_032"
+      ]
+    },
+    {
+      "id": "elevation_transition_093",
+      "type": "step_down",
+      "from": {
+        "x": 9,
+        "y": 77,
+        "level": 0
+      },
+      "to": {
+        "x": 10,
+        "y": 77,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_001"
+      ]
+    },
+    {
+      "id": "elevation_transition_094",
+      "type": "step_up",
+      "from": {
+        "x": 10,
+        "y": 77,
+        "level": -1
+      },
+      "to": {
+        "x": 11,
+        "y": 77,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_001"
+      ]
+    },
+    {
+      "id": "elevation_transition_095",
+      "type": "steep_transition",
+      "from": {
+        "x": 52,
+        "y": 77,
+        "level": 0
+      },
+      "to": {
+        "x": 53,
+        "y": 77,
+        "level": 3
+      },
+      "delta": 3,
+      "abs_delta": 3,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ladder_or_scripted",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ladder_or_scripted_connector",
+      "feature_refs": [
+        "elevation_feature_032"
+      ]
+    },
+    {
+      "id": "elevation_transition_096",
+      "type": "steep_transition",
+      "from": {
+        "x": 54,
+        "y": 77,
+        "level": 3
+      },
+      "to": {
+        "x": 55,
+        "y": 77,
+        "level": 0
+      },
+      "delta": -3,
+      "abs_delta": 3,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ladder_or_scripted",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ladder_or_scripted_connector",
+      "feature_refs": [
+        "elevation_feature_032"
+      ]
+    },
+    {
+      "id": "elevation_transition_097",
+      "type": "step_down",
+      "from": {
+        "x": 9,
+        "y": 78,
+        "level": 0
+      },
+      "to": {
+        "x": 10,
+        "y": 78,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_001"
+      ]
+    },
+    {
+      "id": "elevation_transition_098",
+      "type": "step_up",
+      "from": {
+        "x": 10,
+        "y": 78,
+        "level": -1
+      },
+      "to": {
+        "x": 11,
+        "y": 78,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_001"
+      ]
+    },
+    {
+      "id": "elevation_transition_099",
+      "type": "step_up",
+      "from": {
+        "x": 10,
+        "y": 78,
+        "level": -1
+      },
+      "to": {
+        "x": 10,
+        "y": 79,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_001"
+      ]
+    },
+    {
+      "id": "elevation_transition_100",
+      "type": "steep_transition",
+      "from": {
+        "x": 52,
+        "y": 78,
+        "level": 0
+      },
+      "to": {
+        "x": 53,
+        "y": 78,
+        "level": 3
+      },
+      "delta": 3,
+      "abs_delta": 3,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ladder_or_scripted",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ladder_or_scripted_connector",
+      "feature_refs": [
+        "elevation_feature_032"
+      ]
+    },
+    {
+      "id": "elevation_transition_101",
+      "type": "steep_transition",
+      "from": {
+        "x": 53,
+        "y": 78,
+        "level": 3
+      },
+      "to": {
+        "x": 53,
+        "y": 79,
+        "level": 0
+      },
+      "delta": -3,
+      "abs_delta": 3,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ladder_or_scripted",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ladder_or_scripted_connector",
+      "feature_refs": [
+        "elevation_feature_032"
+      ]
+    },
+    {
+      "id": "elevation_transition_102",
+      "type": "steep_transition",
+      "from": {
+        "x": 54,
+        "y": 78,
+        "level": 3
+      },
+      "to": {
+        "x": 55,
+        "y": 78,
+        "level": 0
+      },
+      "delta": -3,
+      "abs_delta": 3,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ladder_or_scripted",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ladder_or_scripted_connector",
+      "feature_refs": [
+        "elevation_feature_032"
+      ]
+    },
+    {
+      "id": "elevation_transition_103",
+      "type": "steep_transition",
+      "from": {
+        "x": 54,
+        "y": 78,
+        "level": 3
+      },
+      "to": {
+        "x": 54,
+        "y": 79,
+        "level": 0
+      },
+      "delta": -3,
+      "abs_delta": 3,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ladder_or_scripted",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ladder_or_scripted_connector",
+      "feature_refs": [
+        "elevation_feature_032"
+      ]
+    },
+    {
+      "id": "elevation_transition_104",
+      "type": "step_down",
+      "from": {
+        "x": 168,
+        "y": 79,
+        "level": 0
+      },
+      "to": {
+        "x": 168,
+        "y": 80,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_003"
+      ]
+    },
+    {
+      "id": "elevation_transition_105",
+      "type": "step_down",
+      "from": {
+        "x": 137,
+        "y": 80,
+        "level": 0
+      },
+      "to": {
+        "x": 137,
+        "y": 81,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_000"
+      ]
+    },
+    {
+      "id": "elevation_transition_106",
+      "type": "step_down",
+      "from": {
+        "x": 167,
+        "y": 80,
+        "level": 0
+      },
+      "to": {
+        "x": 168,
+        "y": 80,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_003"
+      ]
+    },
+    {
+      "id": "elevation_transition_107",
+      "type": "step_up",
+      "from": {
+        "x": 168,
+        "y": 80,
+        "level": -1
+      },
+      "to": {
+        "x": 169,
+        "y": 80,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_003"
+      ]
+    },
+    {
+      "id": "elevation_transition_108",
+      "type": "step_down",
+      "from": {
+        "x": 134,
+        "y": 81,
+        "level": 0
+      },
+      "to": {
+        "x": 134,
+        "y": 82,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_000"
+      ]
+    },
+    {
+      "id": "elevation_transition_109",
+      "type": "step_down",
+      "from": {
+        "x": 135,
+        "y": 81,
+        "level": 0
+      },
+      "to": {
+        "x": 135,
+        "y": 82,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_000"
+      ]
+    },
+    {
+      "id": "elevation_transition_110",
+      "type": "step_down",
+      "from": {
+        "x": 136,
+        "y": 81,
+        "level": 0
+      },
+      "to": {
+        "x": 137,
+        "y": 81,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_000"
+      ]
+    },
+    {
+      "id": "elevation_transition_111",
+      "type": "step_down",
+      "from": {
+        "x": 136,
+        "y": 81,
+        "level": 0
+      },
+      "to": {
+        "x": 136,
+        "y": 82,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_000"
+      ]
+    },
+    {
+      "id": "elevation_transition_112",
+      "type": "step_up",
+      "from": {
+        "x": 137,
+        "y": 81,
+        "level": -1
+      },
+      "to": {
+        "x": 138,
+        "y": 81,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_000"
+      ]
+    },
+    {
+      "id": "elevation_transition_113",
+      "type": "bridge_edge",
+      "from": {
+        "x": 140,
+        "y": 81,
+        "level": 0
+      },
+      "to": {
+        "x": 140,
+        "y": 82,
+        "level": 2
+      },
+      "delta": 2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_029"
+      ]
+    },
+    {
+      "id": "elevation_transition_114",
+      "type": "bridge_edge",
+      "from": {
+        "x": 141,
+        "y": 81,
+        "level": 0
+      },
+      "to": {
+        "x": 141,
+        "y": 82,
+        "level": 2
+      },
+      "delta": 2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_029"
+      ]
+    },
+    {
+      "id": "elevation_transition_115",
+      "type": "bridge_edge",
+      "from": {
+        "x": 142,
+        "y": 81,
+        "level": 0
+      },
+      "to": {
+        "x": 142,
+        "y": 82,
+        "level": 2
+      },
+      "delta": 2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_029"
+      ]
+    },
+    {
+      "id": "elevation_transition_116",
+      "type": "step_down",
+      "from": {
+        "x": 167,
+        "y": 81,
+        "level": 0
+      },
+      "to": {
+        "x": 168,
+        "y": 81,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_003"
+      ]
+    },
+    {
+      "id": "elevation_transition_117",
+      "type": "step_up",
+      "from": {
+        "x": 168,
+        "y": 81,
+        "level": -1
+      },
+      "to": {
+        "x": 169,
+        "y": 81,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_003"
+      ]
+    },
+    {
+      "id": "elevation_transition_118",
+      "type": "step_up",
+      "from": {
+        "x": 115,
+        "y": 82,
+        "level": 0
+      },
+      "to": {
+        "x": 115,
+        "y": 83,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_015"
+      ]
+    },
+    {
+      "id": "elevation_transition_119",
+      "type": "step_down",
+      "from": {
+        "x": 133,
+        "y": 82,
+        "level": 0
+      },
+      "to": {
+        "x": 134,
+        "y": 82,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_000"
+      ]
+    },
+    {
+      "id": "elevation_transition_120",
+      "type": "step_up",
+      "from": {
+        "x": 134,
+        "y": 82,
+        "level": -1
+      },
+      "to": {
+        "x": 134,
+        "y": 83,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_000"
+      ]
+    },
+    {
+      "id": "elevation_transition_121",
+      "type": "step_up",
+      "from": {
+        "x": 135,
+        "y": 82,
+        "level": -1
+      },
+      "to": {
+        "x": 135,
+        "y": 83,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_000"
+      ]
+    },
+    {
+      "id": "elevation_transition_122",
+      "type": "step_up",
+      "from": {
+        "x": 136,
+        "y": 82,
+        "level": -1
+      },
+      "to": {
+        "x": 136,
+        "y": 83,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_000"
+      ]
+    },
+    {
+      "id": "elevation_transition_123",
+      "type": "step_up",
+      "from": {
+        "x": 137,
+        "y": 82,
+        "level": -1
+      },
+      "to": {
+        "x": 138,
+        "y": 82,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_000"
+      ]
+    },
+    {
+      "id": "elevation_transition_124",
+      "type": "step_up",
+      "from": {
+        "x": 137,
+        "y": 82,
+        "level": -1
+      },
+      "to": {
+        "x": 137,
+        "y": 83,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_000"
+      ]
+    },
+    {
+      "id": "elevation_transition_125",
+      "type": "bridge_edge",
+      "from": {
+        "x": 139,
+        "y": 82,
+        "level": 0
+      },
+      "to": {
+        "x": 140,
+        "y": 82,
+        "level": 2
+      },
+      "delta": 2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_029"
+      ]
+    },
+    {
+      "id": "elevation_transition_126",
+      "type": "bridge_edge",
+      "from": {
+        "x": 142,
+        "y": 82,
+        "level": 2
+      },
+      "to": {
+        "x": 143,
+        "y": 82,
+        "level": 0
+      },
+      "delta": -2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_029"
+      ]
+    },
+    {
+      "id": "elevation_transition_127",
+      "type": "step_down",
+      "from": {
+        "x": 167,
+        "y": 82,
+        "level": 0
+      },
+      "to": {
+        "x": 168,
+        "y": 82,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_003"
+      ]
+    },
+    {
+      "id": "elevation_transition_128",
+      "type": "step_up",
+      "from": {
+        "x": 168,
+        "y": 82,
+        "level": -1
+      },
+      "to": {
+        "x": 169,
+        "y": 82,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_003"
+      ]
+    },
+    {
+      "id": "elevation_transition_129",
+      "type": "step_up",
+      "from": {
+        "x": 114,
+        "y": 83,
+        "level": 0
+      },
+      "to": {
+        "x": 115,
+        "y": 83,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_015"
+      ]
+    },
+    {
+      "id": "elevation_transition_130",
+      "type": "step_down",
+      "from": {
+        "x": 115,
+        "y": 83,
+        "level": 1
+      },
+      "to": {
+        "x": 116,
+        "y": 83,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_015"
+      ]
+    },
+    {
+      "id": "elevation_transition_131",
+      "type": "bridge_edge",
+      "from": {
+        "x": 139,
+        "y": 83,
+        "level": 0
+      },
+      "to": {
+        "x": 140,
+        "y": 83,
+        "level": 2
+      },
+      "delta": 2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_029"
+      ]
+    },
+    {
+      "id": "elevation_transition_132",
+      "type": "bridge_edge",
+      "from": {
+        "x": 140,
+        "y": 83,
+        "level": 2
+      },
+      "to": {
+        "x": 140,
+        "y": 84,
+        "level": 0
+      },
+      "delta": -2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_029"
+      ]
+    },
+    {
+      "id": "elevation_transition_133",
+      "type": "bridge_edge",
+      "from": {
+        "x": 141,
+        "y": 83,
+        "level": 2
+      },
+      "to": {
+        "x": 141,
+        "y": 84,
+        "level": 0
+      },
+      "delta": -2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_029"
+      ]
+    },
+    {
+      "id": "elevation_transition_134",
+      "type": "bridge_edge",
+      "from": {
+        "x": 142,
+        "y": 83,
+        "level": 2
+      },
+      "to": {
+        "x": 143,
+        "y": 83,
+        "level": 0
+      },
+      "delta": -2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_029"
+      ]
+    },
+    {
+      "id": "elevation_transition_135",
+      "type": "bridge_edge",
+      "from": {
+        "x": 142,
+        "y": 83,
+        "level": 2
+      },
+      "to": {
+        "x": 142,
+        "y": 84,
+        "level": 0
+      },
+      "delta": -2,
+      "abs_delta": 2,
+      "requires_explicit_connector": true,
+      "suggested_connector": "bridge",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_bridge",
+      "feature_refs": [
+        "elevation_feature_029"
+      ]
+    },
+    {
+      "id": "elevation_transition_136",
+      "type": "step_down",
+      "from": {
+        "x": 167,
+        "y": 83,
+        "level": 0
+      },
+      "to": {
+        "x": 168,
+        "y": 83,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_003"
+      ]
+    },
+    {
+      "id": "elevation_transition_137",
+      "type": "step_up",
+      "from": {
+        "x": 168,
+        "y": 83,
+        "level": -1
+      },
+      "to": {
+        "x": 169,
+        "y": 83,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_003"
+      ]
+    },
+    {
+      "id": "elevation_transition_138",
+      "type": "step_up",
+      "from": {
+        "x": 114,
+        "y": 84,
+        "level": 0
+      },
+      "to": {
+        "x": 115,
+        "y": 84,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_015"
+      ]
+    },
+    {
+      "id": "elevation_transition_139",
+      "type": "step_down",
+      "from": {
+        "x": 115,
+        "y": 84,
+        "level": 1
+      },
+      "to": {
+        "x": 116,
+        "y": 84,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_015"
+      ]
+    },
+    {
+      "id": "elevation_transition_140",
+      "type": "step_down",
+      "from": {
+        "x": 115,
+        "y": 84,
+        "level": 1
+      },
+      "to": {
+        "x": 115,
+        "y": 85,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_015"
+      ]
+    },
+    {
+      "id": "elevation_transition_141",
+      "type": "step_down",
+      "from": {
+        "x": 167,
+        "y": 84,
+        "level": 0
+      },
+      "to": {
+        "x": 168,
+        "y": 84,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_003"
+      ]
+    },
+    {
+      "id": "elevation_transition_142",
+      "type": "step_up",
+      "from": {
+        "x": 168,
+        "y": 84,
+        "level": -1
+      },
+      "to": {
+        "x": 169,
+        "y": 84,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_003"
+      ]
+    },
+    {
+      "id": "elevation_transition_143",
+      "type": "step_up",
+      "from": {
+        "x": 168,
+        "y": 84,
+        "level": -1
+      },
+      "to": {
+        "x": 168,
+        "y": 85,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_003"
+      ]
+    },
+    {
+      "id": "elevation_transition_144",
+      "type": "connector_edge",
+      "from": {
+        "x": 159,
+        "y": 90,
+        "level": 0
+      },
+      "to": {
+        "x": 159,
+        "y": 91,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "stairs",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_stairs",
+      "feature_refs": [
+        "elevation_feature_027"
+      ]
+    },
+    {
+      "id": "elevation_transition_145",
+      "type": "connector_edge",
+      "from": {
+        "x": 160,
+        "y": 90,
+        "level": 0
+      },
+      "to": {
+        "x": 160,
+        "y": 91,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "stairs",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_stairs",
+      "feature_refs": [
+        "elevation_feature_027"
+      ]
+    },
+    {
+      "id": "elevation_transition_146",
+      "type": "connector_edge",
+      "from": {
+        "x": 158,
+        "y": 91,
+        "level": 0
+      },
+      "to": {
+        "x": 159,
+        "y": 91,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "stairs",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_stairs",
+      "feature_refs": [
+        "elevation_feature_027"
+      ]
+    },
+    {
+      "id": "elevation_transition_147",
+      "type": "connector_edge",
+      "from": {
+        "x": 159,
+        "y": 91,
+        "level": 1
+      },
+      "to": {
+        "x": 159,
+        "y": 92,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "stairs",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_stairs",
+      "feature_refs": [
+        "elevation_feature_027"
+      ]
+    },
+    {
+      "id": "elevation_transition_148",
+      "type": "connector_edge",
+      "from": {
+        "x": 160,
+        "y": 91,
+        "level": 1
+      },
+      "to": {
+        "x": 161,
+        "y": 91,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "stairs",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_stairs",
+      "feature_refs": [
+        "elevation_feature_027"
+      ]
+    },
+    {
+      "id": "elevation_transition_149",
+      "type": "connector_edge",
+      "from": {
+        "x": 160,
+        "y": 91,
+        "level": 1
+      },
+      "to": {
+        "x": 160,
+        "y": 92,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "stairs",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_stairs",
+      "feature_refs": [
+        "elevation_feature_027"
+      ]
+    },
+    {
+      "id": "elevation_transition_150",
+      "type": "step_up",
+      "from": {
+        "x": 105,
+        "y": 102,
+        "level": 0
+      },
+      "to": {
+        "x": 105,
+        "y": 103,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_013"
+      ]
+    },
+    {
+      "id": "elevation_transition_151",
+      "type": "step_up",
+      "from": {
+        "x": 104,
+        "y": 103,
+        "level": 0
+      },
+      "to": {
+        "x": 105,
+        "y": 103,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_013"
+      ]
+    },
+    {
+      "id": "elevation_transition_152",
+      "type": "step_down",
+      "from": {
+        "x": 105,
+        "y": 103,
+        "level": 1
+      },
+      "to": {
+        "x": 106,
+        "y": 103,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_013"
+      ]
+    },
+    {
+      "id": "elevation_transition_153",
+      "type": "step_up",
+      "from": {
+        "x": 104,
+        "y": 104,
+        "level": 0
+      },
+      "to": {
+        "x": 105,
+        "y": 104,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_013"
+      ]
+    },
+    {
+      "id": "elevation_transition_154",
+      "type": "step_down",
+      "from": {
+        "x": 105,
+        "y": 104,
+        "level": 1
+      },
+      "to": {
+        "x": 106,
+        "y": 104,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_013"
+      ]
+    },
+    {
+      "id": "elevation_transition_155",
+      "type": "step_down",
+      "from": {
+        "x": 105,
+        "y": 104,
+        "level": 1
+      },
+      "to": {
+        "x": 105,
+        "y": 105,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_013"
+      ]
+    },
+    {
+      "id": "elevation_transition_156",
+      "type": "step_down",
+      "from": {
+        "x": 166,
+        "y": 108,
+        "level": 0
+      },
+      "to": {
+        "x": 166,
+        "y": 109,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_004"
+      ]
+    },
+    {
+      "id": "elevation_transition_157",
+      "type": "step_down",
+      "from": {
+        "x": 167,
+        "y": 108,
+        "level": 0
+      },
+      "to": {
+        "x": 167,
+        "y": 109,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_004"
+      ]
+    },
+    {
+      "id": "elevation_transition_158",
+      "type": "step_down",
+      "from": {
+        "x": 168,
+        "y": 108,
+        "level": 0
+      },
+      "to": {
+        "x": 168,
+        "y": 109,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_004"
+      ]
+    },
+    {
+      "id": "elevation_transition_159",
+      "type": "step_down",
+      "from": {
+        "x": 169,
+        "y": 108,
+        "level": 0
+      },
+      "to": {
+        "x": 169,
+        "y": 109,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_004"
+      ]
+    },
+    {
+      "id": "elevation_transition_160",
+      "type": "step_down",
+      "from": {
+        "x": 170,
+        "y": 108,
+        "level": 0
+      },
+      "to": {
+        "x": 170,
+        "y": 109,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_004"
+      ]
+    },
+    {
+      "id": "elevation_transition_161",
+      "type": "step_down",
+      "from": {
+        "x": 165,
+        "y": 109,
+        "level": 0
+      },
+      "to": {
+        "x": 166,
+        "y": 109,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_004"
+      ]
+    },
+    {
+      "id": "elevation_transition_162",
+      "type": "step_up",
+      "from": {
+        "x": 166,
+        "y": 109,
+        "level": -1
+      },
+      "to": {
+        "x": 166,
+        "y": 110,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_004"
+      ]
+    },
+    {
+      "id": "elevation_transition_163",
+      "type": "step_up",
+      "from": {
+        "x": 167,
+        "y": 109,
+        "level": -1
+      },
+      "to": {
+        "x": 167,
+        "y": 110,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_004"
+      ]
+    },
+    {
+      "id": "elevation_transition_164",
+      "type": "step_up",
+      "from": {
+        "x": 168,
+        "y": 109,
+        "level": -1
+      },
+      "to": {
+        "x": 168,
+        "y": 110,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_004"
+      ]
+    },
+    {
+      "id": "elevation_transition_165",
+      "type": "step_up",
+      "from": {
+        "x": 169,
+        "y": 109,
+        "level": -1
+      },
+      "to": {
+        "x": 169,
+        "y": 110,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_004"
+      ]
+    },
+    {
+      "id": "elevation_transition_166",
+      "type": "step_up",
+      "from": {
+        "x": 170,
+        "y": 109,
+        "level": -1
+      },
+      "to": {
+        "x": 171,
+        "y": 109,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_004"
+      ]
+    },
+    {
+      "id": "elevation_transition_167",
+      "type": "step_up",
+      "from": {
+        "x": 170,
+        "y": 109,
+        "level": -1
+      },
+      "to": {
+        "x": 170,
+        "y": 110,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_004"
+      ]
+    },
+    {
+      "id": "elevation_transition_168",
+      "type": "step_up",
+      "from": {
+        "x": 101,
+        "y": 110,
+        "level": 0
+      },
+      "to": {
+        "x": 101,
+        "y": 111,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_017"
+      ]
+    },
+    {
+      "id": "elevation_transition_169",
+      "type": "step_up",
+      "from": {
+        "x": 102,
+        "y": 110,
+        "level": 0
+      },
+      "to": {
+        "x": 102,
+        "y": 111,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_017"
+      ]
+    },
+    {
+      "id": "elevation_transition_170",
+      "type": "step_up",
+      "from": {
+        "x": 103,
+        "y": 110,
+        "level": 0
+      },
+      "to": {
+        "x": 103,
+        "y": 111,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_017"
+      ]
+    },
+    {
+      "id": "elevation_transition_171",
+      "type": "step_up",
+      "from": {
+        "x": 100,
+        "y": 111,
+        "level": 0
+      },
+      "to": {
+        "x": 101,
+        "y": 111,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_017"
+      ]
+    },
+    {
+      "id": "elevation_transition_172",
+      "type": "step_down",
+      "from": {
+        "x": 103,
+        "y": 111,
+        "level": 1
+      },
+      "to": {
+        "x": 104,
+        "y": 111,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_017"
+      ]
+    },
+    {
+      "id": "elevation_transition_173",
+      "type": "step_up",
+      "from": {
+        "x": 100,
+        "y": 112,
+        "level": 0
+      },
+      "to": {
+        "x": 101,
+        "y": 112,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_017"
+      ]
+    },
+    {
+      "id": "elevation_transition_174",
+      "type": "step_down",
+      "from": {
+        "x": 103,
+        "y": 112,
+        "level": 1
+      },
+      "to": {
+        "x": 104,
+        "y": 112,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_017"
+      ]
+    },
+    {
+      "id": "elevation_transition_175",
+      "type": "step_up",
+      "from": {
+        "x": 100,
+        "y": 113,
+        "level": 0
+      },
+      "to": {
+        "x": 101,
+        "y": 113,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_017"
+      ]
+    },
+    {
+      "id": "elevation_transition_176",
+      "type": "step_down",
+      "from": {
+        "x": 101,
+        "y": 113,
+        "level": 1
+      },
+      "to": {
+        "x": 101,
+        "y": 114,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_017"
+      ]
+    },
+    {
+      "id": "elevation_transition_177",
+      "type": "step_down",
+      "from": {
+        "x": 102,
+        "y": 113,
+        "level": 1
+      },
+      "to": {
+        "x": 102,
+        "y": 114,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_017"
+      ]
+    },
+    {
+      "id": "elevation_transition_178",
+      "type": "step_down",
+      "from": {
+        "x": 103,
+        "y": 113,
+        "level": 1
+      },
+      "to": {
+        "x": 104,
+        "y": 113,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_017"
+      ]
+    },
+    {
+      "id": "elevation_transition_179",
+      "type": "step_down",
+      "from": {
+        "x": 103,
+        "y": 113,
+        "level": 1
+      },
+      "to": {
+        "x": 103,
+        "y": 114,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_017"
+      ]
+    },
+    {
+      "id": "elevation_transition_180",
+      "type": "step_down",
+      "from": {
+        "x": 13,
+        "y": 117,
+        "level": 0
+      },
+      "to": {
+        "x": 13,
+        "y": 118,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_007"
+      ]
+    },
+    {
+      "id": "elevation_transition_181",
+      "type": "step_down",
+      "from": {
+        "x": 14,
+        "y": 117,
+        "level": 0
+      },
+      "to": {
+        "x": 14,
+        "y": 118,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_007"
+      ]
+    },
+    {
+      "id": "elevation_transition_182",
+      "type": "step_down",
+      "from": {
+        "x": 12,
+        "y": 118,
+        "level": 0
+      },
+      "to": {
+        "x": 13,
+        "y": 118,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_007"
+      ]
+    },
+    {
+      "id": "elevation_transition_183",
+      "type": "step_up",
+      "from": {
+        "x": 14,
+        "y": 118,
+        "level": -1
+      },
+      "to": {
+        "x": 15,
+        "y": 118,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_007"
+      ]
+    },
+    {
+      "id": "elevation_transition_184",
+      "type": "step_down",
+      "from": {
+        "x": 12,
+        "y": 119,
+        "level": 0
+      },
+      "to": {
+        "x": 13,
+        "y": 119,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_007"
+      ]
+    },
+    {
+      "id": "elevation_transition_185",
+      "type": "step_up",
+      "from": {
+        "x": 13,
+        "y": 119,
+        "level": -1
+      },
+      "to": {
+        "x": 13,
+        "y": 120,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_007"
+      ]
+    },
+    {
+      "id": "elevation_transition_186",
+      "type": "step_up",
+      "from": {
+        "x": 14,
+        "y": 119,
+        "level": -1
+      },
+      "to": {
+        "x": 15,
+        "y": 119,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_007"
+      ]
+    },
+    {
+      "id": "elevation_transition_187",
+      "type": "step_up",
+      "from": {
+        "x": 14,
+        "y": 119,
+        "level": -1
+      },
+      "to": {
+        "x": 14,
+        "y": 120,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_007"
+      ]
+    },
+    {
+      "id": "elevation_transition_188",
+      "type": "step_up",
+      "from": {
+        "x": 117,
+        "y": 120,
+        "level": 0
+      },
+      "to": {
+        "x": 117,
+        "y": 121,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_018"
+      ]
+    },
+    {
+      "id": "elevation_transition_189",
+      "type": "step_up",
+      "from": {
+        "x": 118,
+        "y": 120,
+        "level": 0
+      },
+      "to": {
+        "x": 118,
+        "y": 121,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_018"
+      ]
+    },
+    {
+      "id": "elevation_transition_190",
+      "type": "step_up",
+      "from": {
+        "x": 119,
+        "y": 120,
+        "level": 0
+      },
+      "to": {
+        "x": 119,
+        "y": 121,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_018"
+      ]
+    },
+    {
+      "id": "elevation_transition_191",
+      "type": "step_up",
+      "from": {
+        "x": 116,
+        "y": 121,
+        "level": 0
+      },
+      "to": {
+        "x": 117,
+        "y": 121,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_018"
+      ]
+    },
+    {
+      "id": "elevation_transition_192",
+      "type": "step_down",
+      "from": {
+        "x": 119,
+        "y": 121,
+        "level": 1
+      },
+      "to": {
+        "x": 120,
+        "y": 121,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_018"
+      ]
+    },
+    {
+      "id": "elevation_transition_193",
+      "type": "step_up",
+      "from": {
+        "x": 116,
+        "y": 122,
+        "level": 0
+      },
+      "to": {
+        "x": 117,
+        "y": 122,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_018"
+      ]
+    },
+    {
+      "id": "elevation_transition_194",
+      "type": "step_down",
+      "from": {
+        "x": 119,
+        "y": 122,
+        "level": 1
+      },
+      "to": {
+        "x": 120,
+        "y": 122,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_018"
+      ]
+    },
+    {
+      "id": "elevation_transition_195",
+      "type": "step_up",
+      "from": {
+        "x": 116,
+        "y": 123,
+        "level": 0
+      },
+      "to": {
+        "x": 117,
+        "y": 123,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_018"
+      ]
+    },
+    {
+      "id": "elevation_transition_196",
+      "type": "step_down",
+      "from": {
+        "x": 117,
+        "y": 123,
+        "level": 1
+      },
+      "to": {
+        "x": 117,
+        "y": 124,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_018"
+      ]
+    },
+    {
+      "id": "elevation_transition_197",
+      "type": "step_down",
+      "from": {
+        "x": 118,
+        "y": 123,
+        "level": 1
+      },
+      "to": {
+        "x": 118,
+        "y": 124,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_018"
+      ]
+    },
+    {
+      "id": "elevation_transition_198",
+      "type": "step_down",
+      "from": {
+        "x": 119,
+        "y": 123,
+        "level": 1
+      },
+      "to": {
+        "x": 120,
+        "y": 123,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_018"
+      ]
+    },
+    {
+      "id": "elevation_transition_199",
+      "type": "step_down",
+      "from": {
+        "x": 119,
+        "y": 123,
+        "level": 1
+      },
+      "to": {
+        "x": 119,
+        "y": 124,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_018"
+      ]
+    },
+    {
+      "id": "elevation_transition_200",
+      "type": "step_down",
+      "from": {
+        "x": 111,
+        "y": 129,
+        "level": 0
+      },
+      "to": {
+        "x": 111,
+        "y": 130,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_010"
+      ]
+    },
+    {
+      "id": "elevation_transition_201",
+      "type": "step_down",
+      "from": {
+        "x": 112,
+        "y": 129,
+        "level": 0
+      },
+      "to": {
+        "x": 112,
+        "y": 130,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_010"
+      ]
+    },
+    {
+      "id": "elevation_transition_202",
+      "type": "step_down",
+      "from": {
+        "x": 110,
+        "y": 130,
+        "level": 0
+      },
+      "to": {
+        "x": 111,
+        "y": 130,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_010"
+      ]
+    },
+    {
+      "id": "elevation_transition_203",
+      "type": "step_up",
+      "from": {
+        "x": 112,
+        "y": 130,
+        "level": -1
+      },
+      "to": {
+        "x": 113,
+        "y": 130,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_010"
+      ]
+    },
+    {
+      "id": "elevation_transition_204",
+      "type": "step_down",
+      "from": {
+        "x": 110,
+        "y": 131,
+        "level": 0
+      },
+      "to": {
+        "x": 111,
+        "y": 131,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_010"
+      ]
+    },
+    {
+      "id": "elevation_transition_205",
+      "type": "step_up",
+      "from": {
+        "x": 111,
+        "y": 131,
+        "level": -1
+      },
+      "to": {
+        "x": 111,
+        "y": 132,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_010"
+      ]
+    },
+    {
+      "id": "elevation_transition_206",
+      "type": "step_up",
+      "from": {
+        "x": 112,
+        "y": 131,
+        "level": -1
+      },
+      "to": {
+        "x": 113,
+        "y": 131,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_010"
+      ]
+    },
+    {
+      "id": "elevation_transition_207",
+      "type": "step_up",
+      "from": {
+        "x": 112,
+        "y": 131,
+        "level": -1
+      },
+      "to": {
+        "x": 112,
+        "y": 132,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_010"
+      ]
+    },
+    {
+      "id": "elevation_transition_208",
+      "type": "step_up",
+      "from": {
+        "x": 11,
+        "y": 134,
+        "level": 0
+      },
+      "to": {
+        "x": 11,
+        "y": 135,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_020"
+      ]
+    },
+    {
+      "id": "elevation_transition_209",
+      "type": "step_up",
+      "from": {
+        "x": 12,
+        "y": 134,
+        "level": 0
+      },
+      "to": {
+        "x": 12,
+        "y": 135,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_020"
+      ]
+    },
+    {
+      "id": "elevation_transition_210",
+      "type": "step_up",
+      "from": {
+        "x": 13,
+        "y": 134,
+        "level": 0
+      },
+      "to": {
+        "x": 13,
+        "y": 135,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_020"
+      ]
+    },
+    {
+      "id": "elevation_transition_211",
+      "type": "step_up",
+      "from": {
+        "x": 10,
+        "y": 135,
+        "level": 0
+      },
+      "to": {
+        "x": 11,
+        "y": 135,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_020"
+      ]
+    },
+    {
+      "id": "elevation_transition_212",
+      "type": "step_down",
+      "from": {
+        "x": 13,
+        "y": 135,
+        "level": 1
+      },
+      "to": {
+        "x": 14,
+        "y": 135,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_020"
+      ]
+    },
+    {
+      "id": "elevation_transition_213",
+      "type": "step_up",
+      "from": {
+        "x": 177,
+        "y": 135,
+        "level": 0
+      },
+      "to": {
+        "x": 177,
+        "y": 136,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_014"
+      ]
+    },
+    {
+      "id": "elevation_transition_214",
+      "type": "step_up",
+      "from": {
+        "x": 178,
+        "y": 135,
+        "level": 0
+      },
+      "to": {
+        "x": 178,
+        "y": 136,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_014"
+      ]
+    },
+    {
+      "id": "elevation_transition_215",
+      "type": "step_up",
+      "from": {
+        "x": 10,
+        "y": 136,
+        "level": 0
+      },
+      "to": {
+        "x": 11,
+        "y": 136,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_020"
+      ]
+    },
+    {
+      "id": "elevation_transition_216",
+      "type": "step_down",
+      "from": {
+        "x": 13,
+        "y": 136,
+        "level": 1
+      },
+      "to": {
+        "x": 14,
+        "y": 136,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_020"
+      ]
+    },
+    {
+      "id": "elevation_transition_217",
+      "type": "step_up",
+      "from": {
+        "x": 176,
+        "y": 136,
+        "level": 0
+      },
+      "to": {
+        "x": 177,
+        "y": 136,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_014"
+      ]
+    },
+    {
+      "id": "elevation_transition_218",
+      "type": "step_down",
+      "from": {
+        "x": 177,
+        "y": 136,
+        "level": 1
+      },
+      "to": {
+        "x": 177,
+        "y": 137,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_014"
+      ]
+    },
+    {
+      "id": "elevation_transition_219",
+      "type": "step_down",
+      "from": {
+        "x": 178,
+        "y": 136,
+        "level": 1
+      },
+      "to": {
+        "x": 179,
+        "y": 136,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_014"
+      ]
+    },
+    {
+      "id": "elevation_transition_220",
+      "type": "step_down",
+      "from": {
+        "x": 178,
+        "y": 136,
+        "level": 1
+      },
+      "to": {
+        "x": 178,
+        "y": 137,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_014"
+      ]
+    },
+    {
+      "id": "elevation_transition_221",
+      "type": "connector_edge",
+      "from": {
+        "x": 9,
+        "y": 137,
+        "level": 0
+      },
+      "to": {
+        "x": 9,
+        "y": 138,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "stairs",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_stairs",
+      "feature_refs": [
+        "elevation_feature_028"
+      ]
+    },
+    {
+      "id": "elevation_transition_222",
+      "type": "step_up",
+      "from": {
+        "x": 10,
+        "y": 137,
+        "level": 0
+      },
+      "to": {
+        "x": 11,
+        "y": 137,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_020"
+      ]
+    },
+    {
+      "id": "elevation_transition_223",
+      "type": "step_down",
+      "from": {
+        "x": 11,
+        "y": 137,
+        "level": 1
+      },
+      "to": {
+        "x": 11,
+        "y": 138,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_020"
+      ]
+    },
+    {
+      "id": "elevation_transition_224",
+      "type": "step_down",
+      "from": {
+        "x": 12,
+        "y": 137,
+        "level": 1
+      },
+      "to": {
+        "x": 12,
+        "y": 138,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_020"
+      ]
+    },
+    {
+      "id": "elevation_transition_225",
+      "type": "step_down",
+      "from": {
+        "x": 13,
+        "y": 137,
+        "level": 1
+      },
+      "to": {
+        "x": 14,
+        "y": 137,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_020"
+      ]
+    },
+    {
+      "id": "elevation_transition_226",
+      "type": "step_down",
+      "from": {
+        "x": 13,
+        "y": 137,
+        "level": 1
+      },
+      "to": {
+        "x": 13,
+        "y": 138,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "slope",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_slope",
+      "feature_refs": [
+        "elevation_feature_020"
+      ]
+    },
+    {
+      "id": "elevation_transition_227",
+      "type": "connector_edge",
+      "from": {
+        "x": 8,
+        "y": 138,
+        "level": 0
+      },
+      "to": {
+        "x": 9,
+        "y": 138,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "stairs",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_stairs",
+      "feature_refs": [
+        "elevation_feature_028"
+      ]
+    },
+    {
+      "id": "elevation_transition_228",
+      "type": "connector_edge",
+      "from": {
+        "x": 9,
+        "y": 138,
+        "level": 1
+      },
+      "to": {
+        "x": 10,
+        "y": 138,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "stairs",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_stairs",
+      "feature_refs": [
+        "elevation_feature_028"
+      ]
+    },
+    {
+      "id": "elevation_transition_229",
+      "type": "connector_edge",
+      "from": {
+        "x": 8,
+        "y": 139,
+        "level": 0
+      },
+      "to": {
+        "x": 9,
+        "y": 139,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "stairs",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_stairs",
+      "feature_refs": [
+        "elevation_feature_028"
+      ]
+    },
+    {
+      "id": "elevation_transition_230",
+      "type": "connector_edge",
+      "from": {
+        "x": 9,
+        "y": 139,
+        "level": 1
+      },
+      "to": {
+        "x": 10,
+        "y": 139,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "stairs",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_stairs",
+      "feature_refs": [
+        "elevation_feature_028"
+      ]
+    },
+    {
+      "id": "elevation_transition_231",
+      "type": "connector_edge",
+      "from": {
+        "x": 9,
+        "y": 139,
+        "level": 1
+      },
+      "to": {
+        "x": 9,
+        "y": 140,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "stairs",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_stairs",
+      "feature_refs": [
+        "elevation_feature_028"
+      ]
+    },
+    {
+      "id": "elevation_transition_232",
+      "type": "step_down",
+      "from": {
+        "x": 43,
+        "y": 143,
+        "level": 0
+      },
+      "to": {
+        "x": 43,
+        "y": 144,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_008"
+      ]
+    },
+    {
+      "id": "elevation_transition_233",
+      "type": "step_down",
+      "from": {
+        "x": 44,
+        "y": 143,
+        "level": 0
+      },
+      "to": {
+        "x": 44,
+        "y": 144,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_008"
+      ]
+    },
+    {
+      "id": "elevation_transition_234",
+      "type": "step_down",
+      "from": {
+        "x": 45,
+        "y": 143,
+        "level": 0
+      },
+      "to": {
+        "x": 45,
+        "y": 144,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_008"
+      ]
+    },
+    {
+      "id": "elevation_transition_235",
+      "type": "steep_transition",
+      "from": {
+        "x": 180,
+        "y": 143,
+        "level": 0
+      },
+      "to": {
+        "x": 180,
+        "y": 144,
+        "level": 3
+      },
+      "delta": 3,
+      "abs_delta": 3,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ladder_or_scripted",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ladder_or_scripted_connector",
+      "feature_refs": [
+        "elevation_feature_031"
+      ]
+    },
+    {
+      "id": "elevation_transition_236",
+      "type": "steep_transition",
+      "from": {
+        "x": 181,
+        "y": 143,
+        "level": 0
+      },
+      "to": {
+        "x": 181,
+        "y": 144,
+        "level": 3
+      },
+      "delta": 3,
+      "abs_delta": 3,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ladder_or_scripted",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ladder_or_scripted_connector",
+      "feature_refs": [
+        "elevation_feature_031"
+      ]
+    },
+    {
+      "id": "elevation_transition_237",
+      "type": "step_down",
+      "from": {
+        "x": 42,
+        "y": 144,
+        "level": 0
+      },
+      "to": {
+        "x": 43,
+        "y": 144,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_008"
+      ]
+    },
+    {
+      "id": "elevation_transition_238",
+      "type": "step_up",
+      "from": {
+        "x": 45,
+        "y": 144,
+        "level": -1
+      },
+      "to": {
+        "x": 46,
+        "y": 144,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_008"
+      ]
+    },
+    {
+      "id": "elevation_transition_239",
+      "type": "steep_transition",
+      "from": {
+        "x": 179,
+        "y": 144,
+        "level": 0
+      },
+      "to": {
+        "x": 180,
+        "y": 144,
+        "level": 3
+      },
+      "delta": 3,
+      "abs_delta": 3,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ladder_or_scripted",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ladder_or_scripted_connector",
+      "feature_refs": [
+        "elevation_feature_031"
+      ]
+    },
+    {
+      "id": "elevation_transition_240",
+      "type": "steep_transition",
+      "from": {
+        "x": 181,
+        "y": 144,
+        "level": 3
+      },
+      "to": {
+        "x": 182,
+        "y": 144,
+        "level": 0
+      },
+      "delta": -3,
+      "abs_delta": 3,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ladder_or_scripted",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ladder_or_scripted_connector",
+      "feature_refs": [
+        "elevation_feature_031"
+      ]
+    },
+    {
+      "id": "elevation_transition_241",
+      "type": "step_down",
+      "from": {
+        "x": 42,
+        "y": 145,
+        "level": 0
+      },
+      "to": {
+        "x": 43,
+        "y": 145,
+        "level": -1
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_008"
+      ]
+    },
+    {
+      "id": "elevation_transition_242",
+      "type": "step_up",
+      "from": {
+        "x": 43,
+        "y": 145,
+        "level": -1
+      },
+      "to": {
+        "x": 43,
+        "y": 146,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_008"
+      ]
+    },
+    {
+      "id": "elevation_transition_243",
+      "type": "step_up",
+      "from": {
+        "x": 44,
+        "y": 145,
+        "level": -1
+      },
+      "to": {
+        "x": 44,
+        "y": 146,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_008"
+      ]
+    },
+    {
+      "id": "elevation_transition_244",
+      "type": "step_up",
+      "from": {
+        "x": 45,
+        "y": 145,
+        "level": -1
+      },
+      "to": {
+        "x": 46,
+        "y": 145,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_008"
+      ]
+    },
+    {
+      "id": "elevation_transition_245",
+      "type": "step_up",
+      "from": {
+        "x": 45,
+        "y": 145,
+        "level": -1
+      },
+      "to": {
+        "x": 45,
+        "y": 146,
+        "level": 0
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "none",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ramp_stairs_or_slope",
+      "feature_refs": [
+        "elevation_feature_008"
+      ]
+    },
+    {
+      "id": "elevation_transition_246",
+      "type": "connector_edge",
+      "from": {
+        "x": 118,
+        "y": 145,
+        "level": 0
+      },
+      "to": {
+        "x": 118,
+        "y": 146,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ramp",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_ramp",
+      "feature_refs": [
+        "elevation_feature_024"
+      ]
+    },
+    {
+      "id": "elevation_transition_247",
+      "type": "steep_transition",
+      "from": {
+        "x": 179,
+        "y": 145,
+        "level": 0
+      },
+      "to": {
+        "x": 180,
+        "y": 145,
+        "level": 3
+      },
+      "delta": 3,
+      "abs_delta": 3,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ladder_or_scripted",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ladder_or_scripted_connector",
+      "feature_refs": [
+        "elevation_feature_031"
+      ]
+    },
+    {
+      "id": "elevation_transition_248",
+      "type": "steep_transition",
+      "from": {
+        "x": 180,
+        "y": 145,
+        "level": 3
+      },
+      "to": {
+        "x": 180,
+        "y": 146,
+        "level": 0
+      },
+      "delta": -3,
+      "abs_delta": 3,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ladder_or_scripted",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ladder_or_scripted_connector",
+      "feature_refs": [
+        "elevation_feature_031"
+      ]
+    },
+    {
+      "id": "elevation_transition_249",
+      "type": "steep_transition",
+      "from": {
+        "x": 181,
+        "y": 145,
+        "level": 3
+      },
+      "to": {
+        "x": 182,
+        "y": 145,
+        "level": 0
+      },
+      "delta": -3,
+      "abs_delta": 3,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ladder_or_scripted",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ladder_or_scripted_connector",
+      "feature_refs": [
+        "elevation_feature_031"
+      ]
+    },
+    {
+      "id": "elevation_transition_250",
+      "type": "steep_transition",
+      "from": {
+        "x": 181,
+        "y": 145,
+        "level": 3
+      },
+      "to": {
+        "x": 181,
+        "y": 146,
+        "level": 0
+      },
+      "delta": -3,
+      "abs_delta": 3,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ladder_or_scripted",
+      "movement_allowed": false,
+      "movement_rule": "blocked_without_ladder_or_scripted_connector",
+      "feature_refs": [
+        "elevation_feature_031"
+      ]
+    },
+    {
+      "id": "elevation_transition_251",
+      "type": "connector_edge",
+      "from": {
+        "x": 117,
+        "y": 146,
+        "level": 0
+      },
+      "to": {
+        "x": 118,
+        "y": 146,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ramp",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_ramp",
+      "feature_refs": [
+        "elevation_feature_024"
+      ]
+    },
+    {
+      "id": "elevation_transition_252",
+      "type": "connector_edge",
+      "from": {
+        "x": 118,
+        "y": 146,
+        "level": 1
+      },
+      "to": {
+        "x": 119,
+        "y": 146,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ramp",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_ramp",
+      "feature_refs": [
+        "elevation_feature_024"
+      ]
+    },
+    {
+      "id": "elevation_transition_253",
+      "type": "connector_edge",
+      "from": {
+        "x": 117,
+        "y": 147,
+        "level": 0
+      },
+      "to": {
+        "x": 118,
+        "y": 147,
+        "level": 1
+      },
+      "delta": 1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ramp",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_ramp",
+      "feature_refs": [
+        "elevation_feature_024"
+      ]
+    },
+    {
+      "id": "elevation_transition_254",
+      "type": "connector_edge",
+      "from": {
+        "x": 118,
+        "y": 147,
+        "level": 1
+      },
+      "to": {
+        "x": 119,
+        "y": 147,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ramp",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_ramp",
+      "feature_refs": [
+        "elevation_feature_024"
+      ]
+    },
+    {
+      "id": "elevation_transition_255",
+      "type": "connector_edge",
+      "from": {
+        "x": 118,
+        "y": 147,
+        "level": 1
+      },
+      "to": {
+        "x": 118,
+        "y": 148,
+        "level": 0
+      },
+      "delta": -1,
+      "abs_delta": 1,
+      "requires_explicit_connector": true,
+      "suggested_connector": "ramp",
+      "movement_allowed": true,
+      "movement_rule": "allowed_via_ramp",
+      "feature_refs": [
+        "elevation_feature_024"
+      ]
+    }
+  ],
+  "transition_types": {
+    "step_down": "Adjacent cells descend to a lower level.",
+    "step_up": "Adjacent cells ascend to a higher level.",
+    "steep_transition": "Large height delta that needs an explicit connector.",
+    "bridge_edge": "Transition involving bridge/platform semantics.",
+    "connector_edge": "Transition involving an explicit ramp or stairs connector."
+  },
+  "connector_types": {
+    "slope": "Natural or earthwork connector for a one-level transition.",
+    "ramp": "Explicit ramp connector for a one-level transition.",
+    "stairs": "Explicit stairs connector for a one-level transition.",
+    "bridge": "Bridge or platform connector for elevated walkable traversal.",
+    "ladder_or_scripted": "Recommended connector for larger transitions.",
+    "none": "No explicit connector required."
+  },
+  "v1_completion": {
+    "connectors_present": [
+      "bridge",
+      "ladder_or_scripted",
+      "none",
+      "ramp",
+      "slope",
+      "stairs"
+    ],
+    "movement_allowed_count": 114,
+    "movement_blocked_count": 142,
+    "notes": [
+      "Allowed transitions are directly consumable by movement/pathfinding code.",
+      "Blocked transitions mark cliffs, drops, or missing connectors for game-specific handling."
+    ]
+  },
+  "summary": {
+    "total": 256,
+    "by_type": {
+      "bridge_edge": 30,
+      "connector_edge": 24,
+      "steep_transition": 20,
+      "step_down": 91,
+      "step_up": 91
+    },
+    "by_connector": {
+      "bridge": 30,
+      "ladder_or_scripted": 20,
+      "none": 122,
+      "ramp": 12,
+      "slope": 60,
+      "stairs": 12
+    },
+    "movement_allowed": 114,
+    "movement_blocked": 142
+  }
+}

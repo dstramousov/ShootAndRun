@@ -1,0 +1,38 @@
+Top-down worldgen v0.19 refactor metrics
+
+version: clean_refactor
+map_width_tiles: 192
+map_height_tiles: 192
+resolved_seed: 11073698844260551338
+tile_size_px: 16
+engine_time_ms: 1681.77
+tactical_time_ms: 2862.65
+render_time_ms: 0.0
+total_time_ms: 4544.96
+render_enabled: False
+debug_images_enabled: False
+rendered_layers: []
+objective_profile: clear_map
+generation_tuning: {'water_scale': 5.0, 'water_patch_count_scale': 1.0, 'water_patch_size_scale': 2.0, 'water_patch_density': 0.62, 'forest_scale': 1.0, 'open_space_scale': 1.0, 'ruins_scale': 1.0, 'buildings_scale': 1.0, 'road_width_scale': 1.0, 'decoration_scale': 1.0, 'bunker_scale': 1.0}
+spawn_selection_policy: one_initial_spawn_per_combat_zone
+candidate_spawn_count: 75
+selected_spawn_count: 26
+combat_zones: 27
+cover_points: 480
+choke_points: 32
+flank_routes: 22
+enemy_spawn_zones: 26
+fallback_positions: 70
+runtime_objects: 140
+runtime_object_types: 32
+runtime_objects_summary: {'total': 140, 'by_type': {'abandoned_backpack': 4, 'abandoned_cart': 3, 'ammo_cache': 4, 'ancient_beacon': 2, 'big_dead_tree': 2, 'broken_generator': 2, 'broken_radio_mast': 1, 'buried_bunker_2x2': 2, 'buried_bunker_2x3': 2, 'bush_thicket': 21, 'cable_spool': 3, 'car_wreck': 3, 'dead_campfire': 3, 'earth_berm': 4, 'fallen_log': 12, 'field_tent': 3, 'hill': 4, 'medkit_cache': 3, 'old_checkpoint': 1, 'old_grave_marker': 2, 'old_well': 2, 'pit': 3, 'ruin_platform': 2, 'rusted_barrel': 8, 'scrap_pile': 10, 'stone_chunk': 15, 'stone_ramp': 3, 'stone_stairs': 3, 'trench': 6, 'warning_sign': 3, 'watchtower': 2, 'wooden_bridge': 2}, 'trench_shapes': {'l_shape': 3, 'line': 3}, 'landmarks': {'total': 4, 'by_type': {'big_dead_tree': 2, 'broken_radio_mast': 1, 'old_checkpoint': 1}}}
+places: 7
+places_summary: {'total': 7, 'by_type': {'abandoned_checkpoint': 1, 'ambush_clearing': 1, 'bunker_inner_area': 1, 'bunker_outer_area': 1, 'dangerous_lowland': 1, 'old_defensive_position': 1, 'small_ruin_site': 1}, 'by_encounter_type': {'bunker_encounter': 1, 'bunker_room': 1, 'defensive_encounter': 1, 'flank_attack': 1, 'hazard_encounter': 1, 'roadside_encounter': 1, 'ruin_encounter': 1}}
+elevation_cells: 147
+original_cover_points: 4856
+selected_cover_points: 480
+connectivity_components_before: 1
+connectivity_components_after: 1
+connectivity_filled_components: 0
+connectivity_connected_components: 0
+connectivity_tiles_changed: 0

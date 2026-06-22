@@ -1,0 +1,7089 @@
+{
+  "schema_version": "asset-registry-report-v1",
+  "profile": "dark_forest",
+  "world_style": "dark_forest_post_soviet_ruins",
+  "source_manifest": "top_down_visualgen/profiles/dark_forest/assets_manifest.json",
+  "asset_root": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest",
+  "summary": {
+    "total_entries": 266,
+    "tiles": 92,
+    "sprites": 174
+  },
+  "by_kind": {
+    "sprite": 174,
+    "tile": 92
+  },
+  "by_category": {
+    "boundary": 6,
+    "debug": 2,
+    "decor": 83,
+    "dirt": 1,
+    "elevation": 79,
+    "forest": 21,
+    "grass": 1,
+    "mud": 1,
+    "object": 10,
+    "road": 16,
+    "ruins": 1,
+    "sand": 1,
+    "swamp": 21,
+    "terrain": 1,
+    "wall": 1,
+    "water": 21
+  },
+  "by_draw_layer": {
+    "boundary": 6,
+    "debug": 1,
+    "decor": 83,
+    "elevation": 74,
+    "object": 10
+  },
+  "by_asset_status": {
+    "placeholder_contract": 266
+  },
+  "by_file_status": {
+    "present": 266
+  },
+  "top_tags": [
+    {
+      "tag": "decor",
+      "count": 83
+    },
+    {
+      "tag": "elevation",
+      "count": 79
+    },
+    {
+      "tag": "edge",
+      "count": 28
+    },
+    {
+      "tag": "corner",
+      "count": 27
+    },
+    {
+      "tag": "swamp",
+      "count": 24
+    },
+    {
+      "tag": "forest",
+      "count": 23
+    },
+    {
+      "tag": "water",
+      "count": 23
+    },
+    {
+      "tag": "road",
+      "count": 19
+    },
+    {
+      "tag": "stone",
+      "count": 17
+    },
+    {
+      "tag": "inner",
+      "count": 15
+    },
+    {
+      "tag": "broken",
+      "count": 13
+    },
+    {
+      "tag": "cap",
+      "count": 12
+    },
+    {
+      "tag": "outer",
+      "count": 12
+    },
+    {
+      "tag": "object",
+      "count": 10
+    },
+    {
+      "tag": "platform",
+      "count": 9
+    },
+    {
+      "tag": "grass",
+      "count": 9
+    },
+    {
+      "tag": "base",
+      "count": 8
+    },
+    {
+      "tag": "mud",
+      "count": 8
+    },
+    {
+      "tag": "old",
+      "count": 8
+    },
+    {
+      "tag": "e",
+      "count": 7
+    }
+  ],
+  "entries": [
+    {
+      "id": "debug.missing_tile",
+      "kind": "tile",
+      "category": "debug",
+      "path": "debug/missing_tile.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "debug",
+        "missing",
+        "tile"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/debug/missing_tile.png",
+      "preview_src": "../../../assets/dark_forest/debug/missing_tile.png"
+    },
+    {
+      "id": "dirt.base",
+      "kind": "tile",
+      "category": "dirt",
+      "path": "tiles/dirt/base.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "dirt",
+        "base"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/dirt/base.png",
+      "preview_src": "../../../assets/dark_forest/tiles/dirt/base.png"
+    },
+    {
+      "id": "elevation.high_point_overlay",
+      "kind": "tile",
+      "category": "elevation",
+      "path": "tiles/elevation/high_point_overlay.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "elevation",
+        "high",
+        "point",
+        "overlay"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/elevation/high_point_overlay.png",
+      "preview_src": "../../../assets/dark_forest/tiles/elevation/high_point_overlay.png"
+    },
+    {
+      "id": "elevation.landmark_overlay",
+      "kind": "tile",
+      "category": "elevation",
+      "path": "tiles/elevation/landmark_overlay.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "elevation",
+        "landmark",
+        "overlay"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/elevation/landmark_overlay.png",
+      "preview_src": "../../../assets/dark_forest/tiles/elevation/landmark_overlay.png"
+    },
+    {
+      "id": "elevation.lowland_overlay",
+      "kind": "tile",
+      "category": "elevation",
+      "path": "tiles/elevation/lowland_overlay.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "elevation",
+        "lowland",
+        "overlay"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/elevation/lowland_overlay.png",
+      "preview_src": "../../../assets/dark_forest/tiles/elevation/lowland_overlay.png"
+    },
+    {
+      "id": "elevation.platform_overlay",
+      "kind": "tile",
+      "category": "elevation",
+      "path": "tiles/elevation/platform_overlay.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "elevation",
+        "platform",
+        "overlay"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/elevation/platform_overlay.png",
+      "preview_src": "../../../assets/dark_forest/tiles/elevation/platform_overlay.png"
+    },
+    {
+      "id": "elevation.raised_overlay",
+      "kind": "tile",
+      "category": "elevation",
+      "path": "tiles/elevation/raised_overlay.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "elevation",
+        "raised",
+        "overlay"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/elevation/raised_overlay.png",
+      "preview_src": "../../../assets/dark_forest/tiles/elevation/raised_overlay.png"
+    },
+    {
+      "id": "forest.cap_e",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/cap_e.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "cap",
+        "e"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/cap_e.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/cap_e.png"
+    },
+    {
+      "id": "forest.cap_n",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/cap_n.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "cap",
+        "n"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/cap_n.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/cap_n.png"
+    },
+    {
+      "id": "forest.cap_s",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/cap_s.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "cap",
+        "s"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/cap_s.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/cap_s.png"
+    },
+    {
+      "id": "forest.cap_w",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/cap_w.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "cap",
+        "w"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/cap_w.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/cap_w.png"
+    },
+    {
+      "id": "forest.edge_e",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/edge_e.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "edge",
+        "e"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/edge_e.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/edge_e.png"
+    },
+    {
+      "id": "forest.edge_n",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/edge_n.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "edge",
+        "n"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/edge_n.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/edge_n.png"
+    },
+    {
+      "id": "forest.edge_s",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/edge_s.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "edge",
+        "s"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/edge_s.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/edge_s.png"
+    },
+    {
+      "id": "forest.edge_w",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/edge_w.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "edge",
+        "w"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/edge_w.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/edge_w.png"
+    },
+    {
+      "id": "forest.fill",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/fill.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "fill"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/fill.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/fill.png"
+    },
+    {
+      "id": "forest.inner_corner_complex",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/inner_corner_complex.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "inner",
+        "corner",
+        "complex"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/inner_corner_complex.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/inner_corner_complex.png"
+    },
+    {
+      "id": "forest.inner_corner_es",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/inner_corner_es.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "inner",
+        "corner",
+        "es"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/inner_corner_es.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/inner_corner_es.png"
+    },
+    {
+      "id": "forest.inner_corner_ne",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/inner_corner_ne.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "inner",
+        "corner",
+        "ne"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/inner_corner_ne.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/inner_corner_ne.png"
+    },
+    {
+      "id": "forest.inner_corner_sw",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/inner_corner_sw.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "inner",
+        "corner",
+        "sw"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/inner_corner_sw.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/inner_corner_sw.png"
+    },
+    {
+      "id": "forest.inner_corner_wn",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/inner_corner_wn.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "inner",
+        "corner",
+        "wn"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/inner_corner_wn.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/inner_corner_wn.png"
+    },
+    {
+      "id": "forest.isolated",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/isolated.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "isolated"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/isolated.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/isolated.png"
+    },
+    {
+      "id": "forest.outer_corner_es",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/outer_corner_es.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "outer",
+        "corner",
+        "es"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/outer_corner_es.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/outer_corner_es.png"
+    },
+    {
+      "id": "forest.outer_corner_ne",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/outer_corner_ne.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "outer",
+        "corner",
+        "ne"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/outer_corner_ne.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/outer_corner_ne.png"
+    },
+    {
+      "id": "forest.outer_corner_sw",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/outer_corner_sw.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "outer",
+        "corner",
+        "sw"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/outer_corner_sw.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/outer_corner_sw.png"
+    },
+    {
+      "id": "forest.outer_corner_wn",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/outer_corner_wn.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "outer",
+        "corner",
+        "wn"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/outer_corner_wn.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/outer_corner_wn.png"
+    },
+    {
+      "id": "forest.thin_ew",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/thin_ew.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "thin",
+        "ew"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/thin_ew.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/thin_ew.png"
+    },
+    {
+      "id": "forest.thin_ns",
+      "kind": "tile",
+      "category": "forest",
+      "path": "tiles/forest/thin_ns.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "forest",
+        "thin",
+        "ns"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/forest/thin_ns.png",
+      "preview_src": "../../../assets/dark_forest/tiles/forest/thin_ns.png"
+    },
+    {
+      "id": "grass.base",
+      "kind": "tile",
+      "category": "grass",
+      "path": "tiles/grass/base.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "grass",
+        "base"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/grass/base.png",
+      "preview_src": "../../../assets/dark_forest/tiles/grass/base.png"
+    },
+    {
+      "id": "mud.base",
+      "kind": "tile",
+      "category": "mud",
+      "path": "tiles/mud/base.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "mud",
+        "base"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/mud/base.png",
+      "preview_src": "../../../assets/dark_forest/tiles/mud/base.png"
+    },
+    {
+      "id": "road.cross",
+      "kind": "tile",
+      "category": "road",
+      "path": "tiles/road/cross.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "road",
+        "cross"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/road/cross.png",
+      "preview_src": "../../../assets/dark_forest/tiles/road/cross.png"
+    },
+    {
+      "id": "road.end_e",
+      "kind": "tile",
+      "category": "road",
+      "path": "tiles/road/end_e.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "road",
+        "end",
+        "e"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/road/end_e.png",
+      "preview_src": "../../../assets/dark_forest/tiles/road/end_e.png"
+    },
+    {
+      "id": "road.end_n",
+      "kind": "tile",
+      "category": "road",
+      "path": "tiles/road/end_n.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "road",
+        "end",
+        "n"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/road/end_n.png",
+      "preview_src": "../../../assets/dark_forest/tiles/road/end_n.png"
+    },
+    {
+      "id": "road.end_s",
+      "kind": "tile",
+      "category": "road",
+      "path": "tiles/road/end_s.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "road",
+        "end",
+        "s"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/road/end_s.png",
+      "preview_src": "../../../assets/dark_forest/tiles/road/end_s.png"
+    },
+    {
+      "id": "road.end_w",
+      "kind": "tile",
+      "category": "road",
+      "path": "tiles/road/end_w.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "road",
+        "end",
+        "w"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/road/end_w.png",
+      "preview_src": "../../../assets/dark_forest/tiles/road/end_w.png"
+    },
+    {
+      "id": "road.isolated",
+      "kind": "tile",
+      "category": "road",
+      "path": "tiles/road/isolated.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "road",
+        "isolated"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/road/isolated.png",
+      "preview_src": "../../../assets/dark_forest/tiles/road/isolated.png"
+    },
+    {
+      "id": "road.straight_ew",
+      "kind": "tile",
+      "category": "road",
+      "path": "tiles/road/straight_ew.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "road",
+        "straight",
+        "ew"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/road/straight_ew.png",
+      "preview_src": "../../../assets/dark_forest/tiles/road/straight_ew.png"
+    },
+    {
+      "id": "road.straight_ns",
+      "kind": "tile",
+      "category": "road",
+      "path": "tiles/road/straight_ns.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "road",
+        "straight",
+        "ns"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/road/straight_ns.png",
+      "preview_src": "../../../assets/dark_forest/tiles/road/straight_ns.png"
+    },
+    {
+      "id": "road.t_esw",
+      "kind": "tile",
+      "category": "road",
+      "path": "tiles/road/t_esw.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "road",
+        "t",
+        "esw"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/road/t_esw.png",
+      "preview_src": "../../../assets/dark_forest/tiles/road/t_esw.png"
+    },
+    {
+      "id": "road.t_nes",
+      "kind": "tile",
+      "category": "road",
+      "path": "tiles/road/t_nes.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "road",
+        "t",
+        "nes"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/road/t_nes.png",
+      "preview_src": "../../../assets/dark_forest/tiles/road/t_nes.png"
+    },
+    {
+      "id": "road.t_new",
+      "kind": "tile",
+      "category": "road",
+      "path": "tiles/road/t_new.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "road",
+        "t",
+        "new"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/road/t_new.png",
+      "preview_src": "../../../assets/dark_forest/tiles/road/t_new.png"
+    },
+    {
+      "id": "road.t_nsw",
+      "kind": "tile",
+      "category": "road",
+      "path": "tiles/road/t_nsw.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "road",
+        "t",
+        "nsw"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/road/t_nsw.png",
+      "preview_src": "../../../assets/dark_forest/tiles/road/t_nsw.png"
+    },
+    {
+      "id": "road.turn_es",
+      "kind": "tile",
+      "category": "road",
+      "path": "tiles/road/turn_es.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "road",
+        "turn",
+        "es"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/road/turn_es.png",
+      "preview_src": "../../../assets/dark_forest/tiles/road/turn_es.png"
+    },
+    {
+      "id": "road.turn_ne",
+      "kind": "tile",
+      "category": "road",
+      "path": "tiles/road/turn_ne.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "road",
+        "turn",
+        "ne"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/road/turn_ne.png",
+      "preview_src": "../../../assets/dark_forest/tiles/road/turn_ne.png"
+    },
+    {
+      "id": "road.turn_sw",
+      "kind": "tile",
+      "category": "road",
+      "path": "tiles/road/turn_sw.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "road",
+        "turn",
+        "sw"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/road/turn_sw.png",
+      "preview_src": "../../../assets/dark_forest/tiles/road/turn_sw.png"
+    },
+    {
+      "id": "road.turn_wn",
+      "kind": "tile",
+      "category": "road",
+      "path": "tiles/road/turn_wn.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "road",
+        "turn",
+        "wn"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/road/turn_wn.png",
+      "preview_src": "../../../assets/dark_forest/tiles/road/turn_wn.png"
+    },
+    {
+      "id": "ruins.floor",
+      "kind": "tile",
+      "category": "ruins",
+      "path": "tiles/ruins/floor.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "ruins",
+        "floor"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/ruins/floor.png",
+      "preview_src": "../../../assets/dark_forest/tiles/ruins/floor.png"
+    },
+    {
+      "id": "sand.base",
+      "kind": "tile",
+      "category": "sand",
+      "path": "tiles/sand/base.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "sand",
+        "base"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/sand/base.png",
+      "preview_src": "../../../assets/dark_forest/tiles/sand/base.png"
+    },
+    {
+      "id": "swamp.cap_e",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/cap_e.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "cap",
+        "e"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/cap_e.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/cap_e.png"
+    },
+    {
+      "id": "swamp.cap_n",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/cap_n.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "cap",
+        "n"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/cap_n.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/cap_n.png"
+    },
+    {
+      "id": "swamp.cap_s",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/cap_s.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "cap",
+        "s"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/cap_s.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/cap_s.png"
+    },
+    {
+      "id": "swamp.cap_w",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/cap_w.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "cap",
+        "w"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/cap_w.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/cap_w.png"
+    },
+    {
+      "id": "swamp.edge_e",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/edge_e.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "edge",
+        "e"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/edge_e.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/edge_e.png"
+    },
+    {
+      "id": "swamp.edge_n",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/edge_n.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "edge",
+        "n"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/edge_n.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/edge_n.png"
+    },
+    {
+      "id": "swamp.edge_s",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/edge_s.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "edge",
+        "s"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/edge_s.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/edge_s.png"
+    },
+    {
+      "id": "swamp.edge_w",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/edge_w.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "edge",
+        "w"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/edge_w.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/edge_w.png"
+    },
+    {
+      "id": "swamp.fill",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/fill.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "fill"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/fill.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/fill.png"
+    },
+    {
+      "id": "swamp.inner_corner_complex",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/inner_corner_complex.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "inner",
+        "corner",
+        "complex"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/inner_corner_complex.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/inner_corner_complex.png"
+    },
+    {
+      "id": "swamp.inner_corner_es",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/inner_corner_es.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "inner",
+        "corner",
+        "es"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/inner_corner_es.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/inner_corner_es.png"
+    },
+    {
+      "id": "swamp.inner_corner_ne",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/inner_corner_ne.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "inner",
+        "corner",
+        "ne"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/inner_corner_ne.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/inner_corner_ne.png"
+    },
+    {
+      "id": "swamp.inner_corner_sw",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/inner_corner_sw.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "inner",
+        "corner",
+        "sw"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/inner_corner_sw.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/inner_corner_sw.png"
+    },
+    {
+      "id": "swamp.inner_corner_wn",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/inner_corner_wn.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "inner",
+        "corner",
+        "wn"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/inner_corner_wn.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/inner_corner_wn.png"
+    },
+    {
+      "id": "swamp.isolated",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/isolated.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "isolated"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/isolated.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/isolated.png"
+    },
+    {
+      "id": "swamp.outer_corner_es",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/outer_corner_es.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "outer",
+        "corner",
+        "es"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/outer_corner_es.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/outer_corner_es.png"
+    },
+    {
+      "id": "swamp.outer_corner_ne",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/outer_corner_ne.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "outer",
+        "corner",
+        "ne"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/outer_corner_ne.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/outer_corner_ne.png"
+    },
+    {
+      "id": "swamp.outer_corner_sw",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/outer_corner_sw.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "outer",
+        "corner",
+        "sw"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/outer_corner_sw.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/outer_corner_sw.png"
+    },
+    {
+      "id": "swamp.outer_corner_wn",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/outer_corner_wn.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "outer",
+        "corner",
+        "wn"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/outer_corner_wn.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/outer_corner_wn.png"
+    },
+    {
+      "id": "swamp.thin_ew",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/thin_ew.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "thin",
+        "ew"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/thin_ew.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/thin_ew.png"
+    },
+    {
+      "id": "swamp.thin_ns",
+      "kind": "tile",
+      "category": "swamp",
+      "path": "tiles/swamp/thin_ns.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "swamp",
+        "thin",
+        "ns"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/swamp/thin_ns.png",
+      "preview_src": "../../../assets/dark_forest/tiles/swamp/thin_ns.png"
+    },
+    {
+      "id": "terrain.unknown",
+      "kind": "tile",
+      "category": "terrain",
+      "path": "tiles/terrain/unknown.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "terrain",
+        "unknown"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/terrain/unknown.png",
+      "preview_src": "../../../assets/dark_forest/tiles/terrain/unknown.png"
+    },
+    {
+      "id": "wall.blocked",
+      "kind": "tile",
+      "category": "wall",
+      "path": "tiles/wall/blocked.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "wall",
+        "blocked"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/wall/blocked.png",
+      "preview_src": "../../../assets/dark_forest/tiles/wall/blocked.png"
+    },
+    {
+      "id": "water.cap_e",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/cap_e.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "cap",
+        "e"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/cap_e.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/cap_e.png"
+    },
+    {
+      "id": "water.cap_n",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/cap_n.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "cap",
+        "n"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/cap_n.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/cap_n.png"
+    },
+    {
+      "id": "water.cap_s",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/cap_s.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "cap",
+        "s"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/cap_s.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/cap_s.png"
+    },
+    {
+      "id": "water.cap_w",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/cap_w.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "cap",
+        "w"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/cap_w.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/cap_w.png"
+    },
+    {
+      "id": "water.edge_e",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/edge_e.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "edge",
+        "e"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/edge_e.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/edge_e.png"
+    },
+    {
+      "id": "water.edge_n",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/edge_n.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "edge",
+        "n"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/edge_n.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/edge_n.png"
+    },
+    {
+      "id": "water.edge_s",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/edge_s.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "edge",
+        "s"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/edge_s.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/edge_s.png"
+    },
+    {
+      "id": "water.edge_w",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/edge_w.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "edge",
+        "w"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/edge_w.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/edge_w.png"
+    },
+    {
+      "id": "water.fill",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/fill.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "fill"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/fill.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/fill.png"
+    },
+    {
+      "id": "water.inner_corner_complex",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/inner_corner_complex.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "inner",
+        "corner",
+        "complex"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/inner_corner_complex.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/inner_corner_complex.png"
+    },
+    {
+      "id": "water.inner_corner_es",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/inner_corner_es.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "inner",
+        "corner",
+        "es"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/inner_corner_es.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/inner_corner_es.png"
+    },
+    {
+      "id": "water.inner_corner_ne",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/inner_corner_ne.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "inner",
+        "corner",
+        "ne"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/inner_corner_ne.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/inner_corner_ne.png"
+    },
+    {
+      "id": "water.inner_corner_sw",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/inner_corner_sw.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "inner",
+        "corner",
+        "sw"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/inner_corner_sw.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/inner_corner_sw.png"
+    },
+    {
+      "id": "water.inner_corner_wn",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/inner_corner_wn.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "inner",
+        "corner",
+        "wn"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/inner_corner_wn.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/inner_corner_wn.png"
+    },
+    {
+      "id": "water.isolated",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/isolated.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "isolated"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/isolated.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/isolated.png"
+    },
+    {
+      "id": "water.outer_corner_es",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/outer_corner_es.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "outer",
+        "corner",
+        "es"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/outer_corner_es.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/outer_corner_es.png"
+    },
+    {
+      "id": "water.outer_corner_ne",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/outer_corner_ne.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "outer",
+        "corner",
+        "ne"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/outer_corner_ne.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/outer_corner_ne.png"
+    },
+    {
+      "id": "water.outer_corner_sw",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/outer_corner_sw.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "outer",
+        "corner",
+        "sw"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/outer_corner_sw.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/outer_corner_sw.png"
+    },
+    {
+      "id": "water.outer_corner_wn",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/outer_corner_wn.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "outer",
+        "corner",
+        "wn"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/outer_corner_wn.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/outer_corner_wn.png"
+    },
+    {
+      "id": "water.thin_ew",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/thin_ew.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "thin",
+        "ew"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/thin_ew.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/thin_ew.png"
+    },
+    {
+      "id": "water.thin_ns",
+      "kind": "tile",
+      "category": "water",
+      "path": "tiles/water/thin_ns.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": null,
+      "sort_anchor": null,
+      "draw_layer": "tile",
+      "tags": [
+        "water",
+        "thin",
+        "ns"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/tiles/water/thin_ns.png",
+      "preview_src": "../../../assets/dark_forest/tiles/water/thin_ns.png"
+    },
+    {
+      "id": "boundary.cliff_wall",
+      "kind": "sprite",
+      "category": "boundary",
+      "path": "sprites/boundary/cliff_wall.png",
+      "size": [
+        16,
+        24
+      ],
+      "pivot": [
+        8,
+        20
+      ],
+      "sort_anchor": [
+        8,
+        20
+      ],
+      "draw_layer": "boundary",
+      "tags": [
+        "boundary",
+        "cliff",
+        "wall"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/boundary/cliff_wall.png",
+      "preview_src": "../../../assets/dark_forest/sprites/boundary/cliff_wall.png"
+    },
+    {
+      "id": "boundary.concrete_barrier",
+      "kind": "sprite",
+      "category": "boundary",
+      "path": "sprites/boundary/concrete_barrier.png",
+      "size": [
+        16,
+        24
+      ],
+      "pivot": [
+        8,
+        20
+      ],
+      "sort_anchor": [
+        8,
+        20
+      ],
+      "draw_layer": "boundary",
+      "tags": [
+        "boundary",
+        "concrete",
+        "barrier"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/boundary/concrete_barrier.png",
+      "preview_src": "../../../assets/dark_forest/sprites/boundary/concrete_barrier.png"
+    },
+    {
+      "id": "boundary.dark_tree_wall",
+      "kind": "sprite",
+      "category": "boundary",
+      "path": "sprites/boundary/dark_tree_wall.png",
+      "size": [
+        16,
+        24
+      ],
+      "pivot": [
+        8,
+        20
+      ],
+      "sort_anchor": [
+        8,
+        20
+      ],
+      "draw_layer": "boundary",
+      "tags": [
+        "boundary",
+        "dark",
+        "tree",
+        "wall"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/boundary/dark_tree_wall.png",
+      "preview_src": "../../../assets/dark_forest/sprites/boundary/dark_tree_wall.png"
+    },
+    {
+      "id": "boundary.dense_forest_wall",
+      "kind": "sprite",
+      "category": "boundary",
+      "path": "sprites/boundary/dense_forest_wall.png",
+      "size": [
+        16,
+        24
+      ],
+      "pivot": [
+        8,
+        20
+      ],
+      "sort_anchor": [
+        8,
+        20
+      ],
+      "draw_layer": "boundary",
+      "tags": [
+        "boundary",
+        "dense",
+        "forest",
+        "wall"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/boundary/dense_forest_wall.png",
+      "preview_src": "../../../assets/dark_forest/sprites/boundary/dense_forest_wall.png"
+    },
+    {
+      "id": "boundary.ruin_barrier",
+      "kind": "sprite",
+      "category": "boundary",
+      "path": "sprites/boundary/ruin_barrier.png",
+      "size": [
+        16,
+        24
+      ],
+      "pivot": [
+        8,
+        20
+      ],
+      "sort_anchor": [
+        8,
+        20
+      ],
+      "draw_layer": "boundary",
+      "tags": [
+        "boundary",
+        "ruin",
+        "barrier"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/boundary/ruin_barrier.png",
+      "preview_src": "../../../assets/dark_forest/sprites/boundary/ruin_barrier.png"
+    },
+    {
+      "id": "boundary.swamp_barrier",
+      "kind": "sprite",
+      "category": "boundary",
+      "path": "sprites/boundary/swamp_barrier.png",
+      "size": [
+        16,
+        24
+      ],
+      "pivot": [
+        8,
+        20
+      ],
+      "sort_anchor": [
+        8,
+        20
+      ],
+      "draw_layer": "boundary",
+      "tags": [
+        "boundary",
+        "swamp",
+        "barrier"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/boundary/swamp_barrier.png",
+      "preview_src": "../../../assets/dark_forest/sprites/boundary/swamp_barrier.png"
+    },
+    {
+      "id": "debug.missing_sprite",
+      "kind": "sprite",
+      "category": "debug",
+      "path": "debug/missing_sprite.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "debug",
+      "tags": [
+        "debug",
+        "missing",
+        "sprite"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/debug/missing_sprite.png",
+      "preview_src": "../../../assets/dark_forest/debug/missing_sprite.png"
+    },
+    {
+      "id": "decor.abandoned_crate_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/abandoned_crate_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "abandoned",
+        "crate"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/abandoned_crate_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/abandoned_crate_01.png"
+    },
+    {
+      "id": "decor.ammo_crate_empty_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/ammo_crate_empty_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "ammo",
+        "crate",
+        "empty"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/ammo_crate_empty_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/ammo_crate_empty_01.png"
+    },
+    {
+      "id": "decor.animal_bones_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/animal_bones_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "animal",
+        "bones"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/animal_bones_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/animal_bones_01.png"
+    },
+    {
+      "id": "decor.barricade_stake_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/barricade_stake_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "barricade",
+        "stake"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/barricade_stake_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/barricade_stake_01.png"
+    },
+    {
+      "id": "decor.black_mud_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/black_mud_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "black",
+        "mud"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/black_mud_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/black_mud_01.png"
+    },
+    {
+      "id": "decor.bog_bubbles_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/bog_bubbles_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "bog",
+        "bubbles"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/bog_bubbles_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/bog_bubbles_01.png"
+    },
+    {
+      "id": "decor.branch_pile_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/branch_pile_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "branch",
+        "pile"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/branch_pile_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/branch_pile_01.png"
+    },
+    {
+      "id": "decor.broken_block_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/broken_block_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "broken",
+        "block"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/broken_block_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/broken_block_01.png"
+    },
+    {
+      "id": "decor.broken_cart_piece_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/broken_cart_piece_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "broken",
+        "cart",
+        "piece"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/broken_cart_piece_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/broken_cart_piece_01.png"
+    },
+    {
+      "id": "decor.broken_column_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/broken_column_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "broken",
+        "column"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/broken_column_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/broken_column_01.png"
+    },
+    {
+      "id": "decor.broken_lantern_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/broken_lantern_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "broken",
+        "lantern"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/broken_lantern_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/broken_lantern_01.png"
+    },
+    {
+      "id": "decor.broken_plank_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/broken_plank_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "broken",
+        "plank"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/broken_plank_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/broken_plank_01.png"
+    },
+    {
+      "id": "decor.broken_shield_panel_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/broken_shield_panel_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "broken",
+        "shield",
+        "panel"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/broken_shield_panel_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/broken_shield_panel_01.png"
+    },
+    {
+      "id": "decor.burned_log_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/burned_log_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "burned",
+        "log"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/burned_log_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/burned_log_01.png"
+    },
+    {
+      "id": "decor.campfire_ash_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/campfire_ash_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "campfire",
+        "ash"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/campfire_ash_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/campfire_ash_01.png"
+    },
+    {
+      "id": "decor.collapsed_arch_piece_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/collapsed_arch_piece_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "collapsed",
+        "arch",
+        "piece"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/collapsed_arch_piece_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/collapsed_arch_piece_01.png"
+    },
+    {
+      "id": "decor.collapsed_tent_piece_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/collapsed_tent_piece_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "collapsed",
+        "tent",
+        "piece"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/collapsed_tent_piece_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/collapsed_tent_piece_01.png"
+    },
+    {
+      "id": "decor.concrete_debris_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/concrete_debris_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "concrete",
+        "debris"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/concrete_debris_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/concrete_debris_01.png"
+    },
+    {
+      "id": "decor.cracked_floor_piece_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/cracked_floor_piece_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "cracked",
+        "floor",
+        "piece"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/cracked_floor_piece_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/cracked_floor_piece_01.png"
+    },
+    {
+      "id": "decor.cracked_stone_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/cracked_stone_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "cracked",
+        "stone"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/cracked_stone_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/cracked_stone_01.png"
+    },
+    {
+      "id": "decor.cracked_stone_02",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/cracked_stone_02.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "cracked",
+        "stone"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/cracked_stone_02.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/cracked_stone_02.png"
+    },
+    {
+      "id": "decor.dead_branch_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/dead_branch_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "dead",
+        "branch"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/dead_branch_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/dead_branch_01.png"
+    },
+    {
+      "id": "decor.dead_tree_root_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/dead_tree_root_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "dead",
+        "tree",
+        "root"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/dead_tree_root_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/dead_tree_root_01.png"
+    },
+    {
+      "id": "decor.dry_leaves_patch_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/dry_leaves_patch_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "dry",
+        "leaves",
+        "patch"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/dry_leaves_patch_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/dry_leaves_patch_01.png"
+    },
+    {
+      "id": "decor.empty_bottle_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/empty_bottle_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "empty",
+        "bottle"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/empty_bottle_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/empty_bottle_01.png"
+    },
+    {
+      "id": "decor.fallen_bricks_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/fallen_bricks_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "fallen",
+        "bricks"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/fallen_bricks_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/fallen_bricks_01.png"
+    },
+    {
+      "id": "decor.fallen_log_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/fallen_log_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "fallen",
+        "log"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/fallen_log_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/fallen_log_01.png"
+    },
+    {
+      "id": "decor.fallen_tree_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/fallen_tree_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "fallen",
+        "tree"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/fallen_tree_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/fallen_tree_01.png"
+    },
+    {
+      "id": "decor.firewood_stack_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/firewood_stack_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "firewood",
+        "stack"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/firewood_stack_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/firewood_stack_01.png"
+    },
+    {
+      "id": "decor.forest_litter_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/forest_litter_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "forest",
+        "litter"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/forest_litter_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/forest_litter_01.png"
+    },
+    {
+      "id": "decor.foxhole_debris_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/foxhole_debris_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "foxhole",
+        "debris"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/foxhole_debris_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/foxhole_debris_01.png"
+    },
+    {
+      "id": "decor.half_wall_debris_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/half_wall_debris_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "half",
+        "wall",
+        "debris"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/half_wall_debris_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/half_wall_debris_01.png"
+    },
+    {
+      "id": "decor.hidden_cache_marker_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/hidden_cache_marker_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "hidden",
+        "cache",
+        "marker"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/hidden_cache_marker_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/hidden_cache_marker_01.png"
+    },
+    {
+      "id": "decor.moss_patch_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/moss_patch_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "moss",
+        "patch"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/moss_patch_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/moss_patch_01.png"
+    },
+    {
+      "id": "decor.mossy_stone_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/mossy_stone_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "mossy",
+        "stone"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/mossy_stone_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/mossy_stone_01.png"
+    },
+    {
+      "id": "decor.mud_patch_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/mud_patch_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "mud",
+        "patch"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/mud_patch_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/mud_patch_01.png"
+    },
+    {
+      "id": "decor.mud_patch_02",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/mud_patch_02.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "mud",
+        "patch"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/mud_patch_02.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/mud_patch_02.png"
+    },
+    {
+      "id": "decor.mushroom_cluster_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/mushroom_cluster_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "mushroom",
+        "cluster"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/mushroom_cluster_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/mushroom_cluster_01.png"
+    },
+    {
+      "id": "decor.old_backpack_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/old_backpack_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "old",
+        "backpack"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/old_backpack_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/old_backpack_01.png"
+    },
+    {
+      "id": "decor.old_bedroll_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/old_bedroll_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "old",
+        "bedroll"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/old_bedroll_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/old_bedroll_01.png"
+    },
+    {
+      "id": "decor.old_tile_fragment_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/old_tile_fragment_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "old",
+        "tile",
+        "fragment"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/old_tile_fragment_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/old_tile_fragment_01.png"
+    },
+    {
+      "id": "decor.old_tripod_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/old_tripod_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "old",
+        "tripod"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/old_tripod_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/old_tripod_01.png"
+    },
+    {
+      "id": "decor.plank_stack_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/plank_stack_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "plank",
+        "stack"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/plank_stack_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/plank_stack_01.png"
+    },
+    {
+      "id": "decor.reeds_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/reeds_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "reeds"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/reeds_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/reeds_01.png"
+    },
+    {
+      "id": "decor.reeds_02",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/reeds_02.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "reeds"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/reeds_02.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/reeds_02.png"
+    },
+    {
+      "id": "decor.reeds_03",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/reeds_03.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "reeds"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/reeds_03.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/reeds_03.png"
+    },
+    {
+      "id": "decor.reeds_cluster_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/reeds_cluster_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "reeds",
+        "cluster"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/reeds_cluster_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/reeds_cluster_01.png"
+    },
+    {
+      "id": "decor.road_dirt_noise_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/road_dirt_noise_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "road",
+        "dirt",
+        "noise"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/road_dirt_noise_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/road_dirt_noise_01.png"
+    },
+    {
+      "id": "decor.road_grass_tuft_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/road_grass_tuft_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "road",
+        "grass",
+        "tuft"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/road_grass_tuft_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/road_grass_tuft_01.png"
+    },
+    {
+      "id": "decor.road_grass_tuft_02",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/road_grass_tuft_02.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "road",
+        "grass",
+        "tuft"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/road_grass_tuft_02.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/road_grass_tuft_02.png"
+    },
+    {
+      "id": "decor.roadblock_debris_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/roadblock_debris_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "roadblock",
+        "debris"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/roadblock_debris_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/roadblock_debris_01.png"
+    },
+    {
+      "id": "decor.roadside_marker_stone_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/roadside_marker_stone_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "roadside",
+        "marker",
+        "stone"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/roadside_marker_stone_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/roadside_marker_stone_01.png"
+    },
+    {
+      "id": "decor.root_cluster_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/root_cluster_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "root",
+        "cluster"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/root_cluster_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/root_cluster_01.png"
+    },
+    {
+      "id": "decor.root_over_stone_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/root_over_stone_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "root",
+        "over",
+        "stone"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/root_over_stone_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/root_over_stone_01.png"
+    },
+    {
+      "id": "decor.rope_piece_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/rope_piece_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "rope",
+        "piece"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/rope_piece_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/rope_piece_01.png"
+    },
+    {
+      "id": "decor.rotten_log_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/rotten_log_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "rotten",
+        "log"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/rotten_log_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/rotten_log_01.png"
+    },
+    {
+      "id": "decor.ruin_rubble_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/ruin_rubble_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "ruin",
+        "rubble"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/ruin_rubble_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/ruin_rubble_01.png"
+    },
+    {
+      "id": "decor.ruin_rubble_02",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/ruin_rubble_02.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "ruin",
+        "rubble"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/ruin_rubble_02.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/ruin_rubble_02.png"
+    },
+    {
+      "id": "decor.rusty_barbed_wire_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/rusty_barbed_wire_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "rusty",
+        "barbed",
+        "wire"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/rusty_barbed_wire_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/rusty_barbed_wire_01.png"
+    },
+    {
+      "id": "decor.rusty_pot_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/rusty_pot_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "rusty",
+        "pot"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/rusty_pot_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/rusty_pot_01.png"
+    },
+    {
+      "id": "decor.sack_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/sack_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "sack"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/sack_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/sack_01.png"
+    },
+    {
+      "id": "decor.sandbag_broken_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/sandbag_broken_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "sandbag",
+        "broken"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/sandbag_broken_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/sandbag_broken_01.png"
+    },
+    {
+      "id": "decor.sandbag_remnant_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/sandbag_remnant_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "sandbag",
+        "remnant"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/sandbag_remnant_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/sandbag_remnant_01.png"
+    },
+    {
+      "id": "decor.signpost_broken_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/signpost_broken_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "signpost",
+        "broken"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/signpost_broken_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/signpost_broken_01.png"
+    },
+    {
+      "id": "decor.small_stone_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/small_stone_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "small",
+        "stone"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/small_stone_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/small_stone_01.png"
+    },
+    {
+      "id": "decor.small_stone_02",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/small_stone_02.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "small",
+        "stone"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/small_stone_02.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/small_stone_02.png"
+    },
+    {
+      "id": "decor.spent_shells_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/spent_shells_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "spent",
+        "shells"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/spent_shells_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/spent_shells_01.png"
+    },
+    {
+      "id": "decor.stone_dust_patch_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/stone_dust_patch_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "stone",
+        "dust",
+        "patch"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/stone_dust_patch_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/stone_dust_patch_01.png"
+    },
+    {
+      "id": "decor.stone_slab_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/stone_slab_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "stone",
+        "slab"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/stone_slab_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/stone_slab_01.png"
+    },
+    {
+      "id": "decor.story_candidate_marker_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/story_candidate_marker_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "story",
+        "candidate",
+        "marker"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/story_candidate_marker_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/story_candidate_marker_01.png"
+    },
+    {
+      "id": "decor.stump_large_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/stump_large_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "stump",
+        "large"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/stump_large_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/stump_large_01.png"
+    },
+    {
+      "id": "decor.swamp_log_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/swamp_log_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "swamp",
+        "log"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/swamp_log_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/swamp_log_01.png"
+    },
+    {
+      "id": "decor.swamp_stones_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/swamp_stones_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "swamp",
+        "stones"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/swamp_stones_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/swamp_stones_01.png"
+    },
+    {
+      "id": "decor.thorn_bush_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/thorn_bush_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "thorn",
+        "bush"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/thorn_bush_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/thorn_bush_01.png"
+    },
+    {
+      "id": "decor.tire_rut_mud_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/tire_rut_mud_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "tire",
+        "rut",
+        "mud"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/tire_rut_mud_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/tire_rut_mud_01.png"
+    },
+    {
+      "id": "decor.torn_canvas_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/torn_canvas_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "torn",
+        "canvas"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/torn_canvas_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/torn_canvas_01.png"
+    },
+    {
+      "id": "decor.torn_cloth_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/torn_cloth_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "torn",
+        "cloth"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/torn_cloth_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/torn_cloth_01.png"
+    },
+    {
+      "id": "decor.wagon_wheel_broken_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/wagon_wheel_broken_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "wagon",
+        "wheel",
+        "broken"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/wagon_wheel_broken_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/wagon_wheel_broken_01.png"
+    },
+    {
+      "id": "decor.warning_bones_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/warning_bones_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "warning",
+        "bones"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/warning_bones_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/warning_bones_01.png"
+    },
+    {
+      "id": "decor.water_puddle_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/water_puddle_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "water",
+        "puddle"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/water_puddle_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/water_puddle_01.png"
+    },
+    {
+      "id": "decor.wet_grass_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/wet_grass_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "wet",
+        "grass"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/wet_grass_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/wet_grass_01.png"
+    },
+    {
+      "id": "decor.wet_grass_02",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/wet_grass_02.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "wet",
+        "grass"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/wet_grass_02.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/wet_grass_02.png"
+    },
+    {
+      "id": "decor.wooden_cover_piece_01",
+      "kind": "sprite",
+      "category": "decor",
+      "path": "sprites/decor/wooden_cover_piece_01.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "decor",
+      "tags": [
+        "decor",
+        "wooden",
+        "cover",
+        "piece"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/decor/wooden_cover_piece_01.png",
+      "preview_src": "../../../assets/dark_forest/sprites/decor/wooden_cover_piece_01.png"
+    },
+    {
+      "id": "elevation.ancient_beacon_base",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/ancient_beacon_base.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "ancient",
+        "beacon",
+        "base"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/ancient_beacon_base.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/ancient_beacon_base.png"
+    },
+    {
+      "id": "elevation.beacon_debris",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/beacon_debris.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "beacon",
+        "debris"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/beacon_debris.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/beacon_debris.png"
+    },
+    {
+      "id": "elevation.bridge_entry",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/bridge_entry.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "bridge",
+        "entry"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/bridge_entry.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/bridge_entry.png"
+    },
+    {
+      "id": "elevation.bridge_side_edge",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/bridge_side_edge.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "bridge",
+        "side",
+        "edge"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/bridge_side_edge.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/bridge_side_edge.png"
+    },
+    {
+      "id": "elevation.bridge_support_post",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/bridge_support_post.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "bridge",
+        "support",
+        "post"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/bridge_support_post.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/bridge_support_post.png"
+    },
+    {
+      "id": "elevation.broken_drain_pipe",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/broken_drain_pipe.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "broken",
+        "drain",
+        "pipe"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/broken_drain_pipe.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/broken_drain_pipe.png"
+    },
+    {
+      "id": "elevation.broken_railing",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/broken_railing.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "broken",
+        "railing"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/broken_railing.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/broken_railing.png"
+    },
+    {
+      "id": "elevation.broken_stairs",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/broken_stairs.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "broken",
+        "stairs"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/broken_stairs.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/broken_stairs.png"
+    },
+    {
+      "id": "elevation.broken_stairs_base",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/broken_stairs_base.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "broken",
+        "stairs",
+        "base"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/broken_stairs_base.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/broken_stairs_base.png"
+    },
+    {
+      "id": "elevation.bunker_descent",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/bunker_descent.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "bunker",
+        "descent"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/bunker_descent.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/bunker_descent.png"
+    },
+    {
+      "id": "elevation.bunker_floor_dark",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/bunker_floor_dark.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "bunker",
+        "floor",
+        "dark"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/bunker_floor_dark.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/bunker_floor_dark.png"
+    },
+    {
+      "id": "elevation.bunker_floor_edge",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/bunker_floor_edge.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "bunker",
+        "floor",
+        "edge"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/bunker_floor_edge.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/bunker_floor_edge.png"
+    },
+    {
+      "id": "elevation.collapsed_monolith",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/collapsed_monolith.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "collapsed",
+        "monolith"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/collapsed_monolith.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/collapsed_monolith.png"
+    },
+    {
+      "id": "elevation.collapsed_platform_gap",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/collapsed_platform_gap.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "collapsed",
+        "platform",
+        "gap"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/collapsed_platform_gap.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/collapsed_platform_gap.png"
+    },
+    {
+      "id": "elevation.dark_leaf_litter",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/dark_leaf_litter.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "dark",
+        "leaf",
+        "litter"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/dark_leaf_litter.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/dark_leaf_litter.png"
+    },
+    {
+      "id": "elevation.dirt_ramp",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/dirt_ramp.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "dirt",
+        "ramp"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/dirt_ramp.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/dirt_ramp.png"
+    },
+    {
+      "id": "elevation.dirt_slope_up",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/dirt_slope_up.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "dirt",
+        "slope",
+        "up"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/dirt_slope_up.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/dirt_slope_up.png"
+    },
+    {
+      "id": "elevation.dry_leaf_patch",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/dry_leaf_patch.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "dry",
+        "leaf",
+        "patch"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/dry_leaf_patch.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/dry_leaf_patch.png"
+    },
+    {
+      "id": "elevation.dry_ridge_edge",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/dry_ridge_edge.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "dry",
+        "ridge",
+        "edge"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/dry_ridge_edge.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/dry_ridge_edge.png"
+    },
+    {
+      "id": "elevation.dry_stone_patch",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/dry_stone_patch.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "dry",
+        "stone",
+        "patch"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/dry_stone_patch.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/dry_stone_patch.png"
+    },
+    {
+      "id": "elevation.exposed_roots",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/exposed_roots.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "exposed",
+        "roots"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/exposed_roots.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/exposed_roots.png"
+    },
+    {
+      "id": "elevation.grass_slope_up",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/grass_slope_up.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "grass",
+        "slope",
+        "up"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/grass_slope_up.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/grass_slope_up.png"
+    },
+    {
+      "id": "elevation.high_landmark_marker",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/high_landmark_marker.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "high",
+        "landmark",
+        "marker"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/high_landmark_marker.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/high_landmark_marker.png"
+    },
+    {
+      "id": "elevation.high_platform_edge",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/high_platform_edge.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "high",
+        "platform",
+        "edge"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/high_platform_edge.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/high_platform_edge.png"
+    },
+    {
+      "id": "elevation.hill_grass_edge",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/hill_grass_edge.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "hill",
+        "grass",
+        "edge"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/hill_grass_edge.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/hill_grass_edge.png"
+    },
+    {
+      "id": "elevation.hill_shoulder",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/hill_shoulder.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "hill",
+        "shoulder"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/hill_shoulder.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/hill_shoulder.png"
+    },
+    {
+      "id": "elevation.landmark_ring_edge",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/landmark_ring_edge.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "landmark",
+        "ring",
+        "edge"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/landmark_ring_edge.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/landmark_ring_edge.png"
+    },
+    {
+      "id": "elevation.lookout_planks",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/lookout_planks.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "lookout",
+        "planks"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/lookout_planks.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/lookout_planks.png"
+    },
+    {
+      "id": "elevation.low_berm_cut",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/low_berm_cut.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "low",
+        "berm",
+        "cut"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/low_berm_cut.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/low_berm_cut.png"
+    },
+    {
+      "id": "elevation.lowland_shadow_edge",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/lowland_shadow_edge.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "lowland",
+        "shadow",
+        "edge"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/lowland_shadow_edge.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/lowland_shadow_edge.png"
+    },
+    {
+      "id": "elevation.lowland_stones",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/lowland_stones.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "lowland",
+        "stones"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/lowland_stones.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/lowland_stones.png"
+    },
+    {
+      "id": "elevation.mud_pool",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/mud_pool.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "mud",
+        "pool"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/mud_pool.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/mud_pool.png"
+    },
+    {
+      "id": "elevation.mud_rim",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/mud_rim.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "mud",
+        "rim"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/mud_rim.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/mud_rim.png"
+    },
+    {
+      "id": "elevation.mud_slope_down",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/mud_slope_down.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "mud",
+        "slope",
+        "down"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/mud_slope_down.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/mud_slope_down.png"
+    },
+    {
+      "id": "elevation.old_earthwork",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/old_earthwork.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "old",
+        "earthwork"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/old_earthwork.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/old_earthwork.png"
+    },
+    {
+      "id": "elevation.old_flag_pole",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/old_flag_pole.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "old",
+        "flag",
+        "pole"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/old_flag_pole.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/old_flag_pole.png"
+    },
+    {
+      "id": "elevation.old_planks",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/old_planks.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "old",
+        "planks"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/old_planks.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/old_planks.png"
+    },
+    {
+      "id": "elevation.old_signal_device",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/old_signal_device.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "old",
+        "signal",
+        "device"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/old_signal_device.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/old_signal_device.png"
+    },
+    {
+      "id": "elevation.pit_edge",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/pit_edge.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "pit",
+        "edge"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/pit_edge.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/pit_edge.png"
+    },
+    {
+      "id": "elevation.pit_ramp",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/pit_ramp.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "pit",
+        "ramp"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/pit_ramp.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/pit_ramp.png"
+    },
+    {
+      "id": "elevation.pit_rim",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/pit_rim.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "pit",
+        "rim"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/pit_rim.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/pit_rim.png"
+    },
+    {
+      "id": "elevation.platform_ladder_entry",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/platform_ladder_entry.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "platform",
+        "ladder",
+        "entry"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/platform_ladder_entry.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/platform_ladder_entry.png"
+    },
+    {
+      "id": "elevation.platform_step",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/platform_step.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "platform",
+        "step"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/platform_step.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/platform_step.png"
+    },
+    {
+      "id": "elevation.raised_berm_edge",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/raised_berm_edge.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "raised",
+        "berm",
+        "edge"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/raised_berm_edge.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/raised_berm_edge.png"
+    },
+    {
+      "id": "elevation.ridge_stones",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/ridge_stones.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "ridge",
+        "stones"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/ridge_stones.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/ridge_stones.png"
+    },
+    {
+      "id": "elevation.ritual_marker",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/ritual_marker.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "ritual",
+        "marker"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/ritual_marker.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/ritual_marker.png"
+    },
+    {
+      "id": "elevation.root_hanging",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/root_hanging.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "root",
+        "hanging"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/root_hanging.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/root_hanging.png"
+    },
+    {
+      "id": "elevation.root_slope",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/root_slope.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "root",
+        "slope"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/root_slope.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/root_slope.png"
+    },
+    {
+      "id": "elevation.root_step",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/root_step.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "root",
+        "step"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/root_step.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/root_step.png"
+    },
+    {
+      "id": "elevation.rooted_slope_edge",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/rooted_slope_edge.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "rooted",
+        "slope",
+        "edge"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/rooted_slope_edge.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/rooted_slope_edge.png"
+    },
+    {
+      "id": "elevation.ruin_platform_edge",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/ruin_platform_edge.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "ruin",
+        "platform",
+        "edge"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/ruin_platform_edge.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/ruin_platform_edge.png"
+    },
+    {
+      "id": "elevation.ruin_platform_floor",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/ruin_platform_floor.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "ruin",
+        "platform",
+        "floor"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/ruin_platform_floor.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/ruin_platform_floor.png"
+    },
+    {
+      "id": "elevation.signal_stone",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/signal_stone.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "signal",
+        "stone"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/signal_stone.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/signal_stone.png"
+    },
+    {
+      "id": "elevation.signal_tripod",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/signal_tripod.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "signal",
+        "tripod"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/signal_tripod.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/signal_tripod.png"
+    },
+    {
+      "id": "elevation.slope_grass",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/slope_grass.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "slope",
+        "grass"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/slope_grass.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/slope_grass.png"
+    },
+    {
+      "id": "elevation.stone_approach",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/stone_approach.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "stone",
+        "approach"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/stone_approach.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/stone_approach.png"
+    },
+    {
+      "id": "elevation.stone_guard_edge",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/stone_guard_edge.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "stone",
+        "guard",
+        "edge"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/stone_guard_edge.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/stone_guard_edge.png"
+    },
+    {
+      "id": "elevation.stone_platform_edge",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/stone_platform_edge.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "stone",
+        "platform",
+        "edge"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/stone_platform_edge.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/stone_platform_edge.png"
+    },
+    {
+      "id": "elevation.stone_stairs",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/stone_stairs.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "stone",
+        "stairs"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/stone_stairs.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/stone_stairs.png"
+    },
+    {
+      "id": "elevation.stone_steps_high",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/stone_steps_high.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "stone",
+        "steps",
+        "high"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/stone_steps_high.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/stone_steps_high.png"
+    },
+    {
+      "id": "elevation.strange_stone_ring",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/strange_stone_ring.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "strange",
+        "stone",
+        "ring"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/strange_stone_ring.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/strange_stone_ring.png"
+    },
+    {
+      "id": "elevation.tower_base_edge",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/tower_base_edge.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "tower",
+        "base",
+        "edge"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/tower_base_edge.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/tower_base_edge.png"
+    },
+    {
+      "id": "elevation.tower_ladder",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/tower_ladder.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "tower",
+        "ladder"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/tower_ladder.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/tower_ladder.png"
+    },
+    {
+      "id": "elevation.trench_step",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/trench_step.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "trench",
+        "step"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/trench_step.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/trench_step.png"
+    },
+    {
+      "id": "elevation.trench_wall_edge",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/trench_wall_edge.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "trench",
+        "wall",
+        "edge"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/trench_wall_edge.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/trench_wall_edge.png"
+    },
+    {
+      "id": "elevation.watch_post_debris",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/watch_post_debris.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "watch",
+        "post",
+        "debris"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/watch_post_debris.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/watch_post_debris.png"
+    },
+    {
+      "id": "elevation.watchtower_base",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/watchtower_base.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "watchtower",
+        "base"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/watchtower_base.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/watchtower_base.png"
+    },
+    {
+      "id": "elevation.watchtower_ladder",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/watchtower_ladder.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "watchtower",
+        "ladder"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/watchtower_ladder.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/watchtower_ladder.png"
+    },
+    {
+      "id": "elevation.water_seep",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/water_seep.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "water",
+        "seep"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/water_seep.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/water_seep.png"
+    },
+    {
+      "id": "elevation.wet_grass_dark",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/wet_grass_dark.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "wet",
+        "grass",
+        "dark"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/wet_grass_dark.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/wet_grass_dark.png"
+    },
+    {
+      "id": "elevation.wooden_bridge_deck",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/wooden_bridge_deck.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "wooden",
+        "bridge",
+        "deck"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/wooden_bridge_deck.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/wooden_bridge_deck.png"
+    },
+    {
+      "id": "elevation.wooden_platform_edge",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/wooden_platform_edge.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "wooden",
+        "platform",
+        "edge"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/wooden_platform_edge.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/wooden_platform_edge.png"
+    },
+    {
+      "id": "elevation.wooden_ramp",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/wooden_ramp.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "wooden",
+        "ramp"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/wooden_ramp.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/wooden_ramp.png"
+    },
+    {
+      "id": "elevation.wooden_stairs_high",
+      "kind": "sprite",
+      "category": "elevation",
+      "path": "sprites/elevation/wooden_stairs_high.png",
+      "size": [
+        16,
+        16
+      ],
+      "pivot": [
+        8,
+        12
+      ],
+      "sort_anchor": [
+        8,
+        12
+      ],
+      "draw_layer": "elevation",
+      "tags": [
+        "elevation",
+        "wooden",
+        "stairs",
+        "high"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/elevation/wooden_stairs_high.png",
+      "preview_src": "../../../assets/dark_forest/sprites/elevation/wooden_stairs_high.png"
+    },
+    {
+      "id": "object.beacon",
+      "kind": "sprite",
+      "category": "object",
+      "path": "sprites/object/beacon.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        16,
+        28
+      ],
+      "sort_anchor": [
+        16,
+        28
+      ],
+      "draw_layer": "object",
+      "tags": [
+        "object",
+        "beacon"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/object/beacon.png",
+      "preview_src": "../../../assets/dark_forest/sprites/object/beacon.png"
+    },
+    {
+      "id": "object.bridge",
+      "kind": "sprite",
+      "category": "object",
+      "path": "sprites/object/bridge.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        16,
+        28
+      ],
+      "sort_anchor": [
+        16,
+        28
+      ],
+      "draw_layer": "object",
+      "tags": [
+        "object",
+        "bridge"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/object/bridge.png",
+      "preview_src": "../../../assets/dark_forest/sprites/object/bridge.png"
+    },
+    {
+      "id": "object.bunker",
+      "kind": "sprite",
+      "category": "object",
+      "path": "sprites/object/bunker.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        16,
+        28
+      ],
+      "sort_anchor": [
+        16,
+        28
+      ],
+      "draw_layer": "object",
+      "tags": [
+        "object",
+        "bunker"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/object/bunker.png",
+      "preview_src": "../../../assets/dark_forest/sprites/object/bunker.png"
+    },
+    {
+      "id": "object.bush",
+      "kind": "sprite",
+      "category": "object",
+      "path": "sprites/object/bush.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        16,
+        28
+      ],
+      "sort_anchor": [
+        16,
+        28
+      ],
+      "draw_layer": "object",
+      "tags": [
+        "object",
+        "bush"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/object/bush.png",
+      "preview_src": "../../../assets/dark_forest/sprites/object/bush.png"
+    },
+    {
+      "id": "object.generic",
+      "kind": "sprite",
+      "category": "object",
+      "path": "sprites/object/generic.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        16,
+        28
+      ],
+      "sort_anchor": [
+        16,
+        28
+      ],
+      "draw_layer": "object",
+      "tags": [
+        "object",
+        "generic"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/object/generic.png",
+      "preview_src": "../../../assets/dark_forest/sprites/object/generic.png"
+    },
+    {
+      "id": "object.loot",
+      "kind": "sprite",
+      "category": "object",
+      "path": "sprites/object/loot.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        16,
+        28
+      ],
+      "sort_anchor": [
+        16,
+        28
+      ],
+      "draw_layer": "object",
+      "tags": [
+        "object",
+        "loot"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/object/loot.png",
+      "preview_src": "../../../assets/dark_forest/sprites/object/loot.png"
+    },
+    {
+      "id": "object.radio",
+      "kind": "sprite",
+      "category": "object",
+      "path": "sprites/object/radio.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        16,
+        28
+      ],
+      "sort_anchor": [
+        16,
+        28
+      ],
+      "draw_layer": "object",
+      "tags": [
+        "object",
+        "radio"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/object/radio.png",
+      "preview_src": "../../../assets/dark_forest/sprites/object/radio.png"
+    },
+    {
+      "id": "object.ruin",
+      "kind": "sprite",
+      "category": "object",
+      "path": "sprites/object/ruin.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        16,
+        28
+      ],
+      "sort_anchor": [
+        16,
+        28
+      ],
+      "draw_layer": "object",
+      "tags": [
+        "object",
+        "ruin"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/object/ruin.png",
+      "preview_src": "../../../assets/dark_forest/sprites/object/ruin.png"
+    },
+    {
+      "id": "object.tree",
+      "kind": "sprite",
+      "category": "object",
+      "path": "sprites/object/tree.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        16,
+        28
+      ],
+      "sort_anchor": [
+        16,
+        28
+      ],
+      "draw_layer": "object",
+      "tags": [
+        "object",
+        "tree"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/object/tree.png",
+      "preview_src": "../../../assets/dark_forest/sprites/object/tree.png"
+    },
+    {
+      "id": "object.trench",
+      "kind": "sprite",
+      "category": "object",
+      "path": "sprites/object/trench.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        16,
+        28
+      ],
+      "sort_anchor": [
+        16,
+        28
+      ],
+      "draw_layer": "object",
+      "tags": [
+        "object",
+        "trench"
+      ],
+      "asset_status": "placeholder_contract",
+      "file_exists": true,
+      "asset_file": "/home/user/projects/TopDownMapGen_v0.0.75_clean/assets/dark_forest/sprites/object/trench.png",
+      "preview_src": "../../../assets/dark_forest/sprites/object/trench.png"
+    }
+  ]
+}

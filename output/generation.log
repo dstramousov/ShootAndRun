@@ -1,0 +1,344 @@
+INFO: GENERATION ATTEMPT 1/25
+INFO: GENERATION START
+INFO: Effective seed: 11073698844260551338
+INFO: Public config: size=192x192 chunk=16x16 biome=forest_ruins
+INFO: Generation tuning: {'water_scale': 5.0, 'water_patch_count_scale': 1.0, 'water_patch_size_scale': 2.0, 'water_patch_density': 0.62, 'forest_scale': 1.0, 'open_space_scale': 1.0, 'ruins_scale': 1.0, 'buildings_scale': 1.0, 'road_width_scale': 1.0, 'decoration_scale': 1.0, 'bunker_scale': 1.0}
+INFO: Derived config: DerivedConfig(chunk_cols=12, chunk_rows=12, chunk_count=144, area_tiles=36864, region_count=34, small_ruin_count=12, medium_ruin_count=7, central_ruin_count=1, loop_target_count=19, nearest_neighbor_links=4, connected_pocket_count=60, tree_cluster_count=66, flower_patch_count=43, mushroom_patch_count=29, water_patch_count=58, water_patch_min_radius=2, water_patch_max_radius=6, water_patch_density=0.62, cracked_ground_patch_count=29, clearing_min_radius=7, clearing_max_radius=13, central_clearing_radius=20, old_road_corridor_min_width=4, old_road_corridor_max_width=6, old_road_spine_width=1, old_road_overgrowth_chance=0.13, old_road_side_grass_chance=0.76, small_ruin_min_width=8, small_ruin_max_width=13, small_ruin_min_height=6, small_ruin_max_height=10, medium_ruin_min_width=14, medium_ruin_max_width=24, medium_ruin_min_height=10, medium_ruin_max_height=17, settlement_min_buildings=7, settlement_max_buildings=11, tree_cluster_min_radius=1, tree_cluster_max_radius=3, bush_ring_thickness=1, connected_pocket_min_radius=3, connected_pocket_max_radius=7, cleanup_small_component_max_size=32, min_walkable_ratio=0.34, max_walkable_ratio=0.72, max_dead_end_ratio=0.22, min_grass_to_path_ratio=1.8, max_generation_attempts=25, max_hidden_clearings=4, big_forest_component_min_size=527, hidden_clearing_min_radius=4, hidden_clearing_max_radius=7)
+INFO: Stage 1: fill map with TREE
+INFO: Stage 2: place regions evenly using spatial buckets
+INFO:   Central ruin clearing region=00 center=(099,081)
+INFO:   Region 01 bucket=(04,03) center=(139,110)
+INFO:   Region 02 bucket=(03,03) center=(116,119)
+INFO:   Region 03 bucket=(05,03) center=(168,109)
+INFO:   Region 04 bucket=(01,02) center=(053,074)
+INFO:   Region 05 bucket=(03,04) center=(118,146)
+INFO:   Region 06 bucket=(05,01) center=(173,044)
+INFO:   Region 07 bucket=(00,03) center=(013,118)
+INFO:   Region 08 bucket=(01,00) center=(042,019)
+INFO:   Region 09 bucket=(01,05) center=(046,180)
+INFO:   Region 10 bucket=(01,01) center=(046,044)
+INFO:   Region 11 bucket=(00,04) center=(010,137)
+INFO:   Region 12 bucket=(05,02) center=(168,082)
+INFO:   Region 13 bucket=(03,02) center=(115,083)
+INFO:   Region 14 bucket=(05,05) center=(182,176)
+INFO:   Region 15 bucket=(00,02) center=(010,077)
+INFO:   Region 16 bucket=(02,05) center=(086,174)
+INFO:   Region 17 bucket=(04,01) center=(148,041)
+INFO:   Region 18 bucket=(02,00) center=(082,020)
+INFO:   Region 19 bucket=(03,00) center=(106,014)
+INFO:   Region 20 bucket=(05,00) center=(172,009)
+INFO:   Region 21 bucket=(01,04) center=(043,144)
+INFO:   Region 22 bucket=(02,01) center=(087,051)
+INFO:   Region 23 bucket=(00,01) center=(011,050)
+INFO:   Region 24 bucket=(00,05) center=(023,172)
+INFO:   Region 25 bucket=(02,04) center=(078,137)
+INFO:   Region 26 bucket=(00,00) center=(009,020)
+INFO:   Region 27 bucket=(05,04) center=(172,144)
+INFO:   Region 28 bucket=(01,03) center=(054,116)
+INFO:   Region 29 bucket=(03,01) center=(106,052)
+INFO:   Region 30 bucket=(03,05) center=(108,180)
+INFO:   Region 31 bucket=(04,04) center=(149,136)
+INFO:   Region 32 bucket=(04,02) center=(137,082)
+INFO:   Region 33 bucket=(04,05) center=(139,173)
+INFO: Stage 2 complete: regions=34
+INFO: Stage 3: assign region kinds
+INFO:   Region 00 kind=central_ruin_clearing center=(099,081)
+INFO:   Region 01 kind=small_ruin center=(139,110)
+INFO:   Region 02 kind=forest center=(116,119)
+INFO:   Region 03 kind=forest center=(168,109)
+INFO:   Region 04 kind=forest center=(053,074)
+INFO:   Region 05 kind=forest center=(118,146)
+INFO:   Region 06 kind=medium_ruin center=(173,044)
+INFO:   Region 07 kind=medium_ruin center=(013,118)
+INFO:   Region 08 kind=forest center=(042,019)
+INFO:   Region 09 kind=small_ruin center=(046,180)
+INFO:   Region 10 kind=medium_ruin center=(046,044)
+INFO:   Region 11 kind=small_ruin center=(010,137)
+INFO:   Region 12 kind=small_ruin center=(168,082)
+INFO:   Region 13 kind=small_ruin center=(115,083)
+INFO:   Region 14 kind=start center=(182,176)
+INFO:   Region 15 kind=medium_ruin center=(010,077)
+INFO:   Region 16 kind=small_ruin center=(086,174)
+INFO:   Region 17 kind=small_ruin center=(148,041)
+INFO:   Region 18 kind=small_ruin center=(082,020)
+INFO:   Region 19 kind=small_ruin center=(106,014)
+INFO:   Region 20 kind=forest center=(172,009)
+INFO:   Region 21 kind=medium_ruin center=(043,144)
+INFO:   Region 22 kind=forest center=(087,051)
+INFO:   Region 23 kind=medium_ruin center=(011,050)
+INFO:   Region 24 kind=forest center=(023,172)
+INFO:   Region 25 kind=small_ruin center=(078,137)
+INFO:   Region 26 kind=goal center=(009,020)
+INFO:   Region 27 kind=forest center=(172,144)
+INFO:   Region 28 kind=small_ruin center=(054,116)
+INFO:   Region 29 kind=medium_ruin center=(106,052)
+INFO:   Region 30 kind=forest center=(108,180)
+INFO:   Region 31 kind=forest center=(149,136)
+INFO:   Region 32 kind=small_ruin center=(137,082)
+INFO:   Region 33 kind=forest center=(139,173)
+INFO: Stage 4: build connected region graph
+INFO:   Forced central edge 00 -- 32
+INFO:   Forced central edge 00 -- 22
+INFO:   Edge 00 -- 13 type=main
+INFO:   Edge 22 -- 29 type=main
+INFO:   Edge 07 -- 11 type=main
+INFO:   Edge 13 -- 32 type=main
+INFO:   Edge 03 -- 12 type=main
+INFO:   Edge 06 -- 17 type=main
+INFO:   Edge 15 -- 23 type=main
+INFO:   Edge 16 -- 30 type=main
+INFO:   Edge 02 -- 05 type=main
+INFO:   Edge 08 -- 10 type=main
+INFO:   Edge 01 -- 03 type=main
+INFO:   Edge 01 -- 32 type=main
+INFO:   Edge 18 -- 19 type=main
+INFO:   Edge 09 -- 24 type=main
+INFO:   Edge 27 -- 31 type=main
+INFO:   Edge 01 -- 02 type=main
+INFO:   Edge 23 -- 26 type=main
+INFO:   Edge 08 -- 26 type=main
+INFO:   Edge 00 -- 29 type=main
+INFO:   Edge 01 -- 31 type=main
+INFO:   Edge 06 -- 20 type=main
+INFO:   Edge 18 -- 22 type=main
+INFO:   Edge 04 -- 10 type=main
+INFO:   Edge 30 -- 33 type=main
+INFO:   Edge 09 -- 21 type=main
+INFO:   Edge 21 -- 28 type=main
+INFO:   Edge 11 -- 21 type=main
+INFO:   Edge 08 -- 18 type=main
+INFO:   Edge 14 -- 27 type=main
+INFO:   Edge 21 -- 25 type=main
+INFO:   Edge 04 -- 28 type=main
+INFO:   Edge 06 -- 12 type=main
+INFO:   Edge 05 -- 30 type=main
+INFO:   Edge 00 -- 32 type=main
+INFO:   Edge 00 -- 22 type=main
+INFO:   Edge 03 -- 06 type=loop
+INFO:   Edge 19 -- 29 type=loop
+INFO:   Edge 10 -- 26 type=loop
+INFO:   Edge 17 -- 32 type=loop
+INFO:   Edge 00 -- 04 type=loop
+INFO:   Edge 07 -- 24 type=loop
+INFO:   Edge 02 -- 13 type=loop
+INFO:   Edge 17 -- 29 type=loop
+INFO:   Edge 16 -- 33 type=loop
+INFO:   Edge 07 -- 15 type=loop
+INFO:   Edge 09 -- 16 type=loop
+INFO:   Edge 16 -- 25 type=loop
+INFO:   Edge 25 -- 28 type=loop
+INFO:   Edge 31 -- 33 type=loop
+INFO:   Edge 15 -- 26 type=loop
+INFO:   Edge 18 -- 29 type=loop
+INFO:   Edge 09 -- 30 type=loop
+INFO:   Edge 08 -- 19 type=loop
+INFO:   Edge 14 -- 33 type=loop
+INFO: Stage 4 complete: edges=54 loops=19
+INFO: Stage 5: carve region contents
+INFO:   Central ruin clearing region=00 radius=20 buildings=11
+INFO:     Central building 00 rect=Rect(left=93, top=77, right=105, bottom=85)
+INFO:     Central building 01 rect=Rect(left=87, top=66, right=99, bottom=72)
+INFO:     Central building 02 rect=Rect(left=89, top=62, right=103, bottom=72)
+INFO:     Central building 03 rect=Rect(left=92, top=64, right=100, bottom=74)
+INFO:     Central building 04 rect=Rect(left=110, top=71, right=118, bottom=79)
+INFO:     Central building 05 rect=Rect(left=78, top=84, right=92, bottom=94)
+INFO:     Central building 06 rect=Rect(left=95, top=61, right=105, bottom=73)
+INFO:     Central building 07 rect=Rect(left=98, top=67, right=112, bottom=77)
+INFO:     Central building 08 rect=Rect(left=87, top=65, right=99, bottom=75)
+INFO:     Central building 09 rect=Rect(left=92, top=68, right=100, bottom=78)
+INFO:     Central building 10 rect=Rect(left=90, top=61, right=100, bottom=69)
+INFO:   Small ruin region=01 rect=Rect(left=133, top=105, right=145, bottom=115)
+INFO:   Forest clearing region=02 radius=8
+INFO:   Forest clearing region=03 radius=7
+INFO:   Forest clearing region=04 radius=10
+INFO:   Forest clearing region=05 radius=7
+INFO:   Medium ruin region=06 rect=Rect(left=164, top=37, right=182, bottom=51)
+INFO:   Medium ruin region=07 rect=Rect(left=4, top=112, right=25, bottom=124)
+INFO:   Forest clearing region=08 radius=11
+INFO:   Small ruin region=09 rect=Rect(left=42, top=176, right=50, bottom=184)
+INFO:   Medium ruin region=10 rect=Rect(left=34, top=39, right=58, bottom=49)
+INFO:   Small ruin region=11 rect=Rect(left=6, top=133, right=14, bottom=141)
+INFO:   Small ruin region=12 rect=Rect(left=163, top=79, right=173, bottom=85)
+INFO:   Small ruin region=13 rect=Rect(left=111, top=79, right=119, bottom=87)
+INFO:   Forest clearing region=14 radius=8
+INFO:   Medium ruin region=15 rect=Rect(left=4, top=71, right=21, bottom=83)
+INFO:   Small ruin region=16 rect=Rect(left=80, top=169, right=92, bottom=179)
+INFO:   Small ruin region=17 rect=Rect(left=142, top=38, right=154, bottom=44)
+INFO:   Small ruin region=18 rect=Rect(left=77, top=17, right=87, bottom=23)
+INFO:   Small ruin region=19 rect=Rect(left=101, top=11, right=111, bottom=17)
+INFO:   Forest clearing region=20 radius=12
+INFO:   Medium ruin region=21 rect=Rect(left=34, top=136, right=52, bottom=152)
+INFO:   Forest clearing region=22 radius=7
+INFO:   Medium ruin region=23 rect=Rect(left=4, top=42, right=19, bottom=58)
+INFO:   Forest clearing region=24 radius=11
+INFO:   Small ruin region=25 rect=Rect(left=72, top=134, right=84, bottom=140)
+INFO:   Forest clearing region=26 radius=8
+INFO:   Forest clearing region=27 radius=10
+INFO:   Small ruin region=28 rect=Rect(left=49, top=112, right=59, bottom=120)
+INFO:   Medium ruin region=29 rect=Rect(left=97, top=44, right=115, bottom=60)
+INFO:   Forest clearing region=30 radius=7
+INFO:   Forest clearing region=31 radius=7
+INFO:   Small ruin region=32 rect=Rect(left=131, top=79, right=143, bottom=85)
+INFO:   Forest clearing region=33 radius=8
+INFO: Stage 6: carve old overgrown road network
+INFO:   Old road 00 -- 13 type=main
+INFO:   Old road 22 -- 29 type=main
+INFO:   Old road 07 -- 11 type=main
+INFO:   Old road 13 -- 32 type=main
+INFO:   Old road 03 -- 12 type=main
+INFO:   Old road 06 -- 17 type=main
+INFO:   Old road 15 -- 23 type=main
+INFO:   Old road 16 -- 30 type=main
+INFO:   Old road 02 -- 05 type=main
+INFO:   Old road 08 -- 10 type=main
+INFO:   Old road 01 -- 03 type=main
+INFO:   Old road 01 -- 32 type=main
+INFO:   Old road 18 -- 19 type=main
+INFO:   Old road 09 -- 24 type=main
+INFO:   Old road 27 -- 31 type=main
+INFO:   Old road 01 -- 02 type=main
+INFO:   Old road 23 -- 26 type=main
+INFO:   Old road 08 -- 26 type=main
+INFO:   Old road 00 -- 29 type=main
+INFO:   Old road 01 -- 31 type=main
+INFO:   Old road 06 -- 20 type=main
+INFO:   Old road 18 -- 22 type=main
+INFO:   Old road 04 -- 10 type=main
+INFO:   Old road 30 -- 33 type=main
+INFO:   Old road 09 -- 21 type=main
+INFO:   Old road 21 -- 28 type=main
+INFO:   Old road 11 -- 21 type=main
+INFO:   Old road 08 -- 18 type=main
+INFO:   Old road 14 -- 27 type=main
+INFO:   Old road 21 -- 25 type=main
+INFO:   Old road 04 -- 28 type=main
+INFO:   Old road 06 -- 12 type=main
+INFO:   Old road 05 -- 30 type=main
+INFO:   Old road 00 -- 32 type=main
+INFO:   Old road 00 -- 22 type=main
+INFO:   Old road 03 -- 06 type=loop
+INFO:   Old road 19 -- 29 type=loop
+INFO:   Old road 10 -- 26 type=loop
+INFO:   Old road 17 -- 32 type=loop
+INFO:   Old road 00 -- 04 type=loop
+INFO:   Old road 07 -- 24 type=loop
+INFO:   Old road 02 -- 13 type=loop
+INFO:   Old road 17 -- 29 type=loop
+INFO:   Old road 16 -- 33 type=loop
+INFO:   Old road 07 -- 15 type=loop
+INFO:   Old road 09 -- 16 type=loop
+INFO:   Old road 16 -- 25 type=loop
+INFO:   Old road 25 -- 28 type=loop
+INFO:   Old road 31 -- 33 type=loop
+INFO:   Old road 15 -- 26 type=loop
+INFO:   Old road 18 -- 29 type=loop
+INFO:   Old road 09 -- 30 type=loop
+INFO:   Old road 08 -- 19 type=loop
+INFO:   Old road 14 -- 33 type=loop
+INFO: Stage 7: add connected grass pockets
+INFO:   Pocket 00 center=(039,033) radius=4
+INFO:   Pocket 01 center=(041,171) radius=4
+INFO:   Pocket 02 center=(073,058) radius=6
+INFO:   Pocket 03 center=(185,181) radius=3
+INFO:   Pocket 04 center=(030,133) radius=5
+INFO:   Pocket 05 center=(074,134) radius=4
+INFO:   Pocket 06 center=(024,119) radius=4
+INFO:   Pocket 07 center=(153,071) radius=6
+INFO:   Pocket 08 center=(038,058) radius=5
+INFO:   Pocket 09 center=(073,178) radius=6
+INFO:   Pocket 10 center=(103,047) radius=4
+INFO:   Pocket 11 center=(150,076) radius=4
+INFO:   Pocket 12 center=(041,137) radius=4
+INFO:   Pocket 13 center=(171,079) radius=7
+INFO:   Pocket 14 center=(028,030) radius=7
+INFO:   Pocket 15 center=(034,107) radius=3
+INFO:   Pocket 16 center=(115,128) radius=4
+INFO:   Pocket 17 center=(096,042) radius=4
+INFO:   Pocket 18 center=(084,068) radius=7
+INFO:   Pocket 19 center=(061,149) radius=7
+INFO:   Pocket 20 center=(093,181) radius=4
+INFO:   Pocket 21 center=(051,047) radius=6
+INFO:   Pocket 22 center=(154,088) radius=5
+INFO:   Pocket 23 center=(177,104) radius=5
+INFO:   Pocket 24 center=(185,178) radius=7
+INFO:   Pocket 25 center=(099,076) radius=4
+INFO:   Pocket 26 center=(072,164) radius=7
+INFO:   Pocket 27 center=(162,006) radius=5
+INFO:   Pocket 28 center=(029,139) radius=4
+INFO:   Pocket 29 center=(061,030) radius=7
+INFO:   Pocket 30 center=(115,151) radius=3
+INFO:   Pocket 31 center=(084,185) radius=5
+INFO:   Pocket 32 center=(053,144) radius=6
+INFO:   Pocket 33 center=(139,078) radius=5
+INFO:   Pocket 34 center=(016,036) radius=5
+INFO:   Pocket 35 center=(174,142) radius=6
+INFO:   Pocket 36 center=(090,171) radius=7
+INFO:   Pocket 37 center=(106,093) radius=7
+INFO:   Pocket 38 center=(014,042) radius=5
+INFO:   Pocket 39 center=(092,063) radius=3
+INFO:   Pocket 40 center=(153,006) radius=4
+INFO:   Pocket 41 center=(006,117) radius=4
+INFO:   Pocket 42 center=(044,156) radius=3
+INFO:   Pocket 43 center=(047,006) radius=3
+INFO:   Pocket 44 center=(185,060) radius=4
+INFO:   Pocket 45 center=(032,063) radius=3
+INFO:   Pocket 46 center=(068,151) radius=7
+INFO:   Pocket 47 center=(045,118) radius=7
+INFO:   Pocket 48 center=(050,029) radius=7
+INFO:   Pocket 49 center=(159,149) radius=6
+INFO:   Pocket 50 center=(041,165) radius=6
+INFO:   Pocket 51 center=(048,017) radius=6
+INFO:   Pocket 52 center=(006,073) radius=4
+INFO:   Pocket 53 center=(032,066) radius=6
+INFO:   Pocket 54 center=(175,100) radius=6
+INFO:   Pocket 55 center=(102,107) radius=5
+INFO:   Pocket 56 center=(070,185) radius=3
+INFO:   Pocket 57 center=(018,041) radius=5
+INFO:   Pocket 58 center=(006,079) radius=4
+INFO:   Pocket 59 center=(121,032) radius=6
+INFO: Stage 8a: add cracked ground patches near ruins and roads
+INFO:   Cracked ground patches placed: 29/29
+INFO: Stage 8b: add small water/puddle patches
+INFO:   Water patches placed: 58/58, radius=2..6, density=0.62
+INFO: Stage 8: add small tree clusters with bush rings
+INFO:   Tree clusters placed: 66/66
+INFO: Stage 8c: add flower patches
+INFO:   Flower patches placed: 43/43
+INFO: Stage 8d: add mushroom patches
+INFO:   Mushroom patches placed: 29/29
+INFO: Stage 9: clean small isolated walkable components
+INFO:   Removed components=40 removed_tiles=67
+INFO: Stage 10: place START and GOAL
+INFO:   START=(182,176)
+INFO:   GOAL=(009,020)
+INFO: Stage 10a: analyze oversized forest masses
+INFO:   Forest components=53 candidates=5 selected=4 threshold=527
+INFO:   Hidden clearing 00 center=(122,025) radius=7 component_size=3194
+INFO:     Connecting hidden clearing to nearest walkable point=(123,025)
+INFO:   Hidden clearing 01 center=(088,104) radius=6 component_size=2960
+INFO:     Connecting hidden clearing to nearest walkable point=(088,105)
+INFO:   Hidden clearing 02 center=(076,178) radius=4 component_size=2444
+INFO:     Connecting hidden clearing to nearest walkable point=(076,179)
+INFO:   Hidden clearing 03 center=(157,122) radius=5 component_size=2122
+INFO:     Connecting hidden clearing to nearest walkable point=(158,122)
+INFO: Stage 10b: repair critical connectivity
+INFO: Stage 10b complete: repairs=0
+INFO: Stage 10c: repair final walkable connectivity
+INFO: Stage 10c complete: components_before=1 components_after=1 filled_components=0 connected_components=0 failed_repairs=0 tiles_changed=0
+INFO: Stage 10: place START and GOAL
+INFO:   START=(182,176)
+INFO:   GOAL=(009,020)
+INFO: Stage 11: validate map
+INFO:   Walkable ratio=0.539
+INFO:   Dead-end ratio=0.008
+INFO:   Walkable components=1
+INFO:   Path network components=352
+INFO:   S-G path length=329
+INFO:   S-G Manhattan=329
+INFO:   S-G tortuosity=1.000
+INFO:   Grass/path ratio=8.484
+INFO:   Tile counts={'+': 14753, '.': 1739, 'T': 16090, 'b': 499, 'f': 326, 'm': 130, 'w': 1496, 'c': 762, '#': 890, 'R': 177, 'S': 1, 'G': 1}
+INFO: GENERATION FINISHED
+INFO: Generation attempt 1 succeeded
+INFO: Generated map saved to: output/generated_map.txt
+INFO: Tactical map saved to: output/_raw_tactical_map.json

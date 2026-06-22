@@ -1,0 +1,50 @@
+{
+  "schema_version": "visual-map-v1",
+  "kind": "visual_map",
+  "visual_generator_version": "0.0.75",
+  "source": {
+    "map_package_schema_version": "map-package-v1",
+    "map_package_map_schema_version": "map-package-map-v11",
+    "world_generator_version": "0.0.75",
+    "resolved_seed": 11073698844260551338,
+    "world_profile": "clear_map"
+  },
+  "visual_profile": {
+    "id": "dark_forest",
+    "name": "Dark Forest",
+    "path": "/home/user/projects/TopDownMapGen_v0.0.75_clean/top_down_visualgen/profiles/dark_forest"
+  },
+  "dimensions": {
+    "width_tiles": 192,
+    "height_tiles": 192,
+    "tile_size_px": 16
+  },
+  "files": {
+    "visual_layers": "visual_layers.json",
+    "visual_objects": "visual_objects.json",
+    "visual_chunks": "visual_chunks.json",
+    "preview": "preview.png",
+    "final_render": "final_render.png",
+    "debug_dir": "debug",
+    "debug_autotile_masks": "debug/autotile_masks.json",
+    "debug_autotile_report": "debug/autotile_report.json",
+    "debug_unmapped_terrain_report": "debug/unmapped_terrain_report.json",
+    "debug_decoration_report": "debug/decoration_report.json",
+    "debug_place_treatment_report": "debug/place_treatment_report.json",
+    "debug_visual_density_report": "debug/visual_density_report.json",
+    "debug_elevation_visual_report": "debug/elevation_visual_report.json",
+    "debug_boundary_visual_report": "debug/boundary_visual_report.json",
+    "debug_final_render_report": "debug/final_render_report.json"
+  },
+  "contract": {
+    "changes_gameplay": false,
+    "moves_markers": false,
+    "changes_collision": false,
+    "source_of_truth": "map_package"
+  },
+  "summary": {
+    "layer_count": 1,
+    "visual_object_count": 2340,
+    "visual_chunk_count": 36
+  }
+}

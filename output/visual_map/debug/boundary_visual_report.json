@@ -1,0 +1,48 @@
+{
+  "schema_version": "visual-debug-boundary-visual-report-v1",
+  "kind": "visual_debug_boundary_visual_report",
+  "source_layer": "map_border",
+  "rules_enabled": true,
+  "summary": {
+    "total": 441,
+    "map_width": 192,
+    "map_height": 192,
+    "border_width_tiles": 2,
+    "by_boundary_type": {
+      "cliff_wall": 11,
+      "dark_tree_wall": 84,
+      "dense_forest_wall": 309,
+      "ruin_barrier": 22,
+      "swamp_barrier": 15
+    },
+    "by_sprite_id": {
+      "boundary.cliff_wall": 11,
+      "boundary.concrete_barrier": 16,
+      "boundary.dark_tree_wall": 276,
+      "boundary.dense_forest_wall": 132,
+      "boundary.ruin_barrier": 6
+    },
+    "by_edge": {
+      "east": 105,
+      "north": 117,
+      "south": 109,
+      "west": 110
+    },
+    "by_role": {
+      "boundary_hint": 415,
+      "danger_hint": 26
+    },
+    "failed_placements": {},
+    "sampled_markers": {
+      "cliff_wall": 72,
+      "concrete_barrier": 3,
+      "dark_tree_wall": 214,
+      "dense_forest_wall": 707,
+      "ruin_barrier": 50,
+      "swamp_barrier": 33
+    }
+  },
+  "quality": {
+    "status": "ok"
+  }
+}

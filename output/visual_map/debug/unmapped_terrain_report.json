@@ -1,0 +1,15 @@
+{
+  "schema_version": "visual-debug-unmapped-terrain-report-v1",
+  "kind": "visual_debug_unmapped_terrain_report",
+  "source_layer": "terrain_base",
+  "summary": {
+    "default_tile": "grass.base",
+    "counts": {},
+    "total_cells": 0,
+    "unique_terrain_types": 0
+  },
+  "quality": {
+    "unmapped_total": 0,
+    "status": "ok"
+  }
+}

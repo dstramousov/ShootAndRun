@@ -1,0 +1,523 @@
+{
+  "schema_version": "markers-v1",
+  "kind": "markers",
+  "coordinate_space": "tile",
+  "items": [
+    {
+      "id": "start",
+      "type": "start",
+      "position": {
+        "x": 182,
+        "y": 176
+      },
+      "source": "tile_grid",
+      "tags": [
+        "primary",
+        "start"
+      ]
+    },
+    {
+      "id": "goal",
+      "type": "goal",
+      "position": {
+        "x": 9,
+        "y": 20
+      },
+      "source": "tile_grid",
+      "tags": [
+        "primary",
+        "goal"
+      ]
+    },
+    {
+      "id": "marker_big_dead_tree_000",
+      "type": "point_of_interest",
+      "position": {
+        "x": 81,
+        "y": 51
+      },
+      "source": "runtime_objects",
+      "object_ref": "big_dead_tree_000",
+      "tags": [
+        "high_cover",
+        "landmark",
+        "natural",
+        "point_of_interest"
+      ]
+    },
+    {
+      "id": "marker_big_dead_tree_001",
+      "type": "point_of_interest",
+      "position": {
+        "x": 82,
+        "y": 20
+      },
+      "source": "runtime_objects",
+      "object_ref": "big_dead_tree_001",
+      "tags": [
+        "high_cover",
+        "landmark",
+        "natural",
+        "point_of_interest"
+      ]
+    },
+    {
+      "id": "marker_broken_radio_mast_000",
+      "type": "point_of_interest",
+      "position": {
+        "x": 133,
+        "y": 104
+      },
+      "source": "runtime_objects",
+      "object_ref": "broken_radio_mast_000",
+      "tags": [
+        "landmark",
+        "navigation_landmark",
+        "point_of_interest",
+        "signal"
+      ]
+    },
+    {
+      "id": "marker_old_checkpoint_000",
+      "type": "point_of_interest",
+      "position": {
+        "x": 79,
+        "y": 137
+      },
+      "source": "runtime_objects",
+      "object_ref": "old_checkpoint_000",
+      "tags": [
+        "checkpoint",
+        "cover",
+        "landmark",
+        "point_of_interest",
+        "ruin"
+      ]
+    },
+    {
+      "id": "marker_buried_bunker_2x2_000",
+      "type": "defensive_point",
+      "position": {
+        "x": 148,
+        "y": 41
+      },
+      "source": "runtime_objects",
+      "object_ref": "buried_bunker_2x2_000",
+      "tags": [
+        "below_floor",
+        "bunker",
+        "cover",
+        "defensive",
+        "defensive_point",
+        "firing_ports"
+      ]
+    },
+    {
+      "id": "marker_buried_bunker_2x2_001",
+      "type": "defensive_point",
+      "position": {
+        "x": 13,
+        "y": 118
+      },
+      "source": "runtime_objects",
+      "object_ref": "buried_bunker_2x2_001",
+      "tags": [
+        "below_floor",
+        "bunker",
+        "cover",
+        "defensive",
+        "defensive_point",
+        "firing_ports"
+      ]
+    },
+    {
+      "id": "marker_buried_bunker_2x3_000",
+      "type": "defensive_point",
+      "position": {
+        "x": 43,
+        "y": 144
+      },
+      "source": "runtime_objects",
+      "object_ref": "buried_bunker_2x3_000",
+      "tags": [
+        "below_floor",
+        "bunker",
+        "cover",
+        "defensive",
+        "defensive_point",
+        "firing_ports"
+      ]
+    },
+    {
+      "id": "marker_buried_bunker_2x3_001",
+      "type": "defensive_point",
+      "position": {
+        "x": 41,
+        "y": 19
+      },
+      "source": "runtime_objects",
+      "object_ref": "buried_bunker_2x3_001",
+      "tags": [
+        "below_floor",
+        "bunker",
+        "cover",
+        "defensive",
+        "defensive_point",
+        "firing_ports"
+      ]
+    },
+    {
+      "id": "marker_old_well_000",
+      "type": "story",
+      "position": {
+        "x": 99,
+        "y": 81
+      },
+      "source": "runtime_objects",
+      "object_ref": "old_well_000",
+      "tags": [
+        "human_trace",
+        "landmark",
+        "story",
+        "story_marker"
+      ]
+    },
+    {
+      "id": "marker_old_well_001",
+      "type": "story",
+      "position": {
+        "x": 139,
+        "y": 110
+      },
+      "source": "runtime_objects",
+      "object_ref": "old_well_001",
+      "tags": [
+        "human_trace",
+        "landmark",
+        "story",
+        "story_marker"
+      ]
+    },
+    {
+      "id": "marker_old_grave_marker_000",
+      "type": "story",
+      "position": {
+        "x": 12,
+        "y": 172
+      },
+      "source": "runtime_objects",
+      "object_ref": "old_grave_marker_000",
+      "tags": [
+        "grave",
+        "human_trace",
+        "story",
+        "story_marker"
+      ]
+    },
+    {
+      "id": "marker_old_grave_marker_001",
+      "type": "story",
+      "position": {
+        "x": 106,
+        "y": 14
+      },
+      "source": "runtime_objects",
+      "object_ref": "old_grave_marker_001",
+      "tags": [
+        "grave",
+        "human_trace",
+        "story",
+        "story_marker"
+      ]
+    },
+    {
+      "id": "marker_watchtower_000",
+      "type": "point_of_interest",
+      "position": {
+        "x": 180,
+        "y": 144
+      },
+      "source": "runtime_objects",
+      "object_ref": "watchtower_000",
+      "tags": [
+        "elevation",
+        "high_ground",
+        "high_platform",
+        "landmark",
+        "point_of_interest",
+        "tower"
+      ]
+    },
+    {
+      "id": "marker_watchtower_001",
+      "type": "point_of_interest",
+      "position": {
+        "x": 53,
+        "y": 77
+      },
+      "source": "runtime_objects",
+      "object_ref": "watchtower_001",
+      "tags": [
+        "elevation",
+        "high_ground",
+        "high_platform",
+        "landmark",
+        "point_of_interest",
+        "tower"
+      ]
+    },
+    {
+      "id": "marker_ancient_beacon_000",
+      "type": "story",
+      "position": {
+        "x": 136,
+        "y": 180
+      },
+      "source": "runtime_objects",
+      "object_ref": "ancient_beacon_000",
+      "tags": [
+        "elevation",
+        "high_ground",
+        "landmark",
+        "special_high_landmark",
+        "story",
+        "story_marker"
+      ]
+    },
+    {
+      "id": "marker_ancient_beacon_001",
+      "type": "story",
+      "position": {
+        "x": 45,
+        "y": 45
+      },
+      "source": "runtime_objects",
+      "object_ref": "ancient_beacon_001",
+      "tags": [
+        "elevation",
+        "high_ground",
+        "landmark",
+        "special_high_landmark",
+        "story",
+        "story_marker"
+      ]
+    },
+    {
+      "id": "marker_abandoned_backpack_000",
+      "type": "loot",
+      "position": {
+        "x": 106,
+        "y": 54
+      },
+      "source": "runtime_objects",
+      "object_ref": "abandoned_backpack_000",
+      "tags": [
+        "camp",
+        "human_trace",
+        "loot"
+      ]
+    },
+    {
+      "id": "marker_abandoned_backpack_001",
+      "type": "loot",
+      "position": {
+        "x": 28,
+        "y": 177
+      },
+      "source": "runtime_objects",
+      "object_ref": "abandoned_backpack_001",
+      "tags": [
+        "camp",
+        "human_trace",
+        "loot"
+      ]
+    },
+    {
+      "id": "marker_abandoned_backpack_002",
+      "type": "loot",
+      "position": {
+        "x": 131,
+        "y": 120
+      },
+      "source": "runtime_objects",
+      "object_ref": "abandoned_backpack_002",
+      "tags": [
+        "camp",
+        "human_trace",
+        "loot"
+      ]
+    },
+    {
+      "id": "marker_abandoned_backpack_003",
+      "type": "loot",
+      "position": {
+        "x": 171,
+        "y": 114
+      },
+      "source": "runtime_objects",
+      "object_ref": "abandoned_backpack_003",
+      "tags": [
+        "camp",
+        "human_trace",
+        "loot"
+      ]
+    },
+    {
+      "id": "marker_dead_campfire_000",
+      "type": "story",
+      "position": {
+        "x": 43,
+        "y": 44
+      },
+      "source": "runtime_objects",
+      "object_ref": "dead_campfire_000",
+      "tags": [
+        "camp",
+        "human_trace",
+        "story",
+        "story_marker"
+      ]
+    },
+    {
+      "id": "marker_dead_campfire_001",
+      "type": "story",
+      "position": {
+        "x": 104,
+        "y": 52
+      },
+      "source": "runtime_objects",
+      "object_ref": "dead_campfire_001",
+      "tags": [
+        "camp",
+        "human_trace",
+        "story",
+        "story_marker"
+      ]
+    },
+    {
+      "id": "marker_dead_campfire_002",
+      "type": "story",
+      "position": {
+        "x": 13,
+        "y": 77
+      },
+      "source": "runtime_objects",
+      "object_ref": "dead_campfire_002",
+      "tags": [
+        "camp",
+        "human_trace",
+        "story",
+        "story_marker"
+      ]
+    },
+    {
+      "id": "marker_ammo_cache_000",
+      "type": "loot",
+      "position": {
+        "x": 79,
+        "y": 87
+      },
+      "source": "runtime_objects",
+      "object_ref": "ammo_cache_000",
+      "tags": [
+        "ammo",
+        "loot"
+      ]
+    },
+    {
+      "id": "marker_ammo_cache_001",
+      "type": "loot",
+      "position": {
+        "x": 79,
+        "y": 91
+      },
+      "source": "runtime_objects",
+      "object_ref": "ammo_cache_001",
+      "tags": [
+        "ammo",
+        "loot"
+      ]
+    },
+    {
+      "id": "marker_ammo_cache_002",
+      "type": "loot",
+      "position": {
+        "x": 136,
+        "y": 85
+      },
+      "source": "runtime_objects",
+      "object_ref": "ammo_cache_002",
+      "tags": [
+        "ammo",
+        "loot"
+      ]
+    },
+    {
+      "id": "marker_ammo_cache_003",
+      "type": "loot",
+      "position": {
+        "x": 102,
+        "y": 14
+      },
+      "source": "runtime_objects",
+      "object_ref": "ammo_cache_003",
+      "tags": [
+        "ammo",
+        "loot"
+      ]
+    },
+    {
+      "id": "marker_medkit_cache_000",
+      "type": "loot",
+      "position": {
+        "x": 118,
+        "y": 143
+      },
+      "source": "runtime_objects",
+      "object_ref": "medkit_cache_000",
+      "tags": [
+        "healing",
+        "loot"
+      ]
+    },
+    {
+      "id": "marker_medkit_cache_001",
+      "type": "loot",
+      "position": {
+        "x": 13,
+        "y": 115
+      },
+      "source": "runtime_objects",
+      "object_ref": "medkit_cache_001",
+      "tags": [
+        "healing",
+        "loot"
+      ]
+    },
+    {
+      "id": "marker_medkit_cache_002",
+      "type": "loot",
+      "position": {
+        "x": 74,
+        "y": 137
+      },
+      "source": "runtime_objects",
+      "object_ref": "medkit_cache_002",
+      "tags": [
+        "healing",
+        "loot"
+      ]
+    }
+  ],
+  "summary": {
+    "total": 32,
+    "by_type": {
+      "defensive_point": 4,
+      "goal": 1,
+      "loot": 11,
+      "point_of_interest": 6,
+      "start": 1,
+      "story": 9
+    }
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "schema_version": "visual-debug-elevation-visual-report-v1",
+  "kind": "visual_debug_elevation_visual_report",
+  "source_layer": "runtime_grids.height_grid",
+  "rules_enabled": true,
+  "summary": {
+    "total": 211,
+    "map_width": 192,
+    "map_height": 192,
+    "level_counts": {
+      "-1": 61,
+      "0": 36717,
+      "1": 56,
+      "2": 20,
+      "3": 8,
+      "4": 2
+    },
+    "lowland_markers": 61,
+    "raised_markers": 56,
+    "platform_markers": 20,
+    "high_point_markers": 8,
+    "landmark_markers": 2,
+    "transition_markers": 64,
+    "by_kind": {
+      "high_point": 8,
+      "landmark": 2,
+      "lowland": 61,
+      "platform": 20,
+      "raised": 56,
+      "transition": 64
+    },
+    "by_role": {
+      "cover_hint": 5,
+      "danger_hint": 20,
+      "height_edge": 42,
+      "landmark_hint": 4,
+      "transition_hint": 52,
+      "visual": 88
+    },
+    "by_sprite_id": {
+      "elevation.ancient_beacon_base": 1,
+      "elevation.bridge_entry": 27,
+      "elevation.bridge_support_post": 3,
+      "elevation.broken_drain_pipe": 8,
+      "elevation.broken_railing": 2,
+      "elevation.broken_stairs": 5,
+      "elevation.broken_stairs_base": 3,
+      "elevation.bunker_floor_dark": 6,
+      "elevation.collapsed_platform_gap": 3,
+      "elevation.dark_leaf_litter": 2,
+      "elevation.dirt_ramp": 6,
+      "elevation.dry_leaf_patch": 9,
+      "elevation.dry_stone_patch": 7,
+      "elevation.exposed_roots": 6,
+      "elevation.hill_grass_edge": 9,
+      "elevation.lookout_planks": 1,
+      "elevation.lowland_stones": 6,
+      "elevation.mud_pool": 6,
+      "elevation.old_earthwork": 5,
+      "elevation.old_flag_pole": 1,
+      "elevation.old_planks": 1,
+      "elevation.pit_edge": 5,
+      "elevation.raised_berm_edge": 5,
+      "elevation.ridge_stones": 6,
+      "elevation.root_hanging": 7,
+      "elevation.ruin_platform_floor": 3,
+      "elevation.slope_grass": 9,
+      "elevation.stone_guard_edge": 2,
+      "elevation.stone_platform_edge": 3,
+      "elevation.stone_stairs": 5,
+      "elevation.strange_stone_ring": 1,
+      "elevation.tower_ladder": 17,
+      "elevation.trench_wall_edge": 9,
+      "elevation.watch_post_debris": 1,
+      "elevation.watchtower_base": 1,
+      "elevation.watchtower_ladder": 2,
+      "elevation.water_seep": 3,
+      "elevation.wet_grass_dark": 9,
+      "elevation.wooden_bridge_deck": 2,
+      "elevation.wooden_ramp": 4
+    },
+    "transition_by_type": {
+      "bridge_entry": 27,
+      "ramp": 10,
+      "stairs": 10,
+      "tower_ladder": 17
+    },
+    "transition_by_sprite_id": {
+      "elevation.bridge_entry": 27,
+      "elevation.broken_stairs": 5,
+      "elevation.dirt_ramp": 6,
+      "elevation.stone_stairs": 5,
+      "elevation.tower_ladder": 17,
+      "elevation.wooden_ramp": 4
+    },
+    "failed_placements": {},
+    "sampled_markers": {
+      "blocked_edge": 122,
+      "occupied_transition": 10,
+      "slope": 60
+    }
+  },
+  "quality": {
+    "status": "ok"
+  }
+}

@@ -1,0 +1,1423 @@
+{
+  "schema_version": "world-graph-v2",
+  "kind": "world_graph",
+  "graph_version": "v2",
+  "coordinate_space": "tile",
+  "width": 192,
+  "height": 192,
+  "nodes": [
+    {
+      "id": "abandoned_checkpoint_000",
+      "type": "abandoned_checkpoint",
+      "node_type": "place",
+      "source": "places",
+      "place_ref": "abandoned_checkpoint_000",
+      "position": {
+        "x": 80,
+        "y": 138
+      },
+      "bounds": {
+        "min_x": 78,
+        "min_y": 137,
+        "max_x": 81,
+        "max_y": 142
+      },
+      "entrances": [
+        {
+          "id": "entrance_north",
+          "side": "north",
+          "position": {
+            "x": 80,
+            "y": 136
+          }
+        },
+        {
+          "id": "entrance_south",
+          "side": "south",
+          "position": {
+            "x": 80,
+            "y": 143
+          }
+        },
+        {
+          "id": "entrance_west",
+          "side": "west",
+          "position": {
+            "x": 77,
+            "y": 140
+          }
+        },
+        {
+          "id": "entrance_east",
+          "side": "east",
+          "position": {
+            "x": 82,
+            "y": 140
+          }
+        }
+      ],
+      "danger_level": 0.45,
+      "loot_level": 0.35,
+      "story_role": "old_control_point",
+      "encounter_type": "roadside_encounter",
+      "tags": [
+        "abandoned",
+        "checkpoint",
+        "human_trace",
+        "roadside",
+        "ruins"
+      ]
+    },
+    {
+      "id": "ambush_clearing_001",
+      "type": "ambush_clearing",
+      "node_type": "place",
+      "source": "places",
+      "place_ref": "ambush_clearing_001",
+      "position": {
+        "x": 118,
+        "y": 83
+      },
+      "bounds": {
+        "min_x": 114,
+        "min_y": 81,
+        "max_x": 130,
+        "max_y": 83
+      },
+      "entrances": [
+        {
+          "id": "entrance_north",
+          "side": "north",
+          "position": {
+            "x": 122,
+            "y": 80
+          }
+        },
+        {
+          "id": "entrance_south",
+          "side": "south",
+          "position": {
+            "x": 122,
+            "y": 84
+          }
+        },
+        {
+          "id": "entrance_west",
+          "side": "west",
+          "position": {
+            "x": 113,
+            "y": 82
+          }
+        },
+        {
+          "id": "entrance_east",
+          "side": "east",
+          "position": {
+            "x": 131,
+            "y": 82
+          }
+        }
+      ],
+      "danger_level": 0.7,
+      "loot_level": 0.15,
+      "story_role": "natural_ambush_spot",
+      "encounter_type": "flank_attack",
+      "tags": [
+        "ambush",
+        "clearing",
+        "cover",
+        "forest",
+        "open_field"
+      ]
+    },
+    {
+      "id": "bunker_outer_area_002",
+      "type": "bunker_outer_area",
+      "node_type": "place",
+      "source": "places",
+      "place_ref": "bunker_outer_area_002",
+      "position": {
+        "x": 44,
+        "y": 144
+      },
+      "bounds": {
+        "min_x": 41,
+        "min_y": 143,
+        "max_x": 45,
+        "max_y": 145
+      },
+      "entrances": [
+        {
+          "id": "entrance_north",
+          "side": "north",
+          "position": {
+            "x": 43,
+            "y": 142
+          }
+        },
+        {
+          "id": "entrance_south",
+          "side": "south",
+          "position": {
+            "x": 43,
+            "y": 146
+          }
+        },
+        {
+          "id": "entrance_west",
+          "side": "west",
+          "position": {
+            "x": 40,
+            "y": 144
+          }
+        },
+        {
+          "id": "entrance_east",
+          "side": "east",
+          "position": {
+            "x": 46,
+            "y": 144
+          }
+        }
+      ],
+      "danger_level": 0.75,
+      "loot_level": 0.35,
+      "story_role": "bunker_approach",
+      "encounter_type": "bunker_encounter",
+      "tags": [
+        "abandoned",
+        "bunker",
+        "defense",
+        "human_trace",
+        "outer_area",
+        "ruins"
+      ]
+    },
+    {
+      "id": "bunker_inner_area_003",
+      "type": "bunker_inner_area",
+      "node_type": "place",
+      "source": "places",
+      "place_ref": "bunker_inner_area_003",
+      "position": {
+        "x": 148,
+        "y": 42
+      },
+      "bounds": {
+        "min_x": 148,
+        "min_y": 41,
+        "max_x": 149,
+        "max_y": 42
+      },
+      "entrances": [
+        {
+          "id": "entrance_north",
+          "side": "north",
+          "position": {
+            "x": 148,
+            "y": 40
+          }
+        },
+        {
+          "id": "entrance_south",
+          "side": "south",
+          "position": {
+            "x": 148,
+            "y": 43
+          }
+        },
+        {
+          "id": "entrance_west",
+          "side": "west",
+          "position": {
+            "x": 147,
+            "y": 42
+          }
+        },
+        {
+          "id": "entrance_east",
+          "side": "east",
+          "position": {
+            "x": 150,
+            "y": 42
+          }
+        }
+      ],
+      "danger_level": 0.65,
+      "loot_level": 0.5,
+      "story_role": "bunker_interior",
+      "encounter_type": "bunker_room",
+      "tags": [
+        "abandoned",
+        "below_floor",
+        "bunker",
+        "defense",
+        "interior",
+        "underground"
+      ]
+    },
+    {
+      "id": "dangerous_lowland_004",
+      "type": "dangerous_lowland",
+      "node_type": "place",
+      "source": "places",
+      "place_ref": "dangerous_lowland_004",
+      "position": {
+        "x": 112,
+        "y": 130
+      },
+      "bounds": {
+        "min_x": 111,
+        "min_y": 119,
+        "max_x": 113,
+        "max_y": 131
+      },
+      "entrances": [
+        {
+          "id": "entrance_north",
+          "side": "north",
+          "position": {
+            "x": 112,
+            "y": 118
+          }
+        },
+        {
+          "id": "entrance_south",
+          "side": "south",
+          "position": {
+            "x": 112,
+            "y": 132
+          }
+        },
+        {
+          "id": "entrance_west",
+          "side": "west",
+          "position": {
+            "x": 110,
+            "y": 125
+          }
+        },
+        {
+          "id": "entrance_east",
+          "side": "east",
+          "position": {
+            "x": 114,
+            "y": 125
+          }
+        }
+      ],
+      "danger_level": 0.8,
+      "loot_level": 0.2,
+      "story_role": "hazardous_lowland",
+      "encounter_type": "hazard_encounter",
+      "tags": [
+        "danger",
+        "hazard",
+        "low_ground",
+        "swamp",
+        "traversal",
+        "wet"
+      ]
+    },
+    {
+      "id": "old_defensive_position_005",
+      "type": "old_defensive_position",
+      "node_type": "place",
+      "source": "places",
+      "place_ref": "old_defensive_position_005",
+      "position": {
+        "x": 136,
+        "y": 82
+      },
+      "bounds": {
+        "min_x": 134,
+        "min_y": 81,
+        "max_x": 137,
+        "max_y": 85
+      },
+      "entrances": [
+        {
+          "id": "entrance_north",
+          "side": "north",
+          "position": {
+            "x": 136,
+            "y": 80
+          }
+        },
+        {
+          "id": "entrance_south",
+          "side": "south",
+          "position": {
+            "x": 136,
+            "y": 86
+          }
+        },
+        {
+          "id": "entrance_west",
+          "side": "west",
+          "position": {
+            "x": 133,
+            "y": 83
+          }
+        },
+        {
+          "id": "entrance_east",
+          "side": "east",
+          "position": {
+            "x": 138,
+            "y": 83
+          }
+        }
+      ],
+      "danger_level": 0.65,
+      "loot_level": 0.4,
+      "story_role": "old_battle_position",
+      "encounter_type": "defensive_encounter",
+      "tags": [
+        "defense",
+        "human_trace",
+        "open_field",
+        "ruins",
+        "trench"
+      ]
+    },
+    {
+      "id": "small_ruin_site_006",
+      "type": "small_ruin_site",
+      "node_type": "place",
+      "source": "places",
+      "place_ref": "small_ruin_site_006",
+      "position": {
+        "x": 108,
+        "y": 12
+      },
+      "bounds": {
+        "min_x": 104,
+        "min_y": 12,
+        "max_x": 108,
+        "max_y": 12
+      },
+      "entrances": [
+        {
+          "id": "entrance_north",
+          "side": "north",
+          "position": {
+            "x": 106,
+            "y": 11
+          }
+        },
+        {
+          "id": "entrance_south",
+          "side": "south",
+          "position": {
+            "x": 106,
+            "y": 13
+          }
+        },
+        {
+          "id": "entrance_west",
+          "side": "west",
+          "position": {
+            "x": 103,
+            "y": 12
+          }
+        },
+        {
+          "id": "entrance_east",
+          "side": "east",
+          "position": {
+            "x": 109,
+            "y": 12
+          }
+        }
+      ],
+      "danger_level": 0.45,
+      "loot_level": 0.35,
+      "story_role": "minor_ruins",
+      "encounter_type": "ruin_encounter",
+      "tags": [
+        "abandoned",
+        "human_trace",
+        "ruin",
+        "ruins",
+        "scrap"
+      ]
+    },
+    {
+      "id": "marker:start",
+      "type": "start",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "start",
+      "object_ref": null,
+      "position": {
+        "x": 182,
+        "y": 176
+      },
+      "tags": [
+        "primary",
+        "start"
+      ]
+    },
+    {
+      "id": "marker:goal",
+      "type": "goal",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "goal",
+      "object_ref": null,
+      "position": {
+        "x": 9,
+        "y": 20
+      },
+      "tags": [
+        "goal",
+        "primary"
+      ]
+    },
+    {
+      "id": "marker:marker_big_dead_tree_000",
+      "type": "point_of_interest",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_big_dead_tree_000",
+      "object_ref": "big_dead_tree_000",
+      "position": {
+        "x": 81,
+        "y": 51
+      },
+      "tags": [
+        "high_cover",
+        "landmark",
+        "natural",
+        "point_of_interest"
+      ]
+    },
+    {
+      "id": "marker:marker_big_dead_tree_001",
+      "type": "point_of_interest",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_big_dead_tree_001",
+      "object_ref": "big_dead_tree_001",
+      "position": {
+        "x": 82,
+        "y": 20
+      },
+      "tags": [
+        "high_cover",
+        "landmark",
+        "natural",
+        "point_of_interest"
+      ]
+    },
+    {
+      "id": "marker:marker_broken_radio_mast_000",
+      "type": "point_of_interest",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_broken_radio_mast_000",
+      "object_ref": "broken_radio_mast_000",
+      "position": {
+        "x": 133,
+        "y": 104
+      },
+      "tags": [
+        "landmark",
+        "navigation_landmark",
+        "point_of_interest",
+        "signal"
+      ]
+    },
+    {
+      "id": "marker:marker_old_checkpoint_000",
+      "type": "point_of_interest",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_old_checkpoint_000",
+      "object_ref": "old_checkpoint_000",
+      "position": {
+        "x": 79,
+        "y": 137
+      },
+      "tags": [
+        "checkpoint",
+        "cover",
+        "landmark",
+        "point_of_interest",
+        "ruin"
+      ]
+    },
+    {
+      "id": "marker:marker_buried_bunker_2x2_000",
+      "type": "defensive_point",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_buried_bunker_2x2_000",
+      "object_ref": "buried_bunker_2x2_000",
+      "position": {
+        "x": 148,
+        "y": 41
+      },
+      "tags": [
+        "below_floor",
+        "bunker",
+        "cover",
+        "defensive",
+        "defensive_point",
+        "firing_ports"
+      ]
+    },
+    {
+      "id": "marker:marker_buried_bunker_2x2_001",
+      "type": "defensive_point",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_buried_bunker_2x2_001",
+      "object_ref": "buried_bunker_2x2_001",
+      "position": {
+        "x": 13,
+        "y": 118
+      },
+      "tags": [
+        "below_floor",
+        "bunker",
+        "cover",
+        "defensive",
+        "defensive_point",
+        "firing_ports"
+      ]
+    },
+    {
+      "id": "marker:marker_buried_bunker_2x3_000",
+      "type": "defensive_point",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_buried_bunker_2x3_000",
+      "object_ref": "buried_bunker_2x3_000",
+      "position": {
+        "x": 43,
+        "y": 144
+      },
+      "tags": [
+        "below_floor",
+        "bunker",
+        "cover",
+        "defensive",
+        "defensive_point",
+        "firing_ports"
+      ]
+    },
+    {
+      "id": "marker:marker_buried_bunker_2x3_001",
+      "type": "defensive_point",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_buried_bunker_2x3_001",
+      "object_ref": "buried_bunker_2x3_001",
+      "position": {
+        "x": 41,
+        "y": 19
+      },
+      "tags": [
+        "below_floor",
+        "bunker",
+        "cover",
+        "defensive",
+        "defensive_point",
+        "firing_ports"
+      ]
+    },
+    {
+      "id": "marker:marker_old_well_000",
+      "type": "story",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_old_well_000",
+      "object_ref": "old_well_000",
+      "position": {
+        "x": 99,
+        "y": 81
+      },
+      "tags": [
+        "human_trace",
+        "landmark",
+        "story",
+        "story_marker"
+      ]
+    },
+    {
+      "id": "marker:marker_old_well_001",
+      "type": "story",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_old_well_001",
+      "object_ref": "old_well_001",
+      "position": {
+        "x": 139,
+        "y": 110
+      },
+      "tags": [
+        "human_trace",
+        "landmark",
+        "story",
+        "story_marker"
+      ]
+    },
+    {
+      "id": "marker:marker_old_grave_marker_000",
+      "type": "story",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_old_grave_marker_000",
+      "object_ref": "old_grave_marker_000",
+      "position": {
+        "x": 12,
+        "y": 172
+      },
+      "tags": [
+        "grave",
+        "human_trace",
+        "story",
+        "story_marker"
+      ]
+    },
+    {
+      "id": "marker:marker_old_grave_marker_001",
+      "type": "story",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_old_grave_marker_001",
+      "object_ref": "old_grave_marker_001",
+      "position": {
+        "x": 106,
+        "y": 14
+      },
+      "tags": [
+        "grave",
+        "human_trace",
+        "story",
+        "story_marker"
+      ]
+    },
+    {
+      "id": "marker:marker_watchtower_000",
+      "type": "point_of_interest",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_watchtower_000",
+      "object_ref": "watchtower_000",
+      "position": {
+        "x": 180,
+        "y": 144
+      },
+      "tags": [
+        "elevation",
+        "high_ground",
+        "high_platform",
+        "landmark",
+        "point_of_interest",
+        "tower"
+      ]
+    },
+    {
+      "id": "marker:marker_watchtower_001",
+      "type": "point_of_interest",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_watchtower_001",
+      "object_ref": "watchtower_001",
+      "position": {
+        "x": 53,
+        "y": 77
+      },
+      "tags": [
+        "elevation",
+        "high_ground",
+        "high_platform",
+        "landmark",
+        "point_of_interest",
+        "tower"
+      ]
+    },
+    {
+      "id": "marker:marker_ancient_beacon_000",
+      "type": "story",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_ancient_beacon_000",
+      "object_ref": "ancient_beacon_000",
+      "position": {
+        "x": 136,
+        "y": 180
+      },
+      "tags": [
+        "elevation",
+        "high_ground",
+        "landmark",
+        "special_high_landmark",
+        "story",
+        "story_marker"
+      ]
+    },
+    {
+      "id": "marker:marker_ancient_beacon_001",
+      "type": "story",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_ancient_beacon_001",
+      "object_ref": "ancient_beacon_001",
+      "position": {
+        "x": 45,
+        "y": 45
+      },
+      "tags": [
+        "elevation",
+        "high_ground",
+        "landmark",
+        "special_high_landmark",
+        "story",
+        "story_marker"
+      ]
+    },
+    {
+      "id": "marker:marker_abandoned_backpack_000",
+      "type": "loot",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_abandoned_backpack_000",
+      "object_ref": "abandoned_backpack_000",
+      "position": {
+        "x": 106,
+        "y": 54
+      },
+      "tags": [
+        "camp",
+        "human_trace",
+        "loot"
+      ]
+    },
+    {
+      "id": "marker:marker_abandoned_backpack_001",
+      "type": "loot",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_abandoned_backpack_001",
+      "object_ref": "abandoned_backpack_001",
+      "position": {
+        "x": 28,
+        "y": 177
+      },
+      "tags": [
+        "camp",
+        "human_trace",
+        "loot"
+      ]
+    },
+    {
+      "id": "marker:marker_abandoned_backpack_002",
+      "type": "loot",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_abandoned_backpack_002",
+      "object_ref": "abandoned_backpack_002",
+      "position": {
+        "x": 131,
+        "y": 120
+      },
+      "tags": [
+        "camp",
+        "human_trace",
+        "loot"
+      ]
+    },
+    {
+      "id": "marker:marker_abandoned_backpack_003",
+      "type": "loot",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_abandoned_backpack_003",
+      "object_ref": "abandoned_backpack_003",
+      "position": {
+        "x": 171,
+        "y": 114
+      },
+      "tags": [
+        "camp",
+        "human_trace",
+        "loot"
+      ]
+    },
+    {
+      "id": "marker:marker_dead_campfire_000",
+      "type": "story",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_dead_campfire_000",
+      "object_ref": "dead_campfire_000",
+      "position": {
+        "x": 43,
+        "y": 44
+      },
+      "tags": [
+        "camp",
+        "human_trace",
+        "story",
+        "story_marker"
+      ]
+    },
+    {
+      "id": "marker:marker_dead_campfire_001",
+      "type": "story",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_dead_campfire_001",
+      "object_ref": "dead_campfire_001",
+      "position": {
+        "x": 104,
+        "y": 52
+      },
+      "tags": [
+        "camp",
+        "human_trace",
+        "story",
+        "story_marker"
+      ]
+    },
+    {
+      "id": "marker:marker_dead_campfire_002",
+      "type": "story",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_dead_campfire_002",
+      "object_ref": "dead_campfire_002",
+      "position": {
+        "x": 13,
+        "y": 77
+      },
+      "tags": [
+        "camp",
+        "human_trace",
+        "story",
+        "story_marker"
+      ]
+    },
+    {
+      "id": "marker:marker_ammo_cache_000",
+      "type": "loot",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_ammo_cache_000",
+      "object_ref": "ammo_cache_000",
+      "position": {
+        "x": 79,
+        "y": 87
+      },
+      "tags": [
+        "ammo",
+        "loot"
+      ]
+    },
+    {
+      "id": "marker:marker_ammo_cache_001",
+      "type": "loot",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_ammo_cache_001",
+      "object_ref": "ammo_cache_001",
+      "position": {
+        "x": 79,
+        "y": 91
+      },
+      "tags": [
+        "ammo",
+        "loot"
+      ]
+    },
+    {
+      "id": "marker:marker_ammo_cache_002",
+      "type": "loot",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_ammo_cache_002",
+      "object_ref": "ammo_cache_002",
+      "position": {
+        "x": 136,
+        "y": 85
+      },
+      "tags": [
+        "ammo",
+        "loot"
+      ]
+    },
+    {
+      "id": "marker:marker_ammo_cache_003",
+      "type": "loot",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_ammo_cache_003",
+      "object_ref": "ammo_cache_003",
+      "position": {
+        "x": 102,
+        "y": 14
+      },
+      "tags": [
+        "ammo",
+        "loot"
+      ]
+    },
+    {
+      "id": "marker:marker_medkit_cache_000",
+      "type": "loot",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_medkit_cache_000",
+      "object_ref": "medkit_cache_000",
+      "position": {
+        "x": 118,
+        "y": 143
+      },
+      "tags": [
+        "healing",
+        "loot"
+      ]
+    },
+    {
+      "id": "marker:marker_medkit_cache_001",
+      "type": "loot",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_medkit_cache_001",
+      "object_ref": "medkit_cache_001",
+      "position": {
+        "x": 13,
+        "y": 115
+      },
+      "tags": [
+        "healing",
+        "loot"
+      ]
+    },
+    {
+      "id": "marker:marker_medkit_cache_002",
+      "type": "loot",
+      "node_type": "marker",
+      "source": "markers",
+      "marker_ref": "marker_medkit_cache_002",
+      "object_ref": "medkit_cache_002",
+      "position": {
+        "x": 74,
+        "y": 137
+      },
+      "tags": [
+        "healing",
+        "loot"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_000",
+      "source": "abandoned_checkpoint_000",
+      "target": "dangerous_lowland_004",
+      "type": "place_connection",
+      "bidirectional": true,
+      "cost_tiles": 40
+    },
+    {
+      "id": "edge_001",
+      "source": "abandoned_checkpoint_000",
+      "target": "bunker_outer_area_002",
+      "type": "place_connection",
+      "bidirectional": true,
+      "cost_tiles": 42
+    },
+    {
+      "id": "edge_002",
+      "source": "abandoned_checkpoint_000",
+      "target": "ambush_clearing_001",
+      "type": "place_connection",
+      "bidirectional": true,
+      "cost_tiles": 93
+    },
+    {
+      "id": "edge_003",
+      "source": "ambush_clearing_001",
+      "target": "old_defensive_position_005",
+      "type": "place_connection",
+      "bidirectional": true,
+      "cost_tiles": 19
+    },
+    {
+      "id": "edge_004",
+      "source": "ambush_clearing_001",
+      "target": "dangerous_lowland_004",
+      "type": "place_connection",
+      "bidirectional": true,
+      "cost_tiles": 53
+    },
+    {
+      "id": "edge_005",
+      "source": "ambush_clearing_001",
+      "target": "bunker_inner_area_003",
+      "type": "place_connection",
+      "bidirectional": true,
+      "cost_tiles": 71
+    },
+    {
+      "id": "edge_006",
+      "source": "bunker_outer_area_002",
+      "target": "dangerous_lowland_004",
+      "type": "place_connection",
+      "bidirectional": true,
+      "cost_tiles": 82
+    },
+    {
+      "id": "edge_007",
+      "source": "bunker_outer_area_002",
+      "target": "ambush_clearing_001",
+      "type": "place_connection",
+      "bidirectional": true,
+      "cost_tiles": 135
+    },
+    {
+      "id": "edge_008",
+      "source": "bunker_inner_area_003",
+      "target": "old_defensive_position_005",
+      "type": "place_connection",
+      "bidirectional": true,
+      "cost_tiles": 52
+    },
+    {
+      "id": "edge_009",
+      "source": "bunker_inner_area_003",
+      "target": "small_ruin_site_006",
+      "type": "place_connection",
+      "bidirectional": true,
+      "cost_tiles": 70
+    },
+    {
+      "id": "edge_010",
+      "source": "dangerous_lowland_004",
+      "target": "old_defensive_position_005",
+      "type": "place_connection",
+      "bidirectional": true,
+      "cost_tiles": 72
+    },
+    {
+      "id": "edge_011",
+      "source": "small_ruin_site_006",
+      "target": "ambush_clearing_001",
+      "type": "place_connection",
+      "bidirectional": true,
+      "cost_tiles": 81
+    },
+    {
+      "id": "edge_012",
+      "source": "small_ruin_site_006",
+      "target": "old_defensive_position_005",
+      "type": "place_connection",
+      "bidirectional": true,
+      "cost_tiles": 98
+    },
+    {
+      "id": "edge_013",
+      "source": "abandoned_checkpoint_000",
+      "target": "dangerous_lowland_004",
+      "type": "proximity_connection",
+      "bidirectional": true,
+      "cost_tiles": 40
+    },
+    {
+      "id": "edge_014",
+      "source": "abandoned_checkpoint_000",
+      "target": "bunker_outer_area_002",
+      "type": "proximity_connection",
+      "bidirectional": true,
+      "cost_tiles": 42
+    },
+    {
+      "id": "edge_015",
+      "source": "ambush_clearing_001",
+      "target": "old_defensive_position_005",
+      "type": "proximity_connection",
+      "bidirectional": true,
+      "cost_tiles": 19
+    },
+    {
+      "id": "edge_016",
+      "source": "ambush_clearing_001",
+      "target": "dangerous_lowland_004",
+      "type": "proximity_connection",
+      "bidirectional": true,
+      "cost_tiles": 53
+    },
+    {
+      "id": "edge_017",
+      "source": "bunker_inner_area_003",
+      "target": "old_defensive_position_005",
+      "type": "proximity_connection",
+      "bidirectional": true,
+      "cost_tiles": 52
+    },
+    {
+      "id": "edge_018",
+      "source": "bunker_inner_area_003",
+      "target": "small_ruin_site_006",
+      "type": "proximity_connection",
+      "bidirectional": true,
+      "cost_tiles": 70
+    },
+    {
+      "id": "edge_019",
+      "source": "bunker_outer_area_002",
+      "target": "dangerous_lowland_004",
+      "type": "proximity_connection",
+      "bidirectional": true,
+      "cost_tiles": 82
+    },
+    {
+      "id": "edge_020",
+      "source": "small_ruin_site_006",
+      "target": "ambush_clearing_001",
+      "type": "proximity_connection",
+      "bidirectional": true,
+      "cost_tiles": 81
+    },
+    {
+      "id": "edge_021",
+      "source": "marker:start",
+      "target": "dangerous_lowland_004",
+      "type": "start_connection",
+      "bidirectional": true,
+      "cost_tiles": 116
+    },
+    {
+      "id": "edge_022",
+      "source": "small_ruin_site_006",
+      "target": "marker:goal",
+      "type": "goal_connection",
+      "bidirectional": true,
+      "cost_tiles": 107
+    },
+    {
+      "id": "edge_023",
+      "source": "marker:start",
+      "target": "old_defensive_position_005",
+      "type": "main_path_connection",
+      "bidirectional": true,
+      "cost_tiles": 140
+    },
+    {
+      "id": "edge_024",
+      "source": "bunker_inner_area_003",
+      "target": "bunker_outer_area_002",
+      "type": "main_path_connection",
+      "bidirectional": true,
+      "cost_tiles": 206
+    },
+    {
+      "id": "edge_025",
+      "source": "bunker_outer_area_002",
+      "target": "marker:goal",
+      "type": "main_path_connection",
+      "bidirectional": true,
+      "cost_tiles": 159
+    },
+    {
+      "id": "edge_026",
+      "source": "bunker_outer_area_002",
+      "target": "abandoned_checkpoint_000",
+      "type": "side_path_connection",
+      "bidirectional": true,
+      "cost_tiles": 42
+    },
+    {
+      "id": "edge_027",
+      "source": "old_defensive_position_005",
+      "target": "ambush_clearing_001",
+      "type": "side_path_connection",
+      "bidirectional": true,
+      "cost_tiles": 19
+    },
+    {
+      "id": "edge_028",
+      "source": "old_defensive_position_005",
+      "target": "dangerous_lowland_004",
+      "type": "side_path_connection",
+      "bidirectional": true,
+      "cost_tiles": 72
+    },
+    {
+      "id": "edge_029",
+      "source": "bunker_inner_area_003",
+      "target": "small_ruin_site_006",
+      "type": "side_path_connection",
+      "bidirectional": true,
+      "cost_tiles": 70
+    }
+  ],
+  "main_path": {
+    "node_ids": [
+      "marker:start",
+      "old_defensive_position_005",
+      "bunker_inner_area_003",
+      "bunker_outer_area_002",
+      "marker:goal"
+    ],
+    "edge_ids": [
+      "edge_023",
+      "edge_008",
+      "edge_024",
+      "edge_025"
+    ],
+    "complete": true,
+    "description": "Approximate intended semantic route through key places."
+  },
+  "side_paths": [
+    {
+      "id": "side_path_000",
+      "type": "side_path",
+      "node_ids": [
+        "bunker_outer_area_002",
+        "abandoned_checkpoint_000"
+      ],
+      "edge_ids": [
+        "edge_001"
+      ],
+      "anchor_node": "bunker_outer_area_002",
+      "target_place": "abandoned_checkpoint_000",
+      "cost_tiles": 42,
+      "created_edge": true
+    },
+    {
+      "id": "side_path_001",
+      "type": "danger_side_path",
+      "node_ids": [
+        "old_defensive_position_005",
+        "ambush_clearing_001"
+      ],
+      "edge_ids": [
+        "edge_003"
+      ],
+      "anchor_node": "old_defensive_position_005",
+      "target_place": "ambush_clearing_001",
+      "cost_tiles": 19,
+      "created_edge": true
+    },
+    {
+      "id": "side_path_002",
+      "type": "danger_side_path",
+      "node_ids": [
+        "old_defensive_position_005",
+        "dangerous_lowland_004"
+      ],
+      "edge_ids": [
+        "edge_010"
+      ],
+      "anchor_node": "old_defensive_position_005",
+      "target_place": "dangerous_lowland_004",
+      "cost_tiles": 72,
+      "created_edge": true
+    },
+    {
+      "id": "side_path_003",
+      "type": "side_path",
+      "node_ids": [
+        "bunker_inner_area_003",
+        "small_ruin_site_006"
+      ],
+      "edge_ids": [
+        "edge_009"
+      ],
+      "anchor_node": "bunker_inner_area_003",
+      "target_place": "small_ruin_site_006",
+      "cost_tiles": 70,
+      "created_edge": true
+    }
+  ],
+  "dead_ends": [],
+  "secret_areas": [
+    {
+      "id": "secret_area_000",
+      "node_id": "marker:marker_abandoned_backpack_000",
+      "reason": "secret_or_loot_marker"
+    },
+    {
+      "id": "secret_area_001",
+      "node_id": "marker:marker_abandoned_backpack_001",
+      "reason": "secret_or_loot_marker"
+    },
+    {
+      "id": "secret_area_002",
+      "node_id": "marker:marker_abandoned_backpack_002",
+      "reason": "secret_or_loot_marker"
+    },
+    {
+      "id": "secret_area_003",
+      "node_id": "marker:marker_abandoned_backpack_003",
+      "reason": "secret_or_loot_marker"
+    },
+    {
+      "id": "secret_area_004",
+      "node_id": "marker:marker_ammo_cache_000",
+      "reason": "secret_or_loot_marker"
+    },
+    {
+      "id": "secret_area_005",
+      "node_id": "marker:marker_ammo_cache_001",
+      "reason": "secret_or_loot_marker"
+    },
+    {
+      "id": "secret_area_006",
+      "node_id": "marker:marker_ammo_cache_002",
+      "reason": "secret_or_loot_marker"
+    },
+    {
+      "id": "secret_area_007",
+      "node_id": "marker:marker_ammo_cache_003",
+      "reason": "secret_or_loot_marker"
+    },
+    {
+      "id": "secret_area_008",
+      "node_id": "marker:marker_medkit_cache_000",
+      "reason": "secret_or_loot_marker"
+    },
+    {
+      "id": "secret_area_009",
+      "node_id": "marker:marker_medkit_cache_001",
+      "reason": "secret_or_loot_marker"
+    },
+    {
+      "id": "secret_area_010",
+      "node_id": "marker:marker_medkit_cache_002",
+      "reason": "secret_or_loot_marker"
+    }
+  ],
+  "summary": {
+    "node_count": 39,
+    "edge_count": 30,
+    "place_node_count": 7,
+    "marker_node_count": 32,
+    "meaningful_place_count": 7,
+    "main_path_node_count": 5,
+    "side_path_count": 4,
+    "dead_end_count": 0,
+    "secret_area_count": 11
+  },
+  "quality": {
+    "meaningful_places": 7,
+    "connected_meaningful_places": 7,
+    "meaningful_place_coverage": 1.0,
+    "side_paths": 4,
+    "dead_ends": 0,
+    "secret_areas": 11,
+    "main_path_complete": true,
+    "status": "ok"
+  },
+  "notes": [
+    "This graph is a semantic world/navigation contract, not a pathfinding grid.",
+    "Edges describe intended location connectivity; use runtime grids for exact movement.",
+    "World graph v2 derives proximity and branch edges from meaningful places."
+  ]
+}

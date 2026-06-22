@@ -1,0 +1,1655 @@
+{
+  "schema_version": "gameplay-zones-v1",
+  "kind": "gameplay_zones",
+  "coordinate_space": "tile",
+  "width": 192,
+  "height": 192,
+  "items": [
+    {
+      "id": "zone_000",
+      "type": "safe_area",
+      "bounds": {
+        "min_x": 179,
+        "min_y": 173,
+        "max_x": 185,
+        "max_y": 179
+      },
+      "polygon": [
+        {
+          "x": 179,
+          "y": 173
+        },
+        {
+          "x": 185,
+          "y": 173
+        },
+        {
+          "x": 185,
+          "y": 179
+        },
+        {
+          "x": 179,
+          "y": 179
+        }
+      ],
+      "entry_points": [
+        {
+          "id": "entry_center",
+          "position": {
+            "x": 182,
+            "y": 176
+          }
+        }
+      ],
+      "exit_points": [
+        {
+          "id": "exit_center",
+          "position": {
+            "x": 182,
+            "y": 176
+          }
+        }
+      ],
+      "linked_places": [],
+      "linked_routes": [],
+      "linked_markers": [
+        "start"
+      ],
+      "danger_level": 0.0,
+      "loot_level": 0.0,
+      "recommended_enemy_types": [],
+      "recommended_encounter": "none",
+      "elevation_usage": "normal_ground",
+      "tags": [
+        "primary",
+        "safe_area",
+        "start"
+      ]
+    },
+    {
+      "id": "zone_001",
+      "type": "extraction_area",
+      "bounds": {
+        "min_x": 6,
+        "min_y": 17,
+        "max_x": 12,
+        "max_y": 23
+      },
+      "polygon": [
+        {
+          "x": 6,
+          "y": 17
+        },
+        {
+          "x": 12,
+          "y": 17
+        },
+        {
+          "x": 12,
+          "y": 23
+        },
+        {
+          "x": 6,
+          "y": 23
+        }
+      ],
+      "entry_points": [
+        {
+          "id": "entry_center",
+          "position": {
+            "x": 9,
+            "y": 20
+          }
+        }
+      ],
+      "exit_points": [
+        {
+          "id": "exit_center",
+          "position": {
+            "x": 9,
+            "y": 20
+          }
+        }
+      ],
+      "linked_places": [],
+      "linked_routes": [],
+      "linked_markers": [
+        "goal"
+      ],
+      "danger_level": 0.35,
+      "loot_level": 0.0,
+      "recommended_enemy_types": [],
+      "recommended_encounter": "extraction",
+      "elevation_usage": "normal_ground",
+      "tags": [
+        "extraction_area",
+        "goal",
+        "primary"
+      ]
+    },
+    {
+      "id": "zone_002",
+      "type": "loot_area",
+      "bounds": {
+        "min_x": 103,
+        "min_y": 51,
+        "max_x": 109,
+        "max_y": 57
+      },
+      "polygon": [
+        {
+          "x": 103,
+          "y": 51
+        },
+        {
+          "x": 109,
+          "y": 51
+        },
+        {
+          "x": 109,
+          "y": 57
+        },
+        {
+          "x": 103,
+          "y": 57
+        }
+      ],
+      "entry_points": [
+        {
+          "id": "entry_center",
+          "position": {
+            "x": 106,
+            "y": 54
+          }
+        }
+      ],
+      "exit_points": [
+        {
+          "id": "exit_center",
+          "position": {
+            "x": 106,
+            "y": 54
+          }
+        }
+      ],
+      "linked_places": [],
+      "linked_routes": [],
+      "linked_markers": [
+        "marker_abandoned_backpack_000"
+      ],
+      "danger_level": 0.25,
+      "loot_level": 0.75,
+      "recommended_enemy_types": [],
+      "recommended_encounter": "reward_pickup",
+      "elevation_usage": "normal_ground",
+      "tags": [
+        "camp",
+        "human_trace",
+        "loot",
+        "loot_area"
+      ]
+    },
+    {
+      "id": "zone_003",
+      "type": "loot_area",
+      "bounds": {
+        "min_x": 25,
+        "min_y": 174,
+        "max_x": 31,
+        "max_y": 180
+      },
+      "polygon": [
+        {
+          "x": 25,
+          "y": 174
+        },
+        {
+          "x": 31,
+          "y": 174
+        },
+        {
+          "x": 31,
+          "y": 180
+        },
+        {
+          "x": 25,
+          "y": 180
+        }
+      ],
+      "entry_points": [
+        {
+          "id": "entry_center",
+          "position": {
+            "x": 28,
+            "y": 177
+          }
+        }
+      ],
+      "exit_points": [
+        {
+          "id": "exit_center",
+          "position": {
+            "x": 28,
+            "y": 177
+          }
+        }
+      ],
+      "linked_places": [],
+      "linked_routes": [],
+      "linked_markers": [
+        "marker_abandoned_backpack_001"
+      ],
+      "danger_level": 0.25,
+      "loot_level": 0.75,
+      "recommended_enemy_types": [],
+      "recommended_encounter": "reward_pickup",
+      "elevation_usage": "normal_ground",
+      "tags": [
+        "camp",
+        "human_trace",
+        "loot",
+        "loot_area"
+      ]
+    },
+    {
+      "id": "zone_004",
+      "type": "loot_area",
+      "bounds": {
+        "min_x": 128,
+        "min_y": 117,
+        "max_x": 134,
+        "max_y": 123
+      },
+      "polygon": [
+        {
+          "x": 128,
+          "y": 117
+        },
+        {
+          "x": 134,
+          "y": 117
+        },
+        {
+          "x": 134,
+          "y": 123
+        },
+        {
+          "x": 128,
+          "y": 123
+        }
+      ],
+      "entry_points": [
+        {
+          "id": "entry_center",
+          "position": {
+            "x": 131,
+            "y": 120
+          }
+        }
+      ],
+      "exit_points": [
+        {
+          "id": "exit_center",
+          "position": {
+            "x": 131,
+            "y": 120
+          }
+        }
+      ],
+      "linked_places": [],
+      "linked_routes": [],
+      "linked_markers": [
+        "marker_abandoned_backpack_002"
+      ],
+      "danger_level": 0.25,
+      "loot_level": 0.75,
+      "recommended_enemy_types": [],
+      "recommended_encounter": "reward_pickup",
+      "elevation_usage": "normal_ground",
+      "tags": [
+        "camp",
+        "human_trace",
+        "loot",
+        "loot_area"
+      ]
+    },
+    {
+      "id": "zone_005",
+      "type": "loot_area",
+      "bounds": {
+        "min_x": 168,
+        "min_y": 111,
+        "max_x": 174,
+        "max_y": 117
+      },
+      "polygon": [
+        {
+          "x": 168,
+          "y": 111
+        },
+        {
+          "x": 174,
+          "y": 111
+        },
+        {
+          "x": 174,
+          "y": 117
+        },
+        {
+          "x": 168,
+          "y": 117
+        }
+      ],
+      "entry_points": [
+        {
+          "id": "entry_center",
+          "position": {
+            "x": 171,
+            "y": 114
+          }
+        }
+      ],
+      "exit_points": [
+        {
+          "id": "exit_center",
+          "position": {
+            "x": 171,
+            "y": 114
+          }
+        }
+      ],
+      "linked_places": [],
+      "linked_routes": [],
+      "linked_markers": [
+        "marker_abandoned_backpack_003"
+      ],
+      "danger_level": 0.25,
+      "loot_level": 0.75,
+      "recommended_enemy_types": [],
+      "recommended_encounter": "reward_pickup",
+      "elevation_usage": "normal_ground",
+      "tags": [
+        "camp",
+        "human_trace",
+        "loot",
+        "loot_area"
+      ]
+    },
+    {
+      "id": "zone_006",
+      "type": "loot_area",
+      "bounds": {
+        "min_x": 76,
+        "min_y": 84,
+        "max_x": 82,
+        "max_y": 90
+      },
+      "polygon": [
+        {
+          "x": 76,
+          "y": 84
+        },
+        {
+          "x": 82,
+          "y": 84
+        },
+        {
+          "x": 82,
+          "y": 90
+        },
+        {
+          "x": 76,
+          "y": 90
+        }
+      ],
+      "entry_points": [
+        {
+          "id": "entry_center",
+          "position": {
+            "x": 79,
+            "y": 87
+          }
+        }
+      ],
+      "exit_points": [
+        {
+          "id": "exit_center",
+          "position": {
+            "x": 79,
+            "y": 87
+          }
+        }
+      ],
+      "linked_places": [],
+      "linked_routes": [],
+      "linked_markers": [
+        "marker_ammo_cache_000"
+      ],
+      "danger_level": 0.25,
+      "loot_level": 0.75,
+      "recommended_enemy_types": [],
+      "recommended_encounter": "reward_pickup",
+      "elevation_usage": "normal_ground",
+      "tags": [
+        "ammo",
+        "loot",
+        "loot_area"
+      ]
+    },
+    {
+      "id": "zone_007",
+      "type": "loot_area",
+      "bounds": {
+        "min_x": 76,
+        "min_y": 88,
+        "max_x": 82,
+        "max_y": 94
+      },
+      "polygon": [
+        {
+          "x": 76,
+          "y": 88
+        },
+        {
+          "x": 82,
+          "y": 88
+        },
+        {
+          "x": 82,
+          "y": 94
+        },
+        {
+          "x": 76,
+          "y": 94
+        }
+      ],
+      "entry_points": [
+        {
+          "id": "entry_center",
+          "position": {
+            "x": 79,
+            "y": 91
+          }
+        }
+      ],
+      "exit_points": [
+        {
+          "id": "exit_center",
+          "position": {
+            "x": 79,
+            "y": 91
+          }
+        }
+      ],
+      "linked_places": [],
+      "linked_routes": [],
+      "linked_markers": [
+        "marker_ammo_cache_001"
+      ],
+      "danger_level": 0.25,
+      "loot_level": 0.75,
+      "recommended_enemy_types": [],
+      "recommended_encounter": "reward_pickup",
+      "elevation_usage": "normal_ground",
+      "tags": [
+        "ammo",
+        "loot",
+        "loot_area"
+      ]
+    },
+    {
+      "id": "zone_008",
+      "type": "loot_area",
+      "bounds": {
+        "min_x": 133,
+        "min_y": 82,
+        "max_x": 139,
+        "max_y": 88
+      },
+      "polygon": [
+        {
+          "x": 133,
+          "y": 82
+        },
+        {
+          "x": 139,
+          "y": 82
+        },
+        {
+          "x": 139,
+          "y": 88
+        },
+        {
+          "x": 133,
+          "y": 88
+        }
+      ],
+      "entry_points": [
+        {
+          "id": "entry_center",
+          "position": {
+            "x": 136,
+            "y": 85
+          }
+        }
+      ],
+      "exit_points": [
+        {
+          "id": "exit_center",
+          "position": {
+            "x": 136,
+            "y": 85
+          }
+        }
+      ],
+      "linked_places": [],
+      "linked_routes": [],
+      "linked_markers": [
+        "marker_ammo_cache_002"
+      ],
+      "danger_level": 0.25,
+      "loot_level": 0.75,
+      "recommended_enemy_types": [],
+      "recommended_encounter": "reward_pickup",
+      "elevation_usage": "normal_ground",
+      "tags": [
+        "ammo",
+        "loot",
+        "loot_area"
+      ]
+    },
+    {
+      "id": "zone_009",
+      "type": "loot_area",
+      "bounds": {
+        "min_x": 99,
+        "min_y": 11,
+        "max_x": 105,
+        "max_y": 17
+      },
+      "polygon": [
+        {
+          "x": 99,
+          "y": 11
+        },
+        {
+          "x": 105,
+          "y": 11
+        },
+        {
+          "x": 105,
+          "y": 17
+        },
+        {
+          "x": 99,
+          "y": 17
+        }
+      ],
+      "entry_points": [
+        {
+          "id": "entry_center",
+          "position": {
+            "x": 102,
+            "y": 14
+          }
+        }
+      ],
+      "exit_points": [
+        {
+          "id": "exit_center",
+          "position": {
+            "x": 102,
+            "y": 14
+          }
+        }
+      ],
+      "linked_places": [],
+      "linked_routes": [],
+      "linked_markers": [
+        "marker_ammo_cache_003"
+      ],
+      "danger_level": 0.25,
+      "loot_level": 0.75,
+      "recommended_enemy_types": [],
+      "recommended_encounter": "reward_pickup",
+      "elevation_usage": "normal_ground",
+      "tags": [
+        "ammo",
+        "loot",
+        "loot_area"
+      ]
+    },
+    {
+      "id": "zone_010",
+      "type": "loot_area",
+      "bounds": {
+        "min_x": 115,
+        "min_y": 140,
+        "max_x": 121,
+        "max_y": 146
+      },
+      "polygon": [
+        {
+          "x": 115,
+          "y": 140
+        },
+        {
+          "x": 121,
+          "y": 140
+        },
+        {
+          "x": 121,
+          "y": 146
+        },
+        {
+          "x": 115,
+          "y": 146
+        }
+      ],
+      "entry_points": [
+        {
+          "id": "entry_center",
+          "position": {
+            "x": 118,
+            "y": 143
+          }
+        }
+      ],
+      "exit_points": [
+        {
+          "id": "exit_center",
+          "position": {
+            "x": 118,
+            "y": 143
+          }
+        }
+      ],
+      "linked_places": [],
+      "linked_routes": [],
+      "linked_markers": [
+        "marker_medkit_cache_000"
+      ],
+      "danger_level": 0.25,
+      "loot_level": 0.75,
+      "recommended_enemy_types": [],
+      "recommended_encounter": "reward_pickup",
+      "elevation_usage": "normal_ground",
+      "tags": [
+        "healing",
+        "loot",
+        "loot_area"
+      ]
+    },
+    {
+      "id": "zone_011",
+      "type": "loot_area",
+      "bounds": {
+        "min_x": 10,
+        "min_y": 112,
+        "max_x": 16,
+        "max_y": 118
+      },
+      "polygon": [
+        {
+          "x": 10,
+          "y": 112
+        },
+        {
+          "x": 16,
+          "y": 112
+        },
+        {
+          "x": 16,
+          "y": 118
+        },
+        {
+          "x": 10,
+          "y": 118
+        }
+      ],
+      "entry_points": [
+        {
+          "id": "entry_center",
+          "position": {
+            "x": 13,
+            "y": 115
+          }
+        }
+      ],
+      "exit_points": [
+        {
+          "id": "exit_center",
+          "position": {
+            "x": 13,
+            "y": 115
+          }
+        }
+      ],
+      "linked_places": [],
+      "linked_routes": [],
+      "linked_markers": [
+        "marker_medkit_cache_001"
+      ],
+      "danger_level": 0.25,
+      "loot_level": 0.75,
+      "recommended_enemy_types": [],
+      "recommended_encounter": "reward_pickup",
+      "elevation_usage": "normal_ground",
+      "tags": [
+        "healing",
+        "loot",
+        "loot_area"
+      ]
+    },
+    {
+      "id": "zone_012",
+      "type": "loot_area",
+      "bounds": {
+        "min_x": 71,
+        "min_y": 134,
+        "max_x": 77,
+        "max_y": 140
+      },
+      "polygon": [
+        {
+          "x": 71,
+          "y": 134
+        },
+        {
+          "x": 77,
+          "y": 134
+        },
+        {
+          "x": 77,
+          "y": 140
+        },
+        {
+          "x": 71,
+          "y": 140
+        }
+      ],
+      "entry_points": [
+        {
+          "id": "entry_center",
+          "position": {
+            "x": 74,
+            "y": 137
+          }
+        }
+      ],
+      "exit_points": [
+        {
+          "id": "exit_center",
+          "position": {
+            "x": 74,
+            "y": 137
+          }
+        }
+      ],
+      "linked_places": [],
+      "linked_routes": [],
+      "linked_markers": [
+        "marker_medkit_cache_002"
+      ],
+      "danger_level": 0.25,
+      "loot_level": 0.75,
+      "recommended_enemy_types": [],
+      "recommended_encounter": "reward_pickup",
+      "elevation_usage": "normal_ground",
+      "tags": [
+        "healing",
+        "loot",
+        "loot_area"
+      ]
+    },
+    {
+      "id": "zone_013",
+      "type": "story_area",
+      "bounds": {
+        "min_x": 78,
+        "min_y": 137,
+        "max_x": 81,
+        "max_y": 142
+      },
+      "polygon": [
+        {
+          "x": 78,
+          "y": 137
+        },
+        {
+          "x": 81,
+          "y": 137
+        },
+        {
+          "x": 81,
+          "y": 142
+        },
+        {
+          "x": 78,
+          "y": 142
+        }
+      ],
+      "entry_points": [
+        {
+          "id": "entrance_north",
+          "position": {
+            "x": 80,
+            "y": 136
+          }
+        },
+        {
+          "id": "entrance_south",
+          "position": {
+            "x": 80,
+            "y": 143
+          }
+        },
+        {
+          "id": "entrance_west",
+          "position": {
+            "x": 77,
+            "y": 140
+          }
+        },
+        {
+          "id": "entrance_east",
+          "position": {
+            "x": 82,
+            "y": 140
+          }
+        }
+      ],
+      "exit_points": [
+        {
+          "id": "entrance_north",
+          "position": {
+            "x": 80,
+            "y": 136
+          }
+        },
+        {
+          "id": "entrance_south",
+          "position": {
+            "x": 80,
+            "y": 143
+          }
+        },
+        {
+          "id": "entrance_west",
+          "position": {
+            "x": 77,
+            "y": 140
+          }
+        },
+        {
+          "id": "entrance_east",
+          "position": {
+            "x": 82,
+            "y": 140
+          }
+        }
+      ],
+      "linked_places": [
+        "abandoned_checkpoint_000"
+      ],
+      "linked_routes": [
+        "side_path_000",
+        "patrol_route_000",
+        "patrol_route_001",
+        "patrol_route_002"
+      ],
+      "linked_markers": [
+        "marker_old_checkpoint_000"
+      ],
+      "danger_level": 0.45,
+      "loot_level": 0.35,
+      "recommended_enemy_types": [
+        "scavenger",
+        "ranged"
+      ],
+      "recommended_encounter": "roadside_encounter",
+      "elevation_usage": "normal_ground",
+      "tags": [
+        "abandoned",
+        "checkpoint",
+        "human_trace",
+        "roadside",
+        "ruins",
+        "story_area"
+      ]
+    },
+    {
+      "id": "zone_014",
+      "type": "ambush_area",
+      "bounds": {
+        "min_x": 114,
+        "min_y": 81,
+        "max_x": 130,
+        "max_y": 83
+      },
+      "polygon": [
+        {
+          "x": 114,
+          "y": 81
+        },
+        {
+          "x": 130,
+          "y": 81
+        },
+        {
+          "x": 130,
+          "y": 83
+        },
+        {
+          "x": 114,
+          "y": 83
+        }
+      ],
+      "entry_points": [
+        {
+          "id": "entrance_north",
+          "position": {
+            "x": 122,
+            "y": 80
+          }
+        },
+        {
+          "id": "entrance_south",
+          "position": {
+            "x": 122,
+            "y": 84
+          }
+        },
+        {
+          "id": "entrance_west",
+          "position": {
+            "x": 113,
+            "y": 82
+          }
+        },
+        {
+          "id": "entrance_east",
+          "position": {
+            "x": 131,
+            "y": 82
+          }
+        }
+      ],
+      "exit_points": [
+        {
+          "id": "entrance_north",
+          "position": {
+            "x": 122,
+            "y": 80
+          }
+        },
+        {
+          "id": "entrance_south",
+          "position": {
+            "x": 122,
+            "y": 84
+          }
+        },
+        {
+          "id": "entrance_west",
+          "position": {
+            "x": 113,
+            "y": 82
+          }
+        },
+        {
+          "id": "entrance_east",
+          "position": {
+            "x": 131,
+            "y": 82
+          }
+        }
+      ],
+      "linked_places": [
+        "ambush_clearing_001"
+      ],
+      "linked_routes": [
+        "side_path_001",
+        "patrol_route_002",
+        "patrol_route_003",
+        "patrol_route_004",
+        "patrol_route_005",
+        "patrol_route_007",
+        "patrol_route_011"
+      ],
+      "linked_markers": [],
+      "danger_level": 0.7,
+      "loot_level": 0.15,
+      "recommended_enemy_types": [
+        "ambusher",
+        "beast"
+      ],
+      "recommended_encounter": "flank_attack",
+      "elevation_usage": "mixed_cover",
+      "tags": [
+        "ambush",
+        "ambush_area",
+        "clearing",
+        "cover",
+        "forest",
+        "open_field"
+      ]
+    },
+    {
+      "id": "zone_015",
+      "type": "danger_area",
+      "bounds": {
+        "min_x": 41,
+        "min_y": 143,
+        "max_x": 45,
+        "max_y": 145
+      },
+      "polygon": [
+        {
+          "x": 41,
+          "y": 143
+        },
+        {
+          "x": 45,
+          "y": 143
+        },
+        {
+          "x": 45,
+          "y": 145
+        },
+        {
+          "x": 41,
+          "y": 145
+        }
+      ],
+      "entry_points": [
+        {
+          "id": "entrance_north",
+          "position": {
+            "x": 43,
+            "y": 142
+          }
+        },
+        {
+          "id": "entrance_south",
+          "position": {
+            "x": 43,
+            "y": 146
+          }
+        },
+        {
+          "id": "entrance_west",
+          "position": {
+            "x": 40,
+            "y": 144
+          }
+        },
+        {
+          "id": "entrance_east",
+          "position": {
+            "x": 46,
+            "y": 144
+          }
+        }
+      ],
+      "exit_points": [
+        {
+          "id": "entrance_north",
+          "position": {
+            "x": 43,
+            "y": 142
+          }
+        },
+        {
+          "id": "entrance_south",
+          "position": {
+            "x": 43,
+            "y": 146
+          }
+        },
+        {
+          "id": "entrance_west",
+          "position": {
+            "x": 40,
+            "y": 144
+          }
+        },
+        {
+          "id": "entrance_east",
+          "position": {
+            "x": 46,
+            "y": 144
+          }
+        }
+      ],
+      "linked_places": [
+        "bunker_outer_area_002"
+      ],
+      "linked_routes": [
+        "main_road_000",
+        "side_path_000",
+        "patrol_route_001",
+        "patrol_route_006",
+        "patrol_route_007"
+      ],
+      "linked_markers": [
+        "marker_buried_bunker_2x3_000"
+      ],
+      "danger_level": 0.75,
+      "loot_level": 0.35,
+      "recommended_enemy_types": [
+        "guard",
+        "ranged"
+      ],
+      "recommended_encounter": "bunker_encounter",
+      "elevation_usage": "below_ground_interior",
+      "tags": [
+        "abandoned",
+        "bunker",
+        "danger_area",
+        "defense",
+        "human_trace",
+        "outer_area",
+        "ruins"
+      ]
+    },
+    {
+      "id": "zone_016",
+      "type": "story_area",
+      "bounds": {
+        "min_x": 148,
+        "min_y": 41,
+        "max_x": 149,
+        "max_y": 42
+      },
+      "polygon": [
+        {
+          "x": 148,
+          "y": 41
+        },
+        {
+          "x": 149,
+          "y": 41
+        },
+        {
+          "x": 149,
+          "y": 42
+        },
+        {
+          "x": 148,
+          "y": 42
+        }
+      ],
+      "entry_points": [
+        {
+          "id": "entrance_north",
+          "position": {
+            "x": 148,
+            "y": 40
+          }
+        },
+        {
+          "id": "entrance_south",
+          "position": {
+            "x": 148,
+            "y": 43
+          }
+        },
+        {
+          "id": "entrance_west",
+          "position": {
+            "x": 147,
+            "y": 42
+          }
+        },
+        {
+          "id": "entrance_east",
+          "position": {
+            "x": 150,
+            "y": 42
+          }
+        }
+      ],
+      "exit_points": [
+        {
+          "id": "entrance_north",
+          "position": {
+            "x": 148,
+            "y": 40
+          }
+        },
+        {
+          "id": "entrance_south",
+          "position": {
+            "x": 148,
+            "y": 43
+          }
+        },
+        {
+          "id": "entrance_west",
+          "position": {
+            "x": 147,
+            "y": 42
+          }
+        },
+        {
+          "id": "entrance_east",
+          "position": {
+            "x": 150,
+            "y": 42
+          }
+        }
+      ],
+      "linked_places": [
+        "bunker_inner_area_003"
+      ],
+      "linked_routes": [
+        "main_road_000",
+        "side_path_003",
+        "patrol_route_005",
+        "patrol_route_008",
+        "patrol_route_009"
+      ],
+      "linked_markers": [
+        "marker_buried_bunker_2x2_000"
+      ],
+      "danger_level": 0.65,
+      "loot_level": 0.5,
+      "recommended_enemy_types": [
+        "guard",
+        "ranged"
+      ],
+      "recommended_encounter": "bunker_room",
+      "elevation_usage": "below_ground_interior",
+      "tags": [
+        "abandoned",
+        "below_floor",
+        "bunker",
+        "defense",
+        "interior",
+        "story_area",
+        "underground"
+      ]
+    },
+    {
+      "id": "zone_017",
+      "type": "danger_area",
+      "bounds": {
+        "min_x": 111,
+        "min_y": 119,
+        "max_x": 113,
+        "max_y": 131
+      },
+      "polygon": [
+        {
+          "x": 111,
+          "y": 119
+        },
+        {
+          "x": 113,
+          "y": 119
+        },
+        {
+          "x": 113,
+          "y": 131
+        },
+        {
+          "x": 111,
+          "y": 131
+        }
+      ],
+      "entry_points": [
+        {
+          "id": "entrance_north",
+          "position": {
+            "x": 112,
+            "y": 118
+          }
+        },
+        {
+          "id": "entrance_south",
+          "position": {
+            "x": 112,
+            "y": 132
+          }
+        },
+        {
+          "id": "entrance_west",
+          "position": {
+            "x": 110,
+            "y": 125
+          }
+        },
+        {
+          "id": "entrance_east",
+          "position": {
+            "x": 114,
+            "y": 125
+          }
+        }
+      ],
+      "exit_points": [
+        {
+          "id": "entrance_north",
+          "position": {
+            "x": 112,
+            "y": 118
+          }
+        },
+        {
+          "id": "entrance_south",
+          "position": {
+            "x": 112,
+            "y": 132
+          }
+        },
+        {
+          "id": "entrance_west",
+          "position": {
+            "x": 110,
+            "y": 125
+          }
+        },
+        {
+          "id": "entrance_east",
+          "position": {
+            "x": 114,
+            "y": 125
+          }
+        }
+      ],
+      "linked_places": [
+        "dangerous_lowland_004"
+      ],
+      "linked_routes": [
+        "side_path_002",
+        "patrol_route_000",
+        "patrol_route_004",
+        "patrol_route_006",
+        "patrol_route_010",
+        "escape_route_021"
+      ],
+      "linked_markers": [],
+      "danger_level": 0.8,
+      "loot_level": 0.2,
+      "recommended_enemy_types": [],
+      "recommended_encounter": "hazard_encounter",
+      "elevation_usage": "normal_ground",
+      "tags": [
+        "danger",
+        "danger_area",
+        "hazard",
+        "low_ground",
+        "swamp",
+        "traversal",
+        "wet"
+      ]
+    },
+    {
+      "id": "zone_018",
+      "type": "encounter_area",
+      "bounds": {
+        "min_x": 134,
+        "min_y": 81,
+        "max_x": 137,
+        "max_y": 85
+      },
+      "polygon": [
+        {
+          "x": 134,
+          "y": 81
+        },
+        {
+          "x": 137,
+          "y": 81
+        },
+        {
+          "x": 137,
+          "y": 85
+        },
+        {
+          "x": 134,
+          "y": 85
+        }
+      ],
+      "entry_points": [
+        {
+          "id": "entrance_north",
+          "position": {
+            "x": 136,
+            "y": 80
+          }
+        },
+        {
+          "id": "entrance_south",
+          "position": {
+            "x": 136,
+            "y": 86
+          }
+        },
+        {
+          "id": "entrance_west",
+          "position": {
+            "x": 133,
+            "y": 83
+          }
+        },
+        {
+          "id": "entrance_east",
+          "position": {
+            "x": 138,
+            "y": 83
+          }
+        }
+      ],
+      "exit_points": [
+        {
+          "id": "entrance_north",
+          "position": {
+            "x": 136,
+            "y": 80
+          }
+        },
+        {
+          "id": "entrance_south",
+          "position": {
+            "x": 136,
+            "y": 86
+          }
+        },
+        {
+          "id": "entrance_west",
+          "position": {
+            "x": 133,
+            "y": 83
+          }
+        },
+        {
+          "id": "entrance_east",
+          "position": {
+            "x": 138,
+            "y": 83
+          }
+        }
+      ],
+      "linked_places": [
+        "old_defensive_position_005"
+      ],
+      "linked_routes": [
+        "main_road_000",
+        "side_path_001",
+        "side_path_002",
+        "patrol_route_003",
+        "patrol_route_008",
+        "patrol_route_010",
+        "patrol_route_012"
+      ],
+      "linked_markers": [
+        "marker_ammo_cache_002"
+      ],
+      "danger_level": 0.65,
+      "loot_level": 0.4,
+      "recommended_enemy_types": [
+        "guard",
+        "ranged"
+      ],
+      "recommended_encounter": "defensive_encounter",
+      "elevation_usage": "low_ground_cover",
+      "tags": [
+        "defense",
+        "encounter_area",
+        "human_trace",
+        "open_field",
+        "ruins",
+        "trench"
+      ]
+    },
+    {
+      "id": "zone_019",
+      "type": "story_area",
+      "bounds": {
+        "min_x": 104,
+        "min_y": 12,
+        "max_x": 108,
+        "max_y": 12
+      },
+      "polygon": [
+        {
+          "x": 104,
+          "y": 12
+        },
+        {
+          "x": 108,
+          "y": 12
+        },
+        {
+          "x": 108,
+          "y": 12
+        },
+        {
+          "x": 104,
+          "y": 12
+        }
+      ],
+      "entry_points": [
+        {
+          "id": "entrance_north",
+          "position": {
+            "x": 106,
+            "y": 11
+          }
+        },
+        {
+          "id": "entrance_south",
+          "position": {
+            "x": 106,
+            "y": 13
+          }
+        },
+        {
+          "id": "entrance_west",
+          "position": {
+            "x": 103,
+            "y": 12
+          }
+        },
+        {
+          "id": "entrance_east",
+          "position": {
+            "x": 109,
+            "y": 12
+          }
+        }
+      ],
+      "exit_points": [
+        {
+          "id": "entrance_north",
+          "position": {
+            "x": 106,
+            "y": 11
+          }
+        },
+        {
+          "id": "entrance_south",
+          "position": {
+            "x": 106,
+            "y": 13
+          }
+        },
+        {
+          "id": "entrance_west",
+          "position": {
+            "x": 103,
+            "y": 12
+          }
+        },
+        {
+          "id": "entrance_east",
+          "position": {
+            "x": 109,
+            "y": 12
+          }
+        }
+      ],
+      "linked_places": [
+        "small_ruin_site_006"
+      ],
+      "linked_routes": [
+        "side_path_003",
+        "patrol_route_009",
+        "patrol_route_011",
+        "patrol_route_012",
+        "escape_route_022"
+      ],
+      "linked_markers": [],
+      "danger_level": 0.45,
+      "loot_level": 0.35,
+      "recommended_enemy_types": [
+        "scavenger",
+        "ranged"
+      ],
+      "recommended_encounter": "ruin_encounter",
+      "elevation_usage": "normal_ground",
+      "tags": [
+        "abandoned",
+        "human_trace",
+        "ruin",
+        "ruins",
+        "scrap",
+        "story_area"
+      ]
+    }
+  ],
+  "zone_types": {
+    "safe_area": "Low-risk player-safe or start area.",
+    "encounter_area": "General encounter location.",
+    "ambush_area": "Likely surprise or flank encounter location.",
+    "loot_area": "Reward-focused area.",
+    "boss_area": "High-danger set-piece encounter area.",
+    "stealth_area": "Area suited for concealment or bypass gameplay.",
+    "traversal_area": "Movement, crossing, obstruction, or route puzzle area.",
+    "secret_area": "Optional hidden or high-reward area.",
+    "danger_area": "High-risk area without necessarily being a boss fight.",
+    "story_area": "Narrative landmark or lore area.",
+    "extraction_area": "Goal, exit, or extraction area."
+  },
+  "summary": {
+    "total": 20,
+    "by_type": {
+      "ambush_area": 1,
+      "danger_area": 2,
+      "encounter_area": 1,
+      "extraction_area": 1,
+      "loot_area": 11,
+      "safe_area": 1,
+      "story_area": 3
+    },
+    "linked_place_count": 7,
+    "linked_marker_count": 17,
+    "linked_route_count": 7
+  },
+  "notes": [
+    "Gameplay zones describe intended gameplay usage of map areas.",
+    "Use runtime grids for exact movement, collision, visibility, and cover."
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "schema_version": "final-render-report-v1",
+  "kind": "final_asset_render_report",
+  "output": "output/visual_map/final_render.png",
+  "size_px": {
+    "width": 3072,
+    "height": 3072
+  },
+  "map_size_tiles": {
+    "width": 192,
+    "height": 192
+  },
+  "tile_size_px": 16,
+  "summary": {
+    "rendered_tiles": 36864,
+    "rendered_sprites": 2340,
+    "skipped_sprites": 0,
+    "missing_tile_uses": 0,
+    "missing_sprite_uses": 0,
+    "unique_tiles": 62,
+    "unique_sprites": 79
+  },
+  "top_tiles": [
+    {
+      "id": "grass.base",
+      "count": 15211
+    },
+    {
+      "id": "forest.fill",
+      "count": 12333
+    },
+    {
+      "id": "wall.blocked",
+      "count": 890
+    },
+    {
+      "id": "dirt.base",
+      "count": 762
+    },
+    {
+      "id": "forest.edge_w",
+      "count": 596
+    },
+    {
+      "id": "forest.edge_s",
+      "count": 593
+    },
+    {
+      "id": "forest.edge_e",
+      "count": 578
+    },
+    {
+      "id": "forest.edge_n",
+      "count": 532
+    },
+    {
+      "id": "road.straight_ns",
+      "count": 294
+    },
+    {
+      "id": "road.straight_ew",
+      "count": 288
+    }
+  ],
+  "top_sprites": [
+    {
+      "id": "boundary.dark_tree_wall",
+      "count": 276
+    },
+    {
+      "id": "decor.small_stone_01",
+      "count": 170
+    },
+    {
+      "id": "decor.mud_patch_01",
+      "count": 159
+    },
+    {
+      "id": "decor.reeds_01",
+      "count": 153
+    },
+    {
+      "id": "boundary.dense_forest_wall",
+      "count": 132
+    },
+    {
+      "id": "decor.wet_grass_01",
+      "count": 125
+    },
+    {
+      "id": "decor.road_grass_tuft_01",
+      "count": 121
+    },
+    {
+      "id": "object.generic",
+      "count": 105
+    },
+    {
+      "id": "decor.fallen_bricks_01",
+      "count": 88
+    },
+    {
+      "id": "decor.small_stone_02",
+      "count": 83
+    }
+  ],
+  "missing_tiles": {},
+  "missing_sprites": {},
+  "quality": {
+    "status": "ok"
+  }
+}

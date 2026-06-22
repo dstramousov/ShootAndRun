@@ -1,0 +1,72 @@
+{
+  "schema_version": "visual-debug-place-treatment-report-v2",
+  "kind": "visual_debug_place_treatment_report",
+  "source_layer": "objects.places",
+  "rules_enabled": true,
+  "summary": {
+    "total": 10,
+    "places_seen": {
+      "abandoned_checkpoint": 1,
+      "ambush_clearing": 1,
+      "bunker_inner_area": 1,
+      "bunker_outer_area": 1,
+      "dangerous_lowland": 1,
+      "old_defensive_position": 1,
+      "small_ruin_site": 1
+    },
+    "places_treated": {
+      "bunker_inner_area": 1,
+      "bunker_outer_area": 1,
+      "dangerous_lowland": 1,
+      "old_defensive_position": 1
+    },
+    "by_rule": {
+      "bunker_approach_scene": 4,
+      "dangerous_lowland_scene": 3,
+      "old_defensive_position_scene": 3
+    },
+    "by_place_type": {
+      "bunker_inner_area": 2,
+      "bunker_outer_area": 2,
+      "dangerous_lowland": 3,
+      "old_defensive_position": 3
+    },
+    "by_scene_variant": {
+      "bog_warning": 1,
+      "concrete_scatter": 2,
+      "old_cover_line": 1
+    },
+    "by_sprite_id": {
+      "decor.black_mud_01": 1,
+      "decor.broken_block_01": 2,
+      "decor.concrete_debris_01": 1,
+      "decor.dead_branch_01": 1,
+      "decor.dead_tree_root_01": 1,
+      "decor.rusty_barbed_wire_01": 1,
+      "decor.sandbag_broken_01": 1,
+      "decor.sandbag_remnant_01": 1,
+      "decor.wooden_cover_piece_01": 1
+    },
+    "by_role": {
+      "cover_hint": 5,
+      "danger_hint": 2,
+      "visual": 3
+    },
+    "by_rarity": {
+      "common": 8,
+      "uncommon": 2
+    },
+    "failed_placements": {
+      "old_defensive_position_scene": 1,
+      "small_ruin_site_scene": 1
+    },
+    "skipped": {
+      "chance_miss": 2,
+      "route_centerline": 3,
+      "terrain_mismatch": 3
+    }
+  },
+  "quality": {
+    "status": "ok"
+  }
+}
