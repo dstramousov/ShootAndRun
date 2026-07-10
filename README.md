@@ -1,6 +1,7 @@
 # ShootAndRunCpp v0.1.64
 
-Первый каркас C++20 + raylib проекта.
+<img width="1428" height="818" alt="Screenshot from 2026-07-10 08-50-09" src="https://github.com/user-attachments/assets/ea35d22f-0c46-486e-ab8b-0e603e822f39" />
+
 
 ## Что есть
 
